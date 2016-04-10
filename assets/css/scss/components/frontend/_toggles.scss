@@ -1,0 +1,14 @@
+
+$toggles-spacing-unit: $base-spacing-unit !default;
+
+$toggles-border-width: 0 !default;
+$toggles-border-style : solid !default;
+$toggles-border-color: $border-color !default;
+
+.tailor-ui {
+
+	.tailor-toggles {
+		margin-bottom: #{$toggles-spacing-unit}em;
+		border: $toggles-border-width $toggles-border-style $toggles-border-color;
+	}
+}

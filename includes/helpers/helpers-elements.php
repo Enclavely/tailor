@@ -1,0 +1,1247 @@
+<?php
+
+/**
+ * Element helper functions.
+ *
+ * @package Tailor
+ * @subpackage Helpers
+ * @since 1.0.0
+ */
+
+if ( ! function_exists( 'tailor_empty_list' ) ) {
+
+	/**
+	 * Returns a message to display when a list contains no items.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $list_type
+	 * @return string
+	 */
+	function tailor_empty_list( $list_type ) {
+		return sprintf( _x( 'No %1$s to display', 'expected item type', tailor()->textdomain() ), $list_type );
+	}
+}
+
+if ( ! function_exists( 'tailor_get_widget_areas' ) ) {
+
+	/**
+	 * Returns an array containing the registered widget areas.
+	 *
+	 * @since 1.0.0
+	 * @uses $wp_registered_sidebars
+	 *
+	 * @param array $widget_areas
+	 * @return array
+	 */
+	function tailor_get_widget_areas( $widget_areas = array() ) {
+
+		global $wp_registered_sidebars;
+
+		if ( empty( $wp_registered_sidebars ) ) {
+			$widget_areas = array( '' => tailor_empty_list( __( 'widget areas', tailor()->textdomain() ) ) );
+		}
+
+		foreach ( $wp_registered_sidebars as $sidebar ) {
+			$widget_areas[ $sidebar['id'] ] = $sidebar['name'];
+		}
+
+		return $widget_areas;
+	}
+}
+
+if ( ! function_exists( 'tailor_control_presets' ) ) {
+
+	/**
+	 * Registers the settings and controls based.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param Tailor_Element $element
+	 * @param array $control_ids
+	 * @param array $control_arguments
+	 * @param int $priority
+	 * @return int $priority
+	 */
+	function tailor_control_presets( $element, $control_ids = array(), $control_arguments = array(), $priority = 10 ) {
+
+		$choices = array(
+			'top'                   =>  __( 'Top', tailor()->textdomain() ),
+			'right'                 =>  __( 'Right', tailor()->textdomain() ),
+			'bottom'                =>  __( 'Bottom', tailor()->textdomain() ),
+			'left'                  =>  __( 'Left', tailor()->textdomain() ),
+		);
+
+		$preview_sizes = tailor_get_preview_sizes();
+
+		$control_definitions = array(
+
+			'hidden'                =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_text',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Hide on', tailor()->textdomain() ),
+					//'description'           =>  __( 'Select the screen size(s) for which this element should be hidden', tailor()->textdomain() ),
+					'type'                  =>  'select-multi',
+					'choices'               =>  $preview_sizes,
+					'section'               =>  'attributes',
+				),
+			),
+
+			'title'                 =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_text',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Title', tailor()->textdomain() ),
+					'type'                  =>  'text',
+					'section'               =>  'general',
+				),
+			),
+			'alignment'             =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_text',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Alignment', tailor()->textdomain() ),
+					'type'                  =>  'select',
+					'section'               =>  'general',
+				),
+			),
+            'max_width'             =>  array(
+                'setting'               =>  array(
+                    'sanitize_callback'     =>  'tailor_sanitize_text',
+                ),
+                'control'               =>  array(
+                    'label'                 =>  __( 'Maximum width', tailor()->textdomain() ),
+                    'type'                  =>  'text',
+                    'section'               =>  'general',
+                ),
+            ),
+            'min_height'            =>  array(
+                'setting'               =>  array(
+                    'sanitize_callback'     =>  'tailor_sanitize_text',
+                ),
+                'control'               =>  array(
+                    'label'                 =>  __( 'Minimum height', tailor()->textdomain() ),
+                    'type'                  =>  'text',
+                    'section'               =>  'general',
+                ),
+            ),
+			'style'                 =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_text',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Style', tailor()->textdomain() ),
+					'type'                  =>  'select',
+					'section'               =>  'general',
+				),
+			),
+			'layout'                =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_text',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Layout', tailor()->textdomain() ),
+					'type'                  =>  'select',
+					'section'               =>  'general',
+				),
+			),
+            'items_per_row'         =>  array(
+                'setting'               =>  array(
+                    'sanitize_callback'     =>  'tailor_sanitize_number',
+                ),
+                'control'               =>  array(
+                    'label'                 =>  __( 'Items per row', tailor()->textdomain() ),
+                    'type'                  =>  'select',
+                    'choices'               =>  tailor_get_range( 1, 6, 1 ),
+                    'section'               =>  'general',
+                ),
+            ),
+			'min_item_height'       =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_text',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Minimum item height', tailor()->textdomain() ),
+					'type'                  =>  'text',
+					'section'               =>  'general',
+				),
+			),
+			'autoplay'              =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_number',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Autoplay', tailor()->textdomain() ),
+					'type'                  =>  'switch',
+					'section'               =>  'general',
+				),
+			),
+			'fade'                  =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_number',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Fade', tailor()->textdomain() ),
+					'type'                  =>  'switch',
+					'section'               =>  'general',
+				),
+			),
+			'arrows'                =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_number',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Arrows', tailor()->textdomain() ),
+					'type'                  =>  'switch',
+					'section'               =>  'general',
+				),
+			),
+			'dots'                  =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_number',
+					'default'               =>  '1',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Dots', tailor()->textdomain() ),
+					'type'                  =>  'switch',
+					'section'               =>  'general',
+				),
+			),
+            'thumbnails'            =>  array(
+                'setting'               =>  array(
+                    'sanitize_callback'     =>  'tailor_sanitize_number',
+                    'default'               =>  '1',
+                ),
+                'control'               =>  array(
+                    'label'                 =>  __( 'Thumbnails', tailor()->textdomain() ),
+                    'type'                  =>  'switch',
+                    'section'               =>  'general',
+                ),
+            ),
+			'item_spacing'          =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_text',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Item spacing', tailor()->textdomain() ),
+					'type'                  =>  'text',
+					'section'               =>  'general',
+				),
+			),
+			'masonry'               =>  array(
+                'setting'               =>  array(
+                    'sanitize_callback'     =>  'tailor_sanitize_number',
+                ),
+                'control'               =>  array(
+	                'label'                 =>  __( 'Masonry', tailor()->textdomain() ),
+	                'type'                  =>  'switch',
+	                'choices'               =>  array(
+		                '1'                     =>  __( 'Apply masonry layout?', tailor()->textdomain() ),
+	                ),
+	                'section'               =>  'general',
+                ),
+            ),
+			'lightbox'              =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_number',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Lightbox', tailor()->textdomain() ),
+					'type'                  =>  'switch',
+					'choices'               =>  array(
+						'1'                     =>  __( 'Open images in lightbox?', tailor()->textdomain() ),
+					),
+					'section'               =>  'general',
+				),
+			),
+			'meta'                  =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_text',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Meta', tailor()->textdomain() ),
+					'type'                  =>  'select-multi',
+					'section'               =>  'general',
+				),
+			),
+			'posts_per_page'        =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_text',
+					'default'               =>  '4',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Posts per page', tailor()->textdomain() ),
+					'type'                  =>  'select',
+					'choices'               =>  tailor_get_range( 1, 12, 1 ),
+					'section'               =>  'general',
+				),
+			),
+			'pagination'            =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_text',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Pagination', tailor()->textdomain() ),
+					'choices'               =>  array(
+						'1'                     =>  __( 'Show pagination links?', tailor()->textdomain() ),
+					),
+					'type'                  =>  'switch',
+					'section'               =>  'general',
+				),
+			),
+			'type'                  =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_text',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Type', tailor()->textdomain() ),
+					'type'                  =>  'select',
+					'section'               =>  'general',
+				),
+			),
+			'graphic_type'          =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_text',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Graphic type', tailor()->textdomain() ),
+					'type'                  =>  'select',
+					'section'               =>  'general',
+				),
+			),
+			'graphic_size'          =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_text',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Graphic size', tailor()->textdomain() ),
+					'type'                  =>  'text',
+					'section'               =>  'general',
+				),
+			),
+			'image'                 =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_number',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Image', tailor()->textdomain() ),
+					'type'                  =>  'image',
+					'section'               =>  'general',
+				),
+			),
+			'image_width'           =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_text',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Image width', tailor()->textdomain() ),
+					'type'                  =>  'text',
+					'section'               =>  'general',
+				),
+			),
+			'image_size'            =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_text',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Image size', tailor()->textdomain() ),
+					'type'                  =>  'select',
+					'choices'               =>  tailor_get_image_sizes(),
+					'section'               =>  'general',
+				),
+			),
+            'aspect_ratio'          =>  array(
+                'setting'               =>  array(
+                    'sanitize_callback'     =>  'tailor_sanitize_text',
+                ),
+                'control'               =>  array(
+                    'label'                 =>  __( 'Aspect ratio', tailor()->textdomain() ),
+                    'type'                  =>  'select',
+                    'choices'               =>  array(
+                        ''                      =>  __( 'Original', tailor()->textdomain() ),
+                        '1:1'                   =>  __( 'Square', tailor()->textdomain() ),
+                        '3:2'                   =>  __( 'Horizontal 3:2', tailor()->textdomain() ),
+                        '4:3'                   =>  __( 'Horizontal 4:3', tailor()->textdomain() ),
+                        '16:9'                  =>  __( 'Horizontal 16:9', tailor()->textdomain() ),
+                        '2:3'                   =>  __( 'Vertical 2:3', tailor()->textdomain() ),
+                        '3:4'                   =>  __( 'Vertical 3:4', tailor()->textdomain() ),
+                    ),
+                    'section'               =>  'general',
+                ),
+            ),
+            'horizontal_alignment'  =>  array(
+                'setting'               =>  array(
+                    'sanitize_callback'     =>  'tailor_sanitize_text',
+                ),
+                'control'               =>  array(
+                    'label'                 =>  __( 'Horizontal alignment', tailor()->textdomain() ),
+                    'type'                  =>  'button-group',
+                    'choices'               =>  array(
+                        'left'                  =>  '<i class="tailor-icon tailor-align-left"></i>',
+                        'center'                =>  '<i class="tailor-icon tailor-align-center"></i>',
+                        'right'                 =>  '<i class="tailor-icon tailor-align-right"></i>',
+                    ),
+                    'section'               =>  'general',
+                ),
+            ),
+			'vertical_alignment'    =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_text',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Vertical alignment', tailor()->textdomain() ),
+					'type'                  =>  'button-group',
+					'choices'               =>  array(
+						'flex-start'            =>  '<i class="tailor-icon tailor-align-top"></i>', //__( 'Top', tailor()->textdomain() ),
+						'center'                =>  '<i class="tailor-icon tailor-align-middle"></i>', //__( 'Middle', tailor()->textdomain() ),
+						'flex-end'              =>  '<i class="tailor-icon tailor-align-bottom"></i>', //__( 'Bottom', tailor()->textdomain() ),
+					),
+					'section'               =>  'general',
+				),
+			),
+			'stretch'               =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_number',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Stretch-to-fit image', tailor()->textdomain() ),
+					'type'                  =>  'switch',
+					//'type'                  =>  'checkbox',
+					//'choices'               =>  array(
+					//	'1'                     =>  __( 'Stretch image to fit container?', tailor()->textdomain() ),
+					//),
+					'section'               =>  'general',
+				),
+			),
+			'caption'               =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_number',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Caption', tailor()->textdomain() ),
+					'type'                  =>  'switch',
+					'section'               =>  'general',
+				),
+			),
+			'icon'                  =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_text',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Icon', tailor()->textdomain() ),
+					'type'                  =>  'icon',
+					'section'               =>  'general',
+				),
+			),
+			'size'                  =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_text',
+					'default'               =>  'medium',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Size', tailor()->textdomain() ),
+					'type'                  =>  'select',
+					'choices'               =>  array(
+						'small'                 =>  __( 'Small', tailor()->textdomain() ),
+						'medium'                =>  __( 'Medium', tailor()->textdomain() ),
+						'large'                 =>  __( 'Large', tailor()->textdomain() ),
+					),
+					'section'               =>  'general',
+				),
+			),
+			'href'                  =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_text',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Link', tailor()->textdomain() ),
+					'type'                  =>  'link',
+					'placeholder'           =>  'http://',
+					'section'               =>  'general',
+				),
+			),
+			'target'         =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_text',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Link behavior', tailor()->textdomain() ),
+					'type'                  =>  'checkbox',
+					'choices'               =>  array(
+						'_blank'                =>  __( 'Open in a new window?', tailor()->textdomain() ),
+					),
+					'section'               =>  'general',
+				),
+			),
+
+			'categories'            =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_text',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Categories', tailor()->textdomain() ),
+					'type'                  =>  'select-multi',
+					'choices'               =>  tailor_get_terms(),
+					'section'               =>  'query',
+				),
+			),
+			'tags'                  =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_text',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Tags', tailor()->textdomain() ),
+					'type'                  =>  'select-multi',
+					'choices'               =>  tailor_get_terms( 'post_tag' ),
+					'section'               =>  'query',
+				),
+			),
+			'order_by'              =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_text',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Order by', tailor()->textdomain() ),
+					'type'                  =>  'select',
+					'choices'               =>  array(
+						'date'                  =>  __( 'Date', tailor()->textdomain() ),
+						'author'                =>  __( 'Author', tailor()->textdomain() ),
+						'title'                 =>  __( 'Title', tailor()->textdomain() ),
+						'comment_count'         =>  __( 'Number of comments', tailor()->textdomain() ),
+					),
+					'section'               =>  'query',
+				),
+			),
+			'order'                 =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_text',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Order by', tailor()->textdomain() ),
+					'type'                  =>  'select',
+					'choices'               =>  array(
+						'DESC'                  =>  __( 'Descending', tailor()->textdomain() ),
+						'ASC'                   =>  __( 'Ascending', tailor()->textdomain() ),
+					),
+					'dependencies'          =>  array(
+						'order'                 => array(
+							'condition'             =>  'not',
+							'value'                 =>  'none',
+						),
+					),
+					'section'               =>  'query',
+				),
+			),
+			'offset'                =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_number',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Offset', tailor()->textdomain() ),
+					'type'                  =>  'select',
+					'choices'               =>  tailor_get_range( 0, 20, 1 ),
+					'section'               =>  'query',
+				),
+			),
+
+			'color'                 =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_color',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Text color', tailor()->textdomain() ),
+					'type'                  =>  'colorpicker',
+					'section'               =>  'colors',
+				),
+			),
+			'color_hover'           =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_color',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Text hover color', tailor()->textdomain() ),
+					'type'                  =>  'colorpicker',
+					'section'               =>  'colors',
+				),
+			),
+			'link_color'            =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_color',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Link color', tailor()->textdomain() ),
+					'type'                  =>  'colorpicker',
+					'section'               =>  'colors',
+				),
+			),
+			'heading_color'         =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_color',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Heading color', tailor()->textdomain() ),
+					'type'                  =>  'colorpicker',
+					'section'               =>  'colors',
+				),
+			),
+			'background_color'      =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_color',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Background color', tailor()->textdomain() ),
+					'type'                  =>  'colorpicker',
+					'rgba'                  =>  1,
+					'section'               =>  'colors',
+				),
+			),
+			'background_color_hover'=>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_color',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Background hover color', tailor()->textdomain() ),
+					'type'                  =>  'colorpicker',
+					'rgba'                  =>  1,
+					'section'               =>  'colors',
+				),
+			),
+			'border_color'          =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_color',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Border color', tailor()->textdomain() ),
+					'type'                  =>  'colorpicker',
+					'section'               =>  'colors',
+				),
+			),
+			'border_color_hover'    =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_color',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Border hover color', tailor()->textdomain() ),
+					'type'                  =>  'colorpicker',
+					'section'               =>  'colors',
+				),
+			),
+			'navigation_color'      =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_color',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Navigation color', tailor()->textdomain() ),
+					'type'                  =>  'colorpicker',
+					'section'               =>  'colors',
+				),
+			),
+			'graphic_color'         =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_color',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Graphic color', tailor()->textdomain() ),
+					'type'                  =>  'colorpicker',
+					'section'               =>  'colors',
+				),
+			),
+			'graphic_color_hover'   =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_color',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Graphic hover color', tailor()->textdomain() ),
+					'type'                  =>  'colorpicker',
+					'section'               =>  'colors',
+				),
+			),
+			'graphic_background_color'  =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_color',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Graphic background color', tailor()->textdomain() ),
+					'type'                  =>  'colorpicker',
+					'rgba'                  =>  1,
+					'section'               =>  'colors',
+				),
+			),
+			'graphic_background_color_hover'   =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_color',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Graphic hover background color', tailor()->textdomain() ),
+					'type'                  =>  'colorpicker',
+					'rgba'                  =>  1,
+					'section'               =>  'colors',
+				),
+			),
+
+			'class'                 =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_text',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Class name', tailor()->textdomain() ),
+					'type'                  =>  'text',
+					'section'               =>  'attributes',
+				),
+			),
+			'padding'               =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_text',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Padding', tailor()->textdomain() ),
+					'type'                  =>  'style',
+					'choices'               =>  array(
+						'top'                   =>  $choices['top'],
+						'right'                 =>  $choices['right'],
+						'bottom'                =>  $choices['bottom'],
+						'left'                  =>  $choices['left'],
+					),
+					'section'               =>  'attributes',
+				),
+			),
+			'margin'                =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_text',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Margin', tailor()->textdomain() ),
+					'type'                  =>  'style',
+					'choices'               =>  array(
+						'top'                   =>  $choices['top'],
+						'right'                 =>  $choices['right'],
+						'bottom'                =>  $choices['bottom'],
+						'left'                  =>  $choices['left'],
+					),
+					'section'               =>  'attributes',
+				),
+			),
+			'border_style'          =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_text',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Border style', tailor()->textdomain() ),
+					'type'                  =>  'select',
+					'choices'               =>  array(
+						''                      =>  __( 'Default', tailor()->textdomain() ),
+						'solid'                 =>  __( 'Solid', tailor()->textdomain() ),
+						'dashed'                =>  __( 'Dashed', tailor()->textdomain() ),
+						'dotted'                =>  __( 'Dotted', tailor()->textdomain() ),
+						'double'                =>  __( 'Double', tailor()->textdomain() ),
+						'groove'                =>  __( 'Groove', tailor()->textdomain() ),
+						'ridge'                 =>  __( 'Ridge', tailor()->textdomain() ),
+						'inset'                 =>  __( 'Inset', tailor()->textdomain() ),
+						'outset'                =>  __( 'Outset', tailor()->textdomain() ),
+						'none'                  =>  __( 'None', tailor()->textdomain() ),
+					),
+					'section'               =>  'attributes',
+				),
+			),
+			'border_width'          =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_text',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Border width', tailor()->textdomain() ),
+					'type'                  =>  'style',
+					'choices'               =>  array(
+						'top'                   =>  $choices['top'],
+						'right'                 =>  $choices['right'],
+						'bottom'                =>  $choices['bottom'],
+						'left'                  =>  $choices['left'],
+					),
+					'dependencies'          =>  array(
+						'border_style'          =>  array(
+							'condition'             =>  'not',
+							'value'                 =>  array( '', 'none' ),
+						),
+					),
+					'section'               =>  'attributes',
+				),
+			),
+			'border_radius'         =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_text',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Border radius', tailor()->textdomain() ),
+					'type'                  =>  'text',
+					'choices'               =>  array(
+						'top'                   =>  $choices['top'],
+						'right'                 =>  $choices['right'],
+						'bottom'                =>  $choices['bottom'],
+						'left'                  =>  $choices['left'],
+					),
+					'dependencies'          =>  array(
+						'border_style'          =>  array(
+							'condition'             =>  'not',
+							'value'                 =>  array( '', 'none' ),
+						),
+					),
+					'section'               =>  'attributes',
+				),
+			),
+			'shadow'                =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_text',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Shadow ', tailor()->textdomain() ),
+					'type'                  =>  'switch',
+					'dependencies'          =>  array(
+						'border_style'          =>  array(
+							'condition'             =>  'not',
+							'value'                 =>  array( '', 'none' ),
+						),
+					),
+					'section'               =>  'attributes',
+				),
+			),
+
+			'background_image'      =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_number',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Background image', tailor()->textdomain() ),
+					'type'                  =>  'image',
+					'section'               =>  'attributes',
+				),
+			),
+			'background_repeat'     =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_text',
+					'default'               =>  'no-repeat',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Background repeat', tailor()->textdomain() ),
+					'type'                  =>  'select',
+					'choices'               =>  array(
+						'no-repeat'             =>  __( 'No repeat', tailor()->textdomain() ),
+						'repeat'                =>  __( 'Repeat', tailor()->textdomain() ),
+						'repeat-x'              =>  __( 'Repeat horizontally', tailor()->textdomain() ),
+						'repeat-yx'             =>  __( 'Repeat vertically', tailor()->textdomain() ),
+					),
+					'dependencies'          =>  array(
+						'background_image'      =>  array(
+							'condition'             =>  'not',
+							'value'                 =>  '',
+						),
+					),
+					'section'               =>  'attributes',
+				),
+			),
+			'background_position'   =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_text',
+					'default'               =>  'center center',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Background position', tailor()->textdomain() ),
+					'type'                  =>  'select',
+					'choices'               =>  array(
+						'left top'              =>  __( 'Left top', tailor()->textdomain() ),
+						'left center'           =>  __( 'Left center', tailor()->textdomain() ),
+						'left bottom'           =>  __( 'Left bottom', tailor()->textdomain() ),
+						'right top'             =>  __( 'Right top', tailor()->textdomain() ),
+						'right center'          =>  __( 'Right center', tailor()->textdomain() ),
+						'right bottom'          =>  __( 'Right bottom', tailor()->textdomain() ),
+						'center top'            =>  __( 'Center top', tailor()->textdomain() ),
+						'center center'         =>  __( 'Center center', tailor()->textdomain() ),
+						'center bottom'         =>  __( 'Center bottom', tailor()->textdomain() ),
+					),
+					'dependencies'          =>  array(
+						'background_image'      =>  array(
+							'condition'             =>  'not',
+							'value'                 =>  '',
+						),
+					),
+					'section'               =>  'attributes',
+				),
+			),
+			'background_size'       =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_text',
+					'default'               =>  'cover',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Background size', tailor()->textdomain() ),
+					'type'                  =>  'select',
+					'choices'               =>  array(
+						'cover'                 =>  __( 'Cover', tailor()->textdomain() ),
+						'contain'               =>  __( 'Contain', tailor()->textdomain() ),
+					),
+					'dependencies'          =>  array(
+						'background_image'      =>  array(
+							'condition'             =>  'not',
+							'value'                 =>  '',
+						),
+					),
+					'section'               =>  'attributes',
+				),
+			),
+			'background_video'      =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_number',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Background video', tailor()->textdomain() ),
+					'type'                  =>  'video',
+					'section'               =>  'attributes',
+				),
+			),
+		);
+
+		foreach ( $control_ids as $control_id ) {
+			if ( array_key_exists( $control_id, $control_definitions ) ) {
+
+                if ( array_key_exists( $control_id, $control_arguments ) ) {
+                    if ( array_key_exists( 'control', $control_arguments[ $control_id ] ) ) {
+                        $control_definitions[ $control_id ]['control'] = array_merge(
+                            $control_definitions[ $control_id ]['control'],
+                            $control_arguments[ $control_id ]['control']
+                        );
+                    }
+                    if ( array_key_exists( 'setting', $control_arguments[ $control_id ] ) ) {
+                        $control_definitions[ $control_id ]['setting'] = array_merge(
+                            $control_definitions[ $control_id ]['setting'],
+                            $control_arguments[ $control_id ]['setting']
+                        );
+                    }
+                }
+
+                $control_definitions[ $control_id ]['control']['priority'] = $priority += 10;
+
+				$element->add_setting( $control_id, $control_definitions[ $control_id ]['setting'] );
+				$element->add_control( $control_id, $control_definitions[ $control_id ]['control'] );
+			}
+		}
+
+		return $priority;
+	}
+}
+
+if ( ! function_exists( 'tailor_css_presets' ) ) {
+
+	/**
+	 * Returns the CSS rules associated with the default controls.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array $css_rules
+	 * @param array $atts
+	 * @param array $excluded_control_types
+	 * @return array $css_rules
+	 */
+	function tailor_css_presets( $css_rules = array(), $atts = array(), $excluded_control_types = array() ) {
+
+		if ( array_key_exists( 'vertical_alignment', $atts ) && ! empty( $atts['vertical_alignment'] ) && ! in_array( 'vertical_alignment', $excluded_control_types ) ) {
+			$css_rules[] = array(
+				'selectors'         =>  array(),
+				'declarations'      =>  array(
+					'align-items'       =>  esc_attr( $atts['vertical_alignment'] ),
+				),
+			);
+			$css_rules[] = array(
+				'selectors'         =>  array(),
+				'declarations'      =>  array(
+					'justify-content'   =>  esc_attr( $atts['vertical_alignment'] ),
+				),
+			);
+		}
+
+		if ( array_key_exists( 'item_spacing', $atts ) && ! empty( $atts['item_spacing'] ) && ! in_array( 'item_spacing', $excluded_control_types ) ) {
+			$value = preg_replace( "/[^0-9\.]/", "", $atts['item_spacing'] );
+			$unit = str_replace( $value, '', $atts['item_spacing'] );
+
+			if ( is_numeric( $value ) ) {
+				if ( 'carousel' == $atts['layout'] ) {
+					$css_rules[] = array(
+						'selectors'         =>  array( ".tailor-{$atts['layout'] }__item" ),
+						'declarations'      =>  array(
+							'padding-left'      =>  esc_attr( ( $value / 2 ) . $unit ),
+							'padding-right'     =>  esc_attr( ( $value / 2 ) . $unit ),
+						),
+					);
+				}
+				else if ( 'grid' == $atts['layout'] ) {
+					$css_rules[] = array(
+						'selectors'         =>  array( ".tailor-{$atts['layout'] }__item" ),
+						'declarations'      =>  array(
+							'padding'           =>  esc_attr( ( $value / 2 ) . $unit ),
+						),
+					);
+				}
+				else {
+					$css_rules[] = array(
+						'selectors'         =>  array( '.entry:not(:last-child)', '.tailor-attachment:not(:last-child)' ),
+						'declarations'      =>  array(
+							'margin-bottom'     =>  esc_attr( $value . $unit ),
+						),
+					);
+				}
+			}
+		}
+
+		if ( array_key_exists( 'color', $atts ) && ! empty( $atts['color'] ) && ! in_array( 'color', $excluded_control_types ) ) {
+			$css_rules[] = array(
+				'selectors'         =>  array(),
+				'declarations'      =>  array(
+					'color'             =>  esc_attr( $atts['color'] ),
+				),
+			);
+		}
+
+		if ( array_key_exists( 'link_color', $atts ) && ! empty( $atts['link_color'] ) && ! in_array( 'link_color', $excluded_control_types ) ) {
+
+			$css_rules[] = array(
+				'selectors'         =>  array( 'a' ),
+				'declarations'      =>  array(
+					'color'             =>  esc_attr( $atts['link_color'] ),
+				),
+			);
+
+			$css_rules[] = array(
+				'selectors'         =>  array( 'a:hover' ),
+				'declarations'      =>  array(
+					'color'             =>  esc_attr( tailor_adjust_color_brightness( $atts['link_color'], -0.05 ) ),
+				),
+			);
+		}
+
+		if ( array_key_exists( 'heading_color', $atts ) && ! empty( $atts['heading_color'] ) && ! in_array( 'heading_color', $excluded_control_types ) ) {
+			$css_rules[] = array(
+				'selectors'         =>  array( 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ),
+				'declarations'      =>  array(
+					'color'             =>  esc_attr( $atts['heading_color'] ),
+				),
+			);
+		}
+
+		if ( array_key_exists( 'border_color', $atts ) && ! empty( $atts['border_color'] ) && ! in_array( 'border_color', $excluded_control_types ) ) {
+			$css_rules[] = array(
+				'selectors'         =>  array(),
+				'declarations'      =>  array(
+					'border-color'      =>  esc_attr( $atts['border_color'] ),
+				),
+			);
+		}
+
+		if ( array_key_exists( 'navigation_color', $atts ) && ! empty( $atts['navigation_color'] ) && ! in_array( 'navigation_color', $excluded_control_types ) ) {
+			$css_rules[] = array(
+				'selectors'                 =>  array( '.slick-active button:before' ),
+				'declarations'              =>  array(
+					'background-color'          =>  esc_attr( $atts['navigation_color'] ),
+				),
+			);
+
+			$css_rules[] = array(
+				'selectors'                 =>  array( '.slick-arrow:not( .slick-disabled )' ),
+				'declarations'              =>  array(
+					'color'                     =>  esc_attr( $atts['navigation_color'] ),
+				),
+			);
+		}
+
+		if ( array_key_exists( 'padding', $atts ) && ! empty( $atts['padding'] ) && ! in_array( 'padding', $excluded_control_types ) ) {
+			$padding = explode( '-', $atts['padding'] );
+			$positions = ( 2 == count( $padding ) ) ? array( 'top', 'bottom' ) : array( 'top', 'right', 'bottom', 'left' );
+			$padding_values = array_combine( $positions, $padding );
+			foreach ( $padding_values as $position => $padding_value ) {
+				if ( ! empty( $padding_value ) ) {
+					$css_rules[] = array(
+						'selectors'                 =>  array(),
+						'declarations'              =>  array(
+							"padding-{$position}"       =>  esc_attr( $padding_value ),
+						),
+					);
+				}
+			}
+		}
+
+		if ( array_key_exists( 'margin', $atts ) && ! empty( $atts['margin'] ) && ! in_array( 'margin', $excluded_control_types ) ) {
+			$margin = explode( '-', $atts['margin'] );
+			$positions = ( 2 == count( $margin ) ) ? array( 'top', 'bottom' ) : array( 'top', 'right', 'bottom', 'left' );
+			$margin_values = array_combine( $positions, $margin );
+			foreach ( $margin_values as $position => $margin_value ) {
+				if ( ! empty( $margin_value ) ) {
+					$css_rules[] = array(
+						'selectors'                 =>  array(),
+						'declarations'              =>  array(
+							"margin-{$position}"        =>  esc_attr( $margin_value ),
+						),
+					);
+				}
+			}
+		}
+
+		if ( array_key_exists( 'border_style', $atts ) && ! empty( $atts['border_style'] ) && ! in_array( 'border_style', $excluded_control_types ) ) {
+
+			$css_rules[] = array(
+				'selectors'         =>  array(),
+				'declarations'      =>  array(
+					'border-style'      =>  esc_attr( $atts['border_style'] ),
+				),
+			);
+
+			if ( 'none' !== $atts['border_style'] ) {
+
+				if ( array_key_exists( 'border_width', $atts ) && ! empty( $atts['border_width'] ) && ! in_array( 'border_width', $excluded_control_types ) ) {
+					$border = explode( '-', $atts['border_width'] );
+					$positions = array( 'top', 'right', 'bottom', 'left' );
+					$borders = array_combine( $positions, $border );
+
+					if ( count( array_unique( $borders ) ) === 1 && end( $borders ) == '0' ) {
+						$css_rules[] = array(
+							'selectors'                 =>  array(),
+							'declarations'              =>  array(
+								'border'                    =>  'none',
+								'box-shadow'                =>  'none',
+							),
+						);
+
+					}
+					else {
+						foreach ( $borders as $position => $border_width ) {
+							if ( ! empty( $border_width ) ) {
+								$css_rules[] = array(
+									'selectors'                 =>  array(),
+									'declarations'              =>  array(
+										"border-{$position}-width"  =>  esc_attr( $border_width ),
+									),
+								);
+							}
+						}
+					}
+				}
+
+				if ( array_key_exists( 'border_radius', $atts ) && ! empty( $atts['border_radius'] ) && ! in_array( 'border_radius', $excluded_control_types ) ) {
+					$css_rules[] = array(
+						'selectors'         =>  array(),
+						'declarations'      =>  array(
+							'border-radius'     =>  esc_attr( $atts['border_radius'] ),
+						),
+					);
+				}
+
+				if ( array_key_exists( 'shadow', $atts ) && ! empty( $atts['shadow'] ) && ! in_array( 'shadow', $excluded_control_types ) ) {
+					$css_rules[] = array(
+						'selectors'         =>  array(),
+						'declarations'      =>  array(
+							'box-shadow'        =>  '0 2px 6px rgba(0, 0, 0, 0.1)',
+						),
+					);
+				}
+			}
+		}
+
+		if ( array_key_exists( 'background_image', $atts ) && is_numeric( $atts['background_image'] ) && ! in_array( 'background_image', $excluded_control_types ) ) {
+
+			$background_image_info = wp_get_attachment_image_src( trim( $atts['background_image'] ), 'full' );
+			$background_image_src = $background_image_info[0];
+
+			if ( array_key_exists( 'background_color', $atts ) && ! empty( $atts['background_color'] ) && ! in_array( 'background_color', $excluded_control_types ) && false !== strpos( $atts['background_color'], 'rgba' ) ) {
+				$css_rules[] = array(
+					'selectors'         =>  array(),
+					'declarations'      =>  array(
+						'background'        =>  esc_attr(
+							"linear-gradient( {$atts['background_color']},{$atts['background_color']} ),
+							url({$background_image_src}) center center no-repeat"
+						),
+					),
+				);
+			}
+			else {
+				$css_rules[] = array(
+					'selectors'         =>  array(),
+					'declarations'      =>  array(
+						'background'        =>  "url('{$background_image_src}') center center no-repeat",
+					),
+				);
+			}
+
+			if ( array_key_exists( 'background_repeat', $atts ) && ! in_array( 'background_repeat', $excluded_control_types ) ) {
+				$css_rules[] = array(
+					'selectors'         =>  array(),
+					'declarations'      =>  array(
+						'background-repeat' =>  esc_attr( $atts['background_repeat'] ),
+					),
+				);
+			}
+
+			if ( array_key_exists( 'background_position', $atts ) && ! in_array( 'background_position', $excluded_control_types ) ) {
+				$css_rules[] = array(
+					'selectors'         =>  array(),
+					'declarations'      =>  array(
+						'background-position'   =>  esc_attr( $atts['background_position'] ),
+					),
+				);
+			}
+
+			if ( array_key_exists( 'background_size', $atts ) && ! in_array( 'background_size', $excluded_control_types ) ) {
+				$css_rules[] = array(
+					'selectors'         =>  array(),
+					'declarations'      =>  array(
+						'background-size'   =>  esc_attr( $atts['background_size'] ),
+					),
+				);
+			}
+		}
+
+		else if ( array_key_exists( 'background_color', $atts ) && ! empty( $atts['background_color'] ) && ! in_array( 'background_color', $excluded_control_types ) ) {
+			$css_rules[] = array(
+				'selectors'         =>  array(),
+				'declarations'      =>  array(
+					'background-color'  =>  esc_attr( $atts['background_color'] ),
+				),
+			);
+		}
+
+		if ( array_key_exists( 'hidden', $atts ) && ! empty( $atts['hidden'] ) && ! in_array( 'hidden', $excluded_control_types ) ) {
+
+			$preview_sizes = array_keys( tailor_get_preview_sizes() );
+			$hidden_screen_sizes = explode( ',', $atts['hidden'] );
+
+			if ( count( array_intersect( $preview_sizes, $hidden_screen_sizes ) ) != count( $preview_sizes ) ) {
+				foreach ( (array) $hidden_screen_sizes as $hidden_screen_size ) {
+					if ( in_array( $hidden_screen_size, $preview_sizes ) ) {
+						$css_rules[] = array(
+							'media'                     =>  $hidden_screen_size,
+							'selectors'                 =>  array(),
+							'declarations'              =>  array(
+								'display'                   =>  'none',
+							),
+						);
+					}
+				}
+			}
+			else {
+				$css_rules[] = array(
+					'selectors'                 =>  array(),
+					'declarations'              =>  array(
+						'display'                   =>  'none',
+					),
+				);
+				$css_rules[] = array(
+					'selectors'                 =>  array( '#canvas &' ),
+					'declarations'              =>  array(
+						'display'                   =>  'block',
+						'background'          =>  'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAQElEQVQYV2NkIAKckTrzn5GQOpAik2cmjHgVwhSBDMOpEFkRToXoirAqxKYIQyEuRSgK8SmCKySkCKyQGEUghQD+Nia8BIDCEQAAAABJRU5ErkJggg==)',
+					),
+				);
+			}
+		}
+
+		return $css_rules;
+	}
+}

@@ -1,0 +1,21 @@
+.control {
+
+	&--range {
+
+		input {
+			vertical-align: middle;
+		}
+
+		input[type=range] {
+			float: left;
+			margin-right: 6px;
+		}
+
+		input[type=text] {
+			display: block;
+			overflow: hidden;
+			width: auto;
+			max-width: 40px;
+		}
+	}
+}

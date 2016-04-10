@@ -1,0 +1,30 @@
+
+$section-border-color: $border-color !default;
+$section-max-width: $max-width !default;
+$section-spacing-unit: $base-spacing-unit !default;
+
+.tailor-ui {
+
+	.tailor-section {
+		position: relative;
+		margin-bottom: #{$section-spacing-unit}em;
+		border-color: $section-border-color;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+
+		&__content {
+			margin: 0 auto;
+			width: 100%;
+			max-width: $section-max-width;
+		}
+
+		&.is-skewed {
+			transform: skew( 0deg, -3deg );
+
+			.section__content {
+				transform: skew( 0deg, 3deg );
+			}
+		}
+	}
+}

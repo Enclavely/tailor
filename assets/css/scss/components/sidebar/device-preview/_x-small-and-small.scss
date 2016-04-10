@@ -1,0 +1,120 @@
+
+$mobile-bezel-vertical: 80 !default;
+$mobile-bezel-horizontal: 20 !default;
+$mobile-viewport-width: 345 !default;
+$mobile-viewport-height: 585 !default;
+$mobile-bezel-border-radius: 40px !default;
+
+.tailor-preview {
+
+	&.x-small-screens,
+	&.small-screens {
+
+		&:before {
+			border-radius: $mobile-bezel-border-radius;
+		}
+
+		.tailor-preview__viewport {
+			width: 100%;
+			height: 100%;
+			max-height: none;
+			max-width: 100%;
+		}
+	}
+
+	&.x-small-screens {
+
+		&:before {
+			height: #{ ( $mobile-bezel-vertical * 2 ) + $mobile-viewport-height}px;
+			top: calc( 0px - #{$mobile-bezel-vertical}px );
+		}
+	}
+
+	&.small-screens {
+
+		&:before {
+			height: #{ ( $mobile-bezel-horizontal * 2 ) + $mobile-viewport-width}px;
+			top: calc( 0px - #{$mobile-bezel-horizontal}px );
+		}
+	}
+}
+
+//
+// Medium device preview
+//
+@media screen and ( min-width: #{$mobile-viewport-width}px ) {
+
+	.tailor-preview {
+
+		&.x-small-screens {
+
+			&:before {
+				width: #{ ( $mobile-bezel-horizontal * 2 ) + $mobile-viewport-width}px;
+				margin-left: -#{ ( $mobile-viewport-width / 2 ) + $mobile-bezel-horizontal}px;
+			}
+
+			.tailor-preview__viewport {
+				max-width: #{$mobile-viewport-width}px;
+			}
+		}
+	}
+}
+
+@media screen and ( min-width: 980px ) and ( min-height: #{$mobile-viewport-height}px ) {
+
+	.tailor-preview {
+
+		&.x-small-screens {
+			top: calc( 50% - #{( $mobile-viewport-height / 2 )}px );
+
+			&:before {
+				top: -#{$mobile-bezel-vertical}px;
+			}
+
+			.tailor-preview__viewport {
+				height: #{$mobile-viewport-height}px;
+				max-height: none;
+			}
+		}
+	}
+}
+
+//
+// Large device preview
+//
+@media screen and ( min-width: #{$mobile-viewport-height}px ) {
+
+	.tailor-preview {
+
+		&.small-screens {
+
+			&:before {
+				width: #{ ( $mobile-bezel-vertical * 2 ) + $mobile-viewport-height}px;
+				margin-left: -#{ ( $mobile-viewport-height / 2 ) + $mobile-bezel-vertical}px;
+			}
+
+			.tailor-preview__viewport {
+				max-width: #{$mobile-viewport-height}px;
+			}
+		}
+	}
+}
+
+@media screen and ( min-width: 980px ) and ( min-height: #{$mobile-viewport-width}px ) {
+
+	.tailor-preview {
+
+		&.small-screens {
+			top: calc( 50% - #{( $mobile-viewport-width / 2 )}px );
+
+			&:before {
+				top: -#{$mobile-bezel-horizontal}px;
+			}
+
+			.tailor-preview__viewport {
+				height: #{$mobile-viewport-width}px;
+				max-height: none;
+			}
+		}
+	}
+}

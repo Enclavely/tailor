@@ -1,0 +1,245 @@
+$slick-dot-color: black !default;
+
+$slick-border-width: 1px !default;
+$slick-border-style: solid !default;
+$slick-border-color: $border-color !default;
+
+.tailor-ui {
+
+    .slick-arrow.slick-hidden {
+        display: none;
+    }
+
+    .slick-slider {
+        display: block;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        -ms-touch-action: pan-y;
+        touch-action: pan-y;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .slick-list {
+        position: relative;
+        overflow: hidden;
+        display: block;
+        margin: 0;
+        padding: 0;
+
+        &:focus {
+            outline: none;
+        }
+
+        &.dragging {
+            cursor: pointer;
+            cursor: hand;
+        }
+    }
+
+    .slick-track,
+    .slick-list {
+        -webkit-transform: translate3d(0, 0, 0);
+        -moz-transform: translate3d(0, 0, 0);
+        -ms-transform: translate3d(0, 0, 0);
+        -o-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0);
+    }
+
+    .slick-track {
+        position: relative;
+        left: 0;
+        top: 0;
+	    //display: -webkit-flex;
+	    //display: -ms-flexbox;
+	    //display: flex;
+
+        &:before,
+        &:after {
+            content: "";
+            display: table;
+        }
+
+        &:after {
+            clear: both;
+        }
+
+        .slick-loading & {
+            visibility: hidden;
+        }
+    }
+
+    .slick-slide {
+        float: left;
+        min-height: 1px;
+        outline: none;
+
+        [dir="rtl"] & {
+            float: right;
+        }
+
+        img {
+            display: block;
+        }
+
+        &.slick-loading img {
+            display: none;
+        }
+
+        &.dragging img {
+            pointer-events: none;
+        }
+    }
+
+	.slick-loading .slick-slide {
+		visibility: hidden;
+	}
+
+	.slick-vertical .slick-slide {
+		height: auto;
+		border: 1px solid transparent;
+	}
+
+	.slick-arrow {
+		position: absolute;
+		top: calc( 50% - 41px );
+		z-index: 99;
+		padding: 0;
+		margin: 0;
+		width: 36px;
+		outline: none;
+		border: 1px solid $border-color;
+		background-color: #fff;
+		color: #0f95ee;
+		border-radius: 2px;
+		opacity: 0;
+		-webkit-transition: all 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+		-moz-transition: all 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+		-ms-transition: all 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+		-o-transition: all 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+		transition: all 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+		&:hover {
+			opacity: 1;
+		}
+
+		&::before {
+			position: relative;
+			top: -2px;
+			font-family: Arial, Helvetica, sans-serif;
+			font-size: 2.5em;
+			font-style: normal;
+			font-weight: bold;
+			-webkit-font-smoothing: antialiased;
+			text-align: center;
+			speak: none;
+			color: inherit;
+			line-height: 80px;
+		}
+
+		&.slick-prev {
+			left: 4px;
+
+			&::before {
+				content: '\2039';
+			}
+		}
+
+		&.slick-next {
+			right: 4px;
+
+			&::before {
+				content: '\203A';
+			}
+		}
+
+		&.slick-disabled {
+			color: rgba(0, 0, 0, 0.1);
+		}
+	}
+
+	.slick-dots {
+		position: relative;
+		display: block;
+		padding: 0;
+		margin: 0;
+		border-width: 0;
+		border-top-width: $slick-border-width;
+		border-style: $slick-border-style;
+		border-color: $slick-border-color;
+		list-style: none;
+		text-align: center;
+		width: 100%;
+
+		li {
+			position: relative;
+			padding: 0;
+			margin: 12px 3px;
+			display: inline-block;
+			display: -moz-inline-stack;
+			cursor: pointer;
+
+			button {
+				display: block;
+				margin: 0;
+				padding: 0;
+				height: 12px;
+				width: 12px;
+				border: $slick-border-width solid rgba(0, 0, 0, 0.1);
+				border-radius: 100%;
+				position: relative;
+				transition: border-color 700ms cubic-bezier(0.19, 1, 0.22, 1) 0ms;
+				background: transparent;
+				color: transparent;
+				line-height: 0;
+				outline: none;
+				pointer-events: none;
+
+				&:hover,
+				&:focus {
+					margin: 0;
+					outline: none;
+				}
+
+				&:before {
+					display: block;
+					height: 14px;
+					width: 14px;
+					position: absolute;
+					content: ' ';
+					top: -2px;
+					left: -2px;
+					border-radius: 100%;
+					background-color: #0f95ee;
+					opacity: 0;
+					transition: -webkit-transform 700ms cubic-bezier(0.19, 1, -1.78, 1) 0ms, background 500ms cubic-bezier(0.19, 1, 0.22, 1) 0ms, opacity 700ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
+					transition: transform 700ms cubic-bezier(0.19, 1, 0.22, 1) 0ms, background 500ms cubic-bezier(0.19, 1, 0.22, 1) 0ms, opacity 350ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
+
+					-webkit-transform: scale(0);
+					transform: scale(0);
+				}
+			}
+
+			&.slick-active {
+
+				button:before {
+					opacity: 1;
+					-webkit-transform: scale(1);
+					transform: scale(1);
+				}
+			}
+
+			&:hover {
+
+				button {
+					border: $slick-border-width solid rgba(0, 0, 0, 0.2);
+				}
+			}
+		}
+	}
+}

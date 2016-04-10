@@ -1,0 +1,83 @@
+
+$box-spacing-unit: $base-spacing-unit !default;
+
+$box-border-width: 1px !default;
+$box-border-style : solid !default;
+$box-border-color: $border-color !default;
+
+$box-background-color: $background-color !default;
+$box-box-shadow: $box-shadow !default;
+
+$box-icon-size: 2.5 !default;
+
+.tailor-ui {
+
+	.tailor-box {
+		padding: 2em;
+		margin-bottom: #{$box-spacing-unit}em;
+		border: $box-border-width $box-border-style $box-border-color;
+	}
+
+	.tailor-box__title {
+		display: block;
+		margin: 1em 0;
+	}
+
+	.tailor-box__graphic {
+		@include transition( all 150ms );
+	}
+
+	.tailor-box--icon {
+
+		.tailor-box__title {
+			margin-top: 0;
+		}
+
+		.tailor-box__graphic {
+			position: relative;
+			display: table;
+			width: #{( $box-icon-size * 2 )}em;
+			height: #{( $box-icon-size * 2 )}em;
+			border-radius: 50%;
+
+			span {
+				position: relative;
+				z-index: 2;
+				display: table-cell;
+				width: 100%;
+				text-align: inherit;
+				vertical-align: middle;
+				font-size: #{$box-icon-size}em;
+			}
+		}
+	}
+
+	.tailor-box--image {
+
+		.tailor-box__graphic {
+			margin-bottom: 1em;
+			max-width: 5em;
+		}
+	}
+
+	.tailor-box--left {
+		text-align: left;
+	}
+
+	.tailor-box--center {
+		text-align: center;
+
+		.tailor-box__graphic {
+			margin-left: auto;
+			margin-right: auto;
+		}
+	}
+
+	.tailor-box--right {
+		text-align: right;
+
+		.tailor-box__graphic {
+			margin-left: auto;
+		}
+	}
+}

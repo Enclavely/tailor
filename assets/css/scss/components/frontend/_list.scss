@@ -1,0 +1,132 @@
+$list-spacing-unit: $base-spacing-unit !default;
+$list-icon-size: 1.5 !default;
+
+$list-border-style : solid !default;
+$list-border-color: $border-color !default;
+
+$list-icon-border-width: 1px !default;
+$list-icon-border-color: $border-color !default;
+
+$list-icon-background-color: $background-color !default;
+$list-icon-background-color--hover: #fff !default;
+$list-icon-box-shadow: $box-shadow !default;
+
+.tailor-ui {
+
+	.tailor-list {
+		padding: 0;
+		margin: 0;
+		margin-bottom: #{$list-spacing-unit}em;
+
+		@include clearfix;
+	}
+
+	.tailor-list__item {
+		padding: 0;
+		margin: 0;
+		list-style: none;
+		border-color: $list-border-color;
+
+		@include clearfix;
+	}
+
+	.tailor-list__item--left {
+		text-align: left;
+
+		.tailor-list__graphic {
+			float: left;
+		}
+	}
+
+	.tailor-list__item--right {
+		text-align: right;
+
+		.tailor-list__graphic {
+			float: right;
+		}
+	}
+
+	.tailor-list__graphic {
+		position: relative;
+		text-align: center;
+
+		@include transition( all 150ms );
+	}
+
+	.tailor-list__body {
+		display: block;
+		overflow: hidden;
+	}
+
+	.tailor-list__title {
+		display: block;
+		padding: 0;
+		margin: 1em 0 0.5em;
+		font-size: inherit;
+		line-height: inherit;
+	}
+
+	.tailor-list__item--icon,
+	.tailor-list__item--number {
+
+		.tailor-list__title {
+			margin: calc( #{$list-icon-size}em - 1em ) 0 0.5em;
+		}
+
+		.tailor-list__graphic {
+			display: table;
+			width: #{( $list-icon-size * 2 )}em;
+			height: #{( $list-icon-size * 2 )}em;
+			border-radius: 50%;
+
+			span {
+				position: relative;
+				z-index: 2;
+				display: table-cell;
+				width: 100%;
+				vertical-align: middle;
+				font-size: #{$list-icon-size}em;
+			}
+		}
+	}
+
+	.tailor-list__item--number {
+		counter-increment: step-counter;
+
+		.tailor-list__graphic {
+
+			span {
+				font-weight: 600;
+
+				&:before {
+					content: counter( step-counter );
+				}
+			}
+		}
+	}
+
+	.tailor-list__item--image {
+
+		.tailor-list__title {
+			margin: 1em 0 0.5em;
+		}
+
+		.tailor-list__graphic {
+			max-width: #{( $list-icon-size * 2 )}em;
+		}
+
+		&.tailor-list__item--left {
+
+			.tailor-list__graphic {
+				margin-right: 1em;
+			}
+		}
+
+		&.tailor-list__item--right {
+
+			.tailor-list__graphic {
+				margin-left: 1em;
+			}
+		}
+	}
+}

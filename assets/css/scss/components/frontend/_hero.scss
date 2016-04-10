@@ -1,0 +1,64 @@
+
+$hero-spacing-unit: $base-spacing-unit !default;
+
+$hero-border-width: 1px !default;
+$hero-border-style : solid !default;
+$hero-border-color: $border-color !default;
+$hero-border-radius: $border-radius !default;
+
+$hero-background-color: $background-color !default;
+$hero-box-shadow: $box-shadow !default;
+
+.tailor-ui {
+
+	.tailor-hero {
+		padding: 2em;
+		margin-bottom: #{$hero-spacing-unit}em;
+		border: $hero-border-width $hero-border-style $hero-border-color;
+		border-radius: $hero-border-radius;
+		color: inherit;
+
+		p,
+		.tailor-hero__content {
+			font-size: 1.125em;
+		}
+
+		h1 {
+			font-size: 2.5em;
+		}
+
+		h2 {
+			font-size: 2.25em;
+		}
+
+		h1,
+		h2 {
+			color: inherit;
+			font-weight: inherit;
+		}
+	}
+}
+
+
+@media #{$medium-up} {
+
+	.tailor-ui {
+
+		.tailor-hero {
+			padding: 2.5em;
+
+			p,
+			.hero__content {
+				font-size: 1.25em;
+			}
+
+			h1 {
+				font-size: 3em;
+			}
+
+			h2 {
+				font-size: 2.5em;
+			}
+		}
+	}
+}

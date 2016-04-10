@@ -1,0 +1,29 @@
+
+.preview {
+	display: none;
+}
+
+@media #{$large-up} {
+
+	.preview {
+		display: table;
+		width: 100%;
+		padding: 10px 10px 11px 14px;
+		line-height: 21px;
+		color: #555;
+		background-color: #fff;
+		border-bottom: 1px solid #eee;
+		margin: 15px 0;
+
+		@include clearfix;
+	}
+
+	.preview__title,
+	.preview__control {
+		display: table-cell;
+	}
+
+	.preview__control {
+		width: 100%;
+	}
+}

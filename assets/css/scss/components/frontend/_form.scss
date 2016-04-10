@@ -1,0 +1,12 @@
+
+$form-spacing-unit: $base-spacing-unit !default;
+
+.wpcf7 {
+	margin-bottom: #{$form-spacing-unit}em;
+
+	input,
+	select,
+	textarea {
+		max-width: 100%;
+	}
+}

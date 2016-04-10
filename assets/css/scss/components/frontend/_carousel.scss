@@ -1,0 +1,61 @@
+$carousel-spacing-unit: $base-spacing-unit !default;
+$carousel-border-width: 1px !default;
+$carousel-border-style : solid !default;
+$carousel-border-color: $border-color !default;
+$carousel-border-radius: $border-radius !default;
+$carousel-background-color: $background-color !default;
+$carousel-box-shadow: $box-shadow !default;
+$carousel-dot-color: #3c4651 !default;
+
+.tailor-ui {
+
+	.tailor-carousel {
+		position: relative;
+		border-width: $carousel-border-width;
+		border-style: $carousel-border-style;
+		border-color: $carousel-border-color;
+		border-radius: $carousel-border-radius;
+		margin-bottom: #{$carousel-spacing-unit}em;
+
+		&--slider {
+
+			// @todo align position of dot navigation in canvas and frontend
+
+			> .slick-dots,
+			> .tailor-carousel__wrap > .slick-dots {
+				position: absolute;
+				bottom: 0;
+				border-top-width: 0;
+			}
+		}
+
+		&:not( [data-slides="1"] ) {
+
+			// Ensure that Flexbox is not automatically applied to child carousels
+			> .tailor-carousel__wrap > .slick-list > .slick-track {
+				display: -webkit-flex;
+				display: -ms-flexbox;
+				display: flex;
+			}
+		}
+	}
+
+	.tailor-carousel__wrap,
+	.tailor-carousel__item {
+		padding: 0;
+		margin: 0;
+		list-style: none;
+	}
+
+	.tailor-carousel__item {
+		padding: 1em 1.25em;
+
+		&.has-custom-height {
+			display: -webkit-flex;
+			display: -ms-flexbox;
+			display: flex;
+
+			flex-direction: column;
+		}
+	}
+}

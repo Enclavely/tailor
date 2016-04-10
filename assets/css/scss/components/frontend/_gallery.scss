@@ -1,0 +1,12 @@
+$gallery-spacing-unit: $base-spacing-unit !default;
+$gallery-border-style : solid !default;
+$gallery-border-color: $border-color !default;
+
+.tailor-ui {
+
+	.tailor-gallery {
+		margin-bottom: #{$gallery-spacing-unit}em;
+		//border-style: $gallery-border-style;
+		border-color: $gallery-border-color;
+	}
+}

@@ -1,0 +1,21 @@
+
+$pagination-border-width: 1px !default;
+$pagination-border-style : solid !default;
+$pagination-border-color: $border-color !default;
+
+.entry-pagination {
+
+	.next,
+	.previous,
+	.page-numbers {
+		display: inline-block;
+		padding: 0.125em 0.5em;
+		border-radius: 4px;
+		background-color: #fefefe;
+		font-size: 0.85em;
+	}
+
+	a {
+		border: $pagination-border-width $pagination-border-style $pagination-border-color;
+	}
+}

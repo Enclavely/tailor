@@ -1,0 +1,173 @@
+
+.tools {
+	pointer-events: none;
+	overflow: visible;
+
+	.select-container {
+		position: absolute;
+		top: 0;
+		z-index: 999;
+	}
+
+	.select {
+		position: absolute;
+		z-index: 999;
+		font-family: "Open Sans", sans-serif;
+		font-size: 13px;
+		pointer-events: none;
+
+		.select__controls,
+		.select__menu {
+			position: absolute;
+			top: 0;
+			font-size: inherit;
+
+			@include clearfix;
+		}
+
+		.select__controls {
+			top: 1px;
+			right: 1px;
+		}
+
+		.select__menu {
+			top: 1px;
+			left: 1px;
+		}
+
+		.select__item {
+			float: left;
+			padding: 2px 6px;
+			margin: 0;
+			border: none;
+			outline: none;
+			cursor: pointer;
+			color: #fff;
+			line-height: 24px;
+			font-size: 13px;
+			font-weight: normal;
+			background-color: $primary-color;
+			pointer-events: all;
+			white-space: nowrap;
+			background-image: none;
+			text-shadow: none;
+			box-shadow: none;
+
+			&:hover,
+			&:focus {
+				margin: 0;
+				border: none;
+				outline: none;
+				box-shadow: none;
+				background-color: darken( $primary-color, 5% );
+				background-image: none;
+				text-shadow: none;
+				text-decoration: none;
+			}
+
+			@include user-select( none );
+
+			&--left {
+
+				&:after {
+					content: ' \25C0';
+				}
+			}
+
+			&--right {
+
+				&:after {
+					content: ' \25B6';
+				}
+			}
+		}
+
+		.select__menu {
+
+			.select__item {
+				margin-bottom: 2px;
+				clear: both;
+				cursor: default;
+
+				&:not( :only-child ) {
+					cursor: pointer;
+
+					&:first-child:after {
+						content: ' \25BE';
+					}
+				}
+
+				&:not( :first-child ) {
+					display: none;
+				}
+			}
+		}
+
+		&.is-expanded .select__menu .select__item {
+			display: block;
+
+			&:not( :only-child ) {
+
+				&:first-child:after {
+					content: ' \25B4';
+				}
+			}
+		}
+	}
+
+	.guide {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		pointer-events: none;
+		z-index: 999;
+
+		&--top {
+			border-top: solid 4px $primary-color;
+		}
+
+		&--right {
+			border-right: solid 4px $primary-color;
+		}
+
+		&--bottom {
+			border-bottom: solid 4px $primary-color;
+		}
+
+		&--left {
+			border-left: solid 4px $primary-color;
+		}
+
+		&--center {
+			-webkit-transform-style: preserve-3d;
+			-moz-transform-style: preserve-3d;
+			transform-style: preserve-3d;
+
+			&:before {
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				content: '\002B';
+				padding: 0 8px;
+				font-family: "Open Sans", sans-serif;
+				font-size: 1em;
+				color: #fff;
+				background-color: $primary-color;
+
+				@include transform( translate( -50%, -50% ) );
+			}
+		}
+
+		&:after {
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			content: '';
+			background-color: rgba( 0, 160, 210, 0.1 );
+		}
+	}
+}

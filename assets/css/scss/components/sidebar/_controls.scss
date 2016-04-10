@@ -1,0 +1,93 @@
+.controls {
+	padding: 0 12px;
+}
+
+.control {
+	margin-bottom: 24px;
+}
+
+.control__title {
+	display: block;
+	font-size: 14px;
+	line-height: 24px;
+	font-weight: 600;
+	margin-bottom: 5px;
+
+	.button-small {
+		margin-left: 6px;
+		font-weight: 400;
+	}
+}
+
+.control__description {
+	display: block;
+	margin-bottom: 5px;
+	font-size: 13px;
+	font-style: italic;
+	color: #555;
+	line-height: 18px;
+}
+
+.control__body {
+	max-width: 350px;
+}
+
+.actions {
+	margin-bottom: 32px;
+	margin-left: auto;
+	max-width: 300px;
+	text-align: right;
+
+	.button {
+		display: inline-block;
+		white-space: normal;
+		min-width: 48%;
+		height: auto;
+
+		&:not( :first-child ) {
+			margin-left: 2%;
+		}
+	}
+}
+
+.message {
+	margin: 17px 0 20px;
+	text-align: center;
+}
+
+.modal-container {
+
+	&.is-medium,
+	&.is-large,
+	&.is-x-large {
+
+		.control {
+			@include clearfix;
+		}
+
+		.control__header {
+			float: left;
+			margin-right: 12px;
+			width: 350px;
+		}
+
+		.control__body {
+			display: block;
+			padding: 2px;
+			overflow: hidden;
+		}
+	}
+}
+
+@import "controls/editor";
+@import "controls/checkbox";
+@import "controls/button-group";
+@import "controls/colorpicker";
+@import "controls/icon";
+@import "controls/media";
+@import "controls/radio";
+@import "controls/range";
+@import "controls/switch";
+@import "controls/style";
+@import "controls/list";
+@import "controls/link";

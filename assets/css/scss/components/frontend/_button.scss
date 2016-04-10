@@ -1,0 +1,119 @@
+
+$button-spacing-unit: $base-spacing-unit !default;
+
+$button-border-width: 1px !default;
+$button-border-style : solid !default;
+$button-border-color: $border-color !default;
+
+$button-color: $text-color !default;
+$button-background-color: #fdfdfd !default;
+
+$button-color--primary: #fff !default;
+$button-background-color--primary: #4e97e2 !default;
+
+.tailor-ui {
+
+	.tailor-button {
+		margin-bottom: #{$button-spacing-unit}em;
+		width: 100%;
+
+		&--small {
+			font-size: 0.75em;
+		}
+
+		&--large {
+			font-size: 1.5em;
+		}
+
+		&--left {
+			text-align: left;
+		}
+
+		&--center {
+			text-align: center;
+		}
+
+		&--right {
+			text-align: right;
+		}
+
+		&--block {
+			font-size: 1.5em;
+
+			.tailor-button__inner {
+				display: block;
+				padding: 1em 1.5em;
+			}
+		}
+	}
+
+	.tailor-button__inner {
+		display: block;
+		padding: 1em 1.5em;
+		margin: 0;
+		text-align: center;
+		cursor: pointer;
+		font-family: inherit;
+		background-color: $button-background-color;
+		color: inherit;
+		border: 1px solid $border-color;
+		box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1), 0 1px 0 rgba(0, 0, 0, 0.05);
+
+		@include transition( all 150ms );
+
+		i {
+			line-height: inherit;
+			font-size: inherit;
+		}
+
+		i:not( :only-child ) {
+			margin-right: #{( $button-spacing-unit / 4 )}em;
+		}
+
+		&:focus,
+		&:hover {
+			outline: 0;
+			border: $button-border-width $button-border-style $button-border-color;
+			background-color: darken( $button-background-color, 2% );
+		}
+
+		&:active {
+			background-color: darken( $button-background-color, 5% );
+		}
+
+		&:active,
+		&:focus,
+		&:hover {
+			box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.1) inset, 0 0 rgba(0, 0, 0, 0.05) inset;
+		}
+	}
+
+	.tailor-button--primary {
+
+		.tailor-button__inner {
+			color: $button-color--primary;
+			background-color: $button-background-color--primary;
+
+			&:hover {
+				border-color: darken( $button-background-color--primary, 20% );
+				background-color: darken( $button-background-color--primary, 2% );
+			}
+
+			&:active {
+				background-color: darken( $button-background-color--primary, 5% );
+			}
+		}
+	}
+}
+
+
+@media #{$small-up} {
+
+	.tailor-ui {
+
+		.tailor-button__inner {
+			display: inline-block;
+			padding: 0.5em 1.5em;
+		}
+	}
+}

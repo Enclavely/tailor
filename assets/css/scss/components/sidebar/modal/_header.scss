@@ -1,0 +1,93 @@
+.modal__header {
+	background-color: #fff;
+
+	&.is-fullscreen & {
+		cursor: default;
+	}
+
+	@include clearfix;
+
+}
+
+.modal__title {
+	display: block;
+	float: left;
+	padding-left: 12px;
+	overflow: hidden;
+	width: calc( 100% - 60px );
+	margin: 0;
+	font-size: 20px;
+	font-weight: 300;
+	line-height: 62px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.tabs {
+
+	.tab {
+		padding: 10px;
+		cursor: pointer;
+		display: inline-block;
+		color: #a0a5aa;
+
+		&:first-child {
+			padding-left: 12px;
+		}
+
+		&:hover,
+		&:focus,
+		&.is-active {
+			color: #555;
+		}
+
+		&:focus {
+			outline: none;
+			box-shadow: none;
+		}
+	}
+}
+
+.modal__controls {
+
+	@include clearfix;
+
+	button {
+		float: right;
+		padding: 0;
+		margin: 0;
+		width: 60px;
+		color: #a0a5aa;
+		text-align: center;
+		border: none;
+		background-color: transparent;
+		box-shadow: none;
+
+		@include transition(background-color 0.1s ease-in-out);
+
+		&:after {
+			content: "\f335";
+			font: normal 22px/58px dashicons;
+		}
+
+		&:hover,
+		&:focus {
+			color: #23282d;
+		}
+
+		&:focus {
+			outline: none;
+			box-shadow: none;
+		}
+
+		&:disabled {
+			color: #a0a5aa;
+
+			&:hover,
+			&:focus {
+				color: #a0a5aa;
+				background-color: #fff;
+			}
+		}
+	}
+}

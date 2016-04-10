@@ -1,0 +1,87 @@
+.control {
+
+	&--gallery,
+	&--image,
+	&--video {
+
+		img,
+		video {
+			max-width: 100%;
+		}
+
+		.video-preview,
+		.thumbnails {
+			margin-bottom: 8px;
+		}
+	}
+}
+
+.control {
+
+	.thumbnail  {
+		margin: 1px;
+		width: auto;
+		cursor: pointer;
+
+		img {
+			display: block;
+			padding: 3px;
+			margin: 0 auto;
+			border: 1px solid #ddd;
+			max-width: 100%;
+			background-color: $background-color;
+		}
+	}
+}
+
+.control--gallery {
+
+	.thumbnails {
+		@include clearfix;
+	}
+
+	.thumbnail  {
+		float: left;
+		width: calc( 25% - 2px );
+	}
+}
+
+.thumbnails,
+.video-preview {
+
+	&.is-loading {
+
+		background: url( ../img/spinner.gif ) no-repeat center;
+
+		> * {
+			visibility: hidden;
+		}
+	}
+}
+
+.video-preview.is-loading {
+	position: relative;
+	padding-bottom: 56.25%;
+	padding-top: 25px;
+	height: 0;
+
+	.video-placeholder {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+	}
+}
+
+
+.media-frame--gallery {
+
+	.media-menu {
+
+		:first-child,
+		.separator {
+			display: none;
+		}
+	}
+}

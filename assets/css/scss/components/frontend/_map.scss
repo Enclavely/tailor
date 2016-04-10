@@ -1,0 +1,22 @@
+
+$map-border-width: 1px !default;
+$map-border-style : solid !default;
+$map-border-color: $border-color !default;
+
+$map-spacing-unit: $base-spacing-unit !default;
+
+.tailor-ui {
+
+	.tailor-map {
+		margin-bottom: #{$map-spacing-unit}em;
+		border: $map-border-width $map-border-style $map-border-color;
+	}
+
+	.tailor-map__canvas {
+		height: 400px;
+	}
+
+	.tailor-map__marker {
+		display: none;
+	}
+}

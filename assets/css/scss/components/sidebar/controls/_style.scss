@@ -1,0 +1,26 @@
+.control--style {
+
+	ul {
+		padding-bottom: 6px;
+
+		@include clearfix;
+	}
+
+	li {
+		float: left;
+		width: 25%;
+		padding-right: 2px;
+
+		&:not( :first-child ) {
+
+			input {
+				border-left: none;
+			}
+		}
+
+		span {
+			margin-left: 2px;
+			color: #a0a5aa;
+		}
+	}
+}

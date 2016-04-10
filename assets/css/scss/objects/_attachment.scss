@@ -1,0 +1,70 @@
+
+$attachment-caption-color: #fff !default;
+$attachment-caption-background-color: rgba(35,35,35,0.4) !default;
+
+.tailor-ui {
+
+	.tailor-attachment {
+		margin: 0;
+	}
+
+	.is-stretched {
+
+		img {
+			width: 100%;
+		}
+	}
+
+	.tailor-attachment__image {
+		position: relative;
+		display: block;
+		margin: 0;
+		outline: none;
+		border: none;
+		box-shadow: none;
+
+		img {
+			display: block;
+			margin: 0 auto;
+		}
+	}
+
+	.tailor-attachment__caption {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		display: inline-block;
+		padding: 0.5em 1em;
+		color: $attachment-caption-color;
+		background-color: $attachment-caption-background-color;
+		font-size: 14px;
+		max-width: 100%;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
+
+	.aspect-ratio-1-1 {
+		@include aspect-ratio( 1, 1 );
+	}
+
+	.aspect-ratio-3-2 {
+		@include aspect-ratio( 3, 2 );
+	}
+
+	.aspect-ratio-2-3 {
+		@include aspect-ratio( 2, 3 );
+	}
+
+	.aspect-ratio-4-3 {
+		@include aspect-ratio( 4, 3 );
+	}
+
+	.aspect-ratio-3-4 {
+		@include aspect-ratio( 3, 4 );
+	}
+
+	.aspect-ratio-16-9 {
+		@include aspect-ratio( 16, 9 );
+	}
+}

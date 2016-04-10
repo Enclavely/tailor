@@ -1,0 +1,36 @@
+//
+// Math helpers.
+//
+@function quarter( $value ) {
+	@return round( $value / 4 );
+}
+
+@function halve( $value ) {
+	@return round($value / 2 );
+}
+
+@function double( $value ) {
+	@return round( $value * 2 );
+}
+
+@function quadruple( $value ) {
+	@return round( $value * 4 );
+}
+
+
+@mixin box-shadow( $args1, $args2 ) {
+	-webkit-box-shadow: $args1, $args2;
+	-moz-box-shadow: $args1, $args2;
+	box-shadow: $args1, $args2;
+}
+
+/// Remove the unit of a length
+/// @param {Number} $number - Number to remove unit from
+/// @return {Number} - Unitless number
+@function strip-unit($number) {
+	@if type-of($number) == 'number' and not unitless($number) {
+		@return $number / ($number * 0 + 1);
+	}
+
+	@return $number;
+}

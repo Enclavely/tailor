@@ -1,0 +1,30 @@
+
+.tailor__panel {
+	display: none;
+}
+
+.tailor__section {
+	display: none;
+}
+
+.panel-visible,
+.section-visible {
+
+	.tailor__home {
+		display: none;
+	}
+}
+
+.panel-visible {
+
+	.tailor__panel {
+		display: block;
+	}
+}
+
+.section-visible {
+
+	.tailor__section {
+		display: block;
+	}
+}

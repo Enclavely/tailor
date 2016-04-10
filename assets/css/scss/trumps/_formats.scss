@@ -1,0 +1,36 @@
+.lede {
+	font-size: 1.125em;
+	letter-spacing: .5px;
+	font-weight: 600;
+}
+
+.dropcap {
+
+	&:first-child:first-letter {
+		float: left;
+		display: block;
+		font-style:normal;
+		font-size:5.5em;
+		line-height:1;
+		margin:-.12em .08em -.12em -0.05em
+	}
+
+}
+
+.pullquote {
+	display: block;
+	float: left;
+	padding: 1.5em;
+	margin: 0 1.5em 0 0;
+	width: 20.5em;
+	background: $background-color;
+
+	&--right {
+		float: right;
+		margin: 0 0 0 1.5em;
+	}
+
+	p:last-child {
+		margin-bottom: 0;
+	}
+}

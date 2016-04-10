@@ -1,0 +1,62 @@
+.tailor-ui {
+
+	.is-dragging,
+	.is-rendering {
+		opacity: 0.5 !important;
+	}
+
+	.is-editing,
+	.is-hovering,
+	.is-selected {
+		position: relative;
+
+		&::before {
+			position: absolute;
+			z-index: 999;
+			content : '';
+			pointer-events: none;
+
+			// Alternative to outline-offset
+			top: 2px;
+			left: 2px;
+			width: calc( 100% - 4px );
+			height: calc( 100% - 4px );
+		}
+	}
+
+	.is-hovering {
+
+		&::before {
+			z-index: 998;
+			outline: solid 2px $border-color;
+		}
+	}
+
+	.is-editing,
+	.is-selected {
+
+		&::before {
+			z-index: 999;
+			outline: solid 2px $primary-color;
+		}
+	}
+
+
+	.is-dragging {
+
+		.is-selected {
+
+			&::before {
+				display: none;
+			}
+		}
+	}
+
+	// Ensures that a click event is not triggered following the resizing of a column
+	&.is-resizing {
+
+		* {
+			pointer-events: none !important;
+		}
+	}
+}

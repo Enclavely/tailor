@@ -1,0 +1,13 @@
+
+$text-border-width: 0 !default;
+$text-border-style : solid !default;
+$text-border-color: $border-color !default;
+
+.tailor-ui {
+
+	.tailor-content {
+		border: $text-border-width $text-border-style $text-border-color;
+
+		@include clearfix;
+	}
+}

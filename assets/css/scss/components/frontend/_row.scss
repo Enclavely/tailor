@@ -1,0 +1,19 @@
+
+$row-max-width: 				$max-width !default;
+$row-spacing-unit: 				$base-spacing-unit !default;
+
+$row-border-width: 0 !default;
+$row-border-style : solid !default;
+$row-border-color: $border-color !default;
+
+.tailor-ui {
+
+	.tailor-row {
+		position: relative;
+		padding: 0.5em 0;
+		margin-bottom: #{$row-spacing-unit}em;
+		border: $row-border-width $row-border-style $row-border-color;
+
+		@include clearfix;
+	}
+}

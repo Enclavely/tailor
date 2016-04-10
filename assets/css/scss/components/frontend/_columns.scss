@@ -1,0 +1,101 @@
+
+$total-columns:                12 !default;
+
+$column-border-width: 0 !default;
+$column-border-style : solid !default;
+$column-border-color: $border-color !default;
+
+.tailor-ui {
+	
+	.tailor-column {
+		min-height: 1px;
+		padding: 0;
+		width: 100%;
+		border: $column-border-width $column-border-style $column-border-color;
+	}
+}
+
+@mixin columns( $size ) {
+
+	.tailor-ui {
+
+		.tailor-row {
+
+			&--full-height {
+				min-height: 100vh;
+			}
+
+			@include clearfix;
+		}
+
+		.#{$size}-columns {
+			display: -webkit-flex;
+			display: -ms-flexbox;
+			display: flex;
+			margin-left: -#{( strip-unit( $column-gutter ) / 2 )}rem;
+			margin-right: -#{( strip-unit( $column-gutter ) / 2 )}rem;
+
+			.tailor-column {
+				position: relative;
+				float: left;
+				padding-left: #{( strip-unit( $column-gutter ) / 2 )}rem;
+				padding-right: #{( strip-unit( $column-gutter ) / 2 )}rem;
+
+				display: -webkit-flex;
+				display: -ms-flexbox;
+				display: flex;
+				flex-direction: column;
+
+				.tailor-column__helper {
+					position: absolute;
+					top: 0;
+					left: 0;
+					width: 100%;
+					height: 100%;
+					display: block;
+					pointer-events: none;
+				}
+
+				.tailor-column__sizer {
+					position: absolute;
+					top: 0;
+					bottom: 0;
+					right: -0.5rem;
+					width: 1rem;
+					cursor: col-resize;
+					z-index: 1001;
+					pointer-events: all;
+				}
+
+				&:last-of-type .tailor-column__helper {
+					display: none;
+				}
+			}
+
+			@for $i from 1 through $total-columns {
+
+				.columns-#{$i} {
+					width: percentage( ( $i / $total-columns ) );
+				}
+			}
+		}
+	}
+}
+
+@include columns( $size: x-small );
+
+@media #{$small-up} {
+	@include columns( $size: small );
+}
+
+@media #{$medium-up} {
+	@include columns( $size: medium );
+}
+
+@media #{$large-up} {
+	@include columns( $size: large );
+}
+
+@media #{$x-large} {
+	@include columns( $size: x-large );
+}

@@ -1,0 +1,26 @@
+$namespace : '';
+
+$primary-color: #0f95ee !default;
+$secondary-color: #fd2e7e !default;
+$text-color: #404040 !default;
+$background-color: #fdfdfd;
+$border-color: #efefef !default; //darken( $background-color, 5% ) !default;
+$border-radius: 2px !default;
+$box-shadow: 0 2px 6px rgba( 0, 0, 0, 0.1 ) !default;
+$base-line-height: 1.5 !default;
+$base-spacing-unit: $base-line-height !default;
+
+$max-width: 75rem !default;
+$column-gutter: 2rem !default;
+
+//
+// Media query ranges
+//
+$x-small: 			"only screen and (max-width: 480px)" !default;
+$small: 			"only screen and (min-width: 481px) and (max-width: 767px)" !default;
+$small-up:      	"only screen and (min-width: 481px)" !default;
+$medium:			"only screen and (min-width: 768px) and (max-width: 979px)" !default;
+$medium-up:			"only screen and (min-width: 768px)" !default;
+$large:				"only screen and (min-width: 980px) and (max-width: 1199px)" !default;
+$large-up:			"only screen and (min-width: 980px)" !default;
+$x-large:			"only screen and (min-width: 1200px)" !default;

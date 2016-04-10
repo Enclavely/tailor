@@ -1,0 +1,103 @@
+$posts-spacing-unit: $base-spacing-unit !default;
+
+$posts-border-width: 1px !default;
+$posts-border-style : solid !default;
+$posts-border-color: $border-color !default;
+
+$posts-background-color: $background-color !default;
+$posts-background-color--active: #fff !default;
+$posts-box-shadow: $box-shadow !default;
+
+.tailor-ui {
+
+	.tailor-posts {
+		margin-bottom: #{$posts-spacing-unit}em;
+		border-style: $posts-border-style;
+		border-color: $posts-border-color;
+
+		//border: $posts-border-width $posts-border-style $posts-border-color;
+
+		.entry {
+			margin-bottom: #{$posts-spacing-unit}em;
+		}
+
+		.entry__title {
+			margin: 1em 0 0.5em;
+
+			a {
+				color: inherit;
+			}
+		}
+
+		.entry__meta {
+			display: block;
+			font-size: 0.875em;
+
+			span {
+				position: relative;
+				display: inline-block;
+
+				&:not( :last-child ) {
+					padding-right: 8px;
+					margin-right: 8px;
+
+					&:after {
+						position: absolute;
+						right: 0;
+						content: '|';
+					}
+				}
+			}
+		}
+
+		.entry__thumbnail {
+			overflow: hidden;
+
+			a {
+				display: block;
+			}
+
+			img {
+				margin: 0;
+			}
+		}
+
+		.entry__more {
+			display: inline-block;
+			margin-top: 0.25em;
+		}
+	}
+
+	.tailor-grid--posts {
+
+		.tailor-grid {
+			display: block;
+		}
+
+		.tailor-grid__item {
+			padding: 1em;
+		}
+	}
+
+	.tailor-list--posts {
+
+		.entry:last-child {
+			margin-bottom: 0;
+		}
+	}
+
+	.tailor-posts--boxed {
+
+		.entry {
+			border: $posts-border-width $posts-border-style $posts-border-color;
+			background-color: #fff;
+			overflow: hidden;
+		}
+
+		.entry__content {
+			padding-right: 2em;
+			padding-bottom: 2em;
+			padding-left: 2em;
+		}
+	}
+}

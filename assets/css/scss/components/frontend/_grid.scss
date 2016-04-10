@@ -1,0 +1,9 @@
+
+$grid-spacing-unit: $base-spacing-unit !default;
+
+.tailor-ui {
+
+	.tailor-grid {
+		margin-bottom: #{$grid-spacing-unit}em;
+	}
+}

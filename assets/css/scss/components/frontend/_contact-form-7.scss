@@ -1,0 +1,14 @@
+
+$cf7-spacing-unit: $base-spacing-unit !default;
+
+$cf7-border-width: 0 !default;
+$cf7-border-style : solid !default;
+$cf7-border-color: $border-color !default;
+
+.tailor-ui {
+
+	.tailor-form {
+		margin-bottom: #{$cf7-spacing-unit}em;
+		border: $cf7-border-width $cf7-border-style $cf7-border-color;
+	}
+}

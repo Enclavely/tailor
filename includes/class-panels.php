@@ -1,0 +1,332 @@
+<?php
+
+/**
+ * Sidebar Panels class.
+ *
+ * @package Tailor
+ * @subpackage Modules
+ * @since 1.0.0
+ */
+
+defined( 'ABSPATH' ) or die();
+
+if ( ! class_exists( 'Tailor_Panels' ) ) {
+
+    /**
+     * Tailor Panels class.
+     *
+     * @since 1.0.0
+     */
+    class Tailor_Panels extends Tailor_Setting_Manager {
+
+        /**
+         * Constructor.
+         *
+         * @since 1.0.0
+         */
+        public function __construct() {
+            $this->add_actions();
+        }
+
+        /**
+         * Adds required action hooks.
+         *
+         * @since 1.0.0
+         */
+        public function add_actions() {
+
+	        // Load panels after WordPress to ensure that post attributes are accessible
+            add_action( 'wp', array( $this, 'load_panels' ) );
+            add_action( 'tailor_register_panels', array( $this, 'register_panels' ) );
+            add_action( 'tailor_register_panels', array( $this, 'prepare_controls' ), 99 );
+            add_action( 'tailor_enqueue_scripts', array( $this, 'print_panel_data' ) );
+
+	        add_action( 'tailor_save', array( $this, 'save_settings' ) );
+	        add_action( 'tailor_save_settings', array( $this, 'update_post_title' ) );
+        }
+
+        /**
+         * Loads panels during initialization.
+         *
+         * @since 1.0.0
+         */
+        public function load_panels() {
+
+	        if ( did_action( 'tailor_register_panels' ) ) {
+		        return;
+	        }
+
+            tailor()->load_directory( 'panels' );
+
+            /**
+             * Fires during initialization, allowing panels to be registered.
+             *
+             * @since 1.0.0
+             *
+             * @param Tailor_Panels $this
+             */
+            do_action( 'tailor_register_panels', $this );
+
+	        /**
+	         * Fires after the panels have been registered.
+	         *
+	         * @since 1.0.0
+	         *
+	         * @param Tailor_Panels $this
+	         */
+	        do_action( 'tailor_register_panels_after', $this );
+        }
+
+        /**
+         * Registers the default set of panels, sections and controls.
+         *
+         * @since 1.0.0
+         *
+         * @param $panel_manager Tailor_Panels
+         */
+        public function register_panels( $panel_manager ) {
+
+	        $panel_manager->add_panel( new Tailor_Elements_Panel( 'library', array(
+		        'title'                 =>  __( 'Elements', tailor()->textdomain() ),
+		        'description'           =>  __( 'Elements are the building blocks of your page.  Drag one from the list below to the desired position on the page to get started.', tailor()->textdomain() ),
+		        'priority'              =>  10,
+	        ) ) );
+
+	        $panel_manager->add_panel( new Tailor_Templates_Panel( 'templates', array(
+	            'title'                 =>  __( 'Templates', tailor()->textdomain() ),
+	            'description'           =>  __( 'Templates allow you to save customized elements, or the entire layout, for future use.', tailor()->textdomain() ),
+	            'priority'              =>  20,
+	        ) ) );
+
+	        $panel_manager->add_panel( 'settings', array(
+		        'title'                 =>  __( 'Settings', tailor()->textdomain() ),
+		        'priority'              =>  30,
+	        ) );
+
+	        $panel_manager->add_panel( new Tailor_History_Panel( 'history', array(
+		        'title'                 =>  __( 'History', tailor()->textdomain() ),
+		        'priority'              =>  40,
+	        ) ) );
+
+	        $panel_manager->add_section( 'general', array(
+		        'title'                 =>  __( 'General', tailor()->textdomain() ),
+		        'priority'              =>  10,
+		        'panel'                 =>  'settings',
+	        ) );
+
+	        $panel_manager->add_setting( '_post_title', array(
+		        'default'               =>  get_the_title(),
+		        'sanitize_callback'     =>  'tailor_sanitize_text',
+	        ) );
+	        $panel_manager->add_control( 'title', array(
+		        'label'                 =>  __( 'Page title', tailor()->textdomain() ),
+		        'type'                  =>  'text',
+		        'priority'              =>  10,
+		        'section'               =>  'general',
+		        'setting'               =>  '_post_title',
+	        ) );
+
+	        $panel_manager->add_setting( '_tailor_page_css', array(
+		        'default'               =>  "/**\n * Custom CSS\n */\n",
+		        'sanitize_callback'     =>  'tailor_sanitize_text',
+	        ) );
+	        $panel_manager->add_control( 'custom-css', array(
+		        'label'                 =>  __( 'Custom CSS', tailor()->textdomain() ),
+		        'description'           =>  __( 'Enter custom declarations and rules in the editor below to see them applied to the page in real-time.', tailor()->textdomain() ),
+		        'type'                  =>  'code',
+		        'mode'                  =>  'css',
+		        'priority'              =>  20,
+		        'section'               =>  'general',
+		        'setting'               =>  '_tailor_page_css',
+	        ) );
+
+	        $panel_manager->add_setting( '_tailor_page_js', array(
+		        'default'               =>  "// Custom JavaScript\n",
+		        'sanitize_callback'     =>  'tailor_sanitize_text',
+	        ) );
+	        $panel_manager->add_control( 'custom-js', array(
+		        'label'                 =>  __( 'Custom JavaScript', tailor()->textdomain() ),
+		        'description'           =>  __( 'Enter custom JavaScript in the editor below.  Saved code will be run when the page is reloaded.', tailor()->textdomain() ),
+		        'type'                  =>  'code',
+		        'mode'                  =>  'javascript',
+		        'priority'              =>  30,
+		        'section'               =>  'general',
+		        'setting'               =>  '_tailor_page_js',
+	        ) );
+
+	        $panel_manager->add_section( 'layout', array(
+		        'title'                 =>  __( 'Layout', tailor()->textdomain() ),
+		        'description'           =>  __( 'The settings on this page override those specified in the Customizer.', tailor()->textdomain() ),
+		        'priority'              =>  20,
+		        'panel'                 =>  'settings',
+	        ) );
+
+	        $panel_manager->add_setting( '_tailor_section_width', array(
+		        'sanitize_callback'     =>  'tailor_sanitize_text',
+	        ) );
+	        $panel_manager->add_control( 'section-width', array(
+		        'label'                 =>  __( 'Section width', tailor()->textdomain() ),
+		        'description'           =>  __( 'The maximum width for sections.', tailor()->textdomain() ),
+		        'type'                  =>  'text',
+		        'priority'              =>  10,
+		        'section'               =>  'layout',
+		        'setting'               =>  '_tailor_section_width',
+	        ) );
+
+	        $panel_manager->add_setting( '_tailor_column_spacing', array(
+		        'sanitize_callback'     =>  'tailor_sanitize_text',
+	        ) );
+	        $panel_manager->add_control( 'column-spacing', array(
+		        'label'                 =>  __( 'Column spacing', tailor()->textdomain() ),
+		        'description'           =>  __( 'The amount of horizontal space to display between columns.', tailor()->textdomain() ),
+		        'type'                  =>  'text',
+		        'priority'              =>  20,
+		        'section'               =>  'layout',
+		        'setting'               =>  '_tailor_column_spacing',
+	        ) );
+
+            $panel_manager->add_setting( '_tailor_element_spacing', array(
+                'sanitize_callback'     =>  'tailor_sanitize_text',
+            ) );
+            $panel_manager->add_control( 'vertical-spacing', array(
+                'label'                 =>  __( 'Element spacing', tailor()->textdomain() ),
+                'description'           =>  __( 'The amount of vertical space to display between elements.', tailor()->textdomain() ),
+                'type'                  =>  'text',
+                'priority'              =>  30,
+                'section'               =>  'layout',
+                'setting'               =>  '_tailor_element_spacing',
+            ) );
+        }
+
+	    /**
+	     * Prints the panel, section, control and setting data to the page.
+	     *
+	     * @since 1.0.0
+	     */
+	    public function print_panel_data() {
+
+		    $settings = $panels = $sections = $controls = array();
+
+		    foreach ( $this->panels() as $panel ) { /* @var $panel Tailor_Panel */
+			    $panels[] = $panel->to_json();
+		    }
+
+		    foreach ( $this->sections() as $section ) { /* @var $section Tailor_Section */
+			    $sections[] = $section->to_json();
+		    }
+
+		    foreach ( $this->controls() as $control ) {  /* @var $control Tailor_Control */
+			    $controls[] = $control->to_json();
+		    }
+
+		    foreach ( $this->settings() as $setting ) { /* @var $setting Tailor_Setting */
+			    $settings[] = $setting->to_json();
+		    }
+
+		    wp_localize_script( 'tailor-sidebar', '_panels', $panels );
+		    wp_localize_script( 'tailor-sidebar', '_sections', $sections );
+		    wp_localize_script( 'tailor-sidebar', '_controls', $controls );
+		    wp_localize_script( 'tailor-sidebar', '_settings', $settings );
+	    }
+
+	    /**
+	     * Returns the unsanitized setting values.
+	     *
+	     * @since 1.0.0
+	     *
+	     * @param Tailor_Setting $setting
+	     * @param mixed $default
+	     * @return mixed
+	     */
+	    public function post_value( $setting, $default ) {
+
+		    $post_values = $this->unsanitized_post_values();
+
+		    if ( array_key_exists( $setting->id, $post_values ) ) {
+			    return $setting->sanitize( $post_values[ $setting->id ] );
+		    }
+		    else {
+			    return $default;
+		    }
+	    }
+
+	    /**
+	     * Returns the saved settings for a given page/post.
+	     *
+	     * @since 1.0.0
+	     *
+	     * @return array
+	     */
+	    public function unsanitized_post_values() {
+
+		    if ( ! isset( $this->_post_values ) ) {
+			    if ( isset( $_POST['settings'] ) ) {
+				    $settings = json_decode( wp_unslash( $_POST['settings'] ), true );
+				    foreach ( $settings as $setting ) {
+					    $this->_post_values[ $setting['id'] ] = $setting['value'];
+				    }
+			    }
+
+			    if ( empty( $this->_post_values ) ) {
+				    $this->_post_values = array();
+			    }
+		    }
+
+		    if ( empty( $this->_post_values ) ) {
+			    return array();
+		    }
+		    else {
+			    return $this->_post_values;
+		    }
+	    }
+
+	    /**
+	     * Saves the values of all registered settings.
+	     *
+	     * @since 1.0.0
+	     *
+	     * @param $post_id
+	     */
+	    public function save_settings( $post_id ) {
+
+		    $this->load_panels();
+
+		    $settings = $this->settings();
+
+		    foreach ( $settings as $setting ) { /* @var $setting Tailor_Setting */
+			    $setting->save();
+		    }
+
+		    /**
+		     * Fires after the settings have been saved.
+		     *
+		     * @since 1.0.0
+		     *
+		     * @param string $post_id
+		     * @param array $settings
+		     */
+		    do_action( 'tailor_save_settings', $post_id, $settings );
+	    }
+
+	    /**
+	     * Updates the post/page title after settings are saved.
+	     *
+	     * @since 1.0.0
+	     *
+	     * @param $post_id
+	     */
+	    public function update_post_title( $post_id ) {
+
+		    $saved_title = get_post_meta( $post_id, '_post_title', true );
+
+		    if ( false != $saved_title ) {
+			    wp_update_post( array(
+				    'ID'                =>  $post_id,
+				    'post_title'        =>  $saved_title
+			    ) );
+		    }
+	    }
+    }
+}
+
+new Tailor_Panels;

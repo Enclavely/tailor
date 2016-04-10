@@ -1,0 +1,85 @@
+.dialog__container {
+
+	.search--icon {
+		padding: 6px 10px;
+		margin-bottom: 8px;
+	}
+
+	.select--icon {
+		width: 100%;
+		max-width: none;
+		margin: 0 0 6px;
+	}
+
+}
+
+.control--icon {
+
+	p {
+		text-align: center;
+	}
+
+	i {
+		padding: 12px 0;
+		width: 10%;
+		height: 50px;
+		cursor: pointer;
+
+		display: inline-block;
+		font-size: 24px;
+		line-height: 1;
+		text-decoration: inherit;
+		font-weight: normal;
+		font-style: normal;
+		vertical-align: top;
+		text-align: center;
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+	}
+}
+
+.icon-control {
+	max-height: 350px;
+	overflow-y: auto;
+}
+
+.icon-list {
+	margin: 0;
+	list-style: none;
+
+	&__icon {
+		display: inline-block;
+		padding: 12px 0;
+		width: 10%;
+		background-color: #fff;
+		text-align: center;
+		cursor: pointer;
+
+		input[type=radio] {
+			display: none;
+		}
+
+		i {
+			display: inline-block;
+			font-size: 20px;
+			line-height: 1;
+			text-decoration: inherit;
+			font-weight: normal;
+			font-style: normal;
+			vertical-align: top;
+			text-align: center;
+			-webkit-font-smoothing: antialiased;
+			-moz-osx-font-smoothing: grayscale;
+
+			&:hover {
+				color: #00a0d2;
+			}
+		}
+
+		input[type=radio]:checked + i {
+			color: #00a0d2;
+		}
+	}
+
+	@include clearfix;
+}

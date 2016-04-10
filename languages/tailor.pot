@@ -1,0 +1,1634 @@
+# Copyright (C) 2016 Tailor
+# This file is distributed under the same license as the Tailor package.
+msgid ""
+msgstr ""
+"Project-Id-Version: Tailor 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/tailor\n"
+"POT-Creation-Date: 2016-04-10 06:37:10+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2016-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+
+#: includes/admin/class-admin.php:84
+msgid "Tailor Settings"
+msgstr ""
+
+#: includes/admin/class-admin.php:85 includes/class-panels.php:102
+msgid "Settings"
+msgstr ""
+
+#: includes/admin/class-admin.php:136
+msgid "Original content restored."
+msgstr ""
+
+#: includes/admin/class-admin.php:137
+msgid "View page"
+msgstr ""
+
+#: includes/admin/class-admin.php:146
+msgid "This is a Tailored %s that has been modified."
+msgstr ""
+
+#: includes/admin/class-admin.php:147 includes/admin/class-admin.php:155
+msgid "Restore the original content"
+msgstr ""
+
+#: includes/admin/class-admin.php:154
+msgid "This is a Tailored %s."
+msgstr ""
+
+#: includes/admin/class-admin.php:177 partials/underscore/admin-notice.php:17
+msgid "Dismiss this notice."
+msgstr ""
+
+#: includes/admin/class-settings.php:65
+#: includes/customizer/customizer-panels.php:24
+#: includes/settings/class-panel.php:225
+msgid "Tailor"
+msgstr ""
+
+#: includes/admin/class-settings.php:97 partials/admin/page-settings.php:17
+msgid "Tailor settings"
+msgstr ""
+
+#: includes/admin/class-settings.php:114 includes/class-panels.php:112
+#: includes/elements/class-box.php:32 includes/elements/class-button.php:31
+#: includes/elements/class-card.php:31
+#: includes/elements/class-carousel-item.php:31
+#: includes/elements/class-carousel.php:39
+#: includes/elements/class-column.php:35
+#: includes/elements/class-contact-form-7.php:29
+#: includes/elements/class-content.php:30
+#: includes/elements/class-gallery.php:31
+#: includes/elements/class-grid-item.php:31 includes/elements/class-grid.php:31
+#: includes/elements/class-hero.php:31 includes/elements/class-list-item.php:31
+#: includes/elements/class-map-marker.php:31 includes/elements/class-map.php:31
+#: includes/elements/class-posts.php:31 includes/elements/class-row.php:31
+#: includes/elements/class-section.php:31 includes/elements/class-tab.php:31
+#: includes/elements/class-tabs.php:31 includes/elements/class-toggle.php:31
+#: includes/elements/class-toggles.php:31 includes/elements/class-user.php:29
+#: includes/elements/class-widgets.php:29
+msgid "General"
+msgstr ""
+
+#: includes/admin/class-settings.php:120
+msgid "Post types"
+msgstr ""
+
+#: includes/admin/class-settings.php:138
+msgid "User roles"
+msgstr ""
+
+#: includes/admin/class-settings.php:156
+msgid "Content placeholder"
+msgstr ""
+
+#: includes/admin/class-settings.php:175
+msgid "Element list"
+msgstr ""
+
+#: includes/admin/class-settings.php:181
+msgid "Descriptions"
+msgstr ""
+
+#: includes/admin/class-settings.php:194
+msgid "Show element descriptions?"
+msgstr ""
+
+#: includes/admin/class-settings.php:200
+msgid "Inactive elements"
+msgstr ""
+
+#: includes/admin/class-settings.php:213
+msgid "Show inactive elements?"
+msgstr ""
+
+#: includes/admin/class-settings.php:220
+msgid "Icons"
+msgstr ""
+
+#: includes/admin/class-settings.php:226
+msgid "Icon kits"
+msgstr ""
+
+#: includes/admin/class-settings.php:273
+msgid "Select an existing icon kit from your Media Library or "
+msgstr ""
+
+#: includes/admin/class-settings.php:274
+msgid "create"
+msgstr ""
+
+#: includes/admin/class-settings.php:275
+msgid "and upload one."
+msgstr ""
+
+#: includes/admin/helpers/helpers-compatibility.php:20
+msgid "Tailor requires at least WordPress version 4.3. You are running version %s. Please upgrade and try again."
+msgstr ""
+
+#: includes/admin/helpers/helpers-general.php:22
+msgid "Facebook"
+msgstr ""
+
+#: includes/admin/helpers/helpers-general.php:23
+msgid "Twitter"
+msgstr ""
+
+#: includes/admin/helpers/helpers-general.php:24
+msgid "Google Plus"
+msgstr ""
+
+#: includes/class-canvas.php:144 includes/class-sidebar.php:210
+msgctxt "Open Sans font: on or off"
+msgid "on"
+msgstr ""
+
+#: includes/class-canvas.php:151 includes/class-sidebar.php:217
+msgctxt "Open Sans font: add new subset (greek, cyrillic, vietnamese)"
+msgid "no-subset"
+msgstr ""
+
+#: includes/class-canvas.php:223 partials/underscore/canvas-tools.php:13
+msgid "Edit"
+msgstr ""
+
+#: includes/class-canvas.php:224 includes/class-sidebar.php:313
+#: includes/controls/class-list.php:119 partials/admin/field-icon.php:31
+#: partials/underscore/canvas-tools.php:14
+msgid "Delete"
+msgstr ""
+
+#: includes/class-canvas.php:225 partials/underscore/modal-layout.php:51
+msgid "Preview"
+msgstr ""
+
+#: includes/class-canvas.php:226 includes/class-sidebar.php:307
+msgid "Save"
+msgstr ""
+
+#: includes/class-canvas.php:227
+msgid "Initialized"
+msgstr ""
+
+#: includes/class-canvas.php:228
+msgid "Added"
+msgstr ""
+
+#: includes/class-canvas.php:229
+msgid "Deleted"
+msgstr ""
+
+#: includes/class-canvas.php:230
+msgid "Edited"
+msgstr ""
+
+#: includes/class-canvas.php:231
+msgid "Copied"
+msgstr ""
+
+#: includes/class-canvas.php:232
+msgid "Moved"
+msgstr ""
+
+#: includes/class-canvas.php:233
+msgid "Resized"
+msgstr ""
+
+#: includes/class-canvas.php:234
+msgid "Reordered"
+msgstr ""
+
+#: includes/class-canvas.php:235
+msgid "Template"
+msgstr ""
+
+#: includes/class-elements.php:124
+msgid "Section"
+msgstr ""
+
+#: includes/class-elements.php:125
+msgid "Group and style content."
+msgstr ""
+
+#: includes/class-elements.php:130
+msgid "Tabs"
+msgstr ""
+
+#: includes/class-elements.php:131
+msgid "Display content in tabs."
+msgstr ""
+
+#: includes/class-elements.php:137
+msgid "Toggles"
+msgstr ""
+
+#: includes/class-elements.php:138
+msgid "Display content in toggles."
+msgstr ""
+
+#: includes/class-elements.php:144 includes/elements/class-gallery.php:79
+#: includes/elements/class-posts.php:83
+msgid "Carousel"
+msgstr ""
+
+#: includes/class-elements.php:145
+msgid "Display content in a carousel."
+msgstr ""
+
+#: includes/class-elements.php:151 includes/elements/class-gallery.php:77
+#: includes/elements/class-posts.php:81
+msgid "List"
+msgstr ""
+
+#: includes/class-elements.php:153
+msgid "Display content in list items."
+msgstr ""
+
+#: includes/class-elements.php:158 includes/elements/class-gallery.php:78
+#: includes/elements/class-posts.php:82
+msgid "Grid"
+msgstr ""
+
+#: includes/class-elements.php:159
+msgid "Display content in a grid."
+msgstr ""
+
+#: includes/class-elements.php:165
+msgid "Row"
+msgstr ""
+
+#: includes/class-elements.php:171
+msgid "Map"
+msgstr ""
+
+#: includes/class-elements.php:172
+msgid "A Google map."
+msgstr ""
+
+#: includes/class-elements.php:178
+msgid "Column"
+msgstr ""
+
+#: includes/class-elements.php:183 includes/shortcodes/shortcode-tabs.php:83
+msgid "Tab"
+msgstr ""
+
+#: includes/class-elements.php:188
+msgid "Toggle"
+msgstr ""
+
+#: includes/class-elements.php:193
+msgid "Carousel item"
+msgstr ""
+
+#: includes/class-elements.php:198
+msgid "Map marker"
+msgstr ""
+
+#: includes/class-elements.php:204
+msgid "List item"
+msgstr ""
+
+#: includes/class-elements.php:209
+msgid "Grid item"
+msgstr ""
+
+#: includes/class-elements.php:214
+#: includes/elements/class-contact-form-7.php:56
+msgid "Contact form"
+msgstr ""
+
+#: includes/class-elements.php:215
+msgid "A contact form."
+msgstr ""
+
+#: includes/class-elements.php:216
+msgid "Contact Form 7"
+msgstr ""
+
+#: includes/class-elements.php:222
+msgid "Posts"
+msgstr ""
+
+#: includes/class-elements.php:223
+msgid "Your site's posts."
+msgstr ""
+
+#: includes/class-elements.php:228
+msgid "Gallery"
+msgstr ""
+
+#: includes/class-elements.php:229
+msgid "A flexible image gallery."
+msgstr ""
+
+#: includes/class-elements.php:234
+msgid "Button"
+msgstr ""
+
+#: includes/class-elements.php:235
+msgid "A simple button."
+msgstr ""
+
+#: includes/class-elements.php:239 includes/elements/class-map-marker.php:76
+msgid "Content"
+msgstr ""
+
+#: includes/class-elements.php:240
+msgid "HTML and multimedia content."
+msgstr ""
+
+#: includes/class-elements.php:245 includes/elements/class-user.php:49
+msgid "User"
+msgstr ""
+
+#: includes/class-elements.php:246
+msgid "A user profile box."
+msgstr ""
+
+#: includes/class-elements.php:250
+msgid "Card"
+msgstr ""
+
+#: includes/class-elements.php:251
+msgid "Display content inside a card."
+msgstr ""
+
+#: includes/class-elements.php:256
+msgid "Hero"
+msgstr ""
+
+#: includes/class-elements.php:257
+msgid "Emphasize content in a hero pane."
+msgstr ""
+
+#: includes/class-elements.php:262
+msgid "Box"
+msgstr ""
+
+#: includes/class-elements.php:263
+msgid "Display content inside a box."
+msgstr ""
+
+#: includes/class-elements.php:268
+msgid "Widgets"
+msgstr ""
+
+#: includes/class-elements.php:269
+msgid "A widget area from your site."
+msgstr ""
+
+#: includes/class-elements.php:413 includes/class-elements.php:769
+msgid "Tailor Elements: Valid models was not provided"
+msgstr ""
+
+#: includes/class-elements.php:467
+msgid "Tailor Elements: A valid model was not provided"
+msgstr ""
+
+#: includes/class-elements.php:575
+msgid "The element associated with shortcode %s could not be found."
+msgstr ""
+
+#: includes/class-icons.php:157 includes/class-icons.php:273
+msgid "Icon kit file does not exist"
+msgstr ""
+
+#: includes/class-icons.php:166
+msgid "Icon kit is already being used"
+msgstr ""
+
+#: includes/class-icons.php:180
+msgid "Icon kit could not be unzipped"
+msgstr ""
+
+#: includes/class-icons.php:191
+msgid "Icon kit is invalid"
+msgstr ""
+
+#: includes/class-panels.php:90
+msgid "Elements"
+msgstr ""
+
+#: includes/class-panels.php:91
+msgid "Elements are the building blocks of your page.  Drag one from the list below to the desired position on the page to get started."
+msgstr ""
+
+#: includes/class-panels.php:96
+msgid "Templates"
+msgstr ""
+
+#: includes/class-panels.php:97
+msgid "Templates allow you to save customized elements, or the entire layout, for future use."
+msgstr ""
+
+#: includes/class-panels.php:107
+msgid "History"
+msgstr ""
+
+#: includes/class-panels.php:122
+msgid "Page title"
+msgstr ""
+
+#: includes/class-panels.php:134
+msgid "Custom CSS"
+msgstr ""
+
+#: includes/class-panels.php:135
+msgid "Enter custom declarations and rules in the editor below to see them applied to the page in real-time."
+msgstr ""
+
+#: includes/class-panels.php:148
+msgid "Custom JavaScript"
+msgstr ""
+
+#: includes/class-panels.php:149
+msgid "Enter custom JavaScript in the editor below.  Saved code will be run when the page is reloaded."
+msgstr ""
+
+#: includes/class-panels.php:158 includes/customizer/customizer-sections.php:24
+#: includes/helpers/helpers-elements.php:147
+msgid "Layout"
+msgstr ""
+
+#: includes/class-panels.php:159
+msgid "The settings on this page override those specified in the Customizer."
+msgstr ""
+
+#: includes/class-panels.php:168 includes/customizer/customizer-settings.php:28
+msgid "Section width"
+msgstr ""
+
+#: includes/class-panels.php:169 includes/customizer/customizer-settings.php:29
+msgid "The maximum width for sections."
+msgstr ""
+
+#: includes/class-panels.php:180 includes/customizer/customizer-settings.php:40
+#: includes/elements/class-row.php:51
+msgid "Column spacing"
+msgstr ""
+
+#: includes/class-panels.php:181 includes/customizer/customizer-settings.php:41
+msgid "The amount of horizontal space to display between columns."
+msgstr ""
+
+#: includes/class-panels.php:192 includes/customizer/customizer-settings.php:52
+msgid "Element spacing"
+msgstr ""
+
+#: includes/class-panels.php:193 includes/customizer/customizer-settings.php:53
+msgid "The amount of vertical space to display between elements."
+msgstr ""
+
+#: includes/class-sidebar.php:91
+msgid "Tailoring: %s"
+msgstr ""
+
+#: includes/class-sidebar.php:306 includes/controls/class-search.php:64
+#: languages/tinymce-localization.php:28
+msgid "Select"
+msgstr ""
+
+#: includes/class-sidebar.php:308 includes/settings/class-panel.php:515
+msgid "Save template"
+msgstr ""
+
+#: includes/class-sidebar.php:309 partials/sidebar/sidebar-frame.php:26
+msgid "Saved"
+msgstr ""
+
+#: includes/class-sidebar.php:310 partials/sidebar/sidebar-frame.php:23
+msgid "Save & Publish"
+msgstr ""
+
+#: includes/class-sidebar.php:311
+msgid "Import"
+msgstr ""
+
+#: includes/class-sidebar.php:312 includes/settings/class-panel.php:521
+msgid "Import template"
+msgstr ""
+
+#: includes/class-sidebar.php:314 includes/controls/class-list.php:120
+#: partials/sidebar/sidebar-frame.php:32
+#: partials/underscore/dialog-layout.php:19
+#: partials/underscore/modal-layout.php:22
+msgid "Close"
+msgstr ""
+
+#: includes/class-sidebar.php:316
+msgid "An error occurred, please try again"
+msgstr ""
+
+#: includes/class-sidebar.php:317
+msgid "The session has expired"
+msgstr ""
+
+#: includes/class-sidebar.php:318
+msgid "The request made was invalid"
+msgstr ""
+
+#: includes/class-sidebar.php:320
+msgid "%s saved successfully"
+msgstr ""
+
+#: includes/class-sidebar.php:321
+msgid "History entry restored successfully"
+msgstr ""
+
+#: includes/class-sidebar.php:322
+msgid "Element deleted successfully"
+msgstr ""
+
+#: includes/class-sidebar.php:323
+msgid "Template saved successfully"
+msgstr ""
+
+#: includes/class-sidebar.php:324
+msgid "Template imported successfully"
+msgstr ""
+
+#: includes/class-sidebar.php:325
+msgid "Template added successfully"
+msgstr ""
+
+#: includes/class-sidebar.php:326
+msgid "Template deleted successfully"
+msgstr ""
+
+#: includes/class-sidebar.php:328
+msgid "The changes you made will be lost if you navigate away from this page"
+msgstr ""
+
+#: includes/class-sidebar.php:329
+msgid "You have made changes to this element.  Would you like to save them?"
+msgstr ""
+
+#: includes/class-templates.php:86
+msgid "Tailor Templates"
+msgstr ""
+
+#: includes/class-templates.php:252 includes/class-templates.php:311
+#: includes/class-templates.php:359
+msgid "Invalid template"
+msgstr ""
+
+#: includes/class-templates.php:273
+msgid "The template could not be saved"
+msgstr ""
+
+#: includes/class-templates.php:320
+msgid "The template does not exist"
+msgstr ""
+
+#: includes/class-templates.php:366
+msgid "The template could not be deleted"
+msgstr ""
+
+#: includes/class-tinymce.php:122
+msgid "Dropcap"
+msgstr ""
+
+#: includes/class-tinymce.php:127
+msgid "Lede"
+msgstr ""
+
+#: includes/class-tinymce.php:132
+msgid "Pullquote"
+msgstr ""
+
+#: includes/class-tinymce.php:137
+msgid "Pullquote Right"
+msgstr ""
+
+#: includes/controls/abstract-control.php:247
+#: includes/controls/abstract-control.php:252
+#: includes/controls/class-colorpicker.php:81
+#: includes/controls/class-icon.php:35 includes/controls/class-icon.php:40
+#: includes/controls/class-list.php:51 includes/controls/class-list.php:56
+#: includes/elements/class-button.php:70
+#: includes/elements/class-carousel.php:68 includes/elements/class-posts.php:73
+#: includes/elements/class-tabs.php:116
+#: includes/helpers/helpers-elements.php:736
+msgid "Default"
+msgstr ""
+
+#: includes/controls/class-colorpicker.php:80
+msgid "Clear"
+msgstr ""
+
+#: includes/controls/class-colorpicker.php:82
+msgid "Select Color"
+msgstr ""
+
+#: includes/controls/class-colorpicker.php:83
+msgid "Current Color"
+msgstr ""
+
+#: includes/controls/class-gallery.php:45
+msgid "No images selected"
+msgstr ""
+
+#: includes/controls/class-gallery.php:47
+msgid "Create Gallery"
+msgstr ""
+
+#: includes/controls/class-gallery.php:58
+msgid "Remove Gallery"
+msgstr ""
+
+#: includes/controls/class-gallery.php:59
+msgid "Edit Gallery"
+msgstr ""
+
+#: includes/controls/class-icon.php:73
+msgid "No icon selected"
+msgstr ""
+
+#: includes/controls/class-icon.php:75 languages/tinymce-localization.php:27
+msgid "Select Icon"
+msgstr ""
+
+#: includes/controls/class-icon.php:82
+msgid "Remove Icon"
+msgstr ""
+
+#: includes/controls/class-icon.php:83
+msgid "Change Icon"
+msgstr ""
+
+#: includes/controls/class-icon.php:103
+msgid "Please add and enable at least one icon kit on the"
+msgstr ""
+
+#: includes/controls/class-icon.php:105
+msgid "Settings Page."
+msgstr ""
+
+#: includes/controls/class-image.php:45
+msgid "No image selected"
+msgstr ""
+
+#: includes/controls/class-image.php:47
+msgid "Select Image"
+msgstr ""
+
+#: includes/controls/class-image.php:56
+msgid "Remove Image"
+msgstr ""
+
+#: includes/controls/class-image.php:57
+msgid "Change Image"
+msgstr ""
+
+#: includes/controls/class-link.php:87
+msgid "Nothing found matching your criteria. Showing recent items."
+msgstr ""
+
+#: includes/controls/class-link.php:127
+msgid "Select Content"
+msgstr ""
+
+#: includes/controls/class-list.php:95
+msgid "Add"
+msgstr ""
+
+#: includes/controls/class-list.php:138
+msgid "No items to display"
+msgstr ""
+
+#: includes/controls/class-search.php:58
+msgid "Nothing selected"
+msgstr ""
+
+#: includes/controls/class-video.php:45
+msgid "No video selected"
+msgstr ""
+
+#: includes/controls/class-video.php:47
+msgid "Select Video"
+msgstr ""
+
+#: includes/controls/class-video.php:54
+msgid "Remove Video"
+msgstr ""
+
+#: includes/controls/class-video.php:55
+msgid "Change Video"
+msgstr ""
+
+#: includes/elements/class-box.php:37 includes/elements/class-button.php:36
+#: includes/elements/class-card.php:36
+#: includes/elements/class-carousel-item.php:36
+#: includes/elements/class-carousel.php:44
+#: includes/elements/class-column.php:40
+#: includes/elements/class-contact-form-7.php:34
+#: includes/elements/class-content.php:35
+#: includes/elements/class-gallery.php:36
+#: includes/elements/class-grid-item.php:36 includes/elements/class-grid.php:36
+#: includes/elements/class-hero.php:36 includes/elements/class-list-item.php:36
+#: includes/elements/class-list.php:31 includes/elements/class-map.php:36
+#: includes/elements/class-posts.php:41 includes/elements/class-row.php:36
+#: includes/elements/class-section.php:36 includes/elements/class-tab.php:36
+#: includes/elements/class-tabs.php:36 includes/elements/class-toggle.php:36
+#: includes/elements/class-toggles.php:36 includes/elements/class-user.php:34
+#: includes/elements/class-widgets.php:34
+msgid "Colors"
+msgstr ""
+
+#: includes/elements/class-box.php:42 includes/elements/class-button.php:41
+#: includes/elements/class-card.php:41
+#: includes/elements/class-carousel-item.php:41
+#: includes/elements/class-carousel.php:49
+#: includes/elements/class-column.php:45
+#: includes/elements/class-contact-form-7.php:39
+#: includes/elements/class-content.php:40
+#: includes/elements/class-gallery.php:41
+#: includes/elements/class-grid-item.php:41 includes/elements/class-grid.php:41
+#: includes/elements/class-hero.php:41 includes/elements/class-list-item.php:41
+#: includes/elements/class-list.php:36 includes/elements/class-map.php:41
+#: includes/elements/class-posts.php:46 includes/elements/class-row.php:41
+#: includes/elements/class-section.php:41 includes/elements/class-tab.php:41
+#: includes/elements/class-tabs.php:41 includes/elements/class-toggle.php:41
+#: includes/elements/class-toggles.php:41 includes/elements/class-user.php:39
+#: includes/elements/class-widgets.php:39
+msgid "Attributes"
+msgstr ""
+
+#: includes/elements/class-box.php:64 includes/elements/class-button.php:78
+#: includes/elements/class-card.php:61 includes/elements/class-list-item.php:63
+#: includes/elements/class-tabs.php:55 includes/helpers/helpers-elements.php:72
+msgid "Left"
+msgstr ""
+
+#: includes/elements/class-box.php:65 includes/elements/class-button.php:79
+#: includes/elements/class-card.php:62
+msgid "Center"
+msgstr ""
+
+#: includes/elements/class-box.php:66 includes/elements/class-button.php:80
+#: includes/elements/class-card.php:63 includes/elements/class-list-item.php:64
+#: includes/elements/class-tabs.php:56 includes/helpers/helpers-elements.php:70
+msgid "Right"
+msgstr ""
+
+#: includes/elements/class-box.php:73 includes/elements/class-list-item.php:71
+#: includes/helpers/helpers-elements.php:435
+msgid "Icon"
+msgstr ""
+
+#: includes/elements/class-box.php:74 includes/elements/class-list-item.php:72
+#: includes/helpers/helpers-elements.php:331
+msgid "Image"
+msgstr ""
+
+#: includes/elements/class-button.php:52
+msgid "Label"
+msgstr ""
+
+#: includes/elements/class-button.php:71
+msgid "Primary"
+msgstr ""
+
+#: includes/elements/class-button.php:81
+msgid "Block"
+msgstr ""
+
+#: includes/elements/class-carousel.php:69
+msgid "Slider"
+msgstr ""
+
+#: includes/elements/class-carousel.php:75
+#: includes/elements/class-carousel.php:90
+msgid "This will only take effect in the frontend"
+msgstr ""
+
+#: includes/elements/class-column.php:87 includes/elements/class-column.php:95
+#: includes/elements/class-list-item.php:174
+#: includes/elements/class-row.php:119 includes/elements/class-section.php:97
+#: includes/elements/class-tabs.php:54 includes/helpers/helpers-elements.php:69
+msgid "Top"
+msgstr ""
+
+#: includes/elements/class-column.php:88 includes/elements/class-column.php:96
+#: includes/elements/class-list-item.php:175
+#: includes/elements/class-row.php:120 includes/elements/class-section.php:98
+#: includes/helpers/helpers-elements.php:71
+msgid "Bottom"
+msgstr ""
+
+#: includes/elements/class-contact-form-7.php:47
+#: includes/elements/class-widgets.php:51
+msgid "&mdash; Select &mdash;"
+msgstr ""
+
+#: includes/elements/class-gallery.php:51
+msgid "Images"
+msgstr ""
+
+#: includes/elements/class-gallery.php:80
+msgid "Slideshow"
+msgstr ""
+
+#: includes/elements/class-grid.php:66 includes/elements/class-row.php:72
+msgid "Minimum screen size"
+msgstr ""
+
+#: includes/elements/class-grid.php:67
+msgid "Select the smallest screen size on which items are displayed in a grid layout"
+msgstr ""
+
+#: includes/elements/class-grid.php:70 includes/elements/class-row.php:76
+#: includes/helpers/helpers-settings.php:81
+msgid "Extra large"
+msgstr ""
+
+#: includes/elements/class-grid.php:71 includes/elements/class-row.php:77
+#: includes/helpers/helpers-elements.php:451
+#: includes/helpers/helpers-settings.php:86
+msgid "Large"
+msgstr ""
+
+#: includes/elements/class-grid.php:72 includes/elements/class-row.php:78
+#: includes/helpers/helpers-elements.php:450
+#: includes/helpers/helpers-settings.php:91
+msgid "Medium"
+msgstr ""
+
+#: includes/elements/class-grid.php:73 includes/elements/class-row.php:79
+#: includes/helpers/helpers-elements.php:449
+#: includes/helpers/helpers-settings.php:96
+msgid "Small"
+msgstr ""
+
+#: includes/elements/class-grid.php:74 includes/elements/class-row.php:80
+#: includes/helpers/helpers-settings.php:101
+msgid "Extra small"
+msgstr ""
+
+#: includes/elements/class-list-item.php:73
+msgid "Number"
+msgstr ""
+
+#: includes/elements/class-map-marker.php:46 includes/elements/class-map.php:51
+msgid "Address"
+msgstr ""
+
+#: includes/elements/class-map-marker.php:56 includes/elements/class-map.php:61
+msgid "Latitude (optional)"
+msgstr ""
+
+#: includes/elements/class-map-marker.php:66 includes/elements/class-map.php:71
+msgid "Longitude (optional)"
+msgstr ""
+
+#: includes/elements/class-map.php:81
+msgid "Zoom level"
+msgstr ""
+
+#: includes/elements/class-map.php:91
+msgid "Show controls"
+msgstr ""
+
+#: includes/elements/class-map.php:101
+msgid "Markers"
+msgstr ""
+
+#: includes/elements/class-map.php:126
+msgid "Hue"
+msgstr ""
+
+#: includes/elements/class-map.php:134
+msgid "Saturation"
+msgstr ""
+
+#: includes/elements/class-posts.php:36
+msgid "Query"
+msgstr ""
+
+#: includes/elements/class-posts.php:74
+msgid "Boxed"
+msgstr ""
+
+#: includes/elements/class-posts.php:164
+#: includes/helpers/helpers-elements.php:512
+msgid "Author"
+msgstr ""
+
+#: includes/elements/class-posts.php:165
+msgid "Category"
+msgstr ""
+
+#: includes/elements/class-posts.php:166
+#: includes/helpers/helpers-elements.php:511
+msgid "Date"
+msgstr ""
+
+#: includes/elements/class-posts.php:167
+msgid "Excerpt"
+msgstr ""
+
+#: includes/elements/class-posts.php:168
+msgid "Thumbnail"
+msgstr ""
+
+#: includes/elements/class-posts.php:169
+msgid "Comment number"
+msgstr ""
+
+#: includes/elements/class-row.php:61 includes/helpers/helpers-elements.php:127
+msgid "Minimum height"
+msgstr ""
+
+#: includes/elements/class-row.php:73
+msgid "Select the smallest screen size on which columns are displayed"
+msgstr ""
+
+#: includes/elements/class-tabs.php:51
+msgid "Tabs position"
+msgstr ""
+
+#: includes/elements/class-tabs.php:117
+#: includes/helpers/helpers-elements.php:737
+msgid "Solid"
+msgstr ""
+
+#: includes/elements/class-tabs.php:118
+#: includes/helpers/helpers-elements.php:738
+msgid "Dashed"
+msgstr ""
+
+#: includes/elements/class-tabs.php:119
+#: includes/helpers/helpers-elements.php:739
+msgid "Dotted"
+msgstr ""
+
+#: includes/elements/class-tabs.php:120
+#: includes/helpers/helpers-elements.php:745
+msgid "None"
+msgstr ""
+
+#: includes/elements/class-toggle.php:75
+msgid "Title color"
+msgstr ""
+
+#: includes/elements/class-toggle.php:85
+msgid "Title background color"
+msgstr ""
+
+#: includes/elements/class-toggles.php:51
+msgid "Accordion"
+msgstr ""
+
+#: includes/elements/class-widgets.php:49
+msgid "Widget area"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:22
+msgctxt "expected item type"
+msgid "No %1$s to display"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:42
+msgid "widget areas"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:84
+msgid "Hide on"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:97
+#: includes/helpers/helpers-elements.php:513
+msgid "Title"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:107
+msgid "Alignment"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:117
+msgid "Maximum width"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:137
+msgid "Style"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:157
+msgid "Items per row"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:168
+msgid "Minimum item height"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:178
+msgid "Autoplay"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:188
+msgid "Fade"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:198
+msgid "Arrows"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:209
+msgid "Dots"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:220
+msgid "Thumbnails"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:230
+msgid "Item spacing"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:240
+msgid "Masonry"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:243
+msgid "Apply masonry layout?"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:253
+msgid "Lightbox"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:256
+msgid "Open images in lightbox?"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:266
+msgid "Meta"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:277
+msgid "Posts per page"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:288
+msgid "Pagination"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:290
+msgid "Show pagination links?"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:301
+msgid "Type"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:311
+msgid "Graphic type"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:321
+msgid "Graphic size"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:341
+msgid "Image width"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:351
+msgid "Image size"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:362
+msgid "Aspect ratio"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:365
+#: includes/helpers/helpers-settings.php:232
+msgid "Original"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:366
+msgid "Square"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:367
+msgid "Horizontal 3:2"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:368
+msgid "Horizontal 4:3"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:369
+msgid "Horizontal 16:9"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:370
+msgid "Vertical 2:3"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:371
+msgid "Vertical 3:4"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:381
+msgid "Horizontal alignment"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:396
+msgid "Vertical alignment"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:411
+msgid "Stretch-to-fit image"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:425
+msgid "Caption"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:446
+msgid "Size"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:461
+msgid "Link"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:472
+msgid "Link behavior"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:475
+msgid "Open in a new window?"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:486
+msgid "Categories"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:497
+msgid "Tags"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:508
+#: includes/helpers/helpers-elements.php:524
+msgid "Order by"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:514
+msgid "Number of comments"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:527
+msgid "Descending"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:528
+msgid "Ascending"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:544
+msgid "Offset"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:556
+msgid "Text color"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:566
+msgid "Text hover color"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:576
+msgid "Link color"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:586
+msgid "Heading color"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:596
+msgid "Background color"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:607
+msgid "Background hover color"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:618
+msgid "Border color"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:628
+msgid "Border hover color"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:638
+msgid "Navigation color"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:648
+msgid "Graphic color"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:658
+msgid "Graphic hover color"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:668
+msgid "Graphic background color"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:679
+msgid "Graphic hover background color"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:691
+msgid "Class name"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:701
+msgid "Padding"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:717
+msgid "Margin"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:733
+msgid "Border style"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:740
+msgid "Double"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:741
+msgid "Groove"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:742
+msgid "Ridge"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:743
+msgid "Inset"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:744
+msgid "Outset"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:755
+msgid "Border width"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:777
+msgid "Border radius"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:799
+msgid "Shadow "
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:816
+msgid "Background image"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:827
+msgid "Background repeat"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:830
+msgid "No repeat"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:831
+msgid "Repeat"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:832
+msgid "Repeat horizontally"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:833
+msgid "Repeat vertically"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:850
+msgid "Background position"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:853
+msgid "Left top"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:854
+msgid "Left center"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:855
+msgid "Left bottom"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:856
+msgid "Right top"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:857
+msgid "Right center"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:858
+msgid "Right bottom"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:859
+msgid "Center top"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:860
+msgid "Center center"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:861
+msgid "Center bottom"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:878
+msgid "Background size"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:881
+msgid "Cover"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:882
+msgid "Contain"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:898
+msgid "Background video"
+msgstr ""
+
+#: includes/helpers/helpers-links.php:43 tailor.php:785
+msgid "Tailor this %s"
+msgstr ""
+
+#: includes/helpers/helpers-settings.php:76
+msgid "Full"
+msgstr ""
+
+#: includes/helpers/helpers-settings.php:176
+msgid "Current user"
+msgstr ""
+
+#: includes/helpers/helpers-settings.php:297
+msgid "All %s"
+msgstr ""
+
+#: includes/settings/class-panel.php:219
+#: includes/settings/class-section.php:229
+msgid "Back"
+msgstr ""
+
+#: includes/settings/class-panel.php:231
+#: includes/settings/class-section.php:240
+#: partials/underscore/sidebar-home.php:21
+msgid "Help"
+msgstr ""
+
+#: includes/settings/class-panel.php:292
+msgid "There are no sections to display"
+msgstr ""
+
+#: includes/settings/class-panel.php:327
+msgid "Search elements.."
+msgstr ""
+
+#: includes/settings/class-panel.php:392
+msgid "There are no elements to display."
+msgstr ""
+
+#: includes/settings/class-panel.php:427
+msgid "Search templates.."
+msgstr ""
+
+#: includes/settings/class-panel.php:461
+msgid "Preview template"
+msgstr ""
+
+#: includes/settings/class-panel.php:462
+msgid "Download template"
+msgstr ""
+
+#: includes/settings/class-panel.php:463
+msgid "Delete template"
+msgstr ""
+
+#: includes/settings/class-panel.php:491
+msgid "Getting started"
+msgstr ""
+
+#: includes/settings/class-panel.php:493
+msgid "Select the element you wish to save.  If you do not select anything, the entire layout will be saved."
+msgstr ""
+
+#: includes/settings/class-panel.php:494
+msgid "Press the Save template button and enter a name for the template."
+msgstr ""
+
+#: includes/settings/class-panel.php:496
+msgid "Once you have one or more templates available, simply drag and drop them into the desired position on the page."
+msgstr ""
+
+#: includes/settings/class-panel.php:518
+msgid "or"
+msgstr ""
+
+#: includes/settings/class-panel.php:597
+msgid "There are no history entries to display."
+msgstr ""
+
+#: includes/settings/class-section.php:234
+msgid "Tailor &#9656; "
+msgstr ""
+
+#: includes/settings/class-section.php:290
+msgid "There are no controls to display"
+msgstr ""
+
+#: includes/shortcodes/shortcode-form.php:38
+msgid "Please select a contact form to display"
+msgstr ""
+
+#: includes/shortcodes/shortcode-form.php:44
+msgid "Please enable the Contact Form 7 plugin"
+msgstr ""
+
+#: includes/shortcodes/shortcode-gallery.php:75
+msgid "Please select one or more images to display in this gallery"
+msgstr ""
+
+#: includes/shortcodes/shortcode-toggles.php:75
+msgctxt "Default toggle title"
+msgid "Toggle"
+msgstr ""
+
+#: includes/shortcodes/shortcode-widgets.php:35
+msgid "Please select a widget area to display"
+msgstr ""
+
+#: includes/shortcodes/shortcode-widgets.php:43
+msgid "The selected widget area contains no widgets"
+msgstr ""
+
+#: partials/admin/field-icon.php:41
+msgid "Add kit"
+msgstr ""
+
+#: partials/admin/help-settings.php:13
+msgid "This page allows you to configure global settings for the Tailor plugin."
+msgstr ""
+
+#: partials/admin/help-settings.php:25
+msgid "1{Documentation} can be found on the Tailor website and you can ask questions on the 2{community forum} if you get stuck."
+msgstr ""
+
+#: partials/admin/page-welcome.php:17
+msgid "Congratulations!  You are now able to Tailor posts and pages to you liking quickly and easily."
+msgstr ""
+
+#: partials/admin/page-welcome.php:27
+msgid "Return to Updates"
+msgstr ""
+
+#: partials/admin/page-welcome.php:27
+msgid "Return to Dashboard &rarr; Updates"
+msgstr ""
+
+#: partials/admin/page-welcome.php:30
+msgid "Go to Dashboard &rarr; Home"
+msgstr ""
+
+#: partials/admin/page-welcome.php:30
+msgid "Go to Dashboard"
+msgstr ""
+
+#: partials/author-links.php:23
+msgid "View %s's Facebook profile"
+msgstr ""
+
+#: partials/author-links.php:30
+msgid "View %s's Twitter page"
+msgstr ""
+
+#: partials/author-links.php:37
+msgid "View %s's Google Plus profile"
+msgstr ""
+
+#: partials/empty.php:15
+msgid "No entries were found matching your criteria."
+msgstr ""
+
+#: partials/meta-author.php:28
+msgid "Posts by %s"
+msgstr ""
+
+#: partials/meta-author.php:32
+msgid "By"
+msgstr ""
+
+#: partials/meta-comment-number.php:18
+msgid "Comment"
+msgstr ""
+
+#: partials/meta-comment-number.php:21
+msgid "Comments"
+msgstr ""
+
+#: partials/meta-comment-number.php:37
+msgid "Leave a comment on: &ldquo;%s&rdquo;"
+msgstr ""
+
+#: partials/meta-excerpt.php:20
+msgid "Continue reading &rsaquo;"
+msgstr ""
+
+#: partials/pagination-links.php:17
+msgctxt "previous post"
+msgid "Previous"
+msgstr ""
+
+#: partials/pagination-links.php:18
+msgctxt "next post"
+msgid "Next"
+msgstr ""
+
+#: partials/pagination-links.php:26
+msgid "Posts pagination"
+msgstr ""
+
+#: partials/sidebar/sidebar-frame.php:38
+msgid "Collapse Sidebar"
+msgstr ""
+
+#: partials/sidebar/sidebar-frame.php:40
+msgid "Collapse"
+msgstr ""
+
+#: partials/underscore/dialog-import-template.php:15
+msgid "Select a valid .JSON template file to import."
+msgstr ""
+
+#: partials/underscore/dialog-save-template.php:15
+msgid "Enter the label to use for this template."
+msgstr ""
+
+#: partials/underscore/modal-empty.php:14
+msgid "No sections or controls have been defined for this element"
+msgstr ""
+
+#: partials/underscore/modal-layout.php:52
+msgid "Apply"
+msgstr ""
+
+#: partials/underscore/sidebar-home-empty.php:14
+msgid "There are no panels to display"
+msgstr ""
+
+#: partials/underscore/sidebar-home.php:17
+msgid "You are Tailoring"
+msgstr ""
+
+#: partials/underscore/sidebar-home.php:25
+msgid "Tailor allows you to layout your content in new and exciting ways through the use of elements and templates."
+msgstr ""
+
+#: partials/underscore/sidebar-home.php:29
+msgid "Preview size"
+msgstr ""
+#. Plugin Name of the plugin/theme
+msgid "Tailor"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "http://www.gettailor.com"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid "Make your off-the-shelf WordPress theme fit your content perfectly."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Andrew Worsfold"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "http://wwww.andrewworsfold.com"
+msgstr ""

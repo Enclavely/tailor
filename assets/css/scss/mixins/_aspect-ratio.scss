@@ -1,0 +1,64 @@
+
+//
+// Simple aspect ratio mixin
+//
+// @see https://css-tricks.com/snippets/sass/maintain-aspect-ratio-mixin/
+//
+@mixin aspect-ratio( $width, $height ) {
+	position: relative;
+	overflow: hidden;
+
+	&:before {
+		display: block;
+		content: " ";
+		width: 100%;
+		padding-top: percentage( $height / $width );
+	}
+
+	&.is-stretched {
+
+		img {
+			min-height: 100%;
+			min-width: 100%;
+		}
+	}
+
+	> * {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+
+		img {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			backface-visibility: hidden;
+		}
+
+		@if $width == $height  {
+
+			img {
+				width: auto;
+			}
+		}
+		@else if $width > $height {
+
+			img {
+				width: 100%;
+				height: auto;
+				max-height: none;
+			}
+		}
+		@else {
+
+			img {
+				width: auto;
+				max-width: none;
+				height: 100%;
+			}
+		}
+	}
+}

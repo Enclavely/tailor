@@ -1,0 +1,14 @@
+
+$widgets-spacing-unit: $base-spacing-unit !default;
+
+$widgets-border-width: 0 !default;
+$widgets-border-style : solid !default;
+$widgets-border-color: $border-color !default;
+
+.tailor-ui {
+
+	.tailor-widget-area {
+		margin-bottom: #{$widgets-spacing-unit}em;
+		border: $widgets-border-width $widgets-border-style $widgets-border-color;
+	}
+}

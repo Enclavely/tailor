@@ -1,0 +1,57 @@
+
+$card-spacing-unit: $base-spacing-unit !default;
+
+$card-border-width: 1px !default;
+$card-border-style : solid !default;
+$card-border-color: $border-color !default;
+
+$card-border-radius: $border-radius !default;
+$card-background-color: $background-color !default;
+$card-box-shadow: $box-shadow !default;
+
+.tailor-ui {
+
+	.tailor-card {
+		margin-bottom: #{$card-spacing-unit}em;
+		border: $card-border-width $card-border-style $card-border-color;
+		border-radius: $card-border-radius;
+		overflow: hidden;
+		text-align: left;
+
+		&--center {
+			text-align: center;
+		}
+
+		&--right {
+			text-align: right;
+		}
+
+		&.has-header-image {
+
+			.tailor-card__header {
+				color: #fff;
+				text-shadow: 1px 1px #666;
+				height: 180px;
+			}
+		}
+	}
+
+	.tailor-card__header {
+		margin: 0;
+		display: table;
+		width: 100%;
+		border-bottom: 1px solid $card-border-color;
+	}
+
+	.tailor-card__title {
+		display: table-cell;
+		vertical-align: bottom;
+		color: inherit;
+		font-size: 1.25em;
+	}
+
+	.tailor-card__header:not( :empty ),
+	.tailor-card__content {
+		padding: 1em 1.25em;
+	}
+}
