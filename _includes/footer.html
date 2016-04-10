@@ -1,0 +1,26 @@
+<footer class="bd-footer text-muted">
+  <div class="container">
+        <ul class="bd-footer-links">
+            <li>&copy; <time datetime="{{ site.time | date_to_xmlschema }}">{{ site.time | date: '%Y' }}</time> Tailor.  All rights reserved.</li>
+            <li><a href="{{ site.repo }}">GitHub</a></li>
+            <li><a href="{{ site.twitter.tailor }}">@tailorwp</a></li>
+            <li><a href="{{ site.twitter.andrew }}">@andrewjworsfold</a></li>
+        </ul>
+  </div>
+</footer>
+
+<script src="{{ site.cdn.jquery }}" integrity="{{ site.cdn.jquery_hash }}" crossorigin="anonymous"></script>
+<script>
+    window.jQuery || document.write('<script src="{{ site.baseurl }}/assets/js/vendor/jquery.min.js"><\/script>')
+</script>
+
+<script src="{{ site.baseurl }}/assets/js/bootstrap.js"></script>
+
+<script>
+    (function(a,n,d,r,e,w,j){a['GoogleAnalyticsObject']=e;a[e]=a[e]||function(){
+                (a[e].q=a[e].q||[]).push(arguments)},a[e].l=1*new Date();w=n.createElement(d),
+            j=n.getElementsByTagName(d)[0];w.async=1;w.src=r;j.parentNode.insertBefore(w,j)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-76196799-1', 'auto');
+    ga('send', 'pageview');
+</script>

@@ -1,0 +1,79 @@
+---
+# Front matter comment to ensure Jekyll properly reads file.
+---
+
+// Core variables and mixins
+@import "variables";
+@import "mixins";
+
+// Reset and dependencies
+@import "generic/normalize";
+@import "generic/reboot";
+@import "generic/print";
+
+// Core CSS
+@import "base/type";
+@import "base/images";
+@import "base/code";
+@import "base/grid";
+@import "base/tables";
+@import "base/forms";
+@import "base/buttons";
+
+// Components
+@import "components/animation";
+@import "components/dropdown";
+@import "components/button-group";
+@import "components/input-group";
+@import "components/custom-forms";
+@import "components/nav";
+@import "components/navbar";
+@import "components/card";
+@import "components/breadcrumb";
+@import "components/pagination";
+@import "components/tags";
+@import "components/jumbotron";
+@import "components/media";
+@import "components/list-group";
+@import "components/responsive-embed";
+@import "components/close";
+
+// Utility classes
+@import "utilities/background";
+@import "utilities/clearfix";
+@import "utilities/pulls";
+@import "utilities/screenreaders";
+@import "utilities/spacing";
+@import "utilities/text";
+@import "utilities/visibility";
+@import "utilities/flex";
+
+// Local docs variables
+$bd-purple:         #563d7c;
+$bd-purple-bright:  #855CA7; //lighten(saturate($bd-purple, 5%), 15%);
+$bd-purple-light:   #cdbfe3;
+$bd-graphite:       #2a2730;
+$bd-graphite-light: lighten($bd-graphite, 40%);
+$bd-yellow:         #ffe484;
+$bd-danger:         #d9534f;
+$bd-warning:        #f0ad4e;
+$bd-info:           #5bc0de;
+
+// Load docs elements
+@import "components/docs/booticon";
+@import "components/docs/nav";
+@import "components/docs/masthead";
+@import "components/docs/featurettes";
+@import "components/docs/content";
+@import "components/docs/page-header";
+@import "components/docs/skiplink";
+@import "components/docs/sidebar";
+@import "components/docs/footer";
+@import "components/docs/component-examples";
+@import "components/docs/buttons";
+@import "components/docs/callouts";
+@import "components/docs/brand";
+
+// Load docs dependencies
+@import "components/docs/syntax";
+@import "components/docs/anchor";

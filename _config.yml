@@ -1,0 +1,54 @@
+# Permalinks
+permalink:           pretty
+
+# Setup
+title:               Tailor
+tagline:             Create good looking layouts for your content
+url:                 http://gettailor.com
+paginate:            1
+
+author:
+  name:             Andrew Worsfold
+
+sass:
+  sass_dir:         assets/scss
+  style:            :compressed
+
+# About/contact
+author:
+  name:              Andrew Worsfold
+  url:               https://twitter.com/andrew-worsfold
+  email:             andrew.worsfold@gmail.com
+
+# Dependencies
+markdown:           kramdown
+highlighter:        rouge
+
+kramdown:
+  auto_ids: true
+
+# Permalinks
+permalink:        pretty
+
+# Server
+destination:      _site
+host:             0.0.0.0
+port:             9001
+url:              http://gettailor.com
+
+gems:
+  - jekyll-redirect-from
+  - jekyll-sitemap
+  - jekyll-paginate
+  - jekyll-gist
+
+# Custom vars
+wordpress:          https://wordpress.org/plugins/tailor/
+twitter:
+  tailor:           https://twitter.com/tailorwp
+  andrew:           https://twitter.com/andrewjworsfold
+repo:               https://github.com/andrew-worsfold/tailor
+
+cdn:
+  jquery:         https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js
+  jquery_hash:    "sha384-8gBf6Y4YYq7Jx97PIqmTwLPin4hxIzQw5aDmUg/DDhul9fFpbbLcLh3nTIIDJKhx"

@@ -1,0 +1,10 @@
+- title: Getting started
+  pages:
+    - title: Introduction
+    - title: JavaScript
+
+- title: Elements
+  pages:
+    - title: Buttons
+    - title: Carousel
+    - title: Hero
