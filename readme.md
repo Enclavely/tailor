@@ -6,7 +6,7 @@ Please visit the [Plugin Repository](http://wordpress.org/plugins/tailor/) on Wo
 
 ## Links
 
-* [Forum](http://forum.gettailor.com/).
-* [Documentation](http://gettailor.com/documentation/).
-* [Developers](http://gettailor.com/developers/).
-* [Author](http://www.andrewworsfold.com/).
+* [Plugin Website](http://gettailor.com/).
+* [Plugin Twitter](http://www.twitter.com/tailorwp).
+* [Author Website](http://www.andrewworsfold.com/).
+* [Author Twitter](http://www.twitter.com/andrewjworsfold).

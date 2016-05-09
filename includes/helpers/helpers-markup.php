@@ -124,7 +124,6 @@ if ( ! function_exists( 'tailor_locate_partial' ) ) {
 	 * @return string $partial
 	 */
 	function tailor_locate_partial( $partial_names ) {
-
 		$plugin_partial_paths = array( tailor()->plugin_dir() . 'partials/' );
 
 		/**
@@ -139,7 +138,6 @@ if ( ! function_exists( 'tailor_locate_partial' ) ) {
 		$partial = '';
 
 		foreach ( array_reverse( $plugin_partial_paths ) as $plugin_partial_path ) {
-
 			$plugin_partial_path = trailingslashit( $plugin_partial_path );
 
 			foreach ( (array) $partial_names as $partial_name ) {
