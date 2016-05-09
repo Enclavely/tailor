@@ -27,7 +27,7 @@ You can use Tailor with any (well coded) free or premium theme. Tailor empowers 
 
 = Free and open-source =
 
-Despite being full of premium features, Tailor is completely free and open-source. Use it to help create your next website or contribute to the project on [Github](https://github.com/andrew.worsfold/tailor/)
+Despite being full of premium features, Tailor is completely free and open-source. Use it to help create your next website or contribute to the project on [Github](https://github.com/andrew-worsfold/tailor/)
 
 We're keen to get your feedback so that we can make Tailor better!  Say hi at [@tailorwp](https://twitter.com/tailorwp) or [@andrewjworsfold](https://twitter.com/andrewjworsfold)
 
