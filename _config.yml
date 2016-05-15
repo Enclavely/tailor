@@ -30,6 +30,8 @@ tailor:
   twitter:          https://twitter.com/tailorwp
   facebook:         https://facebook.com/tailorwp
 
+analytics_id:       UA-76196799-1
+
 # Dependencies
 markdown:           kramdown
 highlighter:        rouge
