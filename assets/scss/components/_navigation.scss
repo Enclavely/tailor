@@ -1,0 +1,23 @@
+
+.navigation {
+  display: table-cell;
+  padding-left: 2em;
+  vertical-align: middle;
+}
+
+.menu--navigation {
+
+  .menu__item {
+    display: inline-block;
+
+    a {
+      margin-left: 1em;
+
+      @include hover-focus {  }
+    }
+
+    &:first-child a {
+      margin-left: 0;
+    }
+  }
+}

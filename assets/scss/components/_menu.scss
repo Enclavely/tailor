@@ -1,0 +1,34 @@
+.menu {
+  padding: 0;
+  margin: 0;
+  font-size: 0.75em;
+
+  a {
+    text-decoration: none;
+  }
+
+  .menu__title {
+    font-size: 1em;
+  }
+
+  .menu__item {
+    margin: 0;
+  }
+
+  .menu__title,
+  .menu__item {
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    list-style: none;
+
+    @extend %m-b-1;
+  }
+}
+
+.menu--inline {
+
+  .menu__item {
+    display: inline-block;
+  }
+}

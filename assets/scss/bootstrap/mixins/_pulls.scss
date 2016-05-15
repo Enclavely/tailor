@@ -1,0 +1,10 @@
+@mixin pull-left {
+  float: left;
+  margin: 2px 30px 10px 0;
+}
+
+@mixin pull-right {
+  float: right;
+  margin: 2px 0 30px 10px;
+  text-align: right;
+}

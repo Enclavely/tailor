@@ -1,0 +1,29 @@
+
+a {
+  border-bottom: 1px solid transparent;
+
+  @include transition( color ease-in-out 250ms, border-color ease-in-out 250ms );
+
+  &:hover {
+    border-color: #131313;
+  }
+}
+
+.light a {
+  color: #fff
+}
+
+.entry-content a {
+  border-color: #bdbdbd
+}
+
+.entry-content a:hover {
+  border-color: #131313
+}
+
+a:active,
+a:focus,
+input:active,
+input:focus {
+  outline: none
+}

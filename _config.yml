@@ -3,12 +3,15 @@ permalink:           pretty
 
 # Setup
 title:               Tailor
-tagline:             Create good looking layouts for your content
+tagline:             Build amazing page layouts using WordPress for free!
 url:                 http://gettailor.com
 paginate:            1
+baseurl:             ""
 
-author:
-  name:             Andrew Worsfold
+# Server
+destination:        _site
+host:               0.0.0.0
+port:               9000
 
 sass:
   sass_dir:         assets/scss
@@ -16,25 +19,23 @@ sass:
 
 # About/contact
 author:
-  name:              Andrew Worsfold
-  url:               https://twitter.com/andrew-worsfold
-  email:             andrew.worsfold@gmail.com
+  name:             Andrew Worsfold
+  url:              http://www.andrewworsfold.com
+  twitter:          https://twitter.com/andrewjworsfold
+  facebook:         https://facebook.com/andrew.worsfold
+
+tailor:
+  wordpress:        https://wordpress.org/plugins/tailor/
+  github:           https://wordpress.org/plugins/tailor/
+  twitter:          https://twitter.com/tailorwp
+  facebook:         https://facebook.com/tailorwp
 
 # Dependencies
 markdown:           kramdown
 highlighter:        rouge
 
 kramdown:
-  auto_ids: true
-
-# Permalinks
-permalink:        pretty
-
-# Server
-destination:      _site
-host:             0.0.0.0
-port:             9001
-url:              http://gettailor.com
+  auto_ids:         true
 
 gems:
   - jekyll-redirect-from
@@ -43,12 +44,12 @@ gems:
   - jekyll-gist
 
 # Custom vars
-wordpress:          https://wordpress.org/plugins/tailor/
-twitter:
-  tailor:           https://twitter.com/tailorwp
-  andrew:           https://twitter.com/andrewjworsfold
-repo:               https://github.com/andrew-worsfold/tailor
+repo:               https://github.com/andrewworsfold/tailor
+twitter:            https://twitter.com/andrewjworsfold
 
 cdn:
-  jquery:         https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js
-  jquery_hash:    "sha384-8gBf6Y4YYq7Jx97PIqmTwLPin4hxIzQw5aDmUg/DDhul9fFpbbLcLh3nTIIDJKhx"
+  # See https://www.srihash.org for info on how to generate the hashes
+  css:              https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css
+  css_hash:         "sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd"
+  jquery:           https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js
+  jquery_hash:      "sha384-8gBf6Y4YYq7Jx97PIqmTwLPin4hxIzQw5aDmUg/DDhul9fFpbbLcLh3nTIIDJKhx"

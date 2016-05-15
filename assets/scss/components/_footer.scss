@@ -1,0 +1,64 @@
+
+.footer {
+  position: relative;
+  z-index: 1;
+  background-color: $white;
+
+  @extend %p-y-1;
+
+  .btn {
+    margin-top: 1em;
+    margin-bottom: 3em;
+  }
+
+  .menu {
+
+    &:last-of-type {
+      @extend %m-b-2;
+    }
+
+    .menu__item {
+      margin-bottom: 0.5em;
+
+      &.active a {
+        color: $off-white;
+      }
+    }
+
+    a {
+      text-transform: uppercase;
+    }
+  }
+
+  .site-info {
+    font-size: 0.75em;
+    margin-top: 1em;
+  }
+}
+
+@include media-breakpoint-up( 'md' ) {
+
+  .footer {
+
+    .menu-wrap {
+      .menu {
+        display: inline-block;
+        margin-left: 3em;
+        margin-bottom: 4em;
+        vertical-align: top;
+
+        &:first-child {
+          margin-left: 0;
+        }
+
+        li {
+          margin-top: 1em;
+
+          &:first-child {
+            margin-top: 0;
+          }
+        }
+      }
+    }
+  }
+}

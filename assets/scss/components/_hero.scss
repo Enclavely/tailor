@@ -1,0 +1,41 @@
+.hero.block {
+  padding: 4em 0;
+  text-align: center;
+
+  .hero__intro {
+    @include transition( opacity 150ms );
+  }
+
+  .btn {
+    @extend %m-b-3;
+  }
+}
+
+.hero-image {
+
+  img {
+    display: block;
+    margin: 0 auto 4em;
+  }
+}
+
+.hero__tagline {
+  font-size: 1.0625em;
+  margin: 1.5em 0 2em;
+}
+
+@include media-breakpoint-up( 'md' ) {
+
+  .hero.block {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: -1;
+    padding: 8em 0;
+  }
+
+  .hero-image {
+    margin-top: 25em;
+  }
+}

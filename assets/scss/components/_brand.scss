@@ -1,0 +1,65 @@
+.brand {
+  float: left;
+  margin: 0 0 0 -0.25em;
+  line-height: 0;
+
+  a {
+    display: inline-block;
+    border: none;
+    outline: none;
+    font-size: 0;
+  }
+}
+
+.brand__icon {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.brand__icon-line {
+  fill: #10100B;
+}
+
+.brand__name {
+  display: none;
+  margin-left: 0.125em;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 2em;
+  white-space: nowrap;
+}
+
+.brand__icon,
+.brand__name {
+  vertical-align: middle;
+}
+
+.header {
+
+  .brand__icon-line {
+    @include transition( fill 250ms );
+  }
+
+  .brand__name {
+    @include transition( color 250ms );
+  }
+
+  &.is-light {
+
+    .brand__icon-line {
+      fill: #fff;
+    }
+
+    .brand__name,
+    .menu__item a {
+      color: #fff;
+    }
+  }
+}
+
+@include media-breakpoint-up( 'md' ) {
+
+  .brand__name {
+    display: inline-block;
+  }
+}

@@ -1,12 +1,31 @@
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>
+    {% if page.title == "Home" %}{{ site.title }} &middot; {{ site.tagline }}
+    {% else %}{{ page.title }} &middot; {{ site.title }}{% endif %}
+  </title>
+
+  <link href="{{ site.baseurl }}/assets/css/style.css" rel="stylesheet">
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ site.baseurl }}/apple-touch-icon-precomposed.png">
+  <link rel="shortcut icon" href="{{ site.baseurl }}/favicon.ico">
+
   <meta name="author" content="{{ site.author.name }}">
   <meta name="description" content="{{ site.title }} - {{ site.tagline }}">
-  <meta name="keywords" content="wordpress, layout, grid, builder, drag and drop, andrew worsfold">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="google-site-verification" content="KaF0dntPuWBPay4f5YYoyIC_iI6vuL8wiIXueLL7ZLs" />
-  <title>{% if page.title == "Home" %}{{ site.title }} &middot; {{ site.tagline }}{% else %}{{ page.title }} &middot; {{ site.title }}{% endif %}</title>
-  <link href="{{ site.baseurl }}/assets/css/style.css" rel="stylesheet">
-  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,700,200italic,400italic,700italic">
+  <meta name="keywords" content="{{ site.keywords }}">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="{{ site.twitter}}">
+  <meta name="twitter:creator" content="{{ site.author.twitter}}">
+  <meta name="twitter:domain" content="{{ site.baseurl }}">
+  <meta name="twitter:title" content="{{ site.title }}">
+  <meta name="twitter:description" content="{{ site.tagline }}">
+  <meta name="twitter:image" content="#">
+
+  <link rel="canonical" href="{{ site.baseurl }}">
+  <link rel="shortlink" href="{{ site.baseurl }}">
+
+  <script src="https://use.fontawesome.com/539e02aee9.js"></script>
 </head>

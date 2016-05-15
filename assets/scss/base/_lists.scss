@@ -1,0 +1,21 @@
+
+ul {
+  list-style: square;
+}
+
+ol {
+  list-style: decimal
+}
+
+li {
+  list-style-position: outside;
+}
+
+.block-list {
+  padding: 0;
+  margin: 0;
+
+  li {
+    list-style: none;
+  }
+}

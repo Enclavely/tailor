@@ -1,0 +1,49 @@
+//
+// Responsive images (opt-in)
+//
+.img-fluid {
+  @include img-fluid();
+}
+
+// Rounded corners
+.img-rounded {
+  @include border-radius($border-radius-lg);
+}
+
+// Image thumbnails
+.img-thumbnail {
+  padding: $thumbnail-padding;
+  line-height: $line-height;
+  background-color: $thumbnail-bg;
+  border: $thumbnail-border-width solid $thumbnail-border-color;
+  border-radius: $thumbnail-border-radius;
+  transition: all .2s ease-in-out;
+  @include box-shadow(0 1px 2px rgba(0,0,0,.075));
+
+  // Keep them at most 100% wide
+  @include img-fluid(inline-block);
+}
+
+// Perfect circle
+.img-circle {
+  border-radius: 50%;
+}
+
+//
+// Figures
+//
+
+.figure {
+  // Ensures the caption's text aligns with the image.
+  display: inline-block;
+}
+
+.figure-img {
+  margin-bottom: ($spacer-y / 2);
+  line-height: 1;
+}
+
+.figure-caption {
+  font-size: 90%;
+  color: $gray-light;
+}

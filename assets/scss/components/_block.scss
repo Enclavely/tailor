@@ -1,0 +1,7 @@
+
+.block {
+  position: relative;
+  background-color: $white;
+
+  @extend %p-y-3;
+}

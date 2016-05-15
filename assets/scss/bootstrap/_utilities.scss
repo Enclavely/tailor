@@ -1,0 +1,256 @@
+//
+// Margin and Padding
+//
+.m-x-auto {
+  margin-right: auto !important;
+  margin-left:  auto !important;
+}
+
+@each $prop, $abbrev in (margin: m, padding: p) {
+
+  @each $size, $lengths in $spacers {
+    $length-x:   map-get($lengths, x);
+    $length-y:   map-get($lengths, y);
+
+    %#{$abbrev}-a-#{$size},
+    .#{$abbrev}-a-#{$size} {
+      #{$prop}: $length-y $length-x;
+    }
+
+    %#{$abbrev}-t-#{$size},
+    .#{$abbrev}-t-#{$size} {
+      #{$prop}-top: $length-y;
+    }
+
+    %#{$abbrev}-r-#{$size},
+    .#{$abbrev}-r-#{$size} {
+      #{$prop}-right: $length-x;
+    }
+
+    %#{$abbrev}-b-#{$size},
+    .#{$abbrev}-b-#{$size} {
+      #{$prop}-bottom: $length-y;
+    }
+
+    %#{$abbrev}-l-#{$size},
+    .#{$abbrev}-l-#{$size} {
+      #{$prop}-left: $length-x;
+    }
+
+    %#{$abbrev}-x-#{$size},
+    .#{$abbrev}-x-#{$size} {
+      #{$prop}-right:  $length-x;
+      #{$prop}-left:   $length-x;
+    }
+
+    %#{$abbrev}-y-#{$size},
+    .#{$abbrev}-y-#{$size} {
+      #{$prop}-top:    $length-y;
+      #{$prop}-bottom: $length-y;
+    }
+  }
+}
+
+//
+// Positioning
+//
+.pos-f-t {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: $zindex-navbar-fixed;
+}
+
+
+//
+// Floats
+//
+.clearfix {
+  @include clearfix();
+}
+
+.center-block {
+  @include center-block();
+}
+
+.pull {
+  font-size: 1.0625rem;
+  font-weight: bold;
+}
+
+@each $breakpoint in map-keys($grid-breakpoints) {
+  @include media-breakpoint-up($breakpoint) {
+
+    .pull-#{$breakpoint}-left {
+      @include pull-left();
+    }
+
+    .pull-#{$breakpoint}-right {
+      @include pull-right();
+    }
+
+    .pull-#{$breakpoint}-none {
+      float: none !important;
+    }
+
+    .pull-#{$breakpoint}-left,
+    .pull-#{$breakpoint}-right {
+      max-width: 330px;
+    }
+  }
+}
+
+
+//
+// Screenreaders
+//
+.sr-only {
+  @include sr-only();
+}
+
+.sr-only-focusable {
+  @include sr-only-focusable();
+}
+
+.invisible {
+  visibility: hidden !important;
+}
+
+.text-hide {
+  @include text-hide();
+}
+
+[hidden] {
+  display: none !important;
+}
+
+//
+// Text
+//
+.text-justify {
+  text-align: justify !important;
+}
+
+.text-nowrap {
+  white-space: nowrap !important;
+}
+
+.text-truncate {
+  @include text-truncate;
+}
+
+.text-left {
+  text-align: left !important;
+}
+
+.text-right {
+  text-align: right !important;
+}
+
+.text-center {
+  text-align: center !important;
+}
+
+// Responsive alignment
+@each $breakpoint in map-keys($grid-breakpoints) {
+
+  @include media-breakpoint-up($breakpoint) {
+
+    .text-#{$breakpoint}-left {
+      text-align: left !important;
+    }
+
+    .text-#{$breakpoint}-right {
+      text-align: right !important;
+    }
+
+    .text-#{$breakpoint}-center {
+      text-align: center !important;
+    }
+  }
+}
+
+.text-lowercase {
+  text-transform: lowercase !important;
+}
+
+.text-uppercase {
+  text-transform: uppercase !important;
+}
+
+.text-capitalize {
+  text-transform: capitalize !important;
+}
+
+.font-weight-normal {
+  font-weight: normal;
+}
+
+.font-weight-bold {
+  font-weight: bold;
+}
+
+.font-italic {
+  font-style: italic;
+}
+
+.float-left {
+  float: left
+}
+
+.float-right {
+  float: right
+}
+
+//
+// Responsive utilities
+//
+
+@each $bp in map-keys($grid-breakpoints) {
+
+  .hidden-#{$bp}-up {
+    @include media-breakpoint-up($bp) {
+      display: none !important;
+    }
+  }
+
+  .hidden-#{$bp}-down {
+    @include media-breakpoint-down($bp) {
+      display: none !important;
+    }
+  }
+}
+
+//
+// Print utilities
+//
+.visible-print-block {
+  display: none !important;
+
+  @media print {
+    display: block !important;
+  }
+}
+
+.visible-print-inline {
+  display: none !important;
+
+  @media print {
+    display: inline !important;
+  }
+}
+
+.visible-print-inline-block {
+  display: none !important;
+
+  @media print {
+    display: inline-block !important;
+  }
+}
+
+.hidden-print {
+  @media print {
+    display: none !important;
+  }
+}

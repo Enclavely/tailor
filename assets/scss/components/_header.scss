@@ -1,0 +1,29 @@
+
+.header {
+  display: table;
+  padding-top: 2em;
+  padding-bottom: 2em;
+  text-align: right;
+  width: 100%;
+
+  @include transition( padding 250ms );
+}
+
+@include media-breakpoint-up( 'md' ) {
+
+  .header {
+
+    &.is-fixed {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+
+      &.is-small {
+        padding-top: 1em;
+        padding-bottom: 1em;
+      }
+    }
+  }
+}

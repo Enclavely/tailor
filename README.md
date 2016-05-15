@@ -1,6 +1,9 @@
-# [Tailor](http://gettailor.com)
+# Website template
 
-Make any off-the-shelf WordPress theme fit your content perfectly!
+## Table of contents
+
+- [Author](#author)
+- [Copyright and license](#copyright-and-license)
 
 ## Author
 
@@ -12,5 +15,3 @@ Make any off-the-shelf WordPress theme fit your content perfectly!
 ## Copyright and license
 
 Copyright 2016 Andrew Worsfold.
-
-Code released under [the GPL3 license](http://www.gnu.org/licenses/gpl-3.0.en.html).

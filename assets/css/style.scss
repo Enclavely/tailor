@@ -1,79 +1,448 @@
 ---
-# Front matter comment to ensure Jekyll properly reads file.
+# This file compiles into style.css
 ---
 
-// Core variables and mixins
-@import "variables";
+@mixin _assert-ascending($map, $map-name) {
+	$prev-key: null;
+	$prev-num: null;
+	@each $key, $num in $map {
+		@if $prev-num != null and $prev-num >= $num {
+			@warn "Invalid value for #{$map-name}: This map must be in ascending order, but key '#{$key}' has value #{$num} which isn't greater than #{$prev-num}, the value of the previous key '#{$prev-key}' !";
+		}
+		$prev-key: $key;
+		$prev-num: $num;
+	}
+}
+
+$grid-breakpoints: (
+		xs: 0,
+		sm: 544px,
+		md: 768px,
+		lg: 992px,
+		xl: 1200px
+) !default;
+
+$container-max-widths: (
+		sm: 576px,
+		md: 720px,
+		lg: 940px,
+		xl: 1140px
+) !default;
+
+$spacer:   1rem !default;
+$spacer-x: $spacer !default;
+$spacer-y: $spacer !default;
+$spacers: (
+		0: (
+				x: 0,
+				y: 0
+		),
+		1: (
+				x: $spacer-x,
+				y: $spacer-y
+		),
+		2: (
+				x: ($spacer-x * 1.5),
+				y: ($spacer-y * 1.5)
+		),
+		3: (
+				x: ($spacer-x * 3),
+				y: ($spacer-y * 3)
+		)
+) !default;
+
+$enable-flex:               false !default;
+$enable-rounded:            true !default;
+$enable-shadows:            false !default;
+$enable-gradients:          false !default;
+$enable-transitions:        true !default;
+$enable-grid-classes:       true !default;
+$enable-print-styles:       true !default;
+$enable-hover-media-query:  false !default;
+
+$font-family-serif:         Georgia, "Times New Roman", Times, serif !default;
+$font-family-monospace:     Consolas, Monaco, monospace !default;
+$font-family-sans-serif:    "Roboto", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif !default; //"Source Sans Pro"
+
+$font-size-lg:              1.25rem !default;
+$font-size-sm:              .875rem !default;
+$font-size-xs:              .75rem !default;
+
+$white:                     #fff !default;
+$off-white:                 #fdfdfd !default;
+
+$gray:                      #383834 !default;
+$gray-darkest:              darken( $gray, 45% ) !default;
+$gray-darker:               darken( $gray, 30% ) !default;
+$gray-dark:                 darken( $gray, 15% ) !default; //#373a3c !default;
+$gray-light:                lighten( $gray, 15% ) !default; //#818a91 !default;
+$gray-lighter:              lighten( $gray, 30% ) !default; //#eceeef !default;
+$gray-lightest:             lighten( $gray, 45% ) !default; //#f7f7f9 !default;
+
+$brand-primary:             #358BDF !default; // #855CA7 !default; //#0275d8 !default;
+$brand-success:             #5cb85c !default;
+$brand-info:                #5bc0de !default;
+$brand-warning:             #f0ad4e !default;
+$brand-danger:              #d9534f !default;
+
+$state-success-text:        #3c763d !default;
+$state-success-bg:          #dff0d8 !default;
+$state-success-border:      darken($state-success-bg, 5%) !default;
+
+$state-info-text:           #31708f !default;
+$state-info-bg:             #d9edf7 !default;
+$state-info-border:         darken($state-info-bg, 7%) !default;
+
+$state-warning-text:        #8a6d3b !default;
+$state-warning-bg:          #fcf8e3 !default;
+$mark-bg:                   $state-warning-bg !default;
+$state-warning-border:      darken($state-warning-bg, 5%) !default;
+
+$state-danger-text:         #a94442 !default;
+$state-danger-bg:           #f2dede !default;
+$state-danger-border:       darken($state-danger-bg, 5%) !default;
+
 @import "mixins";
 
-// Reset and dependencies
+/**
+ *  Table of Contents:
+ *
+ *  1.0  Normalize
+ *  2.0  Reboot
+ *  3.0  Basic styles
+ *    3.1  Links
+ */
+
+/**
+ * 1.0 Normalize
+ */
 @import "generic/normalize";
+
+/**
+ *	2.0 Reboot
+ */
+$font-size-root:            16px !default;
+$font-size-base:            1rem !default;
+$font-family-base:          $font-family-sans-serif !default;
+
+$line-height-base:          1.5 !default;
+$line-height-lg:            (4 / 3) !default;
+$line-height-sm:            1.5 !default;
+
+$body-color:                $gray-light !default; // #4c4c4c
+$body-bg:                   #fff !default;
+$abbr-border-color:         $gray-light !default;
+$dt-font-weight:            bold !default;
+$link-color:                #101010 !default; //$gray-darker !default;
+$link-decoration:           none !default;
+$link-hover-color:          $gray-darkest !default; //darken( $link-color, 15% ) !default;
+$link-hover-decoration:     none !default;
+$table-bg:                  transparent !default;
+$table-cell-padding:        .75rem !default;
+
 @import "generic/reboot";
-@import "generic/print";
 
-// Core CSS
-@import "base/type";
+html {
+	font-size: 16px;
+}
+
+body {
+	text-align: center;
+
+	&:after {
+		position: fixed;
+		right: -500px;
+		top: 1100px;
+		pointer-events: none;
+		z-index: -1;
+		content: '';
+		transform: rotate(-45deg);
+		width: 3000px;
+		height: 1px;
+		background-color: rgba(0,0,0,0.1);
+	}
+}
+
+@include media-breakpoint-up( 'sm' ) {
+
+	body {
+		text-align: initial;
+	}
+}
+
+@include media-breakpoint-up( 'md' ) {
+
+	html {
+		//font-size: 17px; // 1.0625rem; // 17px
+	}
+}
+
+@include media-breakpoint-up( 'lg' ) {
+
+	html {
+		font-size: 18px; //1.125rem; // 18px
+	}
+}
+
+@include media-breakpoint-up( 'xl' ) {
+
+	html {
+		//font-size: 19px; // 1.1875rem; // 19px
+	}
+}
+
+/**
+ *  3.0 Basic styles
+ */
+$border-radius:                 .25rem !default;
+$border-radius-lg:              .3rem !default;
+$border-radius-sm:              .2rem !default;
+$border-width:                  1px !default;
+
+/**
+ *  Font faces
+ */
+@import "fonts";
+
+/**
+ *  Grid
+ */
+$grid-columns:                  12 !default;
+$grid-gutter-width:             30px !default;
+
+@include _assert-ascending($grid-breakpoints, "$grid-breakpoints");
+@include _assert-ascending($container-max-widths, "$container-max-widths");
+
+@import "bootstrap/grid";
+
+/**
+ *  Typography
+ */
+$line-height:                   1.5 !default;
+
+$font-size-h1:                  2.5em !default;
+$font-size-h2:                  2em !default;
+$font-size-h3:                  1.25em !default;
+$font-size-h4:                  1.125em !default;
+$font-size-h5:                  1.0625em !default;
+$font-size-h6:                  1em !default;
+
+$headings-margin-bottom:        $spacer !default; // ($spacer / 2) !default;
+$headings-font-family:          inherit !default;
+$headings-font-weight:          400 !default;
+$headings-line-height:          1.1 !default;
+$headings-color:                $gray-dark !default;
+
+$display1-size:                 5em !default;
+$display2-size:                 4em !default;
+$display3-size:                 3em !default;
+$display4-size:                 2.5em !default;
+
+$display1-weight:               100 !default;
+$display2-weight:               100 !default;
+$display3-weight:               100 !default;
+$display4-weight:               100 !default;
+
+$lead-font-size:                1.25rem !default;
+$lead-font-weight:              300 !default;
+$small-font-size:               80% !default;
+
+$mark-bg-color:                 #fcf8e3 !default;
+$hr-border-color:               rgba(0,0,0,.1) !default;
+$hr-border-width:               $border-width !default;
+$list-inline-padding:           5px !default;
+
+$blockquote-small-color:        $gray-light !default;
+$blockquote-font-size:          ($font-size-base * 1.25) !default;
+$blockquote-border-color:       $gray-lighter !default;
+$blockquote-border-width:       .25rem !default;
+
+@import "bootstrap/typography";
+
+h1,
+h2 {
+	font-weight: 300;
+}
+
+/**
+ *  Images
+ */
+$thumbnail-padding:             0 !default;
+$thumbnail-bg:                  $body-bg !default;
+$thumbnail-border-width:        $border-width !default;
+$thumbnail-border-color:        #ddd !default;
+$thumbnail-border-radius:       $border-radius !default;
+$thumbnail-box-shadow:          0 1px 2px rgba(0,0,0,.075) !default;
+$figure-caption-font-size:      90% !default;
+
+@import "bootstrap/images";
+
+/**
+ *  Buttons
+ */
+$btn-padding-x:                 1rem !default;
+$btn-padding-y:                 .5rem !default;
+$btn-line-height:               1.25 !default;
+$btn-font-weight:               normal !default;
+$btn-box-shadow:                inset 0 1px 0 rgba(255,255,255,.15), 0 1px 1px rgba(0,0,0,.075) !default;
+$btn-active-box-shadow:         inset 0 3px 5px rgba(0,0,0,.125) !default;
+$input-btn-border-width:        $border-width !default; // For form controls and buttons
+$cursor-disabled:               not-allowed !default;
+
+$btn-primary-color:             #fff !default;
+$btn-primary-bg:                $brand-primary !default;
+$btn-primary-border:            $btn-primary-bg !default;
+
+$btn-secondary-color:           $gray-dark !default;
+$btn-secondary-bg:              #fff !default;
+$btn-secondary-border:          #ccc !default;
+
+$btn-info-color:                #fff !default;
+$btn-info-bg:                   $brand-info !default;
+$btn-info-border:               $btn-info-bg !default;
+
+$btn-success-color:             #fff !default;
+$btn-success-bg:                $brand-success !default;
+$btn-success-border:            $btn-success-bg !default;
+
+$btn-warning-color:             #fff !default;
+$btn-warning-bg:                $brand-warning !default;
+$btn-warning-border:            $btn-warning-bg !default;
+
+$btn-danger-color:              #fff !default;
+$btn-danger-bg:                 $brand-danger !default;
+$btn-danger-border:             $btn-danger-bg !default;
+
+$btn-link-disabled-color:       $gray-light !default;
+$btn-padding-x-sm:              .5rem !default;
+$btn-padding-y-sm:              .25rem !default;
+$btn-padding-x-lg:              1.5rem !default;
+$btn-padding-y-lg:              .5rem !default;
+$btn-block-spacing-y:           5px !default;
+$btn-toolbar-margin:            5px !default;
+
+$btn-border-radius:             2em !default; //$border-radius !default;
+$btn-border-radius-lg:          2em !default; //$border-radius-lg !default;
+$btn-border-radius-sm:          2em !default; //$border-radius-sm !default;
+
+@import "bootstrap/buttons";
+
+.btn {
+	font-size: 0.75em;
+	font-weight: 700;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+
+	i {
+		vertical-align: middle;
+
+		+ span {
+			margin-left: 0.5em;
+		}
+	}
+}
+
+/**
+ *  Tables
+ */
+$table-sm-cell-padding:         .25rem !default;
+$table-bg-accent:               #f9f9f9 !default;
+$table-bg-hover:                #f5f5f5 !default;
+$table-bg-active:               $table-bg-hover !default;
+$table-border-width:            $border-width !default;
+$table-border-color:            $gray-lighter !default;
+
+@import "bootstrap/tables";
+
+/**
+ *  Code
+ */
+$code-font-size:                90% !default;
+$code-padding-x:                .4rem !default;
+$code-padding-y:                .2rem !default;
+$code-color:                    #bd4147 !default;
+$code-bg:                       #f7f7f9 !default;
+$kbd-color:                     #fff !default;
+$kbd-bg:                        #333 !default;
+$pre-bg:                        #f7f7f9 !default;
+$pre-color:                     $gray-dark !default;
+$pre-border-color:              #ccc !default;
+$pre-scrollable-max-height:     340px !default;
+$nested-kbd-font-weight:        bold !default;
+
+@import "bootstrap/code";
+
+/**
+ *  Forms
+ */
+$input-padding-x:               .75rem !default;
+$input-padding-y:               .5rem !default;
+$input-bg:                      #fff !default;
+$input-bg-disabled:             $gray-lighter !default;
+$input-color:                   $gray !default;
+$input-border-color:            rgba(0,0,0,.15) !default;
+$input-box-shadow:              inset 0 1px 1px rgba(0,0,0,.075) !default;
+$input-border-radius:           $border-radius !default;
+$input-border-radius-lg:        $border-radius-lg !default;
+$input-border-radius-sm:        $border-radius-sm !default;
+$input-border-focus:            #66afe9 !default;
+$input-box-shadow-focus:        rgba(102,175,233,.6) !default;
+$input-color-placeholder:       #999 !default;
+$input-padding-x-sm:            .5rem !default;
+$input-padding-y-sm:            .25rem !default;
+$input-padding-x-lg:            1.5rem !default;
+$input-padding-y-lg:            .75rem !default;
+$input-height:                  (($font-size-base * $line-height-base) + ($input-padding-y * 2)) !default;
+$input-height-lg:               (($font-size-lg * $line-height-lg) + ($input-padding-y-lg * 2)) !default;
+$input-height-sm:               (($font-size-sm * $line-height-sm) + ($input-padding-y-sm * 2)) !default;
+$form-group-margin-bottom:      $spacer-y !default;
+
+// Form validation icons
+$form-icon-success: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath fill='%235cb85c' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3E%3C/svg%3E") !default;
+$form-icon-warning: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath fill='%23f0ad4e' d='M4.4 5.324h-.8v-2.46h.8zm0 1.42h-.8V5.89h.8zM3.76.63L.04 7.075c-.115.2.016.425.26.426h7.397c.242 0 .372-.226.258-.426C6.726 4.924 5.47 2.79 4.253.63c-.113-.174-.39-.174-.494 0z'/%3E%3C/svg%3E") !default;
+$form-icon-danger: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23d9534f' viewBox='-2 -2 7 7'%3E%3Cpath stroke='%23d9534f' d='M0 0l3 3m0-3L0 3'/%3E%3Ccircle r='.5'/%3E%3Ccircle cx='3' r='.5'/%3E%3Ccircle cy='3' r='.5'/%3E%3Ccircle cx='3' cy='3' r='.5'/%3E%3C/svg%3E") !default;
+
+@import "bootstrap/forms";
+
+/**
+ *  Utilities
+ */
+$text-muted:                    $gray-light !default;
+$zindex-navbar-fixed:           1030 !default;
+
+@import "bootstrap/utilities";
+
+/**
+ *  Print
+ */
+@import "bootstrap/print";
+
+/**
+ *  Responsive embed
+ */
+@import "bootstrap/responsive-embed";
+
+/**
+ *  Base styles
+ */
+@import "base/links";
+@import "base/lists";
 @import "base/images";
-@import "base/code";
-@import "base/grid";
-@import "base/tables";
-@import "base/forms";
-@import "base/buttons";
 
-// Components
-@import "components/animation";
-@import "components/dropdown";
-@import "components/button-group";
-@import "components/input-group";
-@import "components/custom-forms";
-@import "components/nav";
-@import "components/navbar";
-@import "components/card";
-@import "components/breadcrumb";
-@import "components/pagination";
-@import "components/tags";
-@import "components/jumbotron";
-@import "components/media";
-@import "components/list-group";
-@import "components/responsive-embed";
-@import "components/close";
+@import "variables";
 
-// Utility classes
-@import "utilities/background";
-@import "utilities/clearfix";
-@import "utilities/pulls";
-@import "utilities/screenreaders";
-@import "utilities/spacing";
-@import "utilities/text";
-@import "utilities/visibility";
-@import "utilities/flex";
 
-// Local docs variables
-$bd-purple:         #563d7c;
-$bd-purple-bright:  #855CA7; //lighten(saturate($bd-purple, 5%), 15%);
-$bd-purple-light:   #cdbfe3;
-$bd-graphite:       #2a2730;
-$bd-graphite-light: lighten($bd-graphite, 40%);
-$bd-yellow:         #ffe484;
-$bd-danger:         #d9534f;
-$bd-warning:        #f0ad4e;
-$bd-info:           #5bc0de;
+@import "components/header";
+@import "components/brand";
+@import "components/menu";
+@import "components/navigation";
+@import "components/hero";
 
-// Load docs elements
-@import "components/docs/booticon";
-@import "components/docs/nav";
-@import "components/docs/masthead";
-@import "components/docs/featurettes";
-@import "components/docs/content";
-@import "components/docs/page-header";
-@import "components/docs/skiplink";
-@import "components/docs/sidebar";
-@import "components/docs/footer";
-@import "components/docs/component-examples";
-@import "components/docs/buttons";
-@import "components/docs/callouts";
-@import "components/docs/brand";
+@import "components/footer";
 
-// Load docs dependencies
-@import "components/docs/syntax";
-@import "components/docs/anchor";
+@import "components/block";
+@import "components/blocks/features-summary";
+
+
+@import "components/dark";
+@import "components/syntax";

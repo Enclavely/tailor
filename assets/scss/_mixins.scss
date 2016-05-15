@@ -15,39 +15,39 @@
 }
 
 // Utilities
-@import "mixins/breakpoints";
-@import "mixins/hover";
-@import "mixins/image";
-@import "mixins/tag";
-@import "mixins/reset-filter";
-@import "mixins/resize";
-@import "mixins/screen-reader";
-@import "mixins/size";
-@import "mixins/tab-focus";
-@import "mixins/reset-text";
-@import "mixins/text-emphasis";
-@import "mixins/text-hide";
-@import "mixins/text-truncate";
+@import "bootstrap/mixins/breakpoints";
+@import "bootstrap/mixins/hover";
+@import "bootstrap/mixins/image";
+@import "bootstrap/mixins/tag";
+@import "bootstrap/mixins/reset-filter";
+@import "bootstrap/mixins/resize";
+@import "bootstrap/mixins/screen-reader";
+@import "bootstrap/mixins/size";
+@import "bootstrap/mixins/tab-focus";
+@import "bootstrap/mixins/reset-text";
+@import "bootstrap/mixins/text-emphasis";
+@import "bootstrap/mixins/text-hide";
+@import "bootstrap/mixins/text-truncate";
 
 // // Components
-@import "mixins/alert";
-@import "mixins/buttons";
-@import "mixins/cards";
-@import "mixins/pagination";
-@import "mixins/lists";
-@import "mixins/list-group";
-@import "mixins/nav-divider";
-@import "mixins/forms";
-@import "mixins/progress";
-@import "mixins/table-row";
+@import "bootstrap/mixins/alert";
+@import "bootstrap/mixins/buttons";
+@import "bootstrap/mixins/cards";
+@import "bootstrap/mixins/pagination";
+@import "bootstrap/mixins/lists";
+@import "bootstrap/mixins/list-group";
+@import "bootstrap/mixins/nav-divider";
+@import "bootstrap/mixins/forms";
+@import "bootstrap/mixins/progress";
+@import "bootstrap/mixins/table-row";
 
 // // Skins
-@import "mixins/background-variant";
-@import "mixins/border-radius";
-@import "mixins/gradients";
+@import "bootstrap/mixins/border-radius";
+@import "bootstrap/mixins/gradients";
 
 // // Layout
-@import "mixins/clearfix";
-@import "mixins/grid-framework";
-@import "mixins/grid";
-@import "mixins/pulls";
+@import "bootstrap/mixins/clearfix";
+@import "bootstrap/mixins/center-block";
+@import "bootstrap/mixins/grid-framework";
+@import "bootstrap/mixins/grid";
+@import "bootstrap/mixins/pulls";
