@@ -11,5 +11,5 @@
 defined( 'ABSPATH' ) or die(); ?>
 
 <script id="tmpl-tailor-home-empty" type="text/html">
-    <?php printf( '<p>%s</p>', __( 'There are no panels to display', tailor()->textdomain() ) ); ?>
+    <?php printf( '<p>%s</p>', __( 'There are no panels to display', 'tailor' ) ); ?>
 </script>

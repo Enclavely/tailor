@@ -28,17 +28,17 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Button_Element'
 	    protected function register_controls() {
 
 		    $this->add_section( 'general', array(
-			    'title'                 =>  __( 'General', tailor()->textdomain() ),
+			    'title'                 =>  __( 'General', 'tailor' ),
 			    'priority'              =>  10,
 		    ) );
 
 		    $this->add_section( 'colors', array(
-			    'title'                 =>  __( 'Colors', tailor()->textdomain() ),
+			    'title'                 =>  __( 'Colors', 'tailor' ),
 			    'priority'              =>  20,
 		    ) );
 
 		    $this->add_section( 'attributes', array(
-			    'title'                 =>  __( 'Attributes', tailor()->textdomain() ),
+			    'title'                 =>  __( 'Attributes', 'tailor' ),
 			    'priority'              =>  30,
 		    ) );
 
@@ -49,7 +49,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Button_Element'
 			    'default'               =>  $this->label,
 		    ) );
 		    $this->add_control( 'content', array(
-			    'label'                 =>  __( 'Label', tailor()->textdomain() ),
+			    'label'                 =>  __( 'Label', 'tailor' ),
 			    'type'                  =>  'text',
 			    'priority'              =>  $priority += 10,
 			    'section'               =>  'general',
@@ -67,18 +67,18 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Button_Element'
 			    'style'                 =>  array(
 				    'control'               =>  array(
 					    'choices'               =>  array(
-						    'default'               =>  __( 'Default', tailor()->textdomain() ),
-						    'primary'               =>  __( 'Primary', tailor()->textdomain() ),
+						    'default'               =>  __( 'Default', 'tailor' ),
+						    'primary'               =>  __( 'Primary', 'tailor' ),
 					    ),
 				    ),
 			    ),
 			    'alignment'             =>  array(
                     'control'               =>  array(
                         'choices'               =>  array(
-                            'left'                  =>  __( 'Left', tailor()->textdomain() ),
-                            'center'                =>  __( 'Center', tailor()->textdomain() ),
-                            'right'                 =>  __( 'Right', tailor()->textdomain() ),
-                            'block'                 =>  __( 'Block', tailor()->textdomain() ),
+                            'left'                  =>  __( 'Left', 'tailor' ),
+                            'center'                =>  __( 'Center', 'tailor' ),
+                            'right'                 =>  __( 'Right', 'tailor' ),
+                            'block'                 =>  __( 'Block', 'tailor' ),
                         ),
                     ),
 			    ),

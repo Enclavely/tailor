@@ -16,7 +16,7 @@ defined( 'ABSPATH' ) or die(); ?>
             <div class="dialog__title">
                 <h2><%= title %></h2>
             </div>
-	        <button class="dialog__close js-close" title="<?php _e( 'Close', tailor()->textdomain() ); ?>"></button>
+	        <button class="dialog__close js-close" title="<?php _e( 'Close', 'tailor' ); ?>"></button>
         </div>
         <div class="dialog__content"><%= content %></div>
         <div class="dialog__footer">

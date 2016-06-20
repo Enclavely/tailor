@@ -83,7 +83,7 @@ if ( ! class_exists( 'Tailor_Templates' ) ) {
 
 			register_post_type( $this->post_name, array(
 				'labels'            =>  array(
-					'name'              =>  __( 'Tailor Templates', tailor()->textdomain() )
+					'name'              =>  __( 'Tailor Templates', 'tailor' )
 				),
 				'show_ui'           =>  false,
 				'query_var'         =>  true,
@@ -249,7 +249,7 @@ if ( ! class_exists( 'Tailor_Templates' ) ) {
 
 			if ( ! is_array( $unsanitized_models ) ) {
 				wp_send_json_error( array(
-					'message'           =>  __( 'Invalid template', tailor()->textdomain() )
+					'message'           =>  __( 'Invalid template', 'tailor' )
 				) );
 			}
 
@@ -270,7 +270,7 @@ if ( ! class_exists( 'Tailor_Templates' ) ) {
 
 			if ( false == $update ) {
 				wp_send_json_error( array(
-					'message'           =>  __( 'The template could not be saved', tailor()->textdomain() )
+					'message'           =>  __( 'The template could not be saved', 'tailor' )
 				) );
 			}
 
@@ -308,7 +308,7 @@ if ( ! class_exists( 'Tailor_Templates' ) ) {
 
 			if ( ! isset( $_POST['template_id'] ) ) {
 				wp_send_json_error( array(
-					'message'           =>  __( 'Invalid template', tailor()->textdomain() )
+					'message'           =>  __( 'Invalid template', 'tailor' )
 				) );
 			}
 
@@ -317,7 +317,7 @@ if ( ! class_exists( 'Tailor_Templates' ) ) {
 
 			if ( false == $template ) {
 				wp_send_json_error( array(
-					'message'           =>  __( 'The template does not exist', tailor()->textdomain() )
+					'message'           =>  __( 'The template does not exist', 'tailor' )
 				) );
 			}
 
@@ -356,14 +356,14 @@ if ( ! class_exists( 'Tailor_Templates' ) ) {
 
 			if ( ! isset( $_POST[ 'id' ] ) ) {
 				wp_send_json_error( array(
-					'message'           =>  __( 'Invalid template', tailor()->textdomain() )
+					'message'           =>  __( 'Invalid template', 'tailor' )
 				) );
 			}
 
 			$template_id = wp_unslash( $_POST[ 'id' ] );
 			if ( ! delete_post_meta( $this->get_storage_post_id(), $template_id ) ) {
 				wp_send_json_error( array(
-					'message'           =>  __( 'The template could not be deleted', tailor()->textdomain() )
+					'message'           =>  __( 'The template could not be deleted', 'tailor' )
 				) );
 			}
 

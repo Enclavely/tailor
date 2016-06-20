@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) or die(); ?>
 	<div class="error notice notice-error is-dismissible">
 		<p><%= message %></p>
 		<button type="button" class="notice-dismiss">
-			<span class="screen-reader-text"><?php _e( 'Dismiss this notice.', tailor()->textdomain() ); ?></span>
+			<span class="screen-reader-text"><?php _e( 'Dismiss this notice.', 'tailor' ); ?></span>
 		</button>
 	</div>
 </script>

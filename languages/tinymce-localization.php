@@ -24,8 +24,8 @@ if ( ! class_exists( '_WP_Editors' ) ) {
 function tailor_tinymce_localization() {
 
 	$strings = array(
-		'title'         =>  __( 'Select Icon', tailor()->textdomain() ),
-		'select'         =>  __( 'Select', tailor()->textdomain() ),
+		'title'         =>  __( 'Select Icon', 'tailor' ),
+		'select'         =>  __( 'Select', 'tailor' ),
 	);
 	$locale = _WP_Editors::$mce_locale;
 	$translated = 'tinyMCE.addI18n( "' . $locale . '.tailoricon", ' . json_encode( $strings ) . ");\n";

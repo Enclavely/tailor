@@ -28,17 +28,17 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Toggles_Element
         protected function register_controls() {
 
 	        $this->add_section( 'general', array(
-		        'title'                 =>  __( 'General', tailor()->textdomain() ),
+		        'title'                 =>  __( 'General', 'tailor' ),
 		        'priority'              =>  10,
 	        ) );
 
 	        $this->add_section( 'colors', array(
-		        'title'                 =>  __( 'Colors', tailor()->textdomain() ),
+		        'title'                 =>  __( 'Colors', 'tailor' ),
 		        'priority'              =>  20,
 	        ) );
 
 	        $this->add_section( 'attributes', array(
-		        'title'                 =>  __( 'Attributes', tailor()->textdomain() ),
+		        'title'                 =>  __( 'Attributes', 'tailor' ),
 		        'priority'              =>  30,
 	        ) );
 
@@ -48,7 +48,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Toggles_Element
 		        'sanitize_callback'     =>  'tailor_sanitize_number',
 	        ) );
 	        $this->add_control( 'accordion', array(
-		        'label'                 =>  __( 'Accordion', tailor()->textdomain() ),
+		        'label'                 =>  __( 'Accordion', 'tailor' ),
 		        'type'                  =>  'switch',
 		        'priority'              =>  $priority += 10,
 		        'section'               =>  'general',

@@ -28,17 +28,17 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Section_Element
         protected function register_controls() {
 
 	        $this->add_section( 'general', array(
-		        'title'                 =>  __( 'General', tailor()->textdomain() ),
+		        'title'                 =>  __( 'General', 'tailor' ),
 		        'priority'              =>  10,
 	        ) );
 
 	        $this->add_section( 'colors', array(
-		        'title'                 =>  __( 'Colors', tailor()->textdomain() ),
+		        'title'                 =>  __( 'Colors', 'tailor' ),
 		        'priority'              =>  20,
 	        ) );
 
 	        $this->add_section( 'attributes', array(
-		        'title'                 =>  __( 'Attributes', tailor()->textdomain() ),
+		        'title'                 =>  __( 'Attributes', 'tailor' ),
 		        'priority'              =>  30,
 	        ) );
 
@@ -94,8 +94,8 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Section_Element
 		        'margin'                =>  array(
                     'control'               =>  array(
                         'choices'               =>  array(
-                            'top'                   =>  __( 'Top', tailor()->textdomain() ),
-                            'bottom'                =>  __( 'Bottom', tailor()->textdomain() ),
+                            'top'                   =>  __( 'Top', 'tailor' ),
+                            'bottom'                =>  __( 'Bottom', 'tailor' ),
                         ),
                     ),
 		        ),

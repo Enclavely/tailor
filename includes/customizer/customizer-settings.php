@@ -25,8 +25,8 @@ if ( ! function_exists( 'tailor_get_customizer_settings' ) ) {
                     'sanitize_callback'         =>  'tailor_sanitize_text',
                 ),
                 'control'                   => array(
-                    'label'                     =>  __( 'Section width', tailor()->textdomain() ),
-                    'description'               =>  __( 'The maximum width for sections.', tailor()->textdomain() ),
+                    'label'                     =>  __( 'Section width', 'tailor' ),
+                    'description'               =>  __( 'The maximum width for sections.', 'tailor' ),
                     'type'                      =>  'text',
                     'priority'                  =>  10,
                     'section'                   =>  'layout',
@@ -37,8 +37,8 @@ if ( ! function_exists( 'tailor_get_customizer_settings' ) ) {
                     'sanitize_callback'         =>  'tailor_sanitize_text',
                 ),
                 'control'                   => array(
-                    'label'                     =>  __( 'Column spacing', tailor()->textdomain() ),
-                    'description'               =>  __( 'The amount of horizontal space to display between columns.', tailor()->textdomain() ),
+                    'label'                     =>  __( 'Column spacing', 'tailor' ),
+                    'description'               =>  __( 'The amount of horizontal space to display between columns.', 'tailor' ),
                     'type'                      =>  'text',
                     'priority'                  =>  20,
                     'section'                   =>  'layout',
@@ -49,8 +49,8 @@ if ( ! function_exists( 'tailor_get_customizer_settings' ) ) {
                     'sanitize_callback'         =>  'tailor_sanitize_text',
                 ),
                 'control'                   => array(
-                    'label'                     =>  __( 'Element spacing', tailor()->textdomain() ),
-                    'description'               =>  __( 'The amount of vertical space to display between elements.', tailor()->textdomain() ),
+                    'label'                     =>  __( 'Element spacing', 'tailor' ),
+                    'description'               =>  __( 'The amount of vertical space to display between elements.', 'tailor' ),
                     'type'                      =>  'text',
                     'priority'                  =>  30,
                     'section'                   =>  'layout',

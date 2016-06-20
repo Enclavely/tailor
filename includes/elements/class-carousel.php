@@ -36,17 +36,17 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Carousel_Elemen
         protected function register_controls() {
 
 	        $this->add_section( 'general', array(
-		        'title'                 =>  __( 'General', tailor()->textdomain() ),
+		        'title'                 =>  __( 'General', 'tailor' ),
 		        'priority'              =>  10,
 	        ) );
 
 	        $this->add_section( 'colors', array(
-		        'title'                 =>  __( 'Colors', tailor()->textdomain() ),
+		        'title'                 =>  __( 'Colors', 'tailor' ),
 		        'priority'              =>  20,
 	        ) );
 
 	        $this->add_section( 'attributes', array(
-		        'title'                 =>  __( 'Attributes', tailor()->textdomain() ),
+		        'title'                 =>  __( 'Attributes', 'tailor' ),
 		        'priority'              =>  30,
 	        ) );
 
@@ -65,14 +65,14 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Carousel_Elemen
 		        'style'                 =>  array(
 			        'control'               =>  array(
 				        'choices'               =>  array(
-					        'default'               =>  __( 'Default', tailor()->textdomain() ),
-					        'slider'                =>  __( 'Slider', tailor()->textdomain() ),
+					        'default'               =>  __( 'Default', 'tailor' ),
+					        'slider'                =>  __( 'Slider', 'tailor' ),
 				        ),
 			        ),
 		        ),
 		        'autoplay'              =>  array(
 			        'control'               =>  array(
-				        'description'           =>  __( 'This will only take effect in the frontend', tailor()->textdomain() ),
+				        'description'           =>  __( 'This will only take effect in the frontend', 'tailor' ),
 			        ),
 		        ),
 		        'fade'                  =>  array(
@@ -87,7 +87,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Carousel_Elemen
 		        ),
 		        'dots'                  =>  array(
 			        'control'               =>  array(
-				        'description'           =>  __( 'This will only take effect in the frontend', tailor()->textdomain() ),
+				        'description'           =>  __( 'This will only take effect in the frontend', 'tailor' ),
 			        ),
 		        ),
 	        );

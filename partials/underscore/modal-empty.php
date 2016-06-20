@@ -11,5 +11,5 @@
 defined( 'ABSPATH' ) or die(); ?>
 
 <script id="tmpl-tailor-modal-empty" type="text/html">
-    <p><?php _e( 'No sections or controls have been defined for this element', tailor()->textdomain() ); ?></p>
+    <p><?php _e( 'No sections or controls have been defined for this element', 'tailor' ); ?></p>
 </script>

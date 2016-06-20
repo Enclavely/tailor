@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) or die(); ?>
 
 <div class="wrap">
 
-	<h1><?php _e( 'Tailor settings', tailor()->textdomain() ) ?></h1>
+	<h1><?php _e( 'Tailor settings', 'tailor' ) ?></h1>
 
 	<?php settings_errors( $page ); ?>
 

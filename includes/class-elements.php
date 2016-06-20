@@ -121,152 +121,152 @@ if ( ! class_exists( 'Tailor_Elements' ) ) {
         public function register_elements() {
 
             $this->add_element( 'tailor_section', array(
-                'label'             =>  __( 'Section', tailor()->textdomain() ),
-                'description'       =>  __( 'Group and style content.', tailor()->textdomain() ),
+                'label'             =>  __( 'Section', 'tailor' ),
+                'description'       =>  __( 'Group and style content.', 'tailor' ),
                 'type'              =>  'wrapper',
             ) );
 
 	        $this->add_element( 'tailor_tabs', array(
-		        'label'             =>  __( 'Tabs', tailor()->textdomain() ),
-		        'description'       =>  __( 'Display content in tabs.', tailor()->textdomain() ),
+		        'label'             =>  __( 'Tabs', 'tailor' ),
+		        'description'       =>  __( 'Display content in tabs.', 'tailor' ),
 		        'type'              =>  'container',
 		        'child'             =>  'tailor_tab',
 	        ) );
 
 	        $this->add_element( 'tailor_toggles', array(
-		        'label'             =>  __( 'Toggles', tailor()->textdomain() ),
-		        'description'       =>  __( 'Display content in toggles.', tailor()->textdomain() ),
+		        'label'             =>  __( 'Toggles', 'tailor' ),
+		        'description'       =>  __( 'Display content in toggles.', 'tailor' ),
 		        'type'              =>  'container',
 		        'child'             =>  'tailor_toggle',
 	        ) );
 
 	        $this->add_element( 'tailor_carousel', array(
-		        'label'             =>  __( 'Carousel', tailor()->textdomain() ),
-		        'description'       =>  __( 'Display content in a carousel.', tailor()->textdomain() ),
+		        'label'             =>  __( 'Carousel', 'tailor' ),
+		        'description'       =>  __( 'Display content in a carousel.', 'tailor' ),
 		        'type'              =>  'container',
 		        'child'             =>  'tailor_carousel_item',
 	        ) );
 
 	        $this->add_element( 'tailor_list', array(
-		        'label'             =>  __( 'List', tailor()->textdomain() ),
+		        'label'             =>  __( 'List', 'tailor' ),
 		        'type'              =>  'container',
-		        'description'       =>  __( 'Display content in list items.', tailor()->textdomain() ),
+		        'description'       =>  __( 'Display content in list items.', 'tailor' ),
 		        'child'             =>  'tailor_list_item',
 	        ) );
 
 	        $this->add_element( 'tailor_grid', array(
-		        'label'             =>  __( 'Grid', tailor()->textdomain() ),
-		        'description'       =>  __( 'Display content in a grid.', tailor()->textdomain() ),
+		        'label'             =>  __( 'Grid', 'tailor' ),
+		        'description'       =>  __( 'Display content in a grid.', 'tailor' ),
 		        'type'              =>  'container',
 		        'child'             =>  'tailor_grid_item',
 	        ) );
 
 	        $this->add_element( 'tailor_row', array(
-                'label'             =>  __( 'Row', tailor()->textdomain() ),
+                'label'             =>  __( 'Row', 'tailor' ),
                 'type'              =>  'container',
                 'child'             =>  'tailor_column',
             ) );
 
 	        $this->add_element( 'tailor_map', array(
-		        'label'             =>  __( 'Map', tailor()->textdomain() ),
-		        'description'       =>  __( 'A Google map.', tailor()->textdomain() ),
+		        'label'             =>  __( 'Map', 'tailor' ),
+		        'description'       =>  __( 'A Google map.', 'tailor' ),
 		        'child'             =>  'tailor_map_marker',
 		        'dynamic'           =>  true,
 	        ) );
 
 	        $this->add_element( 'tailor_column', array(
-                'label'             =>  __( 'Column', tailor()->textdomain() ),
+                'label'             =>  __( 'Column', 'tailor' ),
                 'type'              =>  'child',
             ) );
 
 	        $this->add_element( 'tailor_tab', array(
-                'label'             =>  __( 'Tab', tailor()->textdomain() ),
+                'label'             =>  __( 'Tab', 'tailor' ),
                 'type'              =>  'child',
             ) );
 
             $this->add_element( 'tailor_toggle', array(
-                'label'             =>  __( 'Toggle', tailor()->textdomain() ),
+                'label'             =>  __( 'Toggle', 'tailor' ),
                 'type'              =>  'child',
             ) );
 
 	        $this->add_element( 'tailor_carousel_item', array(
-		        'label'             =>  __( 'Carousel item', tailor()->textdomain() ),
+		        'label'             =>  __( 'Carousel item', 'tailor' ),
 		        'type'              =>  'child',
 	        ) );
 
 	        $this->add_element( 'tailor_map_marker', array(
-		        'label'             =>  __( 'Map marker', tailor()->textdomain() ),
+		        'label'             =>  __( 'Map marker', 'tailor' ),
 		        'type'              =>  'child',
 		        'dynamic'           =>  true,
 	        ) );
 
 	        $this->add_element( 'tailor_list_item', array(
-                'label'             =>  __( 'List item', tailor()->textdomain() ),
+                'label'             =>  __( 'List item', 'tailor' ),
                 'type'              =>  'child',
             ) );
 
 	        $this->add_element( 'tailor_grid_item', array(
-		        'label'             =>  __( 'Grid item', tailor()->textdomain() ),
+		        'label'             =>  __( 'Grid item', 'tailor' ),
 		        'type'              =>  'child',
 	        ) );
 
 	        $this->add_element( 'tailor_form_cf7', array(
-		        'label'             =>  __( 'Contact form', tailor()->textdomain() ),
-		        'description'       =>  __( 'A contact form.', tailor()->textdomain() ),
-		        'badge'             =>  __( 'Contact Form 7', tailor()->textdomain() ),
+		        'label'             =>  __( 'Contact form', 'tailor' ),
+		        'description'       =>  __( 'A contact form.', 'tailor' ),
+		        'badge'             =>  __( 'Contact Form 7', 'tailor' ),
 		        'active_callback'   =>  'is_contact_form_7_active',
 		        'dynamic'           =>  true,
 	        ) );
 
 	        $this->add_element( 'tailor_posts', array(
-		        'label'             =>  __( 'Posts', tailor()->textdomain() ),
-		        'description'   =>  __( 'Your site\'s posts.', tailor()->textdomain() ),
+		        'label'             =>  __( 'Posts', 'tailor' ),
+		        'description'   =>  __( 'Your site\'s posts.', 'tailor' ),
 		        'dynamic'           =>  true,
 	        ) );
 
 	        $this->add_element( 'tailor_gallery', array(
-		        'label'             =>  __( 'Gallery', tailor()->textdomain() ),
-		        'description'       =>  __( 'A flexible image gallery.', tailor()->textdomain() ),
+		        'label'             =>  __( 'Gallery', 'tailor' ),
+		        'description'       =>  __( 'A flexible image gallery.', 'tailor' ),
 		        'dynamic'           =>  true,
 	        ) );
 
 	        $this->add_element( 'tailor_button', array(
-		        'label'             =>  __( 'Button', tailor()->textdomain() ),
-		        'description'       =>  __( 'A simple button.', tailor()->textdomain() ),
+		        'label'             =>  __( 'Button', 'tailor' ),
+		        'description'       =>  __( 'A simple button.', 'tailor' ),
 	        ) );
 
 	        $this->add_element( 'tailor_content', array(
-		        'label'             =>  __( 'Content', tailor()->textdomain() ),
-		        'description'       =>  __( 'HTML and multimedia content.', tailor()->textdomain() ),
+		        'label'             =>  __( 'Content', 'tailor' ),
+		        'description'       =>  __( 'HTML and multimedia content.', 'tailor' ),
 		        'icon'              =>  'dashicons-wordpress',
 	        ) );
 
 	        $this->add_element( 'tailor_user', array(
-		        'label'             =>  __( 'User', tailor()->textdomain() ),
-		        'description'       =>  __( 'A user profile box.', tailor()->textdomain() ),
+		        'label'             =>  __( 'User', 'tailor' ),
+		        'description'       =>  __( 'A user profile box.', 'tailor' ),
 	        ) );
 
 	        $this->add_element( 'tailor_card', array(
-		        'label'             =>  __( 'Card', tailor()->textdomain() ),
-		        'description'       =>  __( 'Display content inside a card.', tailor()->textdomain() ),
+		        'label'             =>  __( 'Card', 'tailor' ),
+		        'description'       =>  __( 'Display content inside a card.', 'tailor' ),
 		        'type'              =>  'wrapper',
 	        ) );
 
 	        $this->add_element( 'tailor_hero', array(
-		        'label'             =>  __( 'Hero', tailor()->textdomain() ),
-		        'description'       =>  __( 'Emphasize content in a hero pane.', tailor()->textdomain() ),
+		        'label'             =>  __( 'Hero', 'tailor' ),
+		        'description'       =>  __( 'Emphasize content in a hero pane.', 'tailor' ),
 		        'type'              =>  'wrapper',
 	        ) );
 
 	        $this->add_element( 'tailor_box', array(
-		        'label'             =>  __( 'Box', tailor()->textdomain() ),
-		        'description'       =>  __( 'Display content inside a box.', tailor()->textdomain() ),
+		        'label'             =>  __( 'Box', 'tailor' ),
+		        'description'       =>  __( 'Display content inside a box.', 'tailor' ),
 		        'type'              =>  'wrapper',
 	        ) );
 
 	        $this->add_element( 'tailor_widgets', array(
-		        'label'             =>  __( 'Widgets', tailor()->textdomain() ),
-		        'description'       =>  __( 'A widget area from your site.', tailor()->textdomain() ),
+		        'label'             =>  __( 'Widgets', 'tailor' ),
+		        'description'       =>  __( 'A widget area from your site.', 'tailor' ),
 		        'dynamic'           =>  true,
 	        ) );
         }
@@ -410,7 +410,7 @@ if ( ! class_exists( 'Tailor_Elements' ) ) {
 		    $unsanitized_models = json_decode( wp_unslash( $_POST['models'] ), true );
 		    if ( ! is_array( $unsanitized_models ) ) {
 			    wp_send_json_error( array(
-				    'message'           =>  __( 'Tailor Elements: Valid models was not provided', tailor()->textdomain() )
+				    'message'           =>  __( 'Tailor Elements: Valid models was not provided', 'tailor' )
 			    ) );
 		    }
 
@@ -464,7 +464,7 @@ if ( ! class_exists( 'Tailor_Elements' ) ) {
 	        $unsanitized_model = json_decode( wp_unslash( $_POST['model'] ), true );
             if ( ! is_array( $unsanitized_model ) ) {
 	            wp_send_json_error( array(
-		            'message'           =>  __( 'Tailor Elements: A valid model was not provided', tailor()->textdomain() )
+		            'message'           =>  __( 'Tailor Elements: A valid model was not provided', 'tailor' )
 	            ) );
             }
 
@@ -572,7 +572,7 @@ if ( ! class_exists( 'Tailor_Elements' ) ) {
 		    else {
 			    $element = $this->get_element( 'tailor_content' );
 			    $sanitized_atts['content'] = sprintf(
-				    __( 'The element associated with shortcode %s could not be found.', tailor()->textdomain() ),
+				    __( 'The element associated with shortcode %s could not be found.', 'tailor' ),
 				    '<code>'  . esc_attr( $unsanitized_model['tag'] ) . '</code>'
 			    );
 
@@ -766,7 +766,7 @@ if ( ! class_exists( 'Tailor_Elements' ) ) {
             $unsanitized_models = json_decode( wp_unslash( $_POST['models'] ), true );
 		    if ( ! is_array( $unsanitized_models ) ) {
 			    wp_send_json_error( array(
-				    'message'           =>  __( 'Tailor Elements: Valid models was not provided', tailor()->textdomain() )
+				    'message'           =>  __( 'Tailor Elements: Valid models was not provided', 'tailor' )
 			    ) );
 		    }
 

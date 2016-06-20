@@ -26,17 +26,17 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Widgets_Element
         protected function register_controls() {
 
 	        $this->add_section( 'general', array(
-		        'title'                 =>  __( 'General', tailor()->textdomain() ),
+		        'title'                 =>  __( 'General', 'tailor' ),
 		        'priority'              =>  10,
 	        ) );
 
 	        $this->add_section( 'colors', array(
-		        'title'                 =>  __( 'Colors', tailor()->textdomain() ),
+		        'title'                 =>  __( 'Colors', 'tailor' ),
 		        'priority'              =>  20,
 	        ) );
 
 	        $this->add_section( 'attributes', array(
-		        'title'                 =>  __( 'Attributes', tailor()->textdomain() ),
+		        'title'                 =>  __( 'Attributes', 'tailor' ),
 		        'priority'              =>  30,
 	        ) );
 
@@ -46,9 +46,9 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Widgets_Element
 		        'sanitize_callback'     =>  'tailor_sanitize_text',
 	        ) );
 	        $this->add_control( 'widget_area', array(
-		        'label'                 =>  __( 'Widget area', tailor()->textdomain() ),
+		        'label'                 =>  __( 'Widget area', 'tailor' ),
 		        'type'                  =>  'select',
-		        'choices'               =>  tailor_get_widget_areas( array( '' => __( '&mdash; Select &mdash;', tailor()->textdomain() ) ) ),
+		        'choices'               =>  tailor_get_widget_areas( array( '' => __( '&mdash; Select &mdash;', 'tailor' ) ) ),
 		        'priority'              =>  $priority += 10,
 		        'section'               =>  'general',
 	        ) );

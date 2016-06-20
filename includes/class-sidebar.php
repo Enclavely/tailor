@@ -88,7 +88,7 @@ if ( ! class_exists( 'Tailor_Sidebar' ) ) {
                     if ( wp_is_mobile() ) {
                         echo '<meta name="viewport" content="width=device-width, initial-scale=1">';
                     }
-                    echo '<title>' . sprintf( __( 'Tailoring: %s', tailor()->textdomain() ), get_the_title() ) . '</title>';
+                    echo '<title>' . sprintf( __( 'Tailoring: %s', 'tailor' ), get_the_title() ) . '</title>';
 
                     /**
                      * Fires after the document head of the Sidebar frame has been loaded.
@@ -303,30 +303,30 @@ if ( ! class_exists( 'Tailor_Sidebar' ) ) {
 	        ) );
 
 	        wp_localize_script( $sidebar_script_name, '_l10n', array(
-		        'select'            =>  __( 'Select', tailor()->textdomain() ),
-		        'save'              =>  __( 'Save', tailor()->textdomain() ),
-		        'saveTemplate'      =>  __( 'Save template', tailor()->textdomain() ),
-		        'saved'             =>  __( 'Saved', tailor()->textdomain() ),
-		        'publish'           =>  __( 'Save & Publish', tailor()->textdomain() ),
-		        'import'            =>  __( 'Import', tailor()->textdomain() ),
-		        'importTemplate'    =>  __( 'Import template', tailor()->textdomain() ),
-		        'delete'            =>  __( 'Delete', tailor()->textdomain() ),
-		        'close'             =>  __( 'Close', tailor()->textdomain() ),
+		        'select'            =>  __( 'Select', 'tailor' ),
+		        'save'              =>  __( 'Save', 'tailor' ),
+		        'saveTemplate'      =>  __( 'Save template', 'tailor' ),
+		        'saved'             =>  __( 'Saved', 'tailor' ),
+		        'publish'           =>  __( 'Save & Publish', 'tailor' ),
+		        'import'            =>  __( 'Import', 'tailor' ),
+		        'importTemplate'    =>  __( 'Import template', 'tailor' ),
+		        'delete'            =>  __( 'Delete', 'tailor' ),
+		        'close'             =>  __( 'Close', 'tailor' ),
 
-		        'error'             =>  __( 'An error occurred, please try again', tailor()->textdomain() ),
-		        'expired'           =>  __( 'The session has expired', tailor()->textdomain() ),
-		        'invalid'           =>  __( 'The request made was invalid', tailor()->textdomain() ),
+		        'error'             =>  __( 'An error occurred, please try again', 'tailor' ),
+		        'expired'           =>  __( 'The session has expired', 'tailor' ),
+		        'invalid'           =>  __( 'The request made was invalid', 'tailor' ),
 
-		        'savedPage'         =>  sprintf( __( '%s saved successfully', tailor()->textdomain() ), ucfirst( $post_type ) ),
-		        'restoreElements'   =>  __( 'History entry restored successfully', tailor()->textdomain() ),
-		        'deletedElement'    =>  __( 'Element deleted successfully', tailor()->textdomain() ),
-		        'savedTemplate'     =>  __( 'Template saved successfully', tailor()->textdomain() ),
-		        'importedTemplate'  =>  __( 'Template imported successfully', tailor()->textdomain() ),
-		        'addedTemplate'     =>  __( 'Template added successfully', tailor()->textdomain() ),
-		        'deletedTemplate'   =>  __( 'Template deleted successfully', tailor()->textdomain() ),
+		        'savedPage'         =>  sprintf( __( '%s saved successfully', 'tailor' ), ucfirst( $post_type ) ),
+		        'restoreElements'   =>  __( 'History entry restored successfully', 'tailor' ),
+		        'deletedElement'    =>  __( 'Element deleted successfully', 'tailor' ),
+		        'savedTemplate'     =>  __( 'Template saved successfully', 'tailor' ),
+		        'importedTemplate'  =>  __( 'Template imported successfully', 'tailor' ),
+		        'addedTemplate'     =>  __( 'Template added successfully', 'tailor' ),
+		        'deletedTemplate'   =>  __( 'Template deleted successfully', 'tailor' ),
 
-		        'confirmPage'       =>  __( 'The changes you made will be lost if you navigate away from this page', tailor()->textdomain() ),
-		        'confirmElement'    =>  __( 'You have made changes to this element.  Would you like to save them?', tailor()->textdomain() ),
+		        'confirmPage'       =>  __( 'The changes you made will be lost if you navigate away from this page', 'tailor' ),
+		        'confirmElement'    =>  __( 'You have made changes to this element.  Would you like to save them?', 'tailor' ),
 	        ) );
 
 	        wp_localize_script( $sidebar_script_name, '_nonces', $this->create_nonces() );

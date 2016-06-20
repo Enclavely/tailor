@@ -21,7 +21,7 @@ if ( ! function_exists( 'tailor_get_customizer_panels' ) ) {
 
         $panels = array(
             'tailor'                   =>  array(
-                'title'                     =>  __( 'Tailor', tailor()->textdomain() ),
+                'title'                     =>  __( 'Tailor', 'tailor' ),
                 'priority'                  =>  999,
             ),
         );

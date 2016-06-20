@@ -81,8 +81,8 @@ if ( ! class_exists( 'Tailor_Admin' ) ) {
 	     */
 	    public function add_settings_page_link( $links ) {
 
-		    $links[] = '<a href="' . admin_url( 'options-general.php?page=' . TAILOR_SETTING_ID ) . '" title="' . __( 'Tailor Settings', tailor()->textdomain() ) . '">' .
-		                    __( 'Settings', tailor()->textdomain() ) .
+		    $links[] = '<a href="' . admin_url( 'options-general.php?page=' . TAILOR_SETTING_ID ) . '" title="' . __( 'Tailor Settings', 'tailor' ) . '">' .
+		                    __( 'Settings', 'tailor' ) .
 		               '</a>';
 
 		    return $links;
@@ -133,8 +133,8 @@ if ( ! class_exists( 'Tailor_Admin' ) ) {
 		    $post_id = $post->ID;
 
 		    if ( isset( $_GET['tailor-restored'] ) && '1' == $_GET['tailor-restored'] ) {
-			    $alert_text =  __( 'Original content restored.', tailor()->textdomain() );
-			    $action_text = __( 'View page', tailor()->textdomain() );
+			    $alert_text =  __( 'Original content restored.', 'tailor' );
+			    $action_text = __( 'View page', 'tailor' );
 			    $action_url = get_permalink( $post_id );
                 $this->print_notice( $alert_text, $action_url, $action_text, 'success' );
 		    }
@@ -143,16 +143,16 @@ if ( ! class_exists( 'Tailor_Admin' ) ) {
 			    $saved_content = get_post_meta( $post_id, '_tailor_saved_content', true );
 
 			    if ( wpautop( $post->post_content ) != wpautop( $saved_content ) ) {
-				    $alert_text = sprintf( __( 'This is a Tailored %s that has been modified.', tailor()->textdomain() ), get_post_type( $post_id ) );
-				    $action_text = __( 'Restore the original content', tailor()->textdomain() );
+				    $alert_text = sprintf( __( 'This is a Tailored %s that has been modified.', 'tailor' ), get_post_type( $post_id ) );
+				    $action_text = __( 'Restore the original content', 'tailor' );
 				    $action_url = wp_nonce_url( admin_url( 'post.php?post=' . $post_id . '&action=edit&tailor-restore=1' ), 'tailor-restore-content' );
 				    $this->print_notice( $alert_text, $action_url, $action_text );
 			    }
 			    else {
 				    $original_content = get_post_meta( $post_id, '_tailor_original_content' );
 				    if ( $original_content && $post->post_content != $original_content ) {
-					    $alert_text = sprintf( __( 'This is a Tailored %s.', tailor()->textdomain() ), get_post_type( $post_id ) );
-					    $action_text = __( 'Restore the original content', tailor()->textdomain() );
+					    $alert_text = sprintf( __( 'This is a Tailored %s.', 'tailor' ), get_post_type( $post_id ) );
+					    $action_text = __( 'Restore the original content', 'tailor' );
 					    $action_url = wp_nonce_url( admin_url( 'post.php?post=' . $post_id . '&action=edit&tailor-restore=1' ), 'tailor-restore-content' );
 					    $this->print_notice( $alert_text, $action_url, $action_text );
 				    }
@@ -174,7 +174,7 @@ if ( ! class_exists( 'Tailor_Admin' ) ) {
             echo    "<div class=\"notice notice-{$type} is-dismissible\">" .
                         '<p>' . $alert_text . ' <a href="' . $action_url . '">' . $action_text . '</a></p>' .
                         '<button type="button" class="notice-dismiss">' .
-                            '<span class="screen-reader-text">' . __( 'Dismiss this notice.', tailor()->textdomain() ) . '</span>' .
+                            '<span class="screen-reader-text">' . __( 'Dismiss this notice.', 'tailor' ) . '</span>' .
                         '</button>' .
                     '</div>';
         }

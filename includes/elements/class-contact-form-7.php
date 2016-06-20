@@ -26,17 +26,17 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Form_CF7_Elemen
         protected function register_controls() {
 
 	        $this->add_section( 'general', array(
-		        'title'                 =>  __( 'General', tailor()->textdomain() ),
+		        'title'                 =>  __( 'General', 'tailor' ),
 		        'priority'              =>  10,
 	        ) );
 
 	        $this->add_section( 'colors', array(
-		        'title'                 =>  __( 'Colors', tailor()->textdomain() ),
+		        'title'                 =>  __( 'Colors', 'tailor' ),
 		        'priority'              =>  20,
 	        ) );
 
 	        $this->add_section( 'attributes', array(
-		        'title'                 =>  __( 'Attributes', tailor()->textdomain() ),
+		        'title'                 =>  __( 'Attributes', 'tailor' ),
 		        'priority'              =>  30,
 	        ) );
 
@@ -44,7 +44,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Form_CF7_Elemen
 
 	        $contact_forms = WPCF7_ContactForm::find();
 			$choices = array();
-	        $choices[0] = __( '&mdash; Select &mdash;', tailor()->textdomain() );
+	        $choices[0] = __( '&mdash; Select &mdash;', 'tailor' );
 	        foreach ( $contact_forms as $contact_form ) {
 		        $choices[ $contact_form->id() ] = $contact_form->title();
 	        }
@@ -53,7 +53,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Form_CF7_Elemen
 		        'sanitize_callback'     =>  'tailor_sanitize_text',
 	        ) );
 	        $this->add_control( 'form', array(
-		        'label'                 =>  __( 'Contact form', tailor()->textdomain() ),
+		        'label'                 =>  __( 'Contact form', 'tailor' ),
 		        'type'                  =>  'select',
 		        'choices'               =>  $choices,
 		        'priority'              =>  $priority += 10,

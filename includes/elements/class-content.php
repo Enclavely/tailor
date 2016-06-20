@@ -27,17 +27,17 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Content_Element
 	    protected function register_controls() {
 
 		    $this->add_section( 'general', array(
-			    'title'                 =>  __( 'General', tailor()->textdomain() ),
+			    'title'                 =>  __( 'General', 'tailor' ),
 			    'priority'              =>  10,
 		    ) );
 
 		    $this->add_section( 'colors', array(
-			    'title'                 =>  __( 'Colors', tailor()->textdomain() ),
+			    'title'                 =>  __( 'Colors', 'tailor' ),
 			    'priority'              =>  20,
 		    ) );
 
 		    $this->add_section( 'attributes', array(
-			    'title'                 =>  __( 'Attributes', tailor()->textdomain() ),
+			    'title'                 =>  __( 'Attributes', 'tailor' ),
 			    'priority'              =>  30,
 		    ) );
 

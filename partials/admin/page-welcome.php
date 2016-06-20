@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) or die(); ?>
 
 	<h1><?php esc_attr_e( tailor()->plugin_name() ); ?></h1>
 
-	<?php printf( '<p class="about-text">%1$s</p>', __( 'Congratulations!  You are now able to Tailor posts and pages to you liking quickly and easily.', tailor()->textdomain() ) ); ?>
+	<?php printf( '<p class="about-text">%1$s</p>', __( 'Congratulations!  You are now able to Tailor posts and pages to you liking quickly and easily.', 'tailor' ) ); ?>
 
 	<div class="feature-section two-col">
 		<div class="col"></div>

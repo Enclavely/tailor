@@ -55,13 +55,13 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Search_Control'
         protected function render_template() { ?>
 
 	        <% if ( '' == value ) { %>
-	        <p class="message"><?php _e( 'Nothing selected', tailor()->textdomain() ); ?></p>
+	        <p class="message"><?php _e( 'Nothing selected', 'tailor' ); ?></p>
 	        <% } else { %>
 	        <input value="<%= value %>" />
 	        <% } %>
 
 	        <div class="actions">
-		        <button type="button" class="button button--select"><?php _e( 'Select', tailor()->textdomain() ); ?> <%= resource %></button>
+		        <button type="button" class="button button--select"><?php _e( 'Select', 'tailor' ); ?> <%= resource %></button>
 	        </div>
 
             <?php

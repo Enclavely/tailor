@@ -191,7 +191,9 @@ if ( class_exists( 'Tailor_Setting_Manager' ) && ! class_exists( 'Tailor_Element
             }
 
             foreach ( $this->sections() as $section ) {  /* @var $section Tailor_Section */
-	            $properties['sections'][] = $section->to_json();
+	            if ( false !== apply_filters( 'tailor_show_panel_' . $section->id, true ) ) {
+		            $properties['sections'][] = $section->to_json();
+	            }
             }
 
             foreach ( $this->controls() as $control ) { /* @var $control Tailor_Control */

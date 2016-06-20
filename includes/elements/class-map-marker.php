@@ -28,7 +28,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Map_Marker_Elem
         protected function register_controls() {
 
 	        $this->add_section( 'general', array(
-		        'title'                 =>  __( 'General', tailor()->textdomain() ),
+		        'title'                 =>  __( 'General', 'tailor' ),
 		        'priority'              =>  10,
 	        ) );
 
@@ -43,7 +43,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Map_Marker_Elem
                 'sanitize_callback'     =>  'tailor_sanitize_text',
             ) );
             $this->add_control( 'address', array(
-                'label'                 =>  __( 'Address', tailor()->textdomain() ),
+                'label'                 =>  __( 'Address', 'tailor' ),
                 'type'                  =>  'text',
                 'priority'              =>  $priority += 10,
                 'section'               =>  'general',
@@ -53,7 +53,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Map_Marker_Elem
                 'sanitize_callback'     =>  'tailor_sanitize_text',
             ) );
             $this->add_control( 'latitude', array(
-                'label'                 =>  __( 'Latitude (optional)', tailor()->textdomain() ),
+                'label'                 =>  __( 'Latitude (optional)', 'tailor' ),
                 'type'                  =>  'text',
                 'priority'              =>  $priority += 10,
                 'section'               =>  'general',
@@ -63,7 +63,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Map_Marker_Elem
                 'sanitize_callback'     =>  'tailor_sanitize_text',
             ) );
             $this->add_control( 'longitude', array(
-                'label'                 =>  __( 'Longitude (optional)', tailor()->textdomain() ),
+                'label'                 =>  __( 'Longitude (optional)', 'tailor' ),
                 'type'                  =>  'text',
                 'priority'              =>  $priority += 10,
                 'section'               =>  'general',
@@ -73,7 +73,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Map_Marker_Elem
                 'sanitize_callback'     =>  'tailor_sanitize_html',
             ) );
             $this->add_control( 'content', array(
-                'label'                 =>  __( 'Content', tailor()->textdomain() ),
+                'label'                 =>  __( 'Content', 'tailor' ),
                 'type'                  =>  'editor',
                 'priority'              =>  $priority += 10,
                 'section'               =>  'general',

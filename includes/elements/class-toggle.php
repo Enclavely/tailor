@@ -28,17 +28,17 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Toggle_Element'
 	    protected function register_controls() {
 
 		    $this->add_section( 'general', array(
-			    'title'                 =>  __( 'General', tailor()->textdomain() ),
+			    'title'                 =>  __( 'General', 'tailor' ),
 			    'priority'              =>  10,
 		    ) );
 
 		    $this->add_section( 'colors', array(
-			    'title'                 =>  __( 'Colors', tailor()->textdomain() ),
+			    'title'                 =>  __( 'Colors', 'tailor' ),
 			    'priority'              =>  20,
 		    ) );
 
 		    $this->add_section( 'attributes', array(
-			    'title'                 =>  __( 'Attributes', tailor()->textdomain() ),
+			    'title'                 =>  __( 'Attributes', 'tailor' ),
 			    'priority'              =>  30,
 		    ) );
 
@@ -72,7 +72,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Toggle_Element'
 			    'sanitize_callback'     =>  'tailor_sanitize_color',
 		    ) );
 		    $this->add_control( 'title_color', array(
-			    'label'                 =>  __( 'Title color', tailor()->textdomain() ),
+			    'label'                 =>  __( 'Title color', 'tailor' ),
 			    'type'                  =>  'colorpicker',
 			    'priority'              =>  $priority += 10,
 			    'section'               =>  'colors',
@@ -82,7 +82,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Toggle_Element'
 			    'sanitize_callback'     =>  'tailor_sanitize_color',
 		    ) );
 		    $this->add_control( 'title_background_color', array(
-			    'label'                 =>  __( 'Title background color', tailor()->textdomain() ),
+			    'label'                 =>  __( 'Title background color', 'tailor' ),
 			    'type'                  =>  'colorpicker',
 			    'rgba'                  =>  1,
 			    'priority'              =>  $priority += 10,

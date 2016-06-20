@@ -154,7 +154,7 @@ if ( ! class_exists( 'Tailor_Icons' ) ) {
 
 	        if ( false === ( $file_path = get_attached_file( $_POST['id'] ) ) ) {
 		        wp_send_json_error( array(
-			        'message'           =>  __( 'Icon kit file does not exist', tailor()->textdomain() )
+			        'message'           =>  __( 'Icon kit file does not exist', 'tailor' )
 		        ) );
 	        }
 
@@ -163,7 +163,7 @@ if ( ! class_exists( 'Tailor_Icons' ) ) {
 	        $existing_icon_kits = $this->get_icon_kits();
 	        if ( array_key_exists( $file_name, $existing_icon_kits ) ) {
 		        wp_send_json_error( array(
-			        'message'           =>  __( 'Icon kit is already being used', tailor()->textdomain() )
+			        'message'           =>  __( 'Icon kit is already being used', 'tailor' )
 		        ) );
 	        }
 
@@ -177,7 +177,7 @@ if ( ! class_exists( 'Tailor_Icons' ) ) {
             $unzip = unzip_file( $file_path, $icon_dir );
 	        if ( ! $unzip ) {
 		        wp_send_json_error( array(
-			        'message'           =>  __( 'Icon kit could not be unzipped', tailor()->textdomain() )
+			        'message'           =>  __( 'Icon kit could not be unzipped', 'tailor' )
 		        ) );
 	        }
 
@@ -188,7 +188,7 @@ if ( ! class_exists( 'Tailor_Icons' ) ) {
 	        if ( ! $styles || ! file_exists(  $icon_dir . 'selection.json' ) ) {
 		        tailor_remove_dir( $icon_dir );
 		        wp_send_json_error( array(
-			        'message'           =>  __( 'Icon kit is invalid', tailor()->textdomain() )
+			        'message'           =>  __( 'Icon kit is invalid', 'tailor' )
 		        ) );
 	        }
 
@@ -270,7 +270,7 @@ if ( ! class_exists( 'Tailor_Icons' ) ) {
 	        $icon_kits = $this->get_icon_kits();
 	        if ( ! array_key_exists( $icon_kit_id, $icon_kits ) ) {
 		        wp_send_json_error( array(
-			        'message'           =>  __( 'Icon kit file does not exist', tailor()->textdomain() )
+			        'message'           =>  __( 'Icon kit file does not exist', 'tailor' )
 		        ) );
 	        }
 

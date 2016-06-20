@@ -19,7 +19,7 @@ if ( ! function_exists( 'tailor_empty_list' ) ) {
 	 * @return string
 	 */
 	function tailor_empty_list( $list_type ) {
-		return sprintf( _x( 'No %1$s to display', 'expected item type', tailor()->textdomain() ), $list_type );
+		return sprintf( _x( 'No %1$s to display', 'expected item type', 'tailor' ), $list_type );
 	}
 }
 
@@ -39,7 +39,7 @@ if ( ! function_exists( 'tailor_get_widget_areas' ) ) {
 		global $wp_registered_sidebars;
 
 		if ( empty( $wp_registered_sidebars ) ) {
-			$widget_areas = array( '' => tailor_empty_list( __( 'widget areas', tailor()->textdomain() ) ) );
+			$widget_areas = array( '' => tailor_empty_list( __( 'widget areas', 'tailor' ) ) );
 		}
 
 		foreach ( $wp_registered_sidebars as $sidebar ) {
@@ -66,10 +66,10 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 	function tailor_control_presets( $element, $control_ids = array(), $control_arguments = array(), $priority = 10 ) {
 
 		$choices = array(
-			'top'                   =>  __( 'Top', tailor()->textdomain() ),
-			'right'                 =>  __( 'Right', tailor()->textdomain() ),
-			'bottom'                =>  __( 'Bottom', tailor()->textdomain() ),
-			'left'                  =>  __( 'Left', tailor()->textdomain() ),
+			'top'                   =>  __( 'Top', 'tailor' ),
+			'right'                 =>  __( 'Right', 'tailor' ),
+			'bottom'                =>  __( 'Bottom', 'tailor' ),
+			'left'                  =>  __( 'Left', 'tailor' ),
 		);
 
 		$preview_sizes = tailor_get_preview_sizes();
@@ -81,8 +81,8 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_text',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Hide on', tailor()->textdomain() ),
-					//'description'           =>  __( 'Select the screen size(s) for which this element should be hidden', tailor()->textdomain() ),
+					'label'                 =>  __( 'Hide on', 'tailor' ),
+					//'description'           =>  __( 'Select the screen size(s) for which this element should be hidden', 'tailor' ),
 					'type'                  =>  'select-multi',
 					'choices'               =>  $preview_sizes,
 					'section'               =>  'attributes',
@@ -94,7 +94,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_text',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Title', tailor()->textdomain() ),
+					'label'                 =>  __( 'Title', 'tailor' ),
 					'type'                  =>  'text',
 					'section'               =>  'general',
 				),
@@ -104,7 +104,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_text',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Alignment', tailor()->textdomain() ),
+					'label'                 =>  __( 'Alignment', 'tailor' ),
 					'type'                  =>  'select',
 					'section'               =>  'general',
 				),
@@ -114,7 +114,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
                     'sanitize_callback'     =>  'tailor_sanitize_text',
                 ),
                 'control'               =>  array(
-                    'label'                 =>  __( 'Maximum width', tailor()->textdomain() ),
+                    'label'                 =>  __( 'Maximum width', 'tailor' ),
                     'type'                  =>  'text',
                     'section'               =>  'general',
                 ),
@@ -124,7 +124,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
                     'sanitize_callback'     =>  'tailor_sanitize_text',
                 ),
                 'control'               =>  array(
-                    'label'                 =>  __( 'Minimum height', tailor()->textdomain() ),
+                    'label'                 =>  __( 'Minimum height', 'tailor' ),
                     'type'                  =>  'text',
                     'section'               =>  'general',
                 ),
@@ -134,7 +134,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_text',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Style', tailor()->textdomain() ),
+					'label'                 =>  __( 'Style', 'tailor' ),
 					'type'                  =>  'select',
 					'section'               =>  'general',
 				),
@@ -144,7 +144,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_text',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Layout', tailor()->textdomain() ),
+					'label'                 =>  __( 'Layout', 'tailor' ),
 					'type'                  =>  'select',
 					'section'               =>  'general',
 				),
@@ -154,7 +154,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
                     'sanitize_callback'     =>  'tailor_sanitize_number',
                 ),
                 'control'               =>  array(
-                    'label'                 =>  __( 'Items per row', tailor()->textdomain() ),
+                    'label'                 =>  __( 'Items per row', 'tailor' ),
                     'type'                  =>  'select',
                     'choices'               =>  tailor_get_range( 1, 6, 1 ),
                     'section'               =>  'general',
@@ -165,7 +165,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_text',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Minimum item height', tailor()->textdomain() ),
+					'label'                 =>  __( 'Minimum item height', 'tailor' ),
 					'type'                  =>  'text',
 					'section'               =>  'general',
 				),
@@ -175,7 +175,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_number',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Autoplay', tailor()->textdomain() ),
+					'label'                 =>  __( 'Autoplay', 'tailor' ),
 					'type'                  =>  'switch',
 					'section'               =>  'general',
 				),
@@ -185,7 +185,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_number',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Fade', tailor()->textdomain() ),
+					'label'                 =>  __( 'Fade', 'tailor' ),
 					'type'                  =>  'switch',
 					'section'               =>  'general',
 				),
@@ -195,7 +195,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_number',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Arrows', tailor()->textdomain() ),
+					'label'                 =>  __( 'Arrows', 'tailor' ),
 					'type'                  =>  'switch',
 					'section'               =>  'general',
 				),
@@ -206,7 +206,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'default'               =>  '1',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Dots', tailor()->textdomain() ),
+					'label'                 =>  __( 'Dots', 'tailor' ),
 					'type'                  =>  'switch',
 					'section'               =>  'general',
 				),
@@ -217,7 +217,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
                     'default'               =>  '1',
                 ),
                 'control'               =>  array(
-                    'label'                 =>  __( 'Thumbnails', tailor()->textdomain() ),
+                    'label'                 =>  __( 'Thumbnails', 'tailor' ),
                     'type'                  =>  'switch',
                     'section'               =>  'general',
                 ),
@@ -227,7 +227,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_text',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Item spacing', tailor()->textdomain() ),
+					'label'                 =>  __( 'Item spacing', 'tailor' ),
 					'type'                  =>  'text',
 					'section'               =>  'general',
 				),
@@ -237,10 +237,10 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
                     'sanitize_callback'     =>  'tailor_sanitize_number',
                 ),
                 'control'               =>  array(
-	                'label'                 =>  __( 'Masonry', tailor()->textdomain() ),
+	                'label'                 =>  __( 'Masonry', 'tailor' ),
 	                'type'                  =>  'switch',
 	                'choices'               =>  array(
-		                '1'                     =>  __( 'Apply masonry layout?', tailor()->textdomain() ),
+		                '1'                     =>  __( 'Apply masonry layout?', 'tailor' ),
 	                ),
 	                'section'               =>  'general',
                 ),
@@ -250,10 +250,10 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_number',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Lightbox', tailor()->textdomain() ),
+					'label'                 =>  __( 'Lightbox', 'tailor' ),
 					'type'                  =>  'switch',
 					'choices'               =>  array(
-						'1'                     =>  __( 'Open images in lightbox?', tailor()->textdomain() ),
+						'1'                     =>  __( 'Open images in lightbox?', 'tailor' ),
 					),
 					'section'               =>  'general',
 				),
@@ -263,7 +263,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_text',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Meta', tailor()->textdomain() ),
+					'label'                 =>  __( 'Meta', 'tailor' ),
 					'type'                  =>  'select-multi',
 					'section'               =>  'general',
 				),
@@ -274,7 +274,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'default'               =>  '4',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Posts per page', tailor()->textdomain() ),
+					'label'                 =>  __( 'Posts per page', 'tailor' ),
 					'type'                  =>  'select',
 					'choices'               =>  tailor_get_range( 1, 12, 1 ),
 					'section'               =>  'general',
@@ -285,9 +285,9 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_text',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Pagination', tailor()->textdomain() ),
+					'label'                 =>  __( 'Pagination', 'tailor' ),
 					'choices'               =>  array(
-						'1'                     =>  __( 'Show pagination links?', tailor()->textdomain() ),
+						'1'                     =>  __( 'Show pagination links?', 'tailor' ),
 					),
 					'type'                  =>  'switch',
 					'section'               =>  'general',
@@ -298,7 +298,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_text',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Type', tailor()->textdomain() ),
+					'label'                 =>  __( 'Type', 'tailor' ),
 					'type'                  =>  'select',
 					'section'               =>  'general',
 				),
@@ -308,7 +308,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_text',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Graphic type', tailor()->textdomain() ),
+					'label'                 =>  __( 'Graphic type', 'tailor' ),
 					'type'                  =>  'select',
 					'section'               =>  'general',
 				),
@@ -318,7 +318,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_text',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Graphic size', tailor()->textdomain() ),
+					'label'                 =>  __( 'Graphic size', 'tailor' ),
 					'type'                  =>  'text',
 					'section'               =>  'general',
 				),
@@ -328,7 +328,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_number',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Image', tailor()->textdomain() ),
+					'label'                 =>  __( 'Image', 'tailor' ),
 					'type'                  =>  'image',
 					'section'               =>  'general',
 				),
@@ -338,7 +338,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_text',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Image width', tailor()->textdomain() ),
+					'label'                 =>  __( 'Image width', 'tailor' ),
 					'type'                  =>  'text',
 					'section'               =>  'general',
 				),
@@ -348,7 +348,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_text',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Image size', tailor()->textdomain() ),
+					'label'                 =>  __( 'Image size', 'tailor' ),
 					'type'                  =>  'select',
 					'choices'               =>  tailor_get_image_sizes(),
 					'section'               =>  'general',
@@ -359,16 +359,16 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
                     'sanitize_callback'     =>  'tailor_sanitize_text',
                 ),
                 'control'               =>  array(
-                    'label'                 =>  __( 'Aspect ratio', tailor()->textdomain() ),
+                    'label'                 =>  __( 'Aspect ratio', 'tailor' ),
                     'type'                  =>  'select',
                     'choices'               =>  array(
-                        ''                      =>  __( 'Original', tailor()->textdomain() ),
-                        '1:1'                   =>  __( 'Square', tailor()->textdomain() ),
-                        '3:2'                   =>  __( 'Horizontal 3:2', tailor()->textdomain() ),
-                        '4:3'                   =>  __( 'Horizontal 4:3', tailor()->textdomain() ),
-                        '16:9'                  =>  __( 'Horizontal 16:9', tailor()->textdomain() ),
-                        '2:3'                   =>  __( 'Vertical 2:3', tailor()->textdomain() ),
-                        '3:4'                   =>  __( 'Vertical 3:4', tailor()->textdomain() ),
+                        ''                      =>  __( 'Original', 'tailor' ),
+                        '1:1'                   =>  __( 'Square', 'tailor' ),
+                        '3:2'                   =>  __( 'Horizontal 3:2', 'tailor' ),
+                        '4:3'                   =>  __( 'Horizontal 4:3', 'tailor' ),
+                        '16:9'                  =>  __( 'Horizontal 16:9', 'tailor' ),
+                        '2:3'                   =>  __( 'Vertical 2:3', 'tailor' ),
+                        '3:4'                   =>  __( 'Vertical 3:4', 'tailor' ),
                     ),
                     'section'               =>  'general',
                 ),
@@ -378,7 +378,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
                     'sanitize_callback'     =>  'tailor_sanitize_text',
                 ),
                 'control'               =>  array(
-                    'label'                 =>  __( 'Horizontal alignment', tailor()->textdomain() ),
+                    'label'                 =>  __( 'Horizontal alignment', 'tailor' ),
                     'type'                  =>  'button-group',
                     'choices'               =>  array(
                         'left'                  =>  '<i class="tailor-icon tailor-align-left"></i>',
@@ -393,12 +393,12 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_text',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Vertical alignment', tailor()->textdomain() ),
+					'label'                 =>  __( 'Vertical alignment', 'tailor' ),
 					'type'                  =>  'button-group',
 					'choices'               =>  array(
-						'flex-start'            =>  '<i class="tailor-icon tailor-align-top"></i>', //__( 'Top', tailor()->textdomain() ),
-						'center'                =>  '<i class="tailor-icon tailor-align-middle"></i>', //__( 'Middle', tailor()->textdomain() ),
-						'flex-end'              =>  '<i class="tailor-icon tailor-align-bottom"></i>', //__( 'Bottom', tailor()->textdomain() ),
+						'flex-start'            =>  '<i class="tailor-icon tailor-align-top"></i>', //__( 'Top', 'tailor' ),
+						'center'                =>  '<i class="tailor-icon tailor-align-middle"></i>', //__( 'Middle', 'tailor' ),
+						'flex-end'              =>  '<i class="tailor-icon tailor-align-bottom"></i>', //__( 'Bottom', 'tailor' ),
 					),
 					'section'               =>  'general',
 				),
@@ -408,11 +408,11 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_number',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Stretch-to-fit image', tailor()->textdomain() ),
+					'label'                 =>  __( 'Stretch-to-fit image', 'tailor' ),
 					'type'                  =>  'switch',
 					//'type'                  =>  'checkbox',
 					//'choices'               =>  array(
-					//	'1'                     =>  __( 'Stretch image to fit container?', tailor()->textdomain() ),
+					//	'1'                     =>  __( 'Stretch image to fit container?', 'tailor' ),
 					//),
 					'section'               =>  'general',
 				),
@@ -422,7 +422,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_number',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Caption', tailor()->textdomain() ),
+					'label'                 =>  __( 'Caption', 'tailor' ),
 					'type'                  =>  'switch',
 					'section'               =>  'general',
 				),
@@ -432,7 +432,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_text',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Icon', tailor()->textdomain() ),
+					'label'                 =>  __( 'Icon', 'tailor' ),
 					'type'                  =>  'icon',
 					'section'               =>  'general',
 				),
@@ -443,12 +443,12 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'default'               =>  'medium',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Size', tailor()->textdomain() ),
+					'label'                 =>  __( 'Size', 'tailor' ),
 					'type'                  =>  'select',
 					'choices'               =>  array(
-						'small'                 =>  __( 'Small', tailor()->textdomain() ),
-						'medium'                =>  __( 'Medium', tailor()->textdomain() ),
-						'large'                 =>  __( 'Large', tailor()->textdomain() ),
+						'small'                 =>  __( 'Small', 'tailor' ),
+						'medium'                =>  __( 'Medium', 'tailor' ),
+						'large'                 =>  __( 'Large', 'tailor' ),
 					),
 					'section'               =>  'general',
 				),
@@ -458,7 +458,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_text',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Link', tailor()->textdomain() ),
+					'label'                 =>  __( 'Link', 'tailor' ),
 					'type'                  =>  'link',
 					'placeholder'           =>  'http://',
 					'section'               =>  'general',
@@ -469,10 +469,10 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_text',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Link behavior', tailor()->textdomain() ),
+					'label'                 =>  __( 'Link behavior', 'tailor' ),
 					'type'                  =>  'checkbox',
 					'choices'               =>  array(
-						'_blank'                =>  __( 'Open in a new window?', tailor()->textdomain() ),
+						'_blank'                =>  __( 'Open in a new window?', 'tailor' ),
 					),
 					'section'               =>  'general',
 				),
@@ -483,7 +483,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_text',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Categories', tailor()->textdomain() ),
+					'label'                 =>  __( 'Categories', 'tailor' ),
 					'type'                  =>  'select-multi',
 					'choices'               =>  tailor_get_terms(),
 					'section'               =>  'query',
@@ -494,7 +494,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_text',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Tags', tailor()->textdomain() ),
+					'label'                 =>  __( 'Tags', 'tailor' ),
 					'type'                  =>  'select-multi',
 					'choices'               =>  tailor_get_terms( 'post_tag' ),
 					'section'               =>  'query',
@@ -505,13 +505,13 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_text',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Order by', tailor()->textdomain() ),
+					'label'                 =>  __( 'Order by', 'tailor' ),
 					'type'                  =>  'select',
 					'choices'               =>  array(
-						'date'                  =>  __( 'Date', tailor()->textdomain() ),
-						'author'                =>  __( 'Author', tailor()->textdomain() ),
-						'title'                 =>  __( 'Title', tailor()->textdomain() ),
-						'comment_count'         =>  __( 'Number of comments', tailor()->textdomain() ),
+						'date'                  =>  __( 'Date', 'tailor' ),
+						'author'                =>  __( 'Author', 'tailor' ),
+						'title'                 =>  __( 'Title', 'tailor' ),
+						'comment_count'         =>  __( 'Number of comments', 'tailor' ),
 					),
 					'section'               =>  'query',
 				),
@@ -521,11 +521,11 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_text',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Order by', tailor()->textdomain() ),
+					'label'                 =>  __( 'Order by', 'tailor' ),
 					'type'                  =>  'select',
 					'choices'               =>  array(
-						'DESC'                  =>  __( 'Descending', tailor()->textdomain() ),
-						'ASC'                   =>  __( 'Ascending', tailor()->textdomain() ),
+						'DESC'                  =>  __( 'Descending', 'tailor' ),
+						'ASC'                   =>  __( 'Ascending', 'tailor' ),
 					),
 					'dependencies'          =>  array(
 						'order'                 => array(
@@ -541,7 +541,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_number',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Offset', tailor()->textdomain() ),
+					'label'                 =>  __( 'Offset', 'tailor' ),
 					'type'                  =>  'select',
 					'choices'               =>  tailor_get_range( 0, 20, 1 ),
 					'section'               =>  'query',
@@ -553,7 +553,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_color',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Text color', tailor()->textdomain() ),
+					'label'                 =>  __( 'Text color', 'tailor' ),
 					'type'                  =>  'colorpicker',
 					'section'               =>  'colors',
 				),
@@ -563,7 +563,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_color',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Text hover color', tailor()->textdomain() ),
+					'label'                 =>  __( 'Text hover color', 'tailor' ),
 					'type'                  =>  'colorpicker',
 					'section'               =>  'colors',
 				),
@@ -573,7 +573,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_color',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Link color', tailor()->textdomain() ),
+					'label'                 =>  __( 'Link color', 'tailor' ),
 					'type'                  =>  'colorpicker',
 					'section'               =>  'colors',
 				),
@@ -583,7 +583,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_color',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Heading color', tailor()->textdomain() ),
+					'label'                 =>  __( 'Heading color', 'tailor' ),
 					'type'                  =>  'colorpicker',
 					'section'               =>  'colors',
 				),
@@ -593,7 +593,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_color',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Background color', tailor()->textdomain() ),
+					'label'                 =>  __( 'Background color', 'tailor' ),
 					'type'                  =>  'colorpicker',
 					'rgba'                  =>  1,
 					'section'               =>  'colors',
@@ -604,7 +604,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_color',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Background hover color', tailor()->textdomain() ),
+					'label'                 =>  __( 'Background hover color', 'tailor' ),
 					'type'                  =>  'colorpicker',
 					'rgba'                  =>  1,
 					'section'               =>  'colors',
@@ -615,7 +615,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_color',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Border color', tailor()->textdomain() ),
+					'label'                 =>  __( 'Border color', 'tailor' ),
 					'type'                  =>  'colorpicker',
 					'section'               =>  'colors',
 				),
@@ -625,7 +625,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_color',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Border hover color', tailor()->textdomain() ),
+					'label'                 =>  __( 'Border hover color', 'tailor' ),
 					'type'                  =>  'colorpicker',
 					'section'               =>  'colors',
 				),
@@ -635,7 +635,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_color',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Navigation color', tailor()->textdomain() ),
+					'label'                 =>  __( 'Navigation color', 'tailor' ),
 					'type'                  =>  'colorpicker',
 					'section'               =>  'colors',
 				),
@@ -645,7 +645,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_color',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Graphic color', tailor()->textdomain() ),
+					'label'                 =>  __( 'Graphic color', 'tailor' ),
 					'type'                  =>  'colorpicker',
 					'section'               =>  'colors',
 				),
@@ -655,7 +655,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_color',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Graphic hover color', tailor()->textdomain() ),
+					'label'                 =>  __( 'Graphic hover color', 'tailor' ),
 					'type'                  =>  'colorpicker',
 					'section'               =>  'colors',
 				),
@@ -665,7 +665,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_color',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Graphic background color', tailor()->textdomain() ),
+					'label'                 =>  __( 'Graphic background color', 'tailor' ),
 					'type'                  =>  'colorpicker',
 					'rgba'                  =>  1,
 					'section'               =>  'colors',
@@ -676,7 +676,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_color',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Graphic hover background color', tailor()->textdomain() ),
+					'label'                 =>  __( 'Graphic hover background color', 'tailor' ),
 					'type'                  =>  'colorpicker',
 					'rgba'                  =>  1,
 					'section'               =>  'colors',
@@ -688,7 +688,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_text',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Class name', tailor()->textdomain() ),
+					'label'                 =>  __( 'Class name', 'tailor' ),
 					'type'                  =>  'text',
 					'section'               =>  'attributes',
 				),
@@ -698,7 +698,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_text',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Padding', tailor()->textdomain() ),
+					'label'                 =>  __( 'Padding', 'tailor' ),
 					'type'                  =>  'style',
 					'choices'               =>  array(
 						'top'                   =>  $choices['top'],
@@ -714,7 +714,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_text',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Margin', tailor()->textdomain() ),
+					'label'                 =>  __( 'Margin', 'tailor' ),
 					'type'                  =>  'style',
 					'choices'               =>  array(
 						'top'                   =>  $choices['top'],
@@ -730,19 +730,19 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_text',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Border style', tailor()->textdomain() ),
+					'label'                 =>  __( 'Border style', 'tailor' ),
 					'type'                  =>  'select',
 					'choices'               =>  array(
-						''                      =>  __( 'Default', tailor()->textdomain() ),
-						'solid'                 =>  __( 'Solid', tailor()->textdomain() ),
-						'dashed'                =>  __( 'Dashed', tailor()->textdomain() ),
-						'dotted'                =>  __( 'Dotted', tailor()->textdomain() ),
-						'double'                =>  __( 'Double', tailor()->textdomain() ),
-						'groove'                =>  __( 'Groove', tailor()->textdomain() ),
-						'ridge'                 =>  __( 'Ridge', tailor()->textdomain() ),
-						'inset'                 =>  __( 'Inset', tailor()->textdomain() ),
-						'outset'                =>  __( 'Outset', tailor()->textdomain() ),
-						'none'                  =>  __( 'None', tailor()->textdomain() ),
+						''                      =>  __( 'Default', 'tailor' ),
+						'solid'                 =>  __( 'Solid', 'tailor' ),
+						'dashed'                =>  __( 'Dashed', 'tailor' ),
+						'dotted'                =>  __( 'Dotted', 'tailor' ),
+						'double'                =>  __( 'Double', 'tailor' ),
+						'groove'                =>  __( 'Groove', 'tailor' ),
+						'ridge'                 =>  __( 'Ridge', 'tailor' ),
+						'inset'                 =>  __( 'Inset', 'tailor' ),
+						'outset'                =>  __( 'Outset', 'tailor' ),
+						'none'                  =>  __( 'None', 'tailor' ),
 					),
 					'section'               =>  'attributes',
 				),
@@ -752,7 +752,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_text',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Border width', tailor()->textdomain() ),
+					'label'                 =>  __( 'Border width', 'tailor' ),
 					'type'                  =>  'style',
 					'choices'               =>  array(
 						'top'                   =>  $choices['top'],
@@ -774,7 +774,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_text',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Border radius', tailor()->textdomain() ),
+					'label'                 =>  __( 'Border radius', 'tailor' ),
 					'type'                  =>  'text',
 					'choices'               =>  array(
 						'top'                   =>  $choices['top'],
@@ -796,7 +796,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_text',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Shadow ', tailor()->textdomain() ),
+					'label'                 =>  __( 'Shadow ', 'tailor' ),
 					'type'                  =>  'switch',
 					'dependencies'          =>  array(
 						'border_style'          =>  array(
@@ -813,7 +813,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_number',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Background image', tailor()->textdomain() ),
+					'label'                 =>  __( 'Background image', 'tailor' ),
 					'type'                  =>  'image',
 					'section'               =>  'attributes',
 				),
@@ -824,13 +824,13 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'default'               =>  'no-repeat',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Background repeat', tailor()->textdomain() ),
+					'label'                 =>  __( 'Background repeat', 'tailor' ),
 					'type'                  =>  'select',
 					'choices'               =>  array(
-						'no-repeat'             =>  __( 'No repeat', tailor()->textdomain() ),
-						'repeat'                =>  __( 'Repeat', tailor()->textdomain() ),
-						'repeat-x'              =>  __( 'Repeat horizontally', tailor()->textdomain() ),
-						'repeat-yx'             =>  __( 'Repeat vertically', tailor()->textdomain() ),
+						'no-repeat'             =>  __( 'No repeat', 'tailor' ),
+						'repeat'                =>  __( 'Repeat', 'tailor' ),
+						'repeat-x'              =>  __( 'Repeat horizontally', 'tailor' ),
+						'repeat-yx'             =>  __( 'Repeat vertically', 'tailor' ),
 					),
 					'dependencies'          =>  array(
 						'background_image'      =>  array(
@@ -847,18 +847,18 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'default'               =>  'center center',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Background position', tailor()->textdomain() ),
+					'label'                 =>  __( 'Background position', 'tailor' ),
 					'type'                  =>  'select',
 					'choices'               =>  array(
-						'left top'              =>  __( 'Left top', tailor()->textdomain() ),
-						'left center'           =>  __( 'Left center', tailor()->textdomain() ),
-						'left bottom'           =>  __( 'Left bottom', tailor()->textdomain() ),
-						'right top'             =>  __( 'Right top', tailor()->textdomain() ),
-						'right center'          =>  __( 'Right center', tailor()->textdomain() ),
-						'right bottom'          =>  __( 'Right bottom', tailor()->textdomain() ),
-						'center top'            =>  __( 'Center top', tailor()->textdomain() ),
-						'center center'         =>  __( 'Center center', tailor()->textdomain() ),
-						'center bottom'         =>  __( 'Center bottom', tailor()->textdomain() ),
+						'left top'              =>  __( 'Left top', 'tailor' ),
+						'left center'           =>  __( 'Left center', 'tailor' ),
+						'left bottom'           =>  __( 'Left bottom', 'tailor' ),
+						'right top'             =>  __( 'Right top', 'tailor' ),
+						'right center'          =>  __( 'Right center', 'tailor' ),
+						'right bottom'          =>  __( 'Right bottom', 'tailor' ),
+						'center top'            =>  __( 'Center top', 'tailor' ),
+						'center center'         =>  __( 'Center center', 'tailor' ),
+						'center bottom'         =>  __( 'Center bottom', 'tailor' ),
 					),
 					'dependencies'          =>  array(
 						'background_image'      =>  array(
@@ -875,11 +875,11 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'default'               =>  'cover',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Background size', tailor()->textdomain() ),
+					'label'                 =>  __( 'Background size', 'tailor' ),
 					'type'                  =>  'select',
 					'choices'               =>  array(
-						'cover'                 =>  __( 'Cover', tailor()->textdomain() ),
-						'contain'               =>  __( 'Contain', tailor()->textdomain() ),
+						'cover'                 =>  __( 'Cover', 'tailor' ),
+						'contain'               =>  __( 'Contain', 'tailor' ),
 					),
 					'dependencies'          =>  array(
 						'background_image'      =>  array(
@@ -895,7 +895,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'sanitize_callback'     =>  'tailor_sanitize_number',
 				),
 				'control'               =>  array(
-					'label'                 =>  __( 'Background video', tailor()->textdomain() ),
+					'label'                 =>  __( 'Background video', 'tailor' ),
 					'type'                  =>  'video',
 					'section'               =>  'attributes',
 				),

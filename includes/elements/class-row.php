@@ -28,17 +28,17 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Row_Element' ) 
         protected function register_controls() {
 
 	        $this->add_section( 'general', array(
-		        'title'                 =>  __( 'General', tailor()->textdomain() ),
+		        'title'                 =>  __( 'General', 'tailor' ),
 		        'priority'              =>  10,
 	        ) );
 
 	        $this->add_section( 'colors', array(
-		        'title'                 =>  __( 'Colors', tailor()->textdomain() ),
+		        'title'                 =>  __( 'Colors', 'tailor' ),
 		        'priority'              =>  20,
 	        ) );
 
 	        $this->add_section( 'attributes', array(
-		        'title'                 =>  __( 'Attributes', tailor()->textdomain() ),
+		        'title'                 =>  __( 'Attributes', 'tailor' ),
 		        'priority'              =>  30,
 	        ) );
 
@@ -48,7 +48,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Row_Element' ) 
 		        'sanitize_callback'     =>  'tailor_sanitize_text',
 	        ) );
 	        $this->add_control( 'column_spacing', array(
-		        'label'                 =>  __( 'Column spacing', tailor()->textdomain() ),
+		        'label'                 =>  __( 'Column spacing', 'tailor' ),
 		        'type'                  =>  'text',
 		        'priority'              =>  $priority += 10,
 		        'section'               =>  'general',
@@ -58,7 +58,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Row_Element' ) 
 		        'sanitize_callback'     =>  'tailor_sanitize_text',
 	        ) );
 	        $this->add_control( 'min_column_height', array(
-		        'label'                 =>  __( 'Minimum height', tailor()->textdomain() ),
+		        'label'                 =>  __( 'Minimum height', 'tailor' ),
 		        'type'                  =>  'text',
 		        'priority'              =>  $priority += 10,
 		        'section'               =>  'general',
@@ -69,15 +69,15 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Row_Element' ) 
 		        'default'               =>  'small',
 	        ) );
 	        $this->add_control( 'collapse', array(
-		        'label'                 =>  __( 'Minimum screen size', tailor()->textdomain() ),
-		        'description'           =>  __( 'Select the smallest screen size on which columns are displayed', tailor()->textdomain() ),
+		        'label'                 =>  __( 'Minimum screen size', 'tailor' ),
+		        'description'           =>  __( 'Select the smallest screen size on which columns are displayed', 'tailor' ),
 		        'type'                  =>  'select',
 		        'choices'               =>  array(
-			        'x-large'               =>  __( 'Extra large', tailor()->textdomain() ),
-			        'large'                 =>  __( 'Large', tailor()->textdomain() ),
-			        'medium'                =>  __( 'Medium', tailor()->textdomain() ),
-			        'small'                 =>  __( 'Small', tailor()->textdomain() ),
-			        'x-small'               =>  __( 'Extra small', tailor()->textdomain() ),
+			        'x-large'               =>  __( 'Extra large', 'tailor' ),
+			        'large'                 =>  __( 'Large', 'tailor' ),
+			        'medium'                =>  __( 'Medium', 'tailor' ),
+			        'small'                 =>  __( 'Small', 'tailor' ),
+			        'x-small'               =>  __( 'Extra small', 'tailor' ),
 		        ),
 		        'priority'              =>  $priority += 10,
 		        'section'               =>  'general',
@@ -116,8 +116,8 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Row_Element' ) 
 		        'margin'                =>  array(
                     'control'               =>  array(
                         'choices'               =>  array(
-                            'top'                   =>  __( 'Top', tailor()->textdomain() ),
-                            'bottom'                =>  __( 'Bottom', tailor()->textdomain() ),
+                            'top'                   =>  __( 'Top', 'tailor' ),
+                            'bottom'                =>  __( 'Bottom', 'tailor' ),
                         ),
                     ),
 		        ),

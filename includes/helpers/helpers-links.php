@@ -40,7 +40,7 @@ if ( ! function_exists( 'tailor_admin_bar_edit_link' ) ) {
 			$wp_admin_bar->add_node( array(
 				'id'            =>  'edit-with-tailor',
 				'meta'          =>  array(),
-				'title'         =>  sprintf( __( 'Tailor this %s', tailor()->textdomain() ), ucfirst( $post->post_type ) ),
+				'title'         =>  sprintf( __( 'Tailor this %s', 'tailor' ), ucfirst( $post->post_type ) ),
 				'href'          =>  tailor()->get_edit_url( $post->ID ),
 			) );
 		}

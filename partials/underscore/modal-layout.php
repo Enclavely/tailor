@@ -19,7 +19,7 @@ defined( 'ABSPATH' ) or die(); ?>
 		        <?php
 		        $modal_header_controls = sprintf(
 			        '<button class="js-close" title="%s"></button>',
-			        __( 'Close', tailor()->textdomain() )
+			        __( 'Close', 'tailor' )
 		        );
 
 		        /**
@@ -48,8 +48,8 @@ defined( 'ABSPATH' ) or die(); ?>
             $modal_footer_actions = sprintf( '
 				<button class="button button-large js-preview" disabled>%s</button>
  				<button class="button button-large button-primary js-apply" disabled>%s</button>',
-                __( 'Preview', tailor()->textdomain() ),
-                __( 'Apply', tailor()->textdomain() )
+                __( 'Preview', 'tailor' ),
+                __( 'Apply', 'tailor' )
             );
 
             /**

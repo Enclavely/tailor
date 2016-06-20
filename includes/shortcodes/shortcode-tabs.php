@@ -80,7 +80,7 @@ if ( ! function_exists( 'tailor_shortcode_tab' ) ) {
 		global $tailor_tab_navigation;
 		$tailor_tab_navigation[ $id ] = array(
 			'class'         =>  $atts['class'],
-			'title'         =>  empty( $atts['title'] ) ? __( 'Tab', tailor()->textdomain() ) : $atts['title'],
+			'title'         =>  empty( $atts['title'] ) ? __( 'Tab', 'tailor' ) : $atts['title'],
 		);
 
 		return $html;

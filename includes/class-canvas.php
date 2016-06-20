@@ -220,19 +220,19 @@ if ( ! class_exists( 'Tailor_Canvas' ) ) {
 	        ) );
 
 	        wp_localize_script( $canvas_script_name, '_l10n', array(
-		        'edit'              =>  __( 'Edit', tailor()->textdomain() ),
-		        'delete'            =>  __( 'Delete', tailor()->textdomain() ),
-		        'preview'           =>  __( 'Preview', tailor()->textdomain() ),
-		        'save'              =>  __( 'Save', tailor()->textdomain() ),
-		        'initialized'       =>  __( 'Initialized', tailor()->textdomain() ),
-		        'added'             =>  __( 'Added', tailor()->textdomain() ),
-		        'deleted'           =>  __( 'Deleted', tailor()->textdomain() ),
-		        'edited'            =>  __( 'Edited', tailor()->textdomain() ),
-		        'copied'            =>  __( 'Copied', tailor()->textdomain() ),
-		        'moved'             =>  __( 'Moved', tailor()->textdomain() ),
-		        'resized'           =>  __( 'Resized', tailor()->textdomain() ),
-		        'reordered'         =>  __( 'Reordered', tailor()->textdomain() ),
-		        'template'          =>  __( 'Template', tailor()->textdomain() ),
+		        'edit'              =>  __( 'Edit', 'tailor' ),
+		        'delete'            =>  __( 'Delete', 'tailor' ),
+		        'preview'           =>  __( 'Preview', 'tailor' ),
+		        'save'              =>  __( 'Save', 'tailor' ),
+		        'initialized'       =>  __( 'Initialized', 'tailor' ),
+		        'added'             =>  __( 'Added', 'tailor' ),
+		        'deleted'           =>  __( 'Deleted', 'tailor' ),
+		        'edited'            =>  __( 'Edited', 'tailor' ),
+		        'copied'            =>  __( 'Copied', 'tailor' ),
+		        'moved'             =>  __( 'Moved', 'tailor' ),
+		        'resized'           =>  __( 'Resized', 'tailor' ),
+		        'reordered'         =>  __( 'Reordered', 'tailor' ),
+		        'template'          =>  __( 'Template', 'tailor' ),
 	        ) );
 
 	        wp_localize_script( $canvas_script_name, '_nonces', $this->create_nonces() );

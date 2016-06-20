@@ -42,17 +42,17 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Video_Control' 
         protected function render_template() { ?>
 
 	        <% if ( '' == value ) { %>
-	        <p class="message"><?php _e( 'No video selected', tailor()->textdomain() ); ?></p>
+	        <p class="message"><?php _e( 'No video selected', 'tailor' ); ?></p>
 	        <div class="actions">
-		        <button type="button" class="button button--select"><?php _e( 'Select Video', tailor()->textdomain() ); ?></button>
+		        <button type="button" class="button button--select"><?php _e( 'Select Video', 'tailor' ); ?></button>
 	        </div>
 	        <% } else { %>
 	        <div class="video-preview is-loading">
 		        <img class="video-placeholder" src="<?php echo tailor()->plugin_url() . 'assets/img/empty.png'; ?>"/>
 	        </div>
 	        <div class="actions">
-		        <button type="button" class="button button--remove"><?php _e( 'Remove Video', tailor()->textdomain() ); ?></button>
-		        <button type="button" class="button button--change"><?php _e( 'Change Video', tailor()->textdomain() ); ?></button>
+		        <button type="button" class="button button--remove"><?php _e( 'Remove Video', 'tailor' ); ?></button>
+		        <button type="button" class="button button--change"><?php _e( 'Change Video', 'tailor' ); ?></button>
 	        </div>
 	        <% } %>
 

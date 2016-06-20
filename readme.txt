@@ -6,7 +6,7 @@ Stable tag: 1.0.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl.html
 Contributors: andrew.worsfold
-
+Donate link: http://www.gettailor.com/donate/
 Create beautiful page layouts quickly and easily using your favourite theme.
 
 == Description ==
@@ -104,5 +104,11 @@ Yes, however, users should be directed to the WordPress plugin repository to ins
 
 = 1.0.1 =
 * Added fallback functions for PHP 5.4.x.
+
+= 1.1 =
+* Added admin options for hiding the CSS and JavaScript editors.
+* Added admin option for hiding the Attributes panel (contained within the Edit modal window).
+* Changed scripts and styles to only load on Tailored pages.
+* Removed dynamic text domain function.
 
 == Upgrade Notice ==

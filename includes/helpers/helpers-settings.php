@@ -73,32 +73,32 @@ if ( ! function_exists( 'tailor_get_registered_media_queries' ) ) {
 
 		$media_queries = array(
 			'all'                   =>  array(
-				'label'                 =>  __( 'Full', tailor()->textdomain() ),
+				'label'                 =>  __( 'Full', 'tailor' ),
 				'min'                   =>  '',
 				'max'                   =>  '',
 			),
 			'x-large'               =>  array(
-				'label'                 =>  __( 'Extra large', tailor()->textdomain() ),
+				'label'                 =>  __( 'Extra large', 'tailor' ),
 				'min'                   =>  '1200px',
 				'max'                   =>  '',
 			),
 			'large'                 =>  array(
-				'label'                 =>  __( 'Large', tailor()->textdomain() ),
+				'label'                 =>  __( 'Large', 'tailor' ),
 				'min'                   =>  '980px',
 				'max'                   =>  '1199px',
 			),
 			'medium'                =>  array(
-				'label'                 =>  __( 'Medium', tailor()->textdomain() ),
+				'label'                 =>  __( 'Medium', 'tailor' ),
 				'min'                   =>  '768px',
 				'max'                   =>  '979px',
 			),
 			'small'                 =>  array(
-				'label'                 =>  __( 'Small', tailor()->textdomain() ),
+				'label'                 =>  __( 'Small', 'tailor' ),
 				'min'                   =>  '481px',
 				'max'                   =>  '767px',
 			),
 			'x-small'               =>  array(
-				'label'                 =>  __( 'Extra small', tailor()->textdomain() ),
+				'label'                 =>  __( 'Extra small', 'tailor' ),
 				'min'                   =>  '',
 				'max'                   =>  '480px',
 			),
@@ -173,7 +173,7 @@ if ( ! function_exists( 'tailor_get_users' ) ) {
 		$blogusers = get_users();
 		$user_ids = array();
 
-		$user_ids[0] = __( 'Current user', tailor()->textdomain() );
+		$user_ids[0] = __( 'Current user', 'tailor' );
 
 		foreach ( $blogusers as $user ) {
 			$user_ids[ $user->ID ] = esc_attr( $user->display_name );
@@ -229,7 +229,7 @@ if ( ! function_exists( 'tailor_get_image_sizes' ) ) {
 			}
 
 			if ( 'full' == $key ) {
-				$label = __( 'Original', tailor()->textdomain() );
+				$label = __( 'Original', 'tailor' );
 			}
 			else if ( is_numeric( $image_size['width'] ) && is_numeric( $image_size['height'] ) ) {
 				$label = sprintf(
@@ -294,7 +294,7 @@ if ( ! function_exists( 'tailor_get_terms' ) ) {
 				if ( $taxonomy->hierarchical && $taxonomy->show_in_nav_menus ) {
 					$terms = get_terms( $taxonomy->name, $term_args );
 					if ( ! empty( $terms ) && ! is_wp_error( $terms ) ) {
-						$values[ $taxonomy->labels->name ] = array( $taxonomy->object_type[0] => sprintf( __( 'All %s', tailor()->textdomain() ), $taxonomy->labels->name ) );
+						$values[ $taxonomy->labels->name ] = array( $taxonomy->object_type[0] => sprintf( __( 'All %s', 'tailor' ), $taxonomy->labels->name ) );
 						foreach ( $terms as $term ) {
 							if ( isset( $term->term_id ) ) {
 								$values[ $taxonomy->labels->name ][ "{$taxonomy->name}-{$term->term_id}" ] = $term->name;
@@ -509,4 +509,47 @@ if ( ! function_exists( 'maybe_hash_hex_color' ) ) {
 
 		return $color;
 	}
+}
+
+
+if ( ! function_exists( 'tailor_maybe_hide_attributes_panel' ) ) {
+
+	/**
+	 * Hides the Attributes panel if the associated admin setting is set to active.
+	 *
+	 * @since 1.1.
+	 *
+	 * @return bool
+	 */
+	function tailor_maybe_hide_attributes_panel() {
+		return ! tailor_get_setting( 'hide_attributes_panel' );
+	}
+
+	add_filter( 'tailor_show_panel_attributes', 'tailor_maybe_hide_attributes_panel', 10, 1 );
+}
+
+if ( ! function_exists( 'tailor_maybe_disable_scripts' ) ) {
+
+	/**
+	 * Enables styles and scripts if the current page or post has been (or is being) Tailored
+	 * (or the admin override is set to active).
+	 *
+	 * @since 1.1.
+	 *
+	 * @return bool
+	 */
+	function tailor_maybe_enable_scripts() {
+
+		$enable_scripts = tailor_get_setting( 'enable_scripts_all_pages' );
+		if ( ! empty( $enable_scripts ) ) {
+			return true;
+		}
+
+		$post_id = get_the_ID();
+		$tailor_layout = get_post_meta( $post_id, '_tailor_layout' );
+		return ! empty( $tailor_layout ) || tailor()->is_canvas();
+	}
+
+	add_filter( 'tailor_enable_enqueue_scripts', 'tailor_maybe_enable_scripts' );
+	add_filter( 'tailor_enable_enqueue_stylesheets', 'tailor_maybe_enable_scripts' );
 }

@@ -84,32 +84,32 @@ if ( ! class_exists( 'Tailor_Panels' ) ) {
          *
          * @param $panel_manager Tailor_Panels
          */
-        public function register_panels( $panel_manager ) {
+        public function  register_panels( $panel_manager ) {
 
 	        $panel_manager->add_panel( new Tailor_Elements_Panel( 'library', array(
-		        'title'                 =>  __( 'Elements', tailor()->textdomain() ),
-		        'description'           =>  __( 'Elements are the building blocks of your page.  Drag one from the list below to the desired position on the page to get started.', tailor()->textdomain() ),
+		        'title'                 =>  __( 'Elements', 'tailor' ),
+		        'description'           =>  __( 'Elements are the building blocks of your page.  Drag one from the list below to the desired position on the page to get started.', 'tailor' ),
 		        'priority'              =>  10,
 	        ) ) );
 
 	        $panel_manager->add_panel( new Tailor_Templates_Panel( 'templates', array(
-	            'title'                 =>  __( 'Templates', tailor()->textdomain() ),
-	            'description'           =>  __( 'Templates allow you to save customized elements, or the entire layout, for future use.', tailor()->textdomain() ),
+	            'title'                 =>  __( 'Templates', 'tailor' ),
+	            'description'           =>  __( 'Templates allow you to save customized elements, or the entire layout, for future use.', 'tailor' ),
 	            'priority'              =>  20,
 	        ) ) );
 
 	        $panel_manager->add_panel( 'settings', array(
-		        'title'                 =>  __( 'Settings', tailor()->textdomain() ),
+		        'title'                 =>  __( 'Settings', 'tailor' ),
 		        'priority'              =>  30,
 	        ) );
 
 	        $panel_manager->add_panel( new Tailor_History_Panel( 'history', array(
-		        'title'                 =>  __( 'History', tailor()->textdomain() ),
+		        'title'                 =>  __( 'History', 'tailor' ),
 		        'priority'              =>  40,
 	        ) ) );
 
 	        $panel_manager->add_section( 'general', array(
-		        'title'                 =>  __( 'General', tailor()->textdomain() ),
+		        'title'                 =>  __( 'General', 'tailor' ),
 		        'priority'              =>  10,
 		        'panel'                 =>  'settings',
 	        ) );
@@ -119,44 +119,48 @@ if ( ! class_exists( 'Tailor_Panels' ) ) {
 		        'sanitize_callback'     =>  'tailor_sanitize_text',
 	        ) );
 	        $panel_manager->add_control( 'title', array(
-		        'label'                 =>  __( 'Page title', tailor()->textdomain() ),
+		        'label'                 =>  __( 'Page title', 'tailor' ),
 		        'type'                  =>  'text',
 		        'priority'              =>  10,
 		        'section'               =>  'general',
 		        'setting'               =>  '_post_title',
 	        ) );
 
-	        $panel_manager->add_setting( '_tailor_page_css', array(
-		        'default'               =>  "/**\n * Custom CSS\n */\n",
-		        'sanitize_callback'     =>  'tailor_sanitize_text',
-	        ) );
-	        $panel_manager->add_control( 'custom-css', array(
-		        'label'                 =>  __( 'Custom CSS', tailor()->textdomain() ),
-		        'description'           =>  __( 'Enter custom declarations and rules in the editor below to see them applied to the page in real-time.', tailor()->textdomain() ),
-		        'type'                  =>  'code',
-		        'mode'                  =>  'css',
-		        'priority'              =>  20,
-		        'section'               =>  'general',
-		        'setting'               =>  '_tailor_page_css',
-	        ) );
+	        if ( ! tailor_get_setting( 'hide_css_editor' ) ) {
+		        $panel_manager->add_setting( '_tailor_page_css', array(
+			        'default'               =>  "/**\n * Custom CSS\n */\n",
+			        'sanitize_callback'     =>  'tailor_sanitize_text',
+		        ) );
+		        $panel_manager->add_control( 'custom-css', array(
+			        'label'                 =>  __( 'Custom CSS', 'tailor' ),
+			        'description'           =>  __( 'Enter custom declarations and rules in the editor below to see them applied to the page in real-time.', 'tailor' ),
+			        'type'                  =>  'code',
+			        'mode'                  =>  'css',
+			        'priority'              =>  20,
+			        'section'               =>  'general',
+			        'setting'               =>  '_tailor_page_css',
+		        ) );
+	        }
 
-	        $panel_manager->add_setting( '_tailor_page_js', array(
-		        'default'               =>  "// Custom JavaScript\n",
-		        'sanitize_callback'     =>  'tailor_sanitize_text',
-	        ) );
-	        $panel_manager->add_control( 'custom-js', array(
-		        'label'                 =>  __( 'Custom JavaScript', tailor()->textdomain() ),
-		        'description'           =>  __( 'Enter custom JavaScript in the editor below.  Saved code will be run when the page is reloaded.', tailor()->textdomain() ),
-		        'type'                  =>  'code',
-		        'mode'                  =>  'javascript',
-		        'priority'              =>  30,
-		        'section'               =>  'general',
-		        'setting'               =>  '_tailor_page_js',
-	        ) );
+	        if ( ! tailor_get_setting( 'hide_js_editor' ) ) {
+		        $panel_manager->add_setting( '_tailor_page_js', array(
+			        'default'               =>  "// Custom JavaScript\n",
+			        'sanitize_callback'     =>  'tailor_sanitize_text',
+		        ) );
+		        $panel_manager->add_control( 'custom-js', array(
+			        'label'                 =>  __( 'Custom JavaScript', 'tailor' ),
+			        'description'           =>  __( 'Enter custom JavaScript in the editor below.  Saved code will be run when the page is reloaded.', 'tailor' ),
+			        'type'                  =>  'code',
+			        'mode'                  =>  'javascript',
+			        'priority'              =>  30,
+			        'section'               =>  'general',
+			        'setting'               =>  '_tailor_page_js',
+		        ) );
+	        }
 
 	        $panel_manager->add_section( 'layout', array(
-		        'title'                 =>  __( 'Layout', tailor()->textdomain() ),
-		        'description'           =>  __( 'The settings on this page override those specified in the Customizer.', tailor()->textdomain() ),
+		        'title'                 =>  __( 'Layout', 'tailor' ),
+		        'description'           =>  __( 'The settings on this page override those specified in the Customizer.', 'tailor' ),
 		        'priority'              =>  20,
 		        'panel'                 =>  'settings',
 	        ) );
@@ -165,8 +169,8 @@ if ( ! class_exists( 'Tailor_Panels' ) ) {
 		        'sanitize_callback'     =>  'tailor_sanitize_text',
 	        ) );
 	        $panel_manager->add_control( 'section-width', array(
-		        'label'                 =>  __( 'Section width', tailor()->textdomain() ),
-		        'description'           =>  __( 'The maximum width for sections.', tailor()->textdomain() ),
+		        'label'                 =>  __( 'Section width', 'tailor' ),
+		        'description'           =>  __( 'The maximum width for sections.', 'tailor' ),
 		        'type'                  =>  'text',
 		        'priority'              =>  10,
 		        'section'               =>  'layout',
@@ -177,8 +181,8 @@ if ( ! class_exists( 'Tailor_Panels' ) ) {
 		        'sanitize_callback'     =>  'tailor_sanitize_text',
 	        ) );
 	        $panel_manager->add_control( 'column-spacing', array(
-		        'label'                 =>  __( 'Column spacing', tailor()->textdomain() ),
-		        'description'           =>  __( 'The amount of horizontal space to display between columns.', tailor()->textdomain() ),
+		        'label'                 =>  __( 'Column spacing', 'tailor' ),
+		        'description'           =>  __( 'The amount of horizontal space to display between columns.', 'tailor' ),
 		        'type'                  =>  'text',
 		        'priority'              =>  20,
 		        'section'               =>  'layout',
@@ -189,8 +193,8 @@ if ( ! class_exists( 'Tailor_Panels' ) ) {
                 'sanitize_callback'     =>  'tailor_sanitize_text',
             ) );
             $panel_manager->add_control( 'vertical-spacing', array(
-                'label'                 =>  __( 'Element spacing', tailor()->textdomain() ),
-                'description'           =>  __( 'The amount of vertical space to display between elements.', tailor()->textdomain() ),
+                'label'                 =>  __( 'Element spacing', 'tailor' ),
+                'description'           =>  __( 'The amount of vertical space to display between elements.', 'tailor' ),
                 'type'                  =>  'text',
                 'priority'              =>  30,
                 'section'               =>  'layout',

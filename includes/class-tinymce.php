@@ -119,22 +119,22 @@ if ( ! class_exists( 'Tailor_TinyMCE' ) )  {
 					'title'         =>  'Paragraph',
 					'items'         =>  array(
 						array(
-							'title'         =>  __( 'Dropcap', tailor()->textdomain() ),
+							'title'         =>  __( 'Dropcap', 'tailor' ),
 							'block'         =>  'p',
 							'classes'       =>  'dropcap',
 						),
 						array(
-							'title'         =>  __( 'Lede', tailor()->textdomain() ),
+							'title'         =>  __( 'Lede', 'tailor' ),
 							'inline'        =>  'span',
 							'classes'       =>  'lede',
 						),
 						array(
-							'title'         =>  __( 'Pullquote', tailor()->textdomain() ),
+							'title'         =>  __( 'Pullquote', 'tailor' ),
 							'block'         =>  'div',
 							'classes'       =>  'pullquote',
 						),
 						array(
-							'title'         =>  __( 'Pullquote Right', tailor()->textdomain() ),
+							'title'         =>  __( 'Pullquote Right', 'tailor' ),
 							'block'         =>  'div',
 							'classes'       =>  'pullquote pullquote--right',
 						),

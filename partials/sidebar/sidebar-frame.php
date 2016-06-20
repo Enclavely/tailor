@@ -20,24 +20,24 @@ defined( 'ABSPATH' ) or die(); ?>
 	        $saved_content = get_post_meta( $post->ID, '_tailor_saved_content', true );
 
 	        if ( false == $tailor_layout || wpautop( $post->post_content ) != wpautop( $saved_content ) ) {
-		        echo '<button class="button button-primary save" id="tailor-save">' . __( 'Save & Publish', tailor()->textdomain() ) . '</button>';
+		        echo '<button class="button button-primary save" id="tailor-save">' . __( 'Save & Publish', 'tailor' ) . '</button>';
 	        }
 	        else {
-		        echo '<button class="button button-primary save" id="tailor-save" disabled >' . __( 'Saved', tailor()->textdomain() ) . '</button>';
+		        echo '<button class="button button-primary save" id="tailor-save" disabled >' . __( 'Saved', 'tailor' ) . '</button>';
 	        } ?>
 
 	        <span class="spinner"></span>
 
 	        <a class="tailor-sidebar__control" href="<?php echo esc_url_raw( get_edit_post_link() ); ?>" tabindex="0">
-		        <?php echo tailor_screen_reader_text( __( 'Close', tailor()->textdomain() ) ); ?>
+		        <?php echo tailor_screen_reader_text( __( 'Close', 'tailor' ) ); ?>
 	        </a>
         </div>
 
         <div class="tailor-sidebar__content" id="tailor-sidebar-content"></div>
 
-        <button type="button" class="collapse-sidebar" id="tailor-collapse" aria-expanded="true" aria-label="<?php _e( 'Collapse Sidebar', tailor()->textdomain() ); ?>">
+        <button type="button" class="collapse-sidebar" id="tailor-collapse" aria-expanded="true" aria-label="<?php _e( 'Collapse Sidebar', 'tailor' ); ?>">
             <span class="collapse-sidebar-arrow"></span>
-            <span class="collapse-sidebar-label"><?php _e( 'Collapse', tailor()->textdomain() ); ?></span>
+            <span class="collapse-sidebar-label"><?php _e( 'Collapse', 'tailor' ); ?></span>
         </button>
     </div>
 

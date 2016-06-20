@@ -28,17 +28,17 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_List_Item_Eleme
         protected function register_controls() {
 
 	        $this->add_section( 'general', array(
-		        'title'                 =>  __( 'General', tailor()->textdomain() ),
+		        'title'                 =>  __( 'General', 'tailor' ),
 		        'priority'              =>  10,
 	        ) );
 
 	        $this->add_section( 'colors', array(
-		        'title'                 =>  __( 'Colors', tailor()->textdomain() ),
+		        'title'                 =>  __( 'Colors', 'tailor' ),
 		        'priority'              =>  20,
 	        ) );
 
 	        $this->add_section( 'attributes', array(
-		        'title'                 =>  __( 'Attributes', tailor()->textdomain() ),
+		        'title'                 =>  __( 'Attributes', 'tailor' ),
 		        'priority'              =>  30,
 	        ) );
 
@@ -60,17 +60,17 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_List_Item_Eleme
 		        'alignment'             =>  array(
 			        'control'               =>  array(
 				        'choices'               =>  array(
-					        'left'                  =>  __( 'Left', tailor()->textdomain() ),
-					        'right'                 =>  __( 'Right', tailor()->textdomain() ),
+					        'left'                  =>  __( 'Left', 'tailor' ),
+					        'right'                 =>  __( 'Right', 'tailor' ),
 				        ),
 			        ),
 		        ),
 		        'graphic_type'          =>  array(
 			        'control'               =>  array(
 				        'choices'               =>  array(
-					        'icon'                  =>  __( 'Icon', tailor()->textdomain() ),
-					        'image'                 =>  __( 'Image', tailor()->textdomain() ),
-					        'number'                =>  __( 'Number', tailor()->textdomain() ),
+					        'icon'                  =>  __( 'Icon', 'tailor' ),
+					        'image'                 =>  __( 'Image', 'tailor' ),
+					        'number'                =>  __( 'Number', 'tailor' ),
 				        ),
 			        ),
 		        ),
@@ -171,8 +171,8 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_List_Item_Eleme
 		        'margin'                =>  array(
                     'control'               =>  array(
                         'choices'               =>  array(
-                            'top'                   =>  __( 'Top', tailor()->textdomain() ),
-                            'bottom'                =>  __( 'Bottom', tailor()->textdomain() ),
+                            'top'                   =>  __( 'Top', 'tailor' ),
+                            'bottom'                =>  __( 'Bottom', 'tailor' ),
                         ),
                     ),
 		        ),

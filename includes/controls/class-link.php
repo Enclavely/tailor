@@ -84,7 +84,7 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Link_Control' )
 
 			    if ( empty( $posts ) ) {
 
-				    $response .= sprintf( '<p class="query-notice">%s</p>', __( 'Nothing found matching your criteria. Showing recent items.', tailor()->textdomain() ) );
+				    $response .= sprintf( '<p class="query-notice">%s</p>', __( 'Nothing found matching your criteria. Showing recent items.', 'tailor' ) );
 
 				    $parameters = array_merge( $defaults, array( 'posts_per_page' => 10 ) );
 
@@ -124,7 +124,7 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Link_Control' )
 
 	        <input type="text" placeholder="<%= placeholder %>" value="<%= value %>"/>
 	        <div class="actions">
-		        <button type="button" class="button button--select"><?php _e( 'Select Content', tailor()->textdomain() ); ?></button>
+		        <button type="button" class="button button--select"><?php _e( 'Select Content', 'tailor' ); ?></button>
 	        </div>
 
             <?php

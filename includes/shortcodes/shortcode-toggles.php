@@ -72,7 +72,7 @@ if ( ! function_exists( 'tailor_shortcode_toggle' ) ) {
 		$class = trim( esc_attr( "tailor-toggle {$atts['class']}" ) );
 
 		if ( empty( $atts['title'] ) ) {
-			$atts['title'] = _x( 'Toggle', 'Default toggle title', tailor()->textdomain() );
+			$atts['title'] = _x( 'Toggle', 'Default toggle title', 'tailor' );
 		}
 
 		$icon = empty( $atts['icon'] ) ? '' : sprintf( '<i class="' . esc_attr( $atts['icon' ] ) . '"></i>' );

@@ -21,7 +21,7 @@ if ( ! function_exists( 'tailor_get_customizer_sections' ) ) {
 
         $sections = array(
             'layout'                    =>  array(
-                'title'                     =>  __( 'Layout', tailor()->textdomain() ),
+                'title'                     =>  __( 'Layout', 'tailor' ),
                 'priority'                  =>  10,
                 'panel'                     =>  'tailor',
             ),

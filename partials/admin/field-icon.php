@@ -28,7 +28,7 @@ $args['value'] = is_array( $args['value'] ) ? $args['value'] : array(); ?>
 				<?php
 				esc_html_e( $icon_kit['name'] );
 				if ( 'dashicons' != $icon_kit['id'] ) {
-					echo ' <a class="js-delete" data-id="' . esc_attr( $icon_kit['id'] ) . '">' . __( 'Delete', tailor()->textdomain() ) . '</a>';
+					echo ' <a class="js-delete" data-id="' . esc_attr( $icon_kit['id'] ) . '">' . __( 'Delete', 'tailor' ) . '</a>';
 				} ?>
 
 				<br>
@@ -38,7 +38,7 @@ $args['value'] = is_array( $args['value'] ) ? $args['value'] : array(); ?>
 
 	</div>
 	<p class="tailor-icons__actions">
-		<a class="button button-large js-select"><?php _e( 'Add kit', tailor()->textdomain() ); ?></a>
+		<a class="button button-large js-select"><?php _e( 'Add kit', 'tailor' ); ?></a>
 		<span class="spinner"></span>
 	</p>
 </div>

@@ -17,7 +17,7 @@ if ( ! function_exists( 'tailor_compatibility_notice' ) ) {
 	 */
 	function tailor_compatibility_notice() {
 		$message = sprintf(
-			__( 'Tailor requires at least WordPress version 4.3. You are running version %s. Please upgrade and try again.', tailor()->textdomain() ),
+			__( 'Tailor requires at least WordPress version 4.3. You are running version %s. Please upgrade and try again.', 'tailor' ),
 			$GLOBALS['wp_version']
 		);
 		printf( '<div class="error"><p>%s</p></div>', $message );

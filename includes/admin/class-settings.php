@@ -62,7 +62,7 @@ class Tailor_Settings {
 	 * @since 1.0.0
 	 */
 	function register_page() {
-		$page_title = __( 'Tailor', tailor()->textdomain() );
+		$page_title = __( 'Tailor', 'tailor' );
 
 		/**
 		 * Filters the user capability required to manage plugin settings.
@@ -94,7 +94,7 @@ class Tailor_Settings {
 		$content = ob_get_clean();
 		$screen->add_help_tab( array(
 			'id'	        =>  'tailor-settings-help',
-			'title'	        =>  __( 'Tailor settings', tailor()->textdomain() ),
+			'title'	        =>  __( 'Tailor settings', 'tailor' ),
 			'content'	    =>  $content,
 		) );
 	}
@@ -111,13 +111,13 @@ class Tailor_Settings {
 
 		add_settings_section(
 			$setting_id,			                        // The section ID
-			__( 'General', tailor()->textdomain() ),	    // The section title
+			__( 'General', 'tailor' ),	    // The section title
 			null,	                                        // The section rendering function
 			$setting_id		                                // The settings page ID
 		);
 
 		$post_type_field_id = 'post_types';
-		$post_type_field_label = __( 'Post types', tailor()->textdomain() );
+		$post_type_field_label = __( 'Post types', 'tailor' );
 
 		add_settings_field(
 			$post_type_field_id,						    // The field ID
@@ -135,7 +135,7 @@ class Tailor_Settings {
 		);
 
 		$role_field_id = 'roles';
-		$role_field_label = __( 'User roles', tailor()->textdomain() );
+		$role_field_label = __( 'User roles', 'tailor' );
 
 		add_settings_field(
 			$role_field_id,
@@ -153,7 +153,7 @@ class Tailor_Settings {
 		);
 
 		$role_field_id = 'content_placeholder';
-		$role_field_label = __( 'Content placeholder', tailor()->textdomain() );
+		$role_field_label = __( 'Content placeholder', 'tailor' );
 
 		add_settings_field(
 			$role_field_id,
@@ -170,15 +170,98 @@ class Tailor_Settings {
 			)
 		);
 
+		$scripts_field_id = 'enable_scripts_all_pages';
+		$scripts_field_label = __( 'Styles and scripts', 'tailor' );
+
+		add_settings_field(
+			$scripts_field_id,
+			$scripts_field_label,
+			array( $this, 'render_field' ),
+			$setting_id,
+			$setting_id,
+			array(
+				'type'              =>  'checkbox',
+				'name'              =>  $setting_id . '[' . $scripts_field_id . ']',
+				'value'             =>  tailor_get_setting( $scripts_field_id ),
+				'options'           =>  array(
+					'on'                =>  __( 'Load CSS and JavaScript on pages that have not been Tailored?', 'tailor' )
+				),
+			)
+		);
+
+		add_settings_section(
+			$setting_id . '_features',
+			__( 'Features', 'tailor' ),
+			null,
+			$setting_id
+		);
+
+		$attributes_field_id = 'hide_attributes_panel';
+		$attributes_field_label = __( 'Advanced settings', 'tailor' );
+
+		add_settings_field(
+			$attributes_field_id,
+			$attributes_field_label,
+			array( $this, 'render_field' ),
+			$setting_id,
+			$setting_id . '_features',
+			array(
+				'type'              =>  'checkbox',
+				'name'              =>  $setting_id . '[' . $attributes_field_id . ']',
+				'value'             =>  tailor_get_setting( $attributes_field_id ),
+				'options'           =>  array(
+					'on'                =>  __( 'Hide the Attributes panel when editing elements?', 'tailor' )
+				),
+			)
+		);
+
+		$custom_css_field_id = 'hide_css_editor';
+		$custom_css_field_label = __( 'Custom CSS', 'tailor' );
+
+		add_settings_field(
+			$custom_css_field_id,
+			$custom_css_field_label,
+			array( $this, 'render_field' ),
+			$setting_id,
+			$setting_id . '_features',
+			array(
+				'type'              =>  'checkbox',
+				'name'              =>  $setting_id . '[' . $custom_css_field_id . ']',
+				'value'             =>  tailor_get_setting( $custom_css_field_id ),
+				'options'           =>  array(
+					'on'                =>  __( 'Hide the custom CSS editor?', 'tailor' )
+				),
+			)
+		);
+
+		$custom_js_field_id = 'hide_js_editor';
+		$custom_js_field_label = __( 'Custom JavaScript', 'tailor' );
+
+		add_settings_field(
+			$custom_js_field_id,
+			$custom_js_field_label,
+			array( $this, 'render_field' ),
+			$setting_id,
+			$setting_id . '_features',
+			array(
+				'type'              =>  'checkbox',
+				'name'              =>  $setting_id . '[' . $custom_js_field_id . ']',
+				'value'             =>  tailor_get_setting( $custom_js_field_id ),
+				'options'           =>  array(
+					'on'                =>  __( 'Hide the custom  JavaScript editor?', 'tailor' )
+				),
+			)
+		);
+
 		add_settings_section(
 			$setting_id . '_elements',
-			__( 'Element list', tailor()->textdomain() ),
+			__( 'Elements', 'tailor' ),
 			null,
 			$setting_id
 		);
 
 		$element_descriptions_field_id = 'show_element_descriptions';
-		$element_descriptions_field_label = __( 'Descriptions', tailor()->textdomain() );
+		$element_descriptions_field_label = __( 'Descriptions', 'tailor' );
 
 		add_settings_field(
 			$element_descriptions_field_id,
@@ -191,13 +274,13 @@ class Tailor_Settings {
 				'name'              =>  $setting_id . '[' . $element_descriptions_field_id . ']',
 				'value'             =>  tailor_get_setting( $element_descriptions_field_id ),
 				'options'           =>  array(
-					'on'                =>  __( 'Show element descriptions?')
+					'on'                =>  __( 'Show element descriptions?', 'tailor' )
 				),
 			)
 		);
 
 		$inactive_elements_field_id = 'show_inactive_elements';
-		$inactive_elements_field_label = __( 'Inactive elements', tailor()->textdomain() );
+		$inactive_elements_field_label = __( 'Inactive elements', 'tailor' );
 
 		add_settings_field(
 			$inactive_elements_field_id,
@@ -210,20 +293,20 @@ class Tailor_Settings {
 				'name'              =>  $setting_id . '[' . $inactive_elements_field_id . ']',
 				'value'             =>  tailor_get_setting( $inactive_elements_field_id ),
 				'options'           =>  array(
-					'on'                =>  __( 'Show inactive elements?')
+					'on'                =>  __( 'Show inactive elements?', 'tailor' )
 				),
 			)
 		);
 
 		add_settings_section(
 			$setting_id . '_icons',
-			__( 'Icons', tailor()->textdomain() ),
+			__( 'Icons', 'tailor' ),
 			array( $this, 'render_icon_section_description' ),
 			$setting_id
 		);
 
 		$icon_field_id = 'icon_kits';
-		$icon_field_label = __( 'Icon kits', tailor()->textdomain() );
+		$icon_field_label = __( 'Icon kits', 'tailor' );
 
 		add_settings_field(
 			$icon_field_id,
@@ -270,9 +353,9 @@ class Tailor_Settings {
 	public function render_icon_section_description( $args ) {
 		printf(
 			'<p>%s <a href="http://icomoon.io/app" target="_blank">%s</a> %s</p>',
-			__( 'Select an existing icon kit from your Media Library or ', tailor()->textdomain() ),
-			__( 'create', tailor()->textdomain() ),
-			__( 'and upload one.', tailor()->textdomain() )
+			__( 'Select an existing icon kit from your Media Library or ', 'tailor' ),
+			__( 'create', 'tailor' ),
+			__( 'and upload one.', 'tailor' )
 		);
 	}
 

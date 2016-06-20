@@ -28,17 +28,17 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Map_Element' ) 
         protected function register_controls() {
 
 	        $this->add_section( 'general', array(
-		        'title'                 =>  __( 'General', tailor()->textdomain() ),
+		        'title'                 =>  __( 'General', 'tailor' ),
 		        'priority'              =>  10,
 	        ) );
 
 	        $this->add_section( 'colors', array(
-		        'title'                 =>  __( 'Colors', tailor()->textdomain() ),
+		        'title'                 =>  __( 'Colors', 'tailor' ),
 		        'priority'              =>  20,
 	        ) );
 
 	        $this->add_section( 'attributes', array(
-		        'title'                 =>  __( 'Attributes', tailor()->textdomain() ),
+		        'title'                 =>  __( 'Attributes', 'tailor' ),
 		        'priority'              =>  30,
 	        ) );
 
@@ -48,7 +48,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Map_Element' ) 
                 'sanitize_callback'     =>  'tailor_sanitize_text',
             ) );
             $this->add_control( 'address', array(
-                'label'                 =>  __( 'Address', tailor()->textdomain() ),
+                'label'                 =>  __( 'Address', 'tailor' ),
                 'type'                  =>  'text',
                 'priority'              =>  $priority += 10,
                 'section'               =>  'general',
@@ -58,7 +58,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Map_Element' ) 
                 'sanitize_callback'     =>  'tailor_sanitize_text',
             ) );
             $this->add_control( 'latitude', array(
-                'label'                 =>  __( 'Latitude (optional)', tailor()->textdomain() ),
+                'label'                 =>  __( 'Latitude (optional)', 'tailor' ),
                 'type'                  =>  'text',
                 'priority'              =>  $priority += 10,
                 'section'               =>  'general',
@@ -68,7 +68,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Map_Element' ) 
                 'sanitize_callback'     =>  'tailor_sanitize_text',
             ) );
             $this->add_control( 'longitude', array(
-                'label'                 =>  __( 'Longitude (optional)', tailor()->textdomain() ),
+                'label'                 =>  __( 'Longitude (optional)', 'tailor' ),
                 'type'                  =>  'text',
                 'priority'              =>  $priority += 10,
                 'section'               =>  'general',
@@ -78,7 +78,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Map_Element' ) 
 		        'sanitize_callback'     =>  'tailor_sanitize_text',
 	        ) );
 	        $this->add_control( 'zoom', array(
-		        'label'                 =>  __( 'Zoom level', tailor()->textdomain() ),
+		        'label'                 =>  __( 'Zoom level', 'tailor' ),
 		        'type'                  =>  'text',
 		        'priority'              =>  $priority += 10,
 		        'section'               =>  'general',
@@ -88,7 +88,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Map_Element' ) 
 		        'sanitize_callback'     =>  'tailor_sanitize_number',
 	        ) );
 	        $this->add_control( 'controls', array(
-		        'label'                 =>  __( 'Show controls', tailor()->textdomain() ),
+		        'label'                 =>  __( 'Show controls', 'tailor' ),
 		        'type'                  =>  'switch',
 		        'priority'              =>  $priority += 10,
 		        'section'               =>  'general',
@@ -98,7 +98,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Map_Element' ) 
 		        'sanitize_callback'     =>  'tailor_sanitize_html',
 	        ) );
 	        $this->add_control( 'content', array(
-		        'label'                 =>  __( 'Markers', tailor()->textdomain() ),
+		        'label'                 =>  __( 'Markers', 'tailor' ),
 		        'type'                  =>  'list',
 		        'priority'              =>  $priority += 10,
 		        'section'               =>  'general',
@@ -123,7 +123,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Map_Element' ) 
 		        'sanitize_callback'     =>  'tailor_sanitize_color',
 	        ) );
 	        $this->add_control( 'hue', array(
-		        'label'                 =>  __( 'Hue', tailor()->textdomain() ),
+		        'label'                 =>  __( 'Hue', 'tailor' ),
 		        'type'                  =>  'colorpicker',
 		        'priority'              =>  $priority += 10,
 		        'section'               =>  'colors',
@@ -131,7 +131,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Map_Element' ) 
 
 	        $this->add_setting( 'saturation', array() );
 	        $this->add_control( 'saturation', array(
-		        'label'                 =>  __( 'Saturation', tailor()->textdomain() ),
+		        'label'                 =>  __( 'Saturation', 'tailor' ),
 		        'type'                  =>  'number',
 		        'priority'              =>  $priority += 10,
 		        'section'               =>  'colors',

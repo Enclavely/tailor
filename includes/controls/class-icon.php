@@ -32,12 +32,12 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Icon_Control' )
 	                <span class="control__title">
 		                <%= label %>
 				        <a class="button button-small js-default <% if ( 'undefined' == typeof showDefault || ! showDefault ) { %>is-hidden<% } %>">
-					        <?php _e( 'Default', tailor()->textdomain() ); ?>
+					        <?php _e( 'Default', 'tailor' ); ?>
 				        </a>
 	                </span>
 				    <% } else { %>
 				    <a class="button button-small js-default <% if ( 'undefined' == typeof showDefault || ! showDefault ) { %>is-hidden<% } %>">
-					    <?php _e( 'Default', tailor()->textdomain() ); ?>
+					    <?php _e( 'Default', 'tailor' ); ?>
 				    </a>
 				    <% } %>
 				    <% if ( description ) { %>
@@ -70,17 +70,17 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Icon_Control' )
         protected function render_template() { ?>
 
 	        <% if ( '' == value ) { %>
-	        <p class="message"><?php _e( 'No icon selected', tailor()->textdomain() ); ?></p>
+	        <p class="message"><?php _e( 'No icon selected', 'tailor' ); ?></p>
 	        <div class="actions">
-		        <button type="button" class="button button--select"><?php _e( 'Select Icon', tailor()->textdomain() ); ?></button>
+		        <button type="button" class="button button--select"><?php _e( 'Select Icon', 'tailor' ); ?></button>
 	        </div>
 	        <% } else { %>
 	        <p>
 		        <i class="<%= value %>"></i>
 	        </p>
 	        <div class="actions">
-		        <button type="button" class="button button--remove"><?php _e( 'Remove Icon', tailor()->textdomain() ); ?></button>
-		        <button type="button" class="button button--change"><?php _e( 'Change Icon', tailor()->textdomain() ); ?></button>
+		        <button type="button" class="button button--remove"><?php _e( 'Remove Icon', 'tailor' ); ?></button>
+		        <button type="button" class="button button--change"><?php _e( 'Change Icon', 'tailor' ); ?></button>
 	        </div>
 	        <% } %>
 
@@ -100,9 +100,9 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Icon_Control' )
 
 		    <div class="dialog__container">
 			    <p>
-				    <?php _e( 'Please add and enable at least one icon kit on the', tailor()->textdomain() ); ?>
+				    <?php _e( 'Please add and enable at least one icon kit on the', 'tailor' ); ?>
 		            <a href="<?php echo esc_url( self_admin_url( 'options-general.php?page=' . TAILOR_SETTING_ID ) ); ?>" target="_blank">
-			            <?php _e( 'Settings Page.', tailor()->textdomain() ); ?>
+			            <?php _e( 'Settings Page.', 'tailor' ); ?>
 		            </a>
 			    </p>
 		    </div>

@@ -28,17 +28,17 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Tabs_Element' )
         protected function register_controls() {
 
 	        $this->add_section( 'general', array(
-		        'title'                 =>  __( 'General', tailor()->textdomain() ),
+		        'title'                 =>  __( 'General', 'tailor' ),
 		        'priority'              =>  10,
 	        ) );
 
 	        $this->add_section( 'colors', array(
-		        'title'                 =>  __( 'Colors', tailor()->textdomain() ),
+		        'title'                 =>  __( 'Colors', 'tailor' ),
 		        'priority'              =>  20,
 	        ) );
 
 	        $this->add_section( 'attributes', array(
-		        'title'                 =>  __( 'Attributes', tailor()->textdomain() ),
+		        'title'                 =>  __( 'Attributes', 'tailor' ),
 		        'priority'              =>  30,
 	        ) );
 
@@ -48,12 +48,12 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Tabs_Element' )
 		        'sanitize_callback'     =>  'tailor_sanitize_text',
 	        ) );
 	        $this->add_control( 'position', array(
-		        'label'                 =>  __( 'Tabs position', tailor()->textdomain() ),
+		        'label'                 =>  __( 'Tabs position', 'tailor' ),
 		        'type'                  =>  'select',
 		        'choices'               =>  array(
-			        'top'                   =>  __( 'Top', tailor()->textdomain() ),
-			        'left'                  =>  __( 'Left', tailor()->textdomain() ),
-			        'right'                 =>  __( 'Right', tailor()->textdomain() ),
+			        'top'                   =>  __( 'Top', 'tailor' ),
+			        'left'                  =>  __( 'Left', 'tailor' ),
+			        'right'                 =>  __( 'Right', 'tailor' ),
 		        ),
 		        'priority'              =>  $priority += 10,
 		        'section'               =>  'general',
@@ -79,7 +79,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Tabs_Element' )
 		        'sanitize_callback'     =>  'tailor_sanitize_color',
 	        ) );
 	        $this->add_control( 'inactive_color', array(
-		        'label'                 =>  __( 'Inactive color', tailor()->textdomain() ),
+		        'label'                 =>  __( 'Inactive color', 'tailor' ),
 		        'type'                  =>  'colorpicker',
 		        'priority'              =>  $priority += 10,
 		        'section'               =>  'colors',
@@ -89,7 +89,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Tabs_Element' )
 		        'sanitize_callback'     =>  'tailor_sanitize_color',
 	        ) );
 	        $this->add_control( 'inactive_background_color', array(
-		        'label'                 =>  __( 'Inactive background color', tailor()->textdomain() ),
+		        'label'                 =>  __( 'Inactive background color', 'tailor' ),
 		        'type'                  =>  'colorpicker',
 		        'priority'              =>  $priority += 10,
 		        'section'               =>  'colors',
@@ -113,11 +113,11 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Tabs_Element' )
 		        'border_style'          =>  array(
 			        'control'               =>  array(
 				        'choices'               =>  array(
-					        ''                      =>  __( 'Default', tailor()->textdomain() ),
-					        'solid'                 =>  __( 'Solid', tailor()->textdomain() ),
-					        'dashed'                =>  __( 'Dashed', tailor()->textdomain() ),
-					        'dotted'                =>  __( 'Dotted', tailor()->textdomain() ),
-					        'none'                  =>  __( 'None', tailor()->textdomain() ),
+					        ''                      =>  __( 'Default', 'tailor' ),
+					        'solid'                 =>  __( 'Solid', 'tailor' ),
+					        'dashed'                =>  __( 'Dashed', 'tailor' ),
+					        'dotted'                =>  __( 'Dotted', 'tailor' ),
+					        'none'                  =>  __( 'None', 'tailor' ),
 				        ),
 			        ),
 		        ),

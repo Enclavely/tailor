@@ -48,12 +48,12 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_List_Control' )
 	                <span class="control__title">
 		                <%= label %>
 				        <a class="button button-small js-default <% if ( 'undefined' == typeof showDefault || ! showDefault ) { %>is-hidden<% } %>">
-					        <?php _e( 'Default', tailor()->textdomain() ); ?>
+					        <?php _e( 'Default', 'tailor' ); ?>
 				        </a>
 	                </span>
 					<% } else { %>
 					<a class="button button-small js-default <% if ( 'undefined' == typeof showDefault || ! showDefault ) { %>is-hidden<% } %>">
-						<?php _e( 'Default', tailor()->textdomain() ); ?>
+						<?php _e( 'Default', 'tailor' ); ?>
 					</a>
 					<% } %>
 					<% if ( description ) { %>
@@ -92,7 +92,7 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_List_Control' )
 
 				<ul id="list-items"></ul>
 				<div class="actions">
-					<button class="button js-add"><?php _e( 'Add', tailor()->textdomain() ); ?> <%= childLabel %></button>
+					<button class="button js-add"><?php _e( 'Add', 'tailor' ); ?> <%= childLabel %></button>
 				</div>
 
 			<?php
@@ -116,8 +116,8 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_List_Control' )
 				<ul id="controls"></ul>
 				<?php printf(
 					'<a class="link link--delete js-delete-list-item" title="%1$s">%1$s</a> | <a class="link js-close-list-item" title="%2$s">%2$s</a>',
-					__( 'Delete', tailor()->textdomain() ),
-					__( 'Close', tailor()->textdomain() )
+					__( 'Delete', 'tailor' ),
+					__( 'Close', 'tailor' )
 				); ?>
 			</div>
 
@@ -135,7 +135,7 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_List_Control' )
 		 */
 		protected function empty_template() { ?>
 
-			<p class="message"><?php _e( 'No items to display', tailor()->textdomain() ); ?></p>
+			<p class="message"><?php _e( 'No items to display', 'tailor' ); ?></p>
 
 			<?php
 		}

@@ -19,9 +19,9 @@ if ( ! function_exists( 'tailor_custom_contact_info') ) {
 	 * @return array $fields
 	 */
 	function tailor_custom_contact_info( $fields ) {
-		$fields['facebook'] = __( 'Facebook', tailor()->textdomain() );
-		$fields['twitter'] = __( 'Twitter', tailor()->textdomain() );
-		$fields['googleplus'] = __( 'Google Plus', tailor()->textdomain() );
+		$fields['facebook'] = __( 'Facebook', 'tailor' );
+		$fields['twitter'] = __( 'Twitter', 'tailor' );
+		$fields['googleplus'] = __( 'Google Plus', 'tailor' );
 
 		return $fields;
 	}

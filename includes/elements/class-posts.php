@@ -28,22 +28,22 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Posts_Element' 
         protected function register_controls() {
 
 	        $this->add_section( 'general', array(
-		        'title'                 =>  __( 'General', tailor()->textdomain() ),
+		        'title'                 =>  __( 'General', 'tailor' ),
 		        'priority'              =>  10,
 	        ) );
 
 	        $this->add_section( 'query', array(
-		        'title'                 =>  __( 'Query', tailor()->textdomain() ),
+		        'title'                 =>  __( 'Query', 'tailor' ),
 		        'priority'              =>  20,
 	        ) );
 
 	        $this->add_section( 'colors', array(
-		        'title'                 =>  __( 'Colors', tailor()->textdomain() ),
+		        'title'                 =>  __( 'Colors', 'tailor' ),
 		        'priority'              =>  30,
 	        ) );
 
 	        $this->add_section( 'attributes', array(
-		        'title'                 =>  __( 'Attributes', tailor()->textdomain() ),
+		        'title'                 =>  __( 'Attributes', 'tailor' ),
 		        'priority'              =>  40,
 	        ) );
 
@@ -70,17 +70,17 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Posts_Element' 
 		        'style'                 =>  array(
 			        'control'               =>  array(
 				        'choices'               =>  array(
-					        'default'               =>  __( 'Default', tailor()->textdomain() ),
-					        'boxed'                 =>  __( 'Boxed', tailor()->textdomain() ),
+					        'default'               =>  __( 'Default', 'tailor' ),
+					        'boxed'                 =>  __( 'Boxed', 'tailor' ),
 				        ),
 			        ),
 		        ),
 		        'layout'                =>  array(
                     'control'               =>  array(
                         'choices'               =>  array(
-                            'list'                  =>  __( 'List', tailor()->textdomain() ),
-                            'grid'                  =>  __( 'Grid', tailor()->textdomain() ),
-                            'carousel'              =>  __( 'Carousel', tailor()->textdomain() ),
+                            'list'                  =>  __( 'List', 'tailor' ),
+                            'grid'                  =>  __( 'Grid', 'tailor' ),
+                            'carousel'              =>  __( 'Carousel', 'tailor' ),
                         ),
                     ),
 		        ),
@@ -161,12 +161,12 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Posts_Element' 
 			        ),
                     'control'               =>  array(
                         'choices'               =>  array(
-                            'author'                =>  __( 'Author', tailor()->textdomain() ),
-                            'category'              =>  __( 'Category', tailor()->textdomain() ),
-                            'date'                  =>  __( 'Date', tailor()->textdomain() ),
-                            'excerpt'               =>  __( 'Excerpt', tailor()->textdomain() ),
-                            'thumbnail'             =>  __( 'Thumbnail', tailor()->textdomain() ),
-                            'comment-number'        =>  __( 'Comment number', tailor()->textdomain() ),
+                            'author'                =>  __( 'Author', 'tailor' ),
+                            'category'              =>  __( 'Category', 'tailor' ),
+                            'date'                  =>  __( 'Date', 'tailor' ),
+                            'excerpt'               =>  __( 'Excerpt', 'tailor' ),
+                            'thumbnail'             =>  __( 'Thumbnail', 'tailor' ),
+                            'comment-number'        =>  __( 'Comment number', 'tailor' ),
                         ),
                     ),
 		        ),

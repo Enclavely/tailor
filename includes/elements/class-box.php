@@ -29,17 +29,17 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Box_Element' ) 
         protected function register_controls() {
 
 	        $this->add_section( 'general', array(
-		        'title'                 =>  __( 'General', tailor()->textdomain() ),
+		        'title'                 =>  __( 'General', 'tailor' ),
 		        'priority'              =>  10,
 	        ) );
 
 	        $this->add_section( 'colors', array(
-		        'title'                 =>  __( 'Colors', tailor()->textdomain() ),
+		        'title'                 =>  __( 'Colors', 'tailor' ),
 		        'priority'              =>  20,
 	        ) );
 
 	        $this->add_section( 'attributes', array(
-		        'title'                 =>  __( 'Attributes', tailor()->textdomain() ),
+		        'title'                 =>  __( 'Attributes', 'tailor' ),
 		        'priority'              =>  30,
 	        ) );
 
@@ -61,17 +61,17 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Box_Element' ) 
 		        'alignment'             =>  array(
 			        'control'               =>  array(
 				        'choices'               =>  array(
-					        'left'                  =>  __( 'Left', tailor()->textdomain() ),
-					        'center'                =>  __( 'Center', tailor()->textdomain() ),
-					        'right'                 =>  __( 'Right', tailor()->textdomain() ),
+					        'left'                  =>  __( 'Left', 'tailor' ),
+					        'center'                =>  __( 'Center', 'tailor' ),
+					        'right'                 =>  __( 'Right', 'tailor' ),
 				        ),
 			        ),
 		        ),
 		        'graphic_type'          =>  array(
 			        'control'               =>  array(
 				        'choices'               =>  array(
-					        'icon'                  =>  __( 'Icon', tailor()->textdomain() ),
-					        'image'                 =>  __( 'Image', tailor()->textdomain() ),
+					        'icon'                  =>  __( 'Icon', 'tailor' ),
+					        'image'                 =>  __( 'Image', 'tailor' ),
 				        ),
 			        ),
 		        ),

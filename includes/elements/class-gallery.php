@@ -28,17 +28,17 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Gallery_Element
         protected function register_controls() {
 
 	        $this->add_section( 'general', array(
-		        'title'                 =>  __( 'General', tailor()->textdomain() ),
+		        'title'                 =>  __( 'General', 'tailor' ),
 		        'priority'              =>  10,
 	        ) );
 
 	        $this->add_section( 'colors', array(
-		        'title'                 =>  __( 'Colors', tailor()->textdomain() ),
+		        'title'                 =>  __( 'Colors', 'tailor' ),
 		        'priority'              =>  20,
 	        ) );
 
 	        $this->add_section( 'attributes', array(
-		        'title'                 =>  __( 'Attributes', tailor()->textdomain() ),
+		        'title'                 =>  __( 'Attributes', 'tailor' ),
 		        'priority'              =>  30,
 	        ) );
 
@@ -48,7 +48,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Gallery_Element
 		        'sanitize_callback'     =>  'tailor_sanitize_text',
 	        ) );
 	        $this->add_control( 'ids', array(
-		        'label'                 =>  __( 'Images', tailor()->textdomain() ),
+		        'label'                 =>  __( 'Images', 'tailor' ),
 		        'type'                  =>  'gallery',
 		        'priority'              =>  $priority += 10,
 		        'section'               =>  'general',
@@ -74,10 +74,10 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Gallery_Element
 		        'layout'                =>  array(
                     'control'               =>  array(
                         'choices'               =>  array(
-                            'list'                  =>  __( 'List', tailor()->textdomain() ),
-                            'grid'                  =>  __( 'Grid', tailor()->textdomain() ),
-                            'carousel'              =>  __( 'Carousel', tailor()->textdomain() ),
-                            'slideshow'             =>  __( 'Slideshow', tailor()->textdomain() ),
+                            'list'                  =>  __( 'List', 'tailor' ),
+                            'grid'                  =>  __( 'Grid', 'tailor' ),
+                            'carousel'              =>  __( 'Carousel', 'tailor' ),
+                            'slideshow'             =>  __( 'Slideshow', 'tailor' ),
                         ),
                     ),
 		        ),

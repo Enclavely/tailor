@@ -28,17 +28,17 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Grid_Element' )
         protected function register_controls() {
 
 	        $this->add_section( 'general', array(
-		        'title'                 =>  __( 'General', tailor()->textdomain() ),
+		        'title'                 =>  __( 'General', 'tailor' ),
 		        'priority'              =>  10,
 	        ) );
 
 	        $this->add_section( 'colors', array(
-		        'title'                 =>  __( 'Colors', tailor()->textdomain() ),
+		        'title'                 =>  __( 'Colors', 'tailor' ),
 		        'priority'              =>  20,
 	        ) );
 
 	        $this->add_section( 'attributes', array(
-		        'title'                 =>  __( 'Attributes', tailor()->textdomain() ),
+		        'title'                 =>  __( 'Attributes', 'tailor' ),
 		        'priority'              =>  30,
 	        ) );
 
@@ -63,15 +63,15 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Grid_Element' )
 		        'default'               =>  'small',
 	        ) );
 	        $this->add_control( 'collapse', array(
-		        'label'             =>  __( 'Minimum screen size', tailor()->textdomain() ),
-		        'description'       =>  __( 'Select the smallest screen size on which items are displayed in a grid layout', tailor()->textdomain() ),
+		        'label'             =>  __( 'Minimum screen size', 'tailor' ),
+		        'description'       =>  __( 'Select the smallest screen size on which items are displayed in a grid layout', 'tailor' ),
 		        'type'              =>  'select',
 		        'choices'           =>  array(
-			        'x-large'           =>  __( 'Extra large', tailor()->textdomain() ),
-			        'large'             =>  __( 'Large', tailor()->textdomain() ),
-			        'medium'            =>  __( 'Medium', tailor()->textdomain() ),
-			        'small'             =>  __( 'Small', tailor()->textdomain() ),
-			        'x-small'           =>  __( 'Extra small', tailor()->textdomain() ),
+			        'x-large'           =>  __( 'Extra large', 'tailor' ),
+			        'large'             =>  __( 'Large', 'tailor' ),
+			        'medium'            =>  __( 'Medium', 'tailor' ),
+			        'small'             =>  __( 'Small', 'tailor' ),
+			        'x-small'           =>  __( 'Extra small', 'tailor' ),
 		        ),
 		        'priority'          =>  $priority += 10,
 		        'section'           =>  'general',

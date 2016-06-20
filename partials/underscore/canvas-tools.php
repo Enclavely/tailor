@@ -10,8 +10,8 @@
 
 defined( 'ABSPATH' ) or die();
 
-$edit_label = __( 'Edit', tailor()->textdomain() );
-$delete_label = __( 'Delete', tailor()->textdomain() ); ?>
+$edit_label = __( 'Edit', 'tailor' );
+$delete_label = __( 'Delete', 'tailor' ); ?>
 
 <script id="tmpl-tailor-tools-select" type="text/html">
 	<div class="select__menu"></div>

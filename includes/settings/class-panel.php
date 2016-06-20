@@ -216,19 +216,19 @@ if ( ! class_exists( 'Tailor_Panel' ) ) {
 		    <div class="header">
 
 			    <button class="back-button">
-				    <span class="screen-reader-text"><?php _e( 'Back', tailor()->textdomain() ); ?></span>
+				    <span class="screen-reader-text"><?php _e( 'Back', 'tailor' ); ?></span>
 			    </button>
 
 			    <div class="title-block">
 
 				    <h3 class="title">
-					    <span class="notice"><?php _e( 'Tailor', tailor()->textdomain() ); ?></span>
+					    <span class="notice"><?php _e( 'Tailor', 'tailor' ); ?></span>
 					    <%= title %>
 				    </h3>
 
 				    <% if ( description ) { %>
 				    <button class="help-button dashicons dashicons-editor-help">
-					    <span class="screen-reader-text"><?php _e( 'Help', tailor()->textdomain() ); ?></span>
+					    <span class="screen-reader-text"><?php _e( 'Help', 'tailor' ); ?></span>
 				    </button>
 				    <% } %>
 			    </div>
@@ -289,7 +289,7 @@ if ( ! class_exists( 'Tailor_Panel' ) ) {
 	     */
 	    protected function empty_template() { ?>
 
-		    <p><?php _e( 'There are no sections to display', tailor()->textdomain() ); ?></p>
+		    <p><?php _e( 'There are no sections to display', 'tailor' ); ?></p>
 
 			<?php
 	    }
@@ -324,7 +324,7 @@ if ( ! class_exists( 'Tailor_Elements_Panel' ) ) {
 		 */
 		protected function items_template() {
 
-			$search_text =  __( 'Search elements..', tailor()->textdomain() ); ?>
+			$search_text =  __( 'Search elements..', 'tailor' ); ?>
 
 			<% if ( items.length ) { %>
 			<div class="search-form">
@@ -389,7 +389,7 @@ if ( ! class_exists( 'Tailor_Elements_Panel' ) ) {
 		 */
 		protected function empty_template() { ?>
 
-			<p><?php _e( 'There are no elements to display.', tailor()->textdomain() ); ?></p>
+			<p><?php _e( 'There are no elements to display.', 'tailor' ); ?></p>
 
 			<?php
 		}
@@ -424,7 +424,7 @@ if ( ! class_exists( 'Tailor_Templates_Panel' ) ) {
 		 */
 		protected function items_template() {
 
-			$search_text =  __( 'Search templates..', tailor()->textdomain() ); ?>
+			$search_text =  __( 'Search templates..', 'tailor' ); ?>
 
 			<% if ( items.length ) { %>
 			<div class="search-form">
@@ -458,9 +458,9 @@ if ( ! class_exists( 'Tailor_Templates_Panel' ) ) {
 				<div class="template__controls">
 
 					<?php
-					$preview_label = __( 'Preview template', tailor()->textdomain() );
-					$download_label = __( 'Download template', tailor()->textdomain() );
-					$delete_label = __( 'Delete template', tailor()->textdomain() ); ?>
+					$preview_label = __( 'Preview template', 'tailor' );
+					$download_label = __( 'Download template', 'tailor' );
+					$delete_label = __( 'Delete template', 'tailor' ); ?>
 
 					<button class="not-a-button button--icon button--preview js-preview-template" title="<?php echo $preview_label; ?>">
 						<span class="screen-reader-text"><?php echo $preview_label; ?></span>
@@ -488,12 +488,12 @@ if ( ! class_exists( 'Tailor_Templates_Panel' ) ) {
 		 */
 		protected function empty_template() { ?>
 
-			<h2><?php _e( 'Getting started', tailor()->textdomain() ); ?></h2>
+			<h2><?php _e( 'Getting started', 'tailor' ); ?></h2>
 			<ol>
-				<li><?php _e( 'Select the element you wish to save.  If you do not select anything, the entire layout will be saved.', tailor()->textdomain() ); ?></li>
-				<li><?php _e( 'Press the Save template button and enter a name for the template.', tailor()->textdomain() ); ?></li>
+				<li><?php _e( 'Select the element you wish to save.  If you do not select anything, the entire layout will be saved.', 'tailor' ); ?></li>
+				<li><?php _e( 'Press the Save template button and enter a name for the template.', 'tailor' ); ?></li>
 			</ol>
-			<p><?php _e( 'Once you have one or more templates available, simply drag and drop them into the desired position on the page.', tailor()->textdomain() ); ?></p>
+			<p><?php _e( 'Once you have one or more templates available, simply drag and drop them into the desired position on the page.', 'tailor' ); ?></p>
 
 			<?php
 		}
@@ -512,13 +512,13 @@ if ( ! class_exists( 'Tailor_Templates_Panel' ) ) {
 			<div class="template-actions">
 
 				<button class="button button-large js-save-template">
-					<?php _e( 'Save template', tailor()->textdomain() ); ?>
+					<?php _e( 'Save template', 'tailor' ); ?>
 				</button>
 
-				<span class="or"><?php _e( 'or', tailor()->textdomain() ); ?></span>
+				<span class="or"><?php _e( 'or', 'tailor' ); ?></span>
 
 				<button class="button button-large js-import-template">
-					<?php _e( 'Import template', tailor()->textdomain() ); ?>
+					<?php _e( 'Import template', 'tailor' ); ?>
 				</button>
 
 				<a id="download-template" style="display:none"></a>
@@ -594,7 +594,7 @@ if ( ! class_exists( 'Tailor_History_Panel' ) ) {
 		 */
 		protected function empty_template() { ?>
 
-			<p><?php _e( 'There are no history entries to display.', tailor()->textdomain() ); ?></p>
+			<p><?php _e( 'There are no history entries to display.', 'tailor' ); ?></p>
 
 			<?php
 		}

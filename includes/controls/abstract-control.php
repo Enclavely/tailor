@@ -244,12 +244,12 @@ if ( ! class_exists( 'Tailor_Control' ) ) {
 	                <span class="control__title">
 		                <%= label %>
 				        <a class="button button-small js-default <% if ( 'undefined' == typeof showDefault || ! showDefault ) { %>is-hidden<% } %>">
-		                    <?php _e( 'Default', tailor()->textdomain() ); ?>
+		                    <?php _e( 'Default', 'tailor' ); ?>
 		                </a>
 	                </span>
 		            <% } else { %>
 		            <a class="button button-small js-default <% if ( 'undefined' == typeof showDefault || ! showDefault ) { %>is-hidden<% } %>">
-			            <?php _e( 'Default', tailor()->textdomain() ); ?>
+			            <?php _e( 'Default', 'tailor' ); ?>
 		            </a>
 		            <% } %>
 	                <% if ( description ) { %>

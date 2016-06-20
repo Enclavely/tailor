@@ -42,9 +42,9 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Gallery_Control
         protected function render_template() { ?>
 
 	        <% if ( ! ids.length ) { %>
-	        <p class="message"><?php _e( 'No images selected', tailor()->textdomain() ); ?></p>
+	        <p class="message"><?php _e( 'No images selected', 'tailor' ); ?></p>
 	        <div class="actions">
-		        <button type="button" class="button button--select"><?php _e( 'Create Gallery', tailor()->textdomain() ); ?></button>
+		        <button type="button" class="button button--select"><?php _e( 'Create Gallery', 'tailor' ); ?></button>
 	        </div>
 	        <% } else { %>
 	        <ul class="thumbnails is-loading">
@@ -55,8 +55,8 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Gallery_Control
 		        <% } ); %>
 	        </ul>
 	        <div class="actions">
-		        <button type="button" class="button button--remove"><?php _e( 'Remove Gallery', tailor()->textdomain() ); ?></button>
-		        <button type="button" class="button button--change"><?php _e( 'Edit Gallery', tailor()->textdomain() ); ?></button>
+		        <button type="button" class="button button--remove"><?php _e( 'Remove Gallery', 'tailor' ); ?></button>
+		        <button type="button" class="button button--change"><?php _e( 'Edit Gallery', 'tailor' ); ?></button>
 	        </div>
 	        <% } %>
 
