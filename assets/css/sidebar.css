@@ -688,7 +688,8 @@ html {
   display: none;
   background: #fff;
   padding: 9pt 15px;
-  border-top: 1px solid #ddd; }
+  border-top: 1px solid #ddd;
+  width: 100%; }
 
 .description {
   font-size: 13px;
