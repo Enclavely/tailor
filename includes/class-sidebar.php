@@ -43,12 +43,13 @@ if ( ! class_exists( 'Tailor_Sidebar' ) ) {
 
             add_filter( 'template_include', array( $this, 'render_page' ), 999 );
 
-            add_action( 'tailor_sidebar_head', 'wp_print_styles' );
+	        add_action( 'tailor_sidebar_head', array( $this, 'enqueue_styles' ) );
+	        add_action( 'tailor_sidebar_head', 'wp_print_styles' );
             add_action( 'tailor_sidebar_head', 'wp_print_head_scripts' );
             add_action( 'tailor_sidebar_head', 'print_admin_styles' );
+
             add_action( 'tailor_sidebar_head', 'print_head_scripts' );
 	        add_action( 'tailor_sidebar_head', array( $this, 'enqueue_scripts' ) );
-	        add_action( 'tailor_sidebar_head', array( $this, 'enqueue_styles' ) );
 
             add_action( 'tailor_sidebar_content', array( $this, 'render_markup' ) );
 

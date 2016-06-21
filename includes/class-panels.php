@@ -126,37 +126,33 @@ if ( ! class_exists( 'Tailor_Panels' ) ) {
 		        'setting'               =>  '_post_title',
 	        ) );
 
-	        if ( ! tailor_get_setting( 'hide_css_editor' ) ) {
-		        $panel_manager->add_setting( '_tailor_page_css', array(
-			        'default'               =>  "/**\n * Custom CSS\n */\n",
-			        'sanitize_callback'     =>  'tailor_sanitize_text',
-		        ) );
-		        $panel_manager->add_control( 'custom-css', array(
-			        'label'                 =>  __( 'Custom CSS', 'tailor' ),
-			        'description'           =>  __( 'Enter custom declarations and rules in the editor below to see them applied to the page in real-time.', 'tailor' ),
-			        'type'                  =>  'code',
-			        'mode'                  =>  'css',
-			        'priority'              =>  20,
-			        'section'               =>  'general',
-			        'setting'               =>  '_tailor_page_css',
-		        ) );
-	        }
+	        $panel_manager->add_setting( '_tailor_page_css', array(
+		        'default'               =>  "/**\n * Custom CSS\n */\n",
+		        'sanitize_callback'     =>  'tailor_sanitize_text',
+	        ) );
+	        $panel_manager->add_control( 'custom_css', array(
+		        'label'                 =>  __( 'Custom CSS', 'tailor' ),
+		        'description'           =>  __( 'Enter custom declarations and rules in the editor below to see them applied to the page in real-time.', 'tailor' ),
+		        'type'                  =>  'code',
+		        'mode'                  =>  'css',
+		        'priority'              =>  20,
+		        'section'               =>  'general',
+		        'setting'               =>  '_tailor_page_css',
+	        ) );
 
-	        if ( ! tailor_get_setting( 'hide_js_editor' ) ) {
-		        $panel_manager->add_setting( '_tailor_page_js', array(
-			        'default'               =>  "// Custom JavaScript\n",
-			        'sanitize_callback'     =>  'tailor_sanitize_text',
-		        ) );
-		        $panel_manager->add_control( 'custom-js', array(
-			        'label'                 =>  __( 'Custom JavaScript', 'tailor' ),
-			        'description'           =>  __( 'Enter custom JavaScript in the editor below.  Saved code will be run when the page is reloaded.', 'tailor' ),
-			        'type'                  =>  'code',
-			        'mode'                  =>  'javascript',
-			        'priority'              =>  30,
-			        'section'               =>  'general',
-			        'setting'               =>  '_tailor_page_js',
-		        ) );
-	        }
+	        $panel_manager->add_setting( '_tailor_page_js', array(
+		        'default'               =>  "// Custom JavaScript\n",
+		        'sanitize_callback'     =>  'tailor_sanitize_text',
+	        ) );
+	        $panel_manager->add_control( 'custom_js', array(
+		        'label'                 =>  __( 'Custom JavaScript', 'tailor' ),
+		        'description'           =>  __( 'Enter custom JavaScript in the editor below.  Saved code will be run when the page is reloaded.', 'tailor' ),
+		        'type'                  =>  'code',
+		        'mode'                  =>  'javascript',
+		        'priority'              =>  30,
+		        'section'               =>  'general',
+		        'setting'               =>  '_tailor_page_js',
+	        ) );
 
 	        $panel_manager->add_section( 'layout', array(
 		        'title'                 =>  __( 'Layout', 'tailor' ),
@@ -201,6 +197,60 @@ if ( ! class_exists( 'Tailor_Panels' ) ) {
                 'setting'               =>  '_tailor_element_spacing',
             ) );
         }
+
+	    /**
+	     * Prepares panels, sections and controls.
+	     *
+	     * @since 1.0.0
+	     */
+	    public function prepare_controls() {
+
+		    // Prepare panels
+		    $panels = array();
+		    uasort( $this->panels, array( $this, '_cmp_priority' ) );
+		    foreach ( $this->panels as $panel ) {  /* @var $panel Tailor_Panel */
+
+			    if ( $panel->check_capabilities() && apply_filters( 'tailor_enable_sidebar_panel_' . $panel->id, true, $this ) ) {
+				    $panels[ $panel->id ] = $panel;
+			    }
+		    }
+		    $this->panels = $panels;
+
+		    // Prepare sections
+		    $sections = array();
+		    uasort( $this->sections, array( $this, '_cmp_priority' ) );
+		    foreach ( $this->sections as $section ) {  /* @var $section Tailor_Section */
+
+			    if ( ! $section->check_capabilities() && apply_filters( 'tailor_enable_sidebar_section_' . $section->id, true, $this ) ) {
+				    continue;
+			    }
+			    if ( $section->panel && ! isset( $this->panels[ $section->panel ] ) ) {
+				    continue;
+			    }
+			    $sections[ $section->id ] = $section;
+		    }
+		    $this->sections = $sections;
+
+		    // Prepare controls
+		    $controls = array();
+		    uasort( $this->controls, array( $this, '_cmp_priority' ) );
+		    foreach ( $this->controls as $control ) {  /* @var $control Tailor_Control */
+
+			    if ( ! apply_filters( 'tailor_enable_sidebar_control_' . $control->id, true, $this ) ) {
+				    continue;
+			    }
+
+			    if ( ! isset( $control->setting ) ) {
+				    continue;
+			    }
+
+			    if ( ! isset( $this->sections[ $control->section ] ) || ! isset( $this->settings[ $control->setting->id ] ) || ! $control->check_capabilities() ) {
+				    continue;
+			    }
+			    $controls[ $control->id ] = $control;
+		    }
+		    $this->controls = $controls;
+	    }
 
 	    /**
 	     * Prints the panel, section, control and setting data to the page.

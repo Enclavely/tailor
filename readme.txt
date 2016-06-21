@@ -1,12 +1,12 @@
 === Tailor ===
 Tags: frontend, content, layout creator, responsive, page builder, visual composer, drag and drop builder, frontend editor
 Requires at least: 4.3
-Tested up to: 4.5.1
-Stable tag: 1.1
+Tested up to: 4.5.2
+Stable tag: 1.1.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl.html
 Contributors: andrew.worsfold
-Donate link: http://www.gettailor.com/donate/
+
 Create beautiful page layouts quickly and easily using your favourite theme.
 
 == Description ==
@@ -27,9 +27,9 @@ You can use Tailor with any (well coded) free or premium theme. Tailor empowers 
 
 = Free and open-source =
 
-Despite being full of premium features, Tailor is completely free and open-source. Use it to help create your next website or contribute to the project on [Github](https://github.com/andrew-worsfold/tailor/)
+Tailor is completely free and open-source. Use it to help create your next website or contribute to the project on [Github](https://github.com/andrew-worsfold/tailor/)
 
-We're keen to get your feedback so that we can make Tailor better!  Say hi at [@tailorwp](https://twitter.com/tailorwp) or [@andrewjworsfold](https://twitter.com/andrewjworsfold)
+We're keen to get your feedback so that we can make Tailor better!  Contribute to the GitHub project, leave a comment on the WordPress plugin page or get in touch on Twitter ([@tailorwp](https://twitter.com/tailorwp) or [@andrewjworsfold](https://twitter.com/andrewjworsfold))
 
 == Installation ==
 
@@ -110,5 +110,8 @@ Yes, however, users should be directed to the WordPress plugin repository to ins
 * Added admin option for hiding the Attributes panel (contained within the Edit modal window).
 * Changed scripts and styles to only load on Tailored pages.
 * Removed dynamic text domain function.
+
+= 1.1.1 =
+* Added additional filters for developers to disable panels and elements.
 
 == Upgrade Notice ==

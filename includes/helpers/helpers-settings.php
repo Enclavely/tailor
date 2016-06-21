@@ -511,24 +511,52 @@ if ( ! function_exists( 'maybe_hash_hex_color' ) ) {
 	}
 }
 
-
-if ( ! function_exists( 'tailor_maybe_hide_attributes_panel' ) ) {
+if ( ! function_exists( 'tailor_show_attributes_section' ) ) {
 
 	/**
-	 * Hides the Attributes panel if the associated admin setting is set to active.
+	 * Shows the element attributes section only if it's not disabled from the admin backend.
 	 *
-	 * @since 1.1.
+	 * @since 1.1.1.
 	 *
 	 * @return bool
 	 */
-	function tailor_maybe_hide_attributes_panel() {
+	function tailor_show_attributes_section() {
 		return ! tailor_get_setting( 'hide_attributes_panel' );
 	}
-
-	add_filter( 'tailor_show_panel_attributes', 'tailor_maybe_hide_attributes_panel', 10, 1 );
+	add_filter( 'tailor_enable_element_section_attributes', 'tailor_show_attributes_section', 10 );
 }
 
-if ( ! function_exists( 'tailor_maybe_disable_scripts' ) ) {
+if ( ! function_exists( 'tailor_show_custom_css_control' ) ) {
+
+	/**
+	 * Shows the custom CSS control only if it's not disabled from the admin backend.
+	 *
+	 * @since 1.1.1.
+	 *
+	 * @return bool
+	 */
+	function tailor_show_custom_css_control() {
+		return ! tailor_get_setting( 'hide_css_editor' );
+	}
+	add_filter( 'tailor_enable_sidebar_control_custom_css', 'tailor_show_custom_css_control', 10 );
+}
+
+if ( ! function_exists( 'tailor_show_custom_js_control' ) ) {
+
+	/**
+	 * Shows the custom JavaScript control only if it's not disabled from the admin backend.
+	 *
+	 * @since 1.1.1.
+	 *
+	 * @return bool
+	 */
+	function tailor_show_custom_js_control() {
+		return ! tailor_get_setting( 'hide_css_editor' );
+	}
+	add_filter( 'tailor_enable_sidebar_control_custom_js', 'tailor_show_custom_js_control', 10 );
+}
+
+if ( ! function_exists( 'tailor_maybe_enable_scripts' ) ) {
 
 	/**
 	 * Enables styles and scripts if the current page or post has been (or is being) Tailored
@@ -549,7 +577,6 @@ if ( ! function_exists( 'tailor_maybe_disable_scripts' ) ) {
 		$tailor_layout = get_post_meta( $post_id, '_tailor_layout' );
 		return ! empty( $tailor_layout ) || tailor()->is_canvas();
 	}
-
 	add_filter( 'tailor_enable_enqueue_scripts', 'tailor_maybe_enable_scripts' );
 	add_filter( 'tailor_enable_enqueue_stylesheets', 'tailor_maybe_enable_scripts' );
 }

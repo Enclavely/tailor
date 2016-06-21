@@ -326,48 +326,7 @@ if ( ! class_exists( 'Tailor_Setting_Manager' ) ) {
 	     *
 	     * @since 1.0.0
 	     */
-	    public function prepare_controls() {
-
-		    // Prepare panels
-		    $panels = array();
-		    uasort( $this->panels, array( $this, '_cmp_priority' ) );
-		    foreach ( $this->panels as $panel ) {  /* @var $panel Tailor_Panel */
-			    if ( $panel->check_capabilities() ) {
-				    $panels[ $panel->id ] = $panel;
-			    }
-		    }
-		    $this->panels = $panels;
-
-		    // Prepare sections
-		    $sections = array();
-		    uasort( $this->sections, array( $this, '_cmp_priority' ) );
-		    foreach ( $this->sections as $section ) {  /* @var $section Tailor_Section */
-			    if ( ! $section->check_capabilities() ) {
-				    continue;
-			    }
-			    if ( $section->panel && ! isset( $this->panels[ $section->panel ] ) ) {
-				    continue;
-			    }
-			    $sections[ $section->id ] = $section;
-		    }
-		    $this->sections = $sections;
-
-		    // Prepare controls
-		    $controls = array();
-		    uasort( $this->controls, array( $this, '_cmp_priority' ) );
-		    foreach ( $this->controls as $control ) {  /* @var $control Tailor_Control */
-
-			    if ( ! isset( $control->setting ) ) {
-				    continue;
-			    }
-
-			    if ( ! isset( $this->sections[ $control->section ] ) || ! isset( $this->settings[ $control->setting->id ] ) || ! $control->check_capabilities() ) {
-                    continue;
-			    }
-			    $controls[ $control->id ] = $control;
-		    }
-		    $this->controls = $controls;
-	    }
+	    abstract public function prepare_controls();
 
         /**
          * Compares two objects by priority, ensuring sort stability via instance_number.

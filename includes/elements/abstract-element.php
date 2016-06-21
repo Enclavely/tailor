@@ -191,9 +191,7 @@ if ( class_exists( 'Tailor_Setting_Manager' ) && ! class_exists( 'Tailor_Element
             }
 
             foreach ( $this->sections() as $section ) {  /* @var $section Tailor_Section */
-	            if ( false !== apply_filters( 'tailor_show_panel_' . $section->id, true ) ) {
-		            $properties['sections'][] = $section->to_json();
-	            }
+		        $properties['sections'][] = $section->to_json();
             }
 
             foreach ( $this->controls() as $control ) { /* @var $control Tailor_Control */
@@ -252,5 +250,62 @@ if ( class_exists( 'Tailor_Setting_Manager' ) && ! class_exists( 'Tailor_Element
          */
         protected abstract function register_controls();
 
+	    /**
+	     * Prepares panels, sections and controls.
+	     *
+	     * @since 1.0.0
+	     */
+	    public function prepare_controls() {
+
+		    // Prepare panels
+		    $panels = array();
+		    uasort( $this->panels, array( $this, '_cmp_priority' ) );
+		    foreach ( $this->panels as $panel ) {  /* @var $panel Tailor_Panel */
+
+			    if ( $panel->check_capabilities() && apply_filters( 'tailor_enable_element_panel_' . $panel->id, true, $this ) ) {
+				    $panels[ $panel->id ] = $panel;
+			    }
+		    }
+		    $this->panels = $panels;
+
+		    // Prepare sections
+		    $sections = array();
+		    uasort( $this->sections, array( $this, '_cmp_priority' ) );
+		    foreach ( $this->sections as $section ) {  /* @var $section Tailor_Section */
+
+			    if ( ! $section->check_capabilities() || ! apply_filters( 'tailor_enable_element_section_' . $section->id, true, $this ) ) {
+				    continue;
+			    }
+
+			    if ( $section->panel && ! isset( $this->panels[ $section->panel ] ) ) {
+				    continue;
+			    }
+
+			    $sections[ $section->id ] = $section;
+		    }
+
+		    $this->sections = $sections;
+
+		    // Prepare controls
+		    $controls = array();
+		    uasort( $this->controls, array( $this, '_cmp_priority' ) );
+		    foreach ( $this->controls as $control ) {  /* @var $control Tailor_Control */
+
+			    if ( ! isset( $control->setting ) ) {
+				    continue;
+			    }
+
+			    if ( ! $control->check_capabilities() || ! apply_filters( 'tailor_enable_element_control_' . $control->id, true, $this ) ) {
+				    continue;
+			    }
+
+			    if ( ! isset( $this->sections[ $control->section ] ) || ! isset( $this->settings[ $control->setting->id ] ) ) {
+				    continue;
+			    }
+
+			    $controls[ $control->id ] = $control;
+		    }
+		    $this->controls = $controls;
+	    }
     }
 }
