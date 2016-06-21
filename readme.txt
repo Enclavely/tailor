@@ -102,11 +102,11 @@ Yes, however, users should be directed to the WordPress plugin repository to ins
 
 == Changelog ==
 
-= 1.0.0 =
-* Initial release.
+= 1.1.2 =
+* Added growl notification and UI styles to help instruct new users to drag elements and templates onto the page.
 
-= 1.0.1 =
-* Added fallback functions for PHP 5.4.x.
+= 1.1.1 =
+* Added additional filters for developers to disable panels and elements.
 
 = 1.1 =
 * Added admin options for hiding the CSS and JavaScript editors.
@@ -114,10 +114,10 @@ Yes, however, users should be directed to the WordPress plugin repository to ins
 * Changed scripts and styles to only load on Tailored pages.
 * Removed dynamic text domain function.
 
-= 1.1.1 =
-* Added additional filters for developers to disable panels and elements.
+= 1.0.1 =
+* Added fallback functions for PHP 5.4.x.
 
-= 1.1.2 =
-* Added growl notification and UI styles to help instruct new users to drag elements and templates onto the page.
+= 1.0.0 =
+* Initial release.
 
 == Upgrade Notice ==
