@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the Tailor package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Tailor 1.1\n"
+"Project-Id-Version: Tailor 1.1.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/tailor\n"
-"POT-Creation-Date: 2016-06-20 12:44:57+00:00\n"
+"POT-Creation-Date: 2016-06-21 06:12:49+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -106,7 +106,7 @@ msgstr ""
 msgid "Hide the Attributes panel when editing elements?"
 msgstr ""
 
-#: includes/admin/class-settings.php:219 includes/class-panels.php:135
+#: includes/admin/class-settings.php:219 includes/class-panels.php:134
 msgid "Custom CSS"
 msgstr ""
 
@@ -114,7 +114,7 @@ msgstr ""
 msgid "Hide the custom CSS editor?"
 msgstr ""
 
-#: includes/admin/class-settings.php:238 includes/class-panels.php:151
+#: includes/admin/class-settings.php:238 includes/class-panels.php:148
 msgid "Custom JavaScript"
 msgstr ""
 
@@ -178,12 +178,12 @@ msgstr ""
 msgid "Google Plus"
 msgstr ""
 
-#: includes/class-canvas.php:144 includes/class-sidebar.php:210
+#: includes/class-canvas.php:144 includes/class-sidebar.php:211
 msgctxt "Open Sans font: on or off"
 msgid "on"
 msgstr ""
 
-#: includes/class-canvas.php:151 includes/class-sidebar.php:217
+#: includes/class-canvas.php:151 includes/class-sidebar.php:218
 msgctxt "Open Sans font: add new subset (greek, cyrillic, vietnamese)"
 msgid "no-subset"
 msgstr ""
@@ -192,7 +192,7 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
-#: includes/class-canvas.php:224 includes/class-sidebar.php:313
+#: includes/class-canvas.php:224 includes/class-sidebar.php:314
 #: includes/controls/class-list.php:119 partials/admin/field-icon.php:31
 #: partials/underscore/canvas-tools.php:14
 msgid "Delete"
@@ -202,7 +202,7 @@ msgstr ""
 msgid "Preview"
 msgstr ""
 
-#: includes/class-canvas.php:226 includes/class-sidebar.php:307
+#: includes/class-canvas.php:226 includes/class-sidebar.php:308
 msgid "Save"
 msgstr ""
 
@@ -466,129 +466,137 @@ msgstr ""
 msgid "Page title"
 msgstr ""
 
-#: includes/class-panels.php:136
+#: includes/class-panels.php:135
 msgid "Enter custom declarations and rules in the editor below to see them applied to the page in real-time."
 msgstr ""
 
-#: includes/class-panels.php:152
+#: includes/class-panels.php:149
 msgid "Enter custom JavaScript in the editor below.  Saved code will be run when the page is reloaded."
 msgstr ""
 
-#: includes/class-panels.php:162 includes/customizer/customizer-sections.php:24
+#: includes/class-panels.php:158 includes/customizer/customizer-sections.php:24
 #: includes/helpers/helpers-elements.php:147
 msgid "Layout"
 msgstr ""
 
-#: includes/class-panels.php:163
+#: includes/class-panels.php:159
 msgid "The settings on this page override those specified in the Customizer."
 msgstr ""
 
-#: includes/class-panels.php:172 includes/customizer/customizer-settings.php:28
+#: includes/class-panels.php:168 includes/customizer/customizer-settings.php:28
 msgid "Section width"
 msgstr ""
 
-#: includes/class-panels.php:173 includes/customizer/customizer-settings.php:29
+#: includes/class-panels.php:169 includes/customizer/customizer-settings.php:29
 msgid "The maximum width for sections."
 msgstr ""
 
-#: includes/class-panels.php:184 includes/customizer/customizer-settings.php:40
+#: includes/class-panels.php:180 includes/customizer/customizer-settings.php:40
 #: includes/elements/class-row.php:51
 msgid "Column spacing"
 msgstr ""
 
-#: includes/class-panels.php:185 includes/customizer/customizer-settings.php:41
+#: includes/class-panels.php:181 includes/customizer/customizer-settings.php:41
 msgid "The amount of horizontal space to display between columns."
 msgstr ""
 
-#: includes/class-panels.php:196 includes/customizer/customizer-settings.php:52
+#: includes/class-panels.php:192 includes/customizer/customizer-settings.php:52
 msgid "Element spacing"
 msgstr ""
 
-#: includes/class-panels.php:197 includes/customizer/customizer-settings.php:53
+#: includes/class-panels.php:193 includes/customizer/customizer-settings.php:53
 msgid "The amount of vertical space to display between elements."
 msgstr ""
 
-#: includes/class-sidebar.php:91
+#: includes/class-sidebar.php:92
 msgid "Tailoring: %s"
 msgstr ""
 
-#: includes/class-sidebar.php:306 includes/controls/class-search.php:64
+#: includes/class-sidebar.php:307 includes/controls/class-search.php:64
 #: languages/tinymce-localization.php:28
 msgid "Select"
 msgstr ""
 
-#: includes/class-sidebar.php:308 includes/settings/class-panel.php:515
+#: includes/class-sidebar.php:309 includes/settings/class-panel.php:515
 msgid "Save template"
 msgstr ""
 
-#: includes/class-sidebar.php:309 partials/sidebar/sidebar-frame.php:26
+#: includes/class-sidebar.php:310 partials/sidebar/sidebar-frame.php:26
 msgid "Saved"
 msgstr ""
 
-#: includes/class-sidebar.php:310 partials/sidebar/sidebar-frame.php:23
+#: includes/class-sidebar.php:311 partials/sidebar/sidebar-frame.php:23
 msgid "Save & Publish"
 msgstr ""
 
-#: includes/class-sidebar.php:311
+#: includes/class-sidebar.php:312
 msgid "Import"
 msgstr ""
 
-#: includes/class-sidebar.php:312 includes/settings/class-panel.php:521
+#: includes/class-sidebar.php:313 includes/settings/class-panel.php:521
 msgid "Import template"
 msgstr ""
 
-#: includes/class-sidebar.php:314 includes/controls/class-list.php:120
+#: includes/class-sidebar.php:315 includes/controls/class-list.php:120
 #: partials/sidebar/sidebar-frame.php:32
 #: partials/underscore/dialog-layout.php:19
 #: partials/underscore/modal-layout.php:22
 msgid "Close"
 msgstr ""
 
-#: includes/class-sidebar.php:316
+#: includes/class-sidebar.php:317
 msgid "An error occurred, please try again"
 msgstr ""
 
-#: includes/class-sidebar.php:317
+#: includes/class-sidebar.php:318
 msgid "The session has expired"
 msgstr ""
 
-#: includes/class-sidebar.php:318
+#: includes/class-sidebar.php:319
 msgid "The request made was invalid"
 msgstr ""
 
-#: includes/class-sidebar.php:320
+#: includes/class-sidebar.php:321
 msgid "%s saved successfully"
 msgstr ""
 
-#: includes/class-sidebar.php:321
+#: includes/class-sidebar.php:322
 msgid "History entry restored successfully"
 msgstr ""
 
-#: includes/class-sidebar.php:322
+#: includes/class-sidebar.php:323
 msgid "Element deleted successfully"
 msgstr ""
 
-#: includes/class-sidebar.php:323
+#: includes/class-sidebar.php:324
 msgid "Template saved successfully"
 msgstr ""
 
-#: includes/class-sidebar.php:324
+#: includes/class-sidebar.php:325
 msgid "Template imported successfully"
 msgstr ""
 
-#: includes/class-sidebar.php:325
+#: includes/class-sidebar.php:326
 msgid "Template added successfully"
 msgstr ""
 
-#: includes/class-sidebar.php:326
+#: includes/class-sidebar.php:327
 msgid "Template deleted successfully"
 msgstr ""
 
-#: includes/class-sidebar.php:328
+#: includes/class-sidebar.php:329
+msgid "To add an element, drag it into the desired position on the page"
+msgstr ""
+
+#: includes/class-sidebar.php:330
+msgid "To add a template, drag it into the desired position on the page"
+msgstr ""
+
+#: includes/class-sidebar.php:332
 msgid "The changes you made will be lost if you navigate away from this page"
 msgstr ""
 
-#: includes/class-sidebar.php:329
+#: includes/class-sidebar.php:333
 msgid "You have made changes to this element.  Would you like to save them?"
 msgstr ""
 

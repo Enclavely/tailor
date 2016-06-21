@@ -1,11 +1,12 @@
 === Tailor ===
+Contributors: andrew.worsfold
+Donate link: http://gettailor.com/donate/
 Tags: frontend, content, layout creator, responsive, page builder, visual composer, drag and drop builder, frontend editor
+Stable tag: 1.1.2
 Requires at least: 4.3
 Tested up to: 4.5.2
-Stable tag: 1.1.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl.html
-Contributors: andrew.worsfold
 
 Create beautiful page layouts quickly and easily using your favourite theme.
 
@@ -19,7 +20,9 @@ Drag and drop elements relative to one another and then customize them using a s
 
 = Easy to extend =
 
-Adding your own custom elements is easy.  Tailor can help your create both simple and complex page layouts and with our upcoming range of extensions you’ll be able to create portfolios and shopfronts all with the click of your mouse!
+Adding your own custom elements or functionality is easy.
+
+The new [Portfolio extension](https://wordpress.org/plugins/tailor-portfolio/) can be used to display project posts within your site or as the basis for your own custom elements and functionality.
 
 = Works with any theme =
 
@@ -113,5 +116,8 @@ Yes, however, users should be directed to the WordPress plugin repository to ins
 
 = 1.1.1 =
 * Added additional filters for developers to disable panels and elements.
+
+= 1.1.2 =
+* Added growl notification and UI styles to help instruct new users to drag elements and templates onto the page.
 
 == Upgrade Notice ==

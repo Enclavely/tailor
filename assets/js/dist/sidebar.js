@@ -3947,6 +3947,21 @@ LibraryItem = Marionette.ItemView.extend( {
         Draggable : {}
     },
 
+    onClick : function() {
+        var el = this.el;
+        var onAnimationEnd = function( e ) {
+            el.removeEventListener( window.animationEndName, onAnimationEnd );
+            el.classList.remove( 'shake' );
+        };
+
+        if ( Modernizr.cssanimations ) {
+            el.addEventListener( window.animationEndName, onAnimationEnd );
+            el.classList.add( 'shake' );
+        }
+
+        Tailor.Notify( window._l10n.dragElement, 'warning' );
+    },
+
     /**
      * Returns the appropriate template based on the panel type.
      *
@@ -4080,9 +4095,10 @@ TemplateItem = Marionette.ItemView.extend( {
     },
 
     events : {
-        'click @ui.download' : 'download',
-        'click @ui.delete' : 'delete',
-        'click @ui.preview' : 'preview'
+        //'click @ui.download' : 'download',
+        //'click @ui.delete' : 'delete',
+        //'click @ui.preview' : 'preview',
+        'click' : 'onClick'
     },
 
     modelEvents : {
@@ -4091,6 +4107,38 @@ TemplateItem = Marionette.ItemView.extend( {
 
     behaviors : {
         Draggable : {}
+    },
+
+    onClick : function( e ) {
+
+        switch ( e.target ) {
+
+            case this.ui.download.get( 0 ):
+                this.download();
+                break;
+
+            case this.ui.delete.get( 0 ):
+                this.delete();
+                break;
+
+            case this.ui.preview.get( 0 ):
+                this.preview();
+                break;
+
+            default:
+                var el = this.el;
+                var onAnimationEnd = function( e ) {
+                    el.removeEventListener( window.animationEndName, onAnimationEnd );
+                    el.classList.remove( 'shake' );
+                };
+
+                if ( Modernizr.cssanimations ) {
+                    el.addEventListener( window.animationEndName, onAnimationEnd );
+                    el.classList.add( 'shake' );
+                }
+
+                Tailor.Notify( window._l10n.dragTemplate, 'warning' );
+        }
     },
 
     /**

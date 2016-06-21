@@ -326,6 +326,9 @@ if ( ! class_exists( 'Tailor_Sidebar' ) ) {
 		        'addedTemplate'     =>  __( 'Template added successfully', 'tailor' ),
 		        'deletedTemplate'   =>  __( 'Template deleted successfully', 'tailor' ),
 
+		        'dragElement'       =>  __( 'To add an element, drag it into the desired position on the page', 'tailor' ),
+		        'dragTemplate'      =>  __( 'To add a template, drag it into the desired position on the page', 'tailor' ),
+
 		        'confirmPage'       =>  __( 'The changes you made will be lost if you navigate away from this page', 'tailor' ),
 		        'confirmElement'    =>  __( 'You have made changes to this element.  Would you like to save them?', 'tailor' ),
 	        ) );

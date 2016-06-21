@@ -357,11 +357,11 @@ if ( ! class_exists( 'Tailor_Elements_Panel' ) ) {
 		protected function item_template() { ?>
 
 			<% if ( active ) { %>
-			<li class="list__item element element--<%= tag.replace( 'tailor_', '' ) %>" draggable="true" tabindex="0">
+			<li class="list__item draggable element element--<%= tag.replace( 'tailor_', '' ) %>" draggable="true" tabindex="0">
 			<% } else { %>
 			<?php $visibility = tailor_get_setting( 'show_inactive_elements', false ) ? 'is-inactive' : 'is-hidden'; ?>
 
-			<li class="list__item element element--<%= tag.replace( 'tailor_', '' ) %><?php echo " {$visibility}"; ?>">
+			<li class="list__item draggable element element--<%= tag.replace( 'tailor_', '' ) %><?php echo " {$visibility}"; ?>">
 
 			<% } %>
 
@@ -451,7 +451,7 @@ if ( ! class_exists( 'Tailor_Templates_Panel' ) ) {
 		 */
 		protected function item_template() { ?>
 
-			<li class="list__item template" draggable="true" tabindex="0">
+			<li class="list__item draggable template" draggable="true" tabindex="0">
 
 				<h3 class="list__label"><%= label %></h3>
 

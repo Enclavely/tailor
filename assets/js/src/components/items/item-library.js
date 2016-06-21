@@ -23,6 +23,21 @@ LibraryItem = Marionette.ItemView.extend( {
         Draggable : {}
     },
 
+    onClick : function() {
+        var el = this.el;
+        var onAnimationEnd = function( e ) {
+            el.removeEventListener( window.animationEndName, onAnimationEnd );
+            el.classList.remove( 'shake' );
+        };
+
+        if ( Modernizr.cssanimations ) {
+            el.addEventListener( window.animationEndName, onAnimationEnd );
+            el.classList.add( 'shake' );
+        }
+
+        Tailor.Notify( window._l10n.dragElement, 'warning' );
+    },
+
     /**
      * Returns the appropriate template based on the panel type.
      *
