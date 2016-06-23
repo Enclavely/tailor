@@ -84,7 +84,7 @@ if ( ! class_exists( 'Tailor_Panels' ) ) {
          *
          * @param $panel_manager Tailor_Panels
          */
-        public function  register_panels( $panel_manager ) {
+        public function register_panels( $panel_manager ) {
 
 	        $panel_manager->add_panel( new Tailor_Elements_Panel( 'library', array(
 		        'title'                 =>  __( 'Elements', 'tailor' ),

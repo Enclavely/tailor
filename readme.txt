@@ -1,4 +1,4 @@
-=== Tailor ===
+=== Tailor Page Builder ===
 Contributors: andrew.worsfold
 Donate link: http://gettailor.com/donate/
 Tags: frontend, content, layout creator, responsive, page builder, visual composer, drag and drop builder, frontend editor
@@ -8,7 +8,7 @@ Tested up to: 4.5.2
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl.html
 
-Create beautiful page layouts quickly and easily using your favourite theme.
+Build beautiful page layouts quickly and easily using your favourite theme.
 
 == Description ==
 
@@ -33,6 +33,8 @@ You can use Tailor with any (well coded) free or premium theme. Tailor empowers 
 Tailor is completely free and open-source. Use it to help create your next website or contribute to the project on [Github](https://github.com/andrew-worsfold/tailor/)
 
 We're keen to get your feedback so that we can make Tailor better!  Contribute to the GitHub project, leave a comment on the WordPress plugin page or get in touch on Twitter ([@tailorwp](https://twitter.com/tailorwp) or [@andrewjworsfold](https://twitter.com/andrewjworsfold))
+
+If you like the plugin, you can help by [rating it](https://wordpress.org/support/view/plugin-reviews/tailor?rate=5#postform).
 
 == Installation ==
 
