@@ -603,8 +603,12 @@ html {
   left: 0;
   width: 300px;
   height: 45px;
-  border-top: 1px solid #ddd; }
+  border-top: 1px solid #ddd;
+  display: none; }
 
+@media screen and (min-width: 641px) {
+  .tailor-sidebar__footer {
+    display: block; } }
 .tailor-preview__viewport {
   background: url(../img/spinner.gif) no-repeat center center;
   -webkit-background-size: 20px 20px;
