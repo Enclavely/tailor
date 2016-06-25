@@ -16,11 +16,7 @@ $column-gutter: 2rem !default;
 //
 // Media query ranges
 //
-$x-small: 			"only screen and (max-width: 480px)" !default;
-$small: 			"only screen and (min-width: 481px) and (max-width: 767px)" !default;
-$small-up:      	"only screen and (min-width: 481px)" !default;
-$medium:			"only screen and (min-width: 768px) and (max-width: 979px)" !default;
-$medium-up:			"only screen and (min-width: 768px)" !default;
-$large:				"only screen and (min-width: 980px) and (max-width: 1199px)" !default;
-$large-up:			"only screen and (min-width: 980px)" !default;
-$x-large:			"only screen and (min-width: 1200px)" !default;
+$mobile: 			"only screen and (max-width: 320px)" !default;
+$tablet: 			"only screen and (min-width: 321px) and (max-width: 720px)" !default;
+$tablet-up:      	"only screen and (min-width: 321px)" !default;
+$desktop:			"only screen and (min-width: 721px)" !default;

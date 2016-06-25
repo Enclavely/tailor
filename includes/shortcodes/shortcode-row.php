@@ -25,7 +25,7 @@ if ( ! function_exists( 'tailor_shortcode_row' ) ) {
         $atts = shortcode_atts( array(
             'id'                =>  '',
             'class'             =>  '',
-            'collapse'          =>  'large',
+            'collapse'          =>  'tablet',
         ), $atts, $tag );
 
 	    $id = ( '' !== $atts['id'] ) ? 'id="' . esc_attr( $atts['id'] ) . '"' : '';

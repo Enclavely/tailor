@@ -236,7 +236,7 @@ if ( ! class_exists( 'Tailor_Canvas' ) ) {
 	        ) );
 
 	        wp_localize_script( $canvas_script_name, '_nonces', $this->create_nonces() );
-	        wp_localize_script( $canvas_script_name, '_media_queries', tailor_get_registered_media_queries() );
+	        wp_localize_script( $canvas_script_name, '_media_queries', tailor_get_registered_media_queries( true ) );
 
 	        /**
 	         * Fires after canvas scripts have been enqueued.

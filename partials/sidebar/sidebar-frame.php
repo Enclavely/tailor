@@ -35,10 +35,33 @@ defined( 'ABSPATH' ) or die(); ?>
 
         <div class="tailor-sidebar__content" id="tailor-sidebar-content"></div>
 
-        <button type="button" class="collapse-sidebar" id="tailor-collapse" aria-expanded="true" aria-label="<?php _e( 'Collapse Sidebar', 'tailor' ); ?>">
-            <span class="collapse-sidebar-arrow"></span>
-            <span class="collapse-sidebar-label"><?php _e( 'Collapse', 'tailor' ); ?></span>
-        </button>
+	    <div class="tailor-sidebar__footer">
+
+		    <?php
+		    $device_sizes = tailor_get_previewable_devices();
+
+		    if ( ! empty( $device_sizes ) ) {
+
+			    echo '<div class="devices">';
+
+			    $format = '<button type="button" class="preview-%1$s" aria-pressed="false" data-device="%1$s">' .
+			                '<span class="screen-reader-text">%1$s</span>' .
+			              '</button>';
+
+			    foreach ( $device_sizes as $device_name => $device ) {
+					printf( $format, $device_name, $device['label'] );
+			    }
+
+			    echo '</div>';
+		    }
+		    ?>
+		    
+		    <button type="button" class="collapse-sidebar" id="tailor-collapse" aria-expanded="true" aria-label="<?php _e( 'Collapse Sidebar', 'tailor' ); ?>">
+			    <span class="collapse-sidebar-arrow"></span>
+			    <span class="collapse-sidebar-label"><?php _e( 'Collapse', 'tailor' ); ?></span>
+		    </button>
+
+	    </div>
     </div>
 
     <div class="tailor-preview">

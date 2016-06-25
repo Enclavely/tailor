@@ -32,4 +32,26 @@
 
     } );
 
+    var $buttons = $( '.devices button' );
+
+    $buttons.on( 'click', function( e ) {
+        var button = e.target;
+        var preview = document.querySelector( '.tailor-preview' );
+
+        $buttons.each( function() {
+            if ( this == button ) {
+                this.classList.add( 'is-active' );
+                this.setAttribute( 'aria-pressed', 'true' );
+                preview.className = 'tailor-preview ' + button.getAttribute( 'data-device' ) + '-screens';
+            }
+            else {
+                this.classList.remove( 'is-active' );
+                this.setAttribute( 'aria-pressed', 'false' );
+            }
+        } );
+
+    } );
+
+    $buttons.first().click();
+
 } ) ( Tailor.Api, jQuery );

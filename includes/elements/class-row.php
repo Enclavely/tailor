@@ -66,19 +66,13 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Row_Element' ) 
 
 	        $this->add_setting( 'collapse', array(
 		        'sanitize_callback'     =>  'tailor_sanitize_text',
-		        'default'               =>  'small',
+		        'default'               =>  'tablet',
 	        ) );
 	        $this->add_control( 'collapse', array(
 		        'label'                 =>  __( 'Minimum screen size', 'tailor' ),
 		        'description'           =>  __( 'Select the smallest screen size on which columns are displayed', 'tailor' ),
 		        'type'                  =>  'select',
-		        'choices'               =>  array(
-			        'x-large'               =>  __( 'Extra large', 'tailor' ),
-			        'large'                 =>  __( 'Large', 'tailor' ),
-			        'medium'                =>  __( 'Medium', 'tailor' ),
-			        'small'                 =>  __( 'Small', 'tailor' ),
-			        'x-small'               =>  __( 'Extra small', 'tailor' ),
-		        ),
+		        'choices'               =>  tailor_get_media_queries(),
 		        'priority'              =>  $priority += 10,
 		        'section'               =>  'general',
 	        ) );

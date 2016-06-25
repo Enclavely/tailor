@@ -26,7 +26,7 @@ if ( ! function_exists( 'tailor_shortcode_grid' ) ) {
             'id'                    =>  '',
             'class'                 =>  '',
             'items_per_row'         =>  2,
-            'collapse'              =>  'large',
+            'collapse'              =>  'tablet',
         ), $atts, $tag );
 
 	    $id = ( '' !== $atts['id'] ) ? 'id="' . esc_attr( $atts['id'] ) . '"' : '';

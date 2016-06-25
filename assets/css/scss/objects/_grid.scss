@@ -90,20 +90,13 @@ $total-grid-columns : 6 !default;
 	}
 }
 
-@include grid( $size: x-small );
+@include grid( $size: mobile );
 
-@media #{$small-up} {
-	@include grid( $size: small );
+@media #{$tablet-up} {
+	@include grid( $size: small ); // To provide backward compatibility for old media queries
+	@include grid( $size: tablet );
 }
 
-@media #{$medium-up} {
-	@include grid( $size: medium );
-}
-
-@media #{$large-up} {
-	@include grid( $size: large );
-}
-
-@media #{$x-large} {
-	@include grid( $size: x-large );
+@media #{$desktop} {
+	@include grid( $size: desktop );
 }

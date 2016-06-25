@@ -162,7 +162,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Tabs_Element' )
 
 					    case 'top':
 						    $css_rules[] = array(
-							    'media'             =>  'medium-up',
+							    'media'             =>  'tablet-up',
 							    'selectors'         =>  array( '.tailor-tabs__navigation-item' ),
 							    'declarations'      =>  array(
 								    'border-bottom'     =>  'none',
@@ -172,7 +172,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Tabs_Element' )
 
 					    case 'left':
 						    $css_rules[] = array(
-							    'media'             =>  'medium-up',
+							    'media'             =>  'tablet-up',
 							    'selectors'         =>  array( '.tailor-tabs__navigation-item' ),
 							    'declarations'      =>  array(
 								    'border-right'      =>  'none',
@@ -182,7 +182,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Tabs_Element' )
 
 					    case 'right':
 						    $css_rules[] = array(
-							    'media'             =>  'medium-up',
+							    'media'             =>  'tablet-up',
 							    'selectors'         =>  array( '.tailor-tabs__navigation-item' ),
 							    'declarations'      =>  array(
 								    'border-left'       =>  'none',
@@ -203,7 +203,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Tabs_Element' )
 					    );
 
 					    $css_rules[] = array(
-						    'media'             =>  'medium-up',
+						    'media'             =>  'tablet-up',
 						    'selectors'                 =>  array( '&.tailor-tabs--top .tailor-tabs__navigation-item:not( :last-child )' ),
 						    'declarations'              =>  array(
 							    'margin-right'              =>  esc_attr( '-' . $atts['border_width'] ),
@@ -225,7 +225,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Tabs_Element' )
 					    );
 
 					    $css_rules[] = array(
-						    'media'             =>  'medium-up',
+						    'media'             =>  'tablet-up',
 						    'selectors'                 =>  array( '&.tailor-tabs--right .tailor-tabs__navigation' ),
 						    'declarations'              =>  array(
 							    'margin-left'               =>  esc_attr( '-' . $atts['border_width'] ),
@@ -233,7 +233,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Tabs_Element' )
 					    );
 
 					    $css_rules[] = array(
-						    'media'             =>  'medium-up',
+						    'media'             =>  'tablet-up',
 						    'selectors'                 =>  array(
 							    '&.tailor-tabs--left .tailor-tabs__navigation-item:not( :first-child )',
 							    '&.tailor-tabs--right .tailor-tabs__navigation-item:not( :first-child )'

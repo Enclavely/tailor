@@ -58,21 +58,16 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Grid_Element' )
             );
             $priority = tailor_control_presets( $this, $general_control_types, $general_control_arguments, $priority );
 
+	        
 	        $this->add_setting( 'collapse', array(
 		        'sanitize_callback'     =>  'tailor_sanitize_text',
-		        'default'               =>  'small',
+		        'default'               =>  'tablet',
 	        ) );
 	        $this->add_control( 'collapse', array(
 		        'label'             =>  __( 'Minimum screen size', 'tailor' ),
 		        'description'       =>  __( 'Select the smallest screen size on which items are displayed in a grid layout', 'tailor' ),
 		        'type'              =>  'select',
-		        'choices'           =>  array(
-			        'x-large'           =>  __( 'Extra large', 'tailor' ),
-			        'large'             =>  __( 'Large', 'tailor' ),
-			        'medium'            =>  __( 'Medium', 'tailor' ),
-			        'small'             =>  __( 'Small', 'tailor' ),
-			        'x-small'           =>  __( 'Extra small', 'tailor' ),
-		        ),
+		        'choices'           =>  tailor_get_media_queries(),
 		        'priority'          =>  $priority += 10,
 		        'section'           =>  'general',
 	        ) );
@@ -134,7 +129,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Grid_Element' )
 
 		    if ( ! empty( $atts['min_item_height'] ) ) {
 			    $css_rules[] = array(
-				    'media'             =>  'x-small' != $atts['collapse'] ? "{$atts['collapse']}-up" : '',
+				    'media'             =>  'tablet-up' != $atts['collapse'] ? "{$atts['collapse']}-up" : '',
 				    'selectors'         =>  array( '.tailor-grid__item' ),
 				    'declarations'      =>  array(
 					    'min-height'        =>  esc_attr( $atts['min_item_height'] ),

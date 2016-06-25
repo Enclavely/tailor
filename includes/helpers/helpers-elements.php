@@ -72,8 +72,6 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 			'left'                  =>  __( 'Left', 'tailor' ),
 		);
 
-		$preview_sizes = tailor_get_preview_sizes();
-
 		$control_definitions = array(
 
 			'hidden'                =>  array(
@@ -82,9 +80,8 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 				),
 				'control'               =>  array(
 					'label'                 =>  __( 'Hide on', 'tailor' ),
-					//'description'           =>  __( 'Select the screen size(s) for which this element should be hidden', 'tailor' ),
 					'type'                  =>  'select-multi',
-					'choices'               =>  $preview_sizes,
+					'choices'               =>  tailor_get_media_queries(),
 					'section'               =>  'attributes',
 				),
 			),
@@ -1209,7 +1206,7 @@ if ( ! function_exists( 'tailor_css_presets' ) ) {
 
 		if ( array_key_exists( 'hidden', $atts ) && ! empty( $atts['hidden'] ) && ! in_array( 'hidden', $excluded_control_types ) ) {
 
-			$preview_sizes = array_keys( tailor_get_preview_sizes() );
+			$preview_sizes = array_keys( tailor_get_registered_media_queries() );
 			$hidden_screen_sizes = explode( ',', $atts['hidden'] );
 
 			if ( count( array_intersect( $preview_sizes, $hidden_screen_sizes ) ) != count( $preview_sizes ) ) {

@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the Tailor package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Tailor 1.1.1\n"
+"Project-Id-Version: Tailor 1.1.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/tailor\n"
-"POT-Creation-Date: 2016-06-21 06:12:49+00:00\n"
+"POT-Creation-Date: 2016-06-25 10:14:35+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -475,7 +475,7 @@ msgid "Enter custom JavaScript in the editor below.  Saved code will be run when
 msgstr ""
 
 #: includes/class-panels.php:158 includes/customizer/customizer-sections.php:24
-#: includes/helpers/helpers-elements.php:147
+#: includes/helpers/helpers-elements.php:148
 msgid "Layout"
 msgstr ""
 
@@ -645,7 +645,7 @@ msgstr ""
 #: includes/elements/class-button.php:70
 #: includes/elements/class-carousel.php:68 includes/elements/class-posts.php:73
 #: includes/elements/class-tabs.php:116
-#: includes/helpers/helpers-elements.php:736
+#: includes/helpers/helpers-elements.php:737
 msgid "Default"
 msgstr ""
 
@@ -809,12 +809,12 @@ msgid "Right"
 msgstr ""
 
 #: includes/elements/class-box.php:73 includes/elements/class-list-item.php:71
-#: includes/helpers/helpers-elements.php:435
+#: includes/helpers/helpers-elements.php:436
 msgid "Icon"
 msgstr ""
 
 #: includes/elements/class-box.php:74 includes/elements/class-list-item.php:72
-#: includes/helpers/helpers-elements.php:331
+#: includes/helpers/helpers-elements.php:332
 msgid "Image"
 msgstr ""
 
@@ -841,14 +841,14 @@ msgstr ""
 
 #: includes/elements/class-column.php:87 includes/elements/class-column.php:95
 #: includes/elements/class-list-item.php:174
-#: includes/elements/class-row.php:119 includes/elements/class-section.php:97
+#: includes/elements/class-row.php:113 includes/elements/class-section.php:97
 #: includes/elements/class-tabs.php:54 includes/helpers/helpers-elements.php:69
 msgid "Top"
 msgstr ""
 
 #: includes/elements/class-column.php:88 includes/elements/class-column.php:96
 #: includes/elements/class-list-item.php:175
-#: includes/elements/class-row.php:120 includes/elements/class-section.php:98
+#: includes/elements/class-row.php:114 includes/elements/class-section.php:98
 #: includes/helpers/helpers-elements.php:71
 msgid "Bottom"
 msgstr ""
@@ -866,40 +866,12 @@ msgstr ""
 msgid "Slideshow"
 msgstr ""
 
-#: includes/elements/class-grid.php:66 includes/elements/class-row.php:72
+#: includes/elements/class-grid.php:67 includes/elements/class-row.php:72
 msgid "Minimum screen size"
 msgstr ""
 
-#: includes/elements/class-grid.php:67
+#: includes/elements/class-grid.php:68
 msgid "Select the smallest screen size on which items are displayed in a grid layout"
-msgstr ""
-
-#: includes/elements/class-grid.php:70 includes/elements/class-row.php:76
-#: includes/helpers/helpers-settings.php:81
-msgid "Extra large"
-msgstr ""
-
-#: includes/elements/class-grid.php:71 includes/elements/class-row.php:77
-#: includes/helpers/helpers-elements.php:451
-#: includes/helpers/helpers-settings.php:86
-msgid "Large"
-msgstr ""
-
-#: includes/elements/class-grid.php:72 includes/elements/class-row.php:78
-#: includes/helpers/helpers-elements.php:450
-#: includes/helpers/helpers-settings.php:91
-msgid "Medium"
-msgstr ""
-
-#: includes/elements/class-grid.php:73 includes/elements/class-row.php:79
-#: includes/helpers/helpers-elements.php:449
-#: includes/helpers/helpers-settings.php:96
-msgid "Small"
-msgstr ""
-
-#: includes/elements/class-grid.php:74 includes/elements/class-row.php:80
-#: includes/helpers/helpers-settings.php:101
-msgid "Extra small"
 msgstr ""
 
 #: includes/elements/class-list-item.php:73
@@ -947,7 +919,7 @@ msgid "Boxed"
 msgstr ""
 
 #: includes/elements/class-posts.php:164
-#: includes/helpers/helpers-elements.php:512
+#: includes/helpers/helpers-elements.php:513
 msgid "Author"
 msgstr ""
 
@@ -956,7 +928,7 @@ msgid "Category"
 msgstr ""
 
 #: includes/elements/class-posts.php:166
-#: includes/helpers/helpers-elements.php:511
+#: includes/helpers/helpers-elements.php:512
 msgid "Date"
 msgstr ""
 
@@ -972,7 +944,7 @@ msgstr ""
 msgid "Comment number"
 msgstr ""
 
-#: includes/elements/class-row.php:61 includes/helpers/helpers-elements.php:127
+#: includes/elements/class-row.php:61 includes/helpers/helpers-elements.php:128
 msgid "Minimum height"
 msgstr ""
 
@@ -985,22 +957,22 @@ msgid "Tabs position"
 msgstr ""
 
 #: includes/elements/class-tabs.php:117
-#: includes/helpers/helpers-elements.php:737
+#: includes/helpers/helpers-elements.php:738
 msgid "Solid"
 msgstr ""
 
 #: includes/elements/class-tabs.php:118
-#: includes/helpers/helpers-elements.php:738
+#: includes/helpers/helpers-elements.php:739
 msgid "Dashed"
 msgstr ""
 
 #: includes/elements/class-tabs.php:119
-#: includes/helpers/helpers-elements.php:739
+#: includes/helpers/helpers-elements.php:740
 msgid "Dotted"
 msgstr ""
 
 #: includes/elements/class-tabs.php:120
-#: includes/helpers/helpers-elements.php:745
+#: includes/helpers/helpers-elements.php:746
 msgid "None"
 msgstr ""
 
@@ -1029,382 +1001,394 @@ msgstr ""
 msgid "widget areas"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:84
+#: includes/helpers/helpers-elements.php:86
 msgid "Hide on"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:97
-#: includes/helpers/helpers-elements.php:513
+#: includes/helpers/helpers-elements.php:98
+#: includes/helpers/helpers-elements.php:514
 msgid "Title"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:107
+#: includes/helpers/helpers-elements.php:108
 msgid "Alignment"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:117
+#: includes/helpers/helpers-elements.php:118
 msgid "Maximum width"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:137
+#: includes/helpers/helpers-elements.php:138
 msgid "Style"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:157
+#: includes/helpers/helpers-elements.php:158
 msgid "Items per row"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:168
+#: includes/helpers/helpers-elements.php:169
 msgid "Minimum item height"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:178
+#: includes/helpers/helpers-elements.php:179
 msgid "Autoplay"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:188
+#: includes/helpers/helpers-elements.php:189
 msgid "Fade"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:198
+#: includes/helpers/helpers-elements.php:199
 msgid "Arrows"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:209
+#: includes/helpers/helpers-elements.php:210
 msgid "Dots"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:220
+#: includes/helpers/helpers-elements.php:221
 msgid "Thumbnails"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:230
+#: includes/helpers/helpers-elements.php:231
 msgid "Item spacing"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:240
+#: includes/helpers/helpers-elements.php:241
 msgid "Masonry"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:243
+#: includes/helpers/helpers-elements.php:244
 msgid "Apply masonry layout?"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:253
+#: includes/helpers/helpers-elements.php:254
 msgid "Lightbox"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:256
+#: includes/helpers/helpers-elements.php:257
 msgid "Open images in lightbox?"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:266
+#: includes/helpers/helpers-elements.php:267
 msgid "Meta"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:277
+#: includes/helpers/helpers-elements.php:278
 msgid "Posts per page"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:288
+#: includes/helpers/helpers-elements.php:289
 msgid "Pagination"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:290
+#: includes/helpers/helpers-elements.php:291
 msgid "Show pagination links?"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:301
+#: includes/helpers/helpers-elements.php:302
 msgid "Type"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:311
+#: includes/helpers/helpers-elements.php:312
 msgid "Graphic type"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:321
+#: includes/helpers/helpers-elements.php:322
 msgid "Graphic size"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:341
+#: includes/helpers/helpers-elements.php:342
 msgid "Image width"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:351
+#: includes/helpers/helpers-elements.php:352
 msgid "Image size"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:362
+#: includes/helpers/helpers-elements.php:363
 msgid "Aspect ratio"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:365
-#: includes/helpers/helpers-settings.php:232
+#: includes/helpers/helpers-elements.php:366
+#: includes/helpers/helpers-settings.php:175
 msgid "Original"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:366
+#: includes/helpers/helpers-elements.php:367
 msgid "Square"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:367
+#: includes/helpers/helpers-elements.php:368
 msgid "Horizontal 3:2"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:368
+#: includes/helpers/helpers-elements.php:369
 msgid "Horizontal 4:3"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:369
+#: includes/helpers/helpers-elements.php:370
 msgid "Horizontal 16:9"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:370
+#: includes/helpers/helpers-elements.php:371
 msgid "Vertical 2:3"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:371
+#: includes/helpers/helpers-elements.php:372
 msgid "Vertical 3:4"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:381
+#: includes/helpers/helpers-elements.php:382
 msgid "Horizontal alignment"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:396
+#: includes/helpers/helpers-elements.php:397
 msgid "Vertical alignment"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:411
+#: includes/helpers/helpers-elements.php:412
 msgid "Stretch-to-fit image"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:425
+#: includes/helpers/helpers-elements.php:426
 msgid "Caption"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:446
+#: includes/helpers/helpers-elements.php:447
 msgid "Size"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:461
+#: includes/helpers/helpers-elements.php:450
+msgid "Small"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:451
+msgid "Medium"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:452
+msgid "Large"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:462
 msgid "Link"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:472
+#: includes/helpers/helpers-elements.php:473
 msgid "Link behavior"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:475
+#: includes/helpers/helpers-elements.php:476
 msgid "Open in a new window?"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:486
+#: includes/helpers/helpers-elements.php:487
 msgid "Categories"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:497
+#: includes/helpers/helpers-elements.php:498
 msgid "Tags"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:508
-#: includes/helpers/helpers-elements.php:524
+#: includes/helpers/helpers-elements.php:509
+#: includes/helpers/helpers-elements.php:525
 msgid "Order by"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:514
+#: includes/helpers/helpers-elements.php:515
 msgid "Number of comments"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:527
+#: includes/helpers/helpers-elements.php:528
 msgid "Descending"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:528
+#: includes/helpers/helpers-elements.php:529
 msgid "Ascending"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:544
+#: includes/helpers/helpers-elements.php:545
 msgid "Offset"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:556
+#: includes/helpers/helpers-elements.php:557
 msgid "Text color"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:566
+#: includes/helpers/helpers-elements.php:567
 msgid "Text hover color"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:576
+#: includes/helpers/helpers-elements.php:577
 msgid "Link color"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:586
+#: includes/helpers/helpers-elements.php:587
 msgid "Heading color"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:596
+#: includes/helpers/helpers-elements.php:597
 msgid "Background color"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:607
+#: includes/helpers/helpers-elements.php:608
 msgid "Background hover color"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:618
+#: includes/helpers/helpers-elements.php:619
 msgid "Border color"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:628
+#: includes/helpers/helpers-elements.php:629
 msgid "Border hover color"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:638
+#: includes/helpers/helpers-elements.php:639
 msgid "Navigation color"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:648
+#: includes/helpers/helpers-elements.php:649
 msgid "Graphic color"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:658
+#: includes/helpers/helpers-elements.php:659
 msgid "Graphic hover color"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:668
+#: includes/helpers/helpers-elements.php:669
 msgid "Graphic background color"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:679
+#: includes/helpers/helpers-elements.php:680
 msgid "Graphic hover background color"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:691
+#: includes/helpers/helpers-elements.php:692
 msgid "Class name"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:701
+#: includes/helpers/helpers-elements.php:702
 msgid "Padding"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:717
+#: includes/helpers/helpers-elements.php:718
 msgid "Margin"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:733
+#: includes/helpers/helpers-elements.php:734
 msgid "Border style"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:740
+#: includes/helpers/helpers-elements.php:741
 msgid "Double"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:741
+#: includes/helpers/helpers-elements.php:742
 msgid "Groove"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:742
+#: includes/helpers/helpers-elements.php:743
 msgid "Ridge"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:743
+#: includes/helpers/helpers-elements.php:744
 msgid "Inset"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:744
+#: includes/helpers/helpers-elements.php:745
 msgid "Outset"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:755
+#: includes/helpers/helpers-elements.php:756
 msgid "Border width"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:777
+#: includes/helpers/helpers-elements.php:778
 msgid "Border radius"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:799
+#: includes/helpers/helpers-elements.php:800
 msgid "Shadow "
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:816
+#: includes/helpers/helpers-elements.php:817
 msgid "Background image"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:827
+#: includes/helpers/helpers-elements.php:828
 msgid "Background repeat"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:830
+#: includes/helpers/helpers-elements.php:831
 msgid "No repeat"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:831
+#: includes/helpers/helpers-elements.php:832
 msgid "Repeat"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:832
+#: includes/helpers/helpers-elements.php:833
 msgid "Repeat horizontally"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:833
+#: includes/helpers/helpers-elements.php:834
 msgid "Repeat vertically"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:850
+#: includes/helpers/helpers-elements.php:851
 msgid "Background position"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:853
+#: includes/helpers/helpers-elements.php:854
 msgid "Left top"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:854
+#: includes/helpers/helpers-elements.php:855
 msgid "Left center"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:855
+#: includes/helpers/helpers-elements.php:856
 msgid "Left bottom"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:856
+#: includes/helpers/helpers-elements.php:857
 msgid "Right top"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:857
+#: includes/helpers/helpers-elements.php:858
 msgid "Right center"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:858
+#: includes/helpers/helpers-elements.php:859
 msgid "Right bottom"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:859
+#: includes/helpers/helpers-elements.php:860
 msgid "Center top"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:860
+#: includes/helpers/helpers-elements.php:861
 msgid "Center center"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:861
+#: includes/helpers/helpers-elements.php:862
 msgid "Center bottom"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:878
+#: includes/helpers/helpers-elements.php:879
 msgid "Background size"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:881
+#: includes/helpers/helpers-elements.php:882
 msgid "Cover"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:882
+#: includes/helpers/helpers-elements.php:883
 msgid "Contain"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:898
+#: includes/helpers/helpers-elements.php:899
 msgid "Background video"
 msgstr ""
 
@@ -1412,16 +1396,44 @@ msgstr ""
 msgid "Tailor this %s"
 msgstr ""
 
-#: includes/helpers/helpers-settings.php:76
-msgid "Full"
-msgstr ""
-
-#: includes/helpers/helpers-settings.php:176
+#: includes/helpers/helpers-settings.php:119
 msgid "Current user"
 msgstr ""
 
-#: includes/helpers/helpers-settings.php:297
+#: includes/helpers/helpers-settings.php:240
 msgid "All %s"
+msgstr ""
+
+#: includes/helpers/helpers-settings.php:543
+msgid "Desktop"
+msgstr ""
+
+#: includes/helpers/helpers-settings.php:548
+msgid "Tablet"
+msgstr ""
+
+#: includes/helpers/helpers-settings.php:553
+msgid "Mobile"
+msgstr ""
+
+#: includes/helpers/helpers-settings.php:561
+msgid "All"
+msgstr ""
+
+#: includes/helpers/helpers-settings.php:613
+msgid "%1$s is <strong>deprecated</strong> since Tailor version %2$s! Use %3$s instead."
+msgstr ""
+
+#: includes/helpers/helpers-settings.php:630
+msgid "Enter desktop preview mode"
+msgstr ""
+
+#: includes/helpers/helpers-settings.php:634
+msgid "Enter tablet preview mode"
+msgstr ""
+
+#: includes/helpers/helpers-settings.php:637
+msgid "Enter mobile preview mode"
 msgstr ""
 
 #: includes/settings/class-panel.php:219
@@ -1606,11 +1618,11 @@ msgstr ""
 msgid "Posts pagination"
 msgstr ""
 
-#: partials/sidebar/sidebar-frame.php:38
+#: partials/sidebar/sidebar-frame.php:59
 msgid "Collapse Sidebar"
 msgstr ""
 
-#: partials/sidebar/sidebar-frame.php:40
+#: partials/sidebar/sidebar-frame.php:61
 msgid "Collapse"
 msgstr ""
 
@@ -1640,10 +1652,6 @@ msgstr ""
 
 #: partials/underscore/sidebar-home.php:25
 msgid "Tailor allows you to layout your content in new and exciting ways through the use of elements and templates."
-msgstr ""
-
-#: partials/underscore/sidebar-home.php:29
-msgid "Preview size"
 msgstr ""
 #. Plugin Name of the plugin/theme
 msgid "Tailor"

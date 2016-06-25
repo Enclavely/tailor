@@ -25,20 +25,7 @@ defined( 'ABSPATH' ) or die(); ?>
 	        <?php _e( 'Tailor allows you to layout your content in new and exciting ways through the use of elements and templates.', 'tailor' ); ?>
         </div>
     </div>
-    <div class="preview">
-	    <h3 class="preview__title"><?php _e( 'Preview size', 'tailor' ); ?></h3>
-	    <select class="preview__control">
-
-		    <?php
-		    $preview_sizes = tailor_get_preview_sizes();
-
-		    if ( is_array( $preview_sizes ) ) {
-			    foreach ( $preview_sizes as $key => $preview_size ) {
-				    echo '<option value="' . esc_attr( $key ) . '">' . esc_attr( $preview_size ) . '</option>';
-			    }
-		    } ?>
-
-	    </select>
-    </div>
+    
     <ul class="list list--primary" id="items"></ul>
+	
 </script>

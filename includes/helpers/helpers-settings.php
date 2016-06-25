@@ -60,63 +60,6 @@ if ( ! function_exists( 'tailor_get_setting' ) ) {
     }
 }
 
-if ( ! function_exists( 'tailor_get_registered_media_queries' ) ) {
-
-	/**
-	 * Returns the registered media queries.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return array
-	 */
-	function tailor_get_registered_media_queries() {
-
-		$media_queries = array(
-			'all'                   =>  array(
-				'label'                 =>  __( 'Full', 'tailor' ),
-				'min'                   =>  '',
-				'max'                   =>  '',
-			),
-			'x-large'               =>  array(
-				'label'                 =>  __( 'Extra large', 'tailor' ),
-				'min'                   =>  '1200px',
-				'max'                   =>  '',
-			),
-			'large'                 =>  array(
-				'label'                 =>  __( 'Large', 'tailor' ),
-				'min'                   =>  '980px',
-				'max'                   =>  '1199px',
-			),
-			'medium'                =>  array(
-				'label'                 =>  __( 'Medium', 'tailor' ),
-				'min'                   =>  '768px',
-				'max'                   =>  '979px',
-			),
-			'small'                 =>  array(
-				'label'                 =>  __( 'Small', 'tailor' ),
-				'min'                   =>  '481px',
-				'max'                   =>  '767px',
-			),
-			'x-small'               =>  array(
-				'label'                 =>  __( 'Extra small', 'tailor' ),
-				'min'                   =>  '',
-				'max'                   =>  '480px',
-			),
-		);
-
-		/**
-		 * Filters the registered media queries.
-		 *
-		 * @since 1.0.0
-		 *
-		 * @param array $media_queries
-		 */
-		$media_queries = apply_filters( 'tailor_get_registered_media_queries', $media_queries );
-
-		return $media_queries;
-	}
-}
-
 if ( ! function_exists( 'tailor_get_range' ) ) {
 
 	/**
@@ -306,39 +249,6 @@ if ( ! function_exists( 'tailor_get_terms' ) ) {
 		}
 
 		return $values;
-	}
-}
-
-if ( ! function_exists( 'tailor_get_preview_sizes' ) ) {
-
-	/**
-	 * Returns the available preview sizes.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return array
-	 */
-	function tailor_get_preview_sizes() {
-
-		$registered_media_queries = tailor_get_registered_media_queries();
-		$preview_sizes = array();
-
-		foreach( $registered_media_queries as $media_query_id => $media_query_atts ) {
-			if ( ! ( empty( $media_query_atts['min'] ) && empty( $media_query_atts['max'] ) ) ) {
-				$preview_sizes[ $media_query_id ] = $media_query_atts['label'];
-			}
-		}
-
-		/**
-		 * Filter the available preview sizes.
-		 *
-		 * @since 1.0.0
-		 *
-		 * @param array $media_queries
-		 */
-		$preview_sizes = apply_filters( 'tailor_preview_sizes', $preview_sizes );
-
-		return $preview_sizes;
 	}
 }
 
@@ -579,4 +489,129 @@ if ( ! function_exists( 'tailor_maybe_enable_scripts' ) ) {
 	}
 	add_filter( 'tailor_enable_enqueue_scripts', 'tailor_maybe_enable_scripts' );
 	add_filter( 'tailor_enable_enqueue_stylesheets', 'tailor_maybe_enable_scripts' );
+}
+
+if ( ! function_exists( 'tailor_get_registered_media_queries' ) ) {
+
+	/**
+	 * Returns the registered media queries.
+	 *
+	 * @since 1.0.0
+	 * 
+	 * @param bool $include_all
+	 *
+	 * @return array
+	 */
+	function tailor_get_registered_media_queries( $include_all = false ) {
+
+		$media_queries = array(
+			'desktop'               =>  array(
+				'label'                 =>  __( 'Desktop', 'tailor' ),
+				'min'                   =>  '721px',
+				'max'                   =>  '',
+			),
+			'tablet'                =>  array(
+				'label'                 =>  __( 'Tablet', 'tailor' ),
+				'min'                   =>  '321px',
+				'max'                   =>  '720px',
+			),
+			'mobile'                =>  array(
+				'label'                 =>  __( 'Mobile', 'tailor' ),
+				'min'                   =>  '',
+				'max'                   =>  '320px',
+			),
+		);
+		
+		if ( true === $include_all ) {
+			$media_queries['all'] = array(
+				'label'                 =>  __( 'All', 'tailor' ),
+				'min'                   =>  '',
+				'max'                   =>  '',
+			);
+		}
+
+		/**
+		 * Filters the registered media queries.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param array $media_queries
+		 */
+		$media_queries = apply_filters( 'tailor_get_registered_media_queries', $media_queries );
+
+		return $media_queries;
+	}
+}
+
+
+if ( ! function_exists( 'tailor_get_media_queries' ) ) {
+
+	/**
+	 * Returns the registered media queries.
+	 *
+	 * @since 1.1.3.
+	 *
+	 * @return array
+	 */
+	function tailor_get_media_queries() {
+
+		$media_queries = array();
+
+		foreach ( tailor_get_registered_media_queries() as $media_query_id => $media_query ) {
+			$media_queries[ $media_query_id ] = $media_query['label'];
+		}
+
+		return $media_queries;
+	}
+}
+
+if ( ! function_exists( 'tailor_get_preview_sizes' ) ) {
+
+	/**
+	 * Returns the registered media queries.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @deprecated 1.1.3 Deprecated in favor of tailor_get_media_queries().
+	 */
+	function tailor_get_preview_sizes() {
+
+		trigger_error( sprintf( __('%1$s is <strong>deprecated</strong> since Tailor version %2$s! Use %3$s instead.'), 'tailor_get_preview_sizes', '1.1.3', 'tailor_get_media_queries' ) );
+
+		return tailor_get_registered_media_queries();
+	}
+}
+
+/**
+ * Returns a list of devices to allow previewing.
+ *
+ * @since 1.1.3.
+ *
+ * @return array|mixed|void
+ */
+function tailor_get_previewable_devices() {
+
+	$devices = array(
+		'desktop' => array(
+			'label' => __( 'Enter desktop preview mode', 'tailor' ),
+			'default' => true,
+		),
+		'tablet' => array(
+			'label' => __( 'Enter tablet preview mode', 'tailor' ),
+		),
+		'mobile' => array(
+			'label' => __( 'Enter mobile preview mode', 'tailor' ),
+		),
+	);
+
+	/**
+	 * Filter the available devices to allow previewing in the Customizer.
+	 *
+	 * @since 1.1.3.
+	 *
+	 * @param array $devices List of devices with labels and default setting.
+	 */
+	$devices = apply_filters( 'customize_previewable_devices', $devices );
+
+	return $devices;
 }

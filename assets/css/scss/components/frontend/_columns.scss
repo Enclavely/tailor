@@ -82,20 +82,14 @@ $column-border-color: $border-color !default;
 	}
 }
 
-@include columns( $size: x-small );
+@include columns( $size: mobile );
 
-@media #{$small-up} {
-	@include columns( $size: small );
+
+@media #{$tablet-up} {
+	@include columns( $size: small ); // To provide backward compatibility for old media queries
+	@include columns( $size: tablet );
 }
 
-@media #{$medium-up} {
-	@include columns( $size: medium );
-}
-
-@media #{$large-up} {
-	@include columns( $size: large );
-}
-
-@media #{$x-large} {
-	@include columns( $size: x-large );
+@media #{$desktop} {
+	@include columns( $size: desktop );
 }
