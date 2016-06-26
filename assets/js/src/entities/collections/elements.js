@@ -294,7 +294,10 @@ ElementCollection = Backbone.Collection.extend( {
         // Collapse the only remaining column
         else if ( 1 === children.length ) {
 	        var child = _.first( children );
-            child.trigger( 'container:collapse', child, this.where( { parent : child.get( 'id' ) } ) );
+            
+            if ( 'tailor_row' === model.get( 'tag' ) ) {
+                child.trigger( 'container:collapse', child, this.where( { parent : child.get( 'id' ) } ) );
+            }
         }
     },
 

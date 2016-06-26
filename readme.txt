@@ -2,9 +2,9 @@
 Contributors: andrew.worsfold
 Donate link: http://gettailor.com/donate/
 Tags: frontend, content, layout creator, responsive, page builder, visual composer, drag and drop builder, frontend editor
-Stable tag: 1.1.3
+Stable tag: 1.2.0
 Requires at least: 4.3
-Tested up to: 4.5.2
+Tested up to: 4.5.3
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl.html
 
@@ -103,6 +103,11 @@ Yes.  Tailored pages can be migrated like any other type of page using the [dupl
 Yes, however, users should be directed to the WordPress plugin repository to install the latest version of the plugin.  Consider using a tool like [TGM Plugin Activation](http://tgmpluginactivation.com/) to guide users through the installation process.
 
 == Changelog ==
+
+= 1.2.0 =
+* Changed container behaviour so that they do not collapse when only one child element remains (excludes row/column layouts). [Learn more about this change](http://www.andrewworsfold.com/2016/06/26/working-with-containers/).
+* Fixed custom CSS within template previews.
+* Fixed tab reordering after tab renaming.
 
 = 1.1.3 =
 * Updated device preview and media query settings to be in line with the WordPress Customizer (i.e., Desktop, Tablet and Mobile sizes).  [Learn more about this change](http://www.andrewworsfold.com/2016/06/25/device-previews/).

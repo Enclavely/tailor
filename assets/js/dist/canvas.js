@@ -2100,14 +2100,16 @@ var ContainerView = require( './../view-container' ),
 TabView = ContainerView.extend( {
 
 	/**
-     * Sets the DOM element ID to the model ID.
-     *
-     * @since 1.0.0
-     */
-    onDomRefresh : function() {
-        this.el.draggable = false;
-        this.el.id = this.model.cid;
-    }
+	 * Sets the DOM element ID to the model ID.
+	 *
+	 * @since 1.0.0
+	 */
+	onRenderTemplate : function() {
+		this.el.draggable = false;
+		this.el.id = this.model.cid;
+
+		console.log( 'render' );
+	}
 
 } );
 
@@ -5899,7 +5901,10 @@ ElementCollection = Backbone.Collection.extend( {
         // Collapse the only remaining column
         else if ( 1 === children.length ) {
 	        var child = _.first( children );
-            child.trigger( 'container:collapse', child, this.where( { parent : child.get( 'id' ) } ) );
+            
+            if ( 'tailor_row' === model.get( 'tag' ) ) {
+                child.trigger( 'container:collapse', child, this.where( { parent : child.get( 'id' ) } ) );
+            }
         }
     },
 

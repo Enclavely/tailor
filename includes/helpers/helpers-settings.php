@@ -478,14 +478,19 @@ if ( ! function_exists( 'tailor_maybe_enable_scripts' ) ) {
 	 */
 	function tailor_maybe_enable_scripts() {
 
+		if ( tailor()->is_canvas() || tailor()->is_template_preview() ) {
+			return true;
+		}
+
 		$enable_scripts = tailor_get_setting( 'enable_scripts_all_pages' );
+
 		if ( ! empty( $enable_scripts ) ) {
 			return true;
 		}
 
 		$post_id = get_the_ID();
 		$tailor_layout = get_post_meta( $post_id, '_tailor_layout' );
-		return ! empty( $tailor_layout ) || tailor()->is_canvas();
+		return ! empty( $tailor_layout );
 	}
 	add_filter( 'tailor_enable_enqueue_scripts', 'tailor_maybe_enable_scripts' );
 	add_filter( 'tailor_enable_enqueue_stylesheets', 'tailor_maybe_enable_scripts' );

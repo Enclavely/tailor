@@ -165,7 +165,7 @@ if ( ! class_exists( 'Tailor_Custom_CSS' ) ) {
 	     */
 		public function print_element_css() {
 
-			if (  tailor()->is_canvas() || did_action( 'tailor_print_element_css' ) ) {
+			if ( tailor()->is_canvas() || did_action( 'tailor_print_element_css' ) ) {
 				return;
 			}
 
@@ -186,18 +186,18 @@ if ( ! class_exists( 'Tailor_Custom_CSS' ) ) {
 			else {
 				$css_rule_sets = $this->get_element_css();
 			}
-
+			
 			if ( ! empty( $css_rule_sets ) ) {
 				$t = '';
 				$n = "\n";
 				$css = $n;
 
-				$available_media_queries = tailor_get_registered_media_queries();
+				$available_media_queries = tailor_get_registered_media_queries( true );
 
 				foreach ( $css_rule_sets as $media_query_id => $element_rule_sets ) {
 
 					$media_query_type = str_replace( '-up', '', $media_query_id );
-
+					
 					if ( ! array_key_exists( $media_query_type, $available_media_queries ) ) {
 						continue;
 					}
@@ -235,7 +235,7 @@ if ( ! class_exists( 'Tailor_Custom_CSS' ) ) {
 						$css .= '}' . $n;
 					}
 				}
-
+				
 				printf( "\n<style id=\"tailor-custom-element-css\" type=\"text/css\">%s</style>\n", $css );
 			}
 
