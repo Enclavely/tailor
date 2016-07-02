@@ -18,6 +18,11 @@ if ( ! function_exists( 'tailor_admin_bar_edit_link' ) ) {
 	 * @param WP_Admin_Bar $wp_admin_bar
 	 */
 	function tailor_admin_bar_edit_link( $wp_admin_bar ) {
+		
+		// Do not display link on archives/ homepage etc
+		if ( ! is_singular() ) {
+			return;
+		}
 
 		if ( tailor()->is_canvas() ) {
 			return;
