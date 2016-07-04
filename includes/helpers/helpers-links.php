@@ -19,21 +19,22 @@ if ( ! function_exists( 'tailor_admin_bar_edit_link' ) ) {
 	 */
 	function tailor_admin_bar_edit_link( $wp_admin_bar ) {
 		
-		// Do not display link on archives/ homepage etc
-		if ( ! is_singular() ) {
-			return;
-		}
-
 		if ( tailor()->is_canvas() ) {
 			return;
 		}
 
 		// Only add the Admin Bar link when editing a post or page
 		if ( is_admin() ) {
+
 			$screen = get_current_screen();
 			if ( 'post' !== $screen->base ) {
 				return;
 			}
+		}
+
+		// Do not display link on archive pages
+		else if ( ! is_singular() ) {
+			return;
 		}
 
 		$post = get_post();

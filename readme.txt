@@ -2,7 +2,7 @@
 Contributors: andrew.worsfold
 Donate link: http://gettailor.com/donate/
 Tags: frontend, content, layout creator, responsive, page builder, visual composer, drag and drop builder, frontend editor
-Stable tag: 1.2.1
+Stable tag: 1.2.2
 Requires at least: 4.3
 Tested up to: 4.5.3
 License: GPLv3 or later
@@ -14,15 +14,15 @@ Build beautiful layouts quickly and easily using your favourite theme with this 
 
 [Tailor](http://gettailor.com/) is a simple yet powerful plugin that allows you to easily create stunning pages using an intuitive drag and drop interface.  Everything is done in the frontend of your website, meaning that what you see is what you get. The best part is that it’s all completely free!
 
+To get started, refer to our [documentation](https://tailor.zendesk.com/hc/en-us/categories/202586427-Getting-started).
+
 = Easy to use =
 
 Drag and drop elements relative to one another and then customize them using a set of well-thought-out options.  You'll be up and running in minutes and can use all that saved time for more important things like creating content!
 
 = Easy to extend =
 
-Adding your own custom elements or functionality is easy.
-
-The new [Portfolio extension](https://wordpress.org/plugins/tailor-portfolio/) can be used to display project posts within your site or as the basis for your own custom elements and functionality.
+Adding your own custom elements or functionality is easy.  Please refer to our [developer documentation](https://tailor.zendesk.com/hc/en-us/categories/203117247-Extending) if you are interested in creating your own extensions. The [Portfolio extension](https://wordpress.org/plugins/tailor-portfolio/) is an example of an extension that can be used to display project posts within your site.
 
 = Works with any theme =
 
@@ -32,7 +32,11 @@ You can use Tailor with any (well coded) free or premium theme. Tailor empowers 
 
 Tailor is completely free and open-source. Use it to help create your next website or contribute to the project on [Github](https://github.com/andrew-worsfold/tailor/)
 
-We're keen to get your feedback so that we can make Tailor better!  Contribute to the GitHub project, leave a comment on the WordPress plugin page or get in touch on Twitter ([@tailorwp](https://twitter.com/tailorwp) or [@andrewjworsfold](https://twitter.com/andrewjworsfold))
+You can get in touch with questions or recommendations in a number of ways:
+
+1. [Facebook](https://www.facebook.com/tailorwp/) or Twitter at [@tailorwp](https://twitter.com/tailorwp) or [@andrewjworsfold](https://twitter.com/andrewjworsfold).
+2. The [Help Center](http://support.gettailor.com)
+3. The [GitHub project](https://github.com/andrew-worsfold/tailor)
 
 If you like the plugin, you can help by [rating it](https://wordpress.org/support/view/plugin-reviews/tailor?rate=5#postform).
 
@@ -103,6 +107,9 @@ Yes.  Tailored pages can be migrated like any other type of page using the [dupl
 Yes, however, users should be directed to the WordPress plugin repository to install the latest version of the plugin.  Consider using a tool like [TGM Plugin Activation](http://tgmpluginactivation.com/) to guide users through the installation process.
 
 == Changelog ==
+
+= 1.2.2 =
+* Minor improvements to the display of the Tailor this Page link in the Admin Bar.
 
 = 1.2.1 =
 * Removed 'Tailor this ..' Admin Bar link from archive pages.
