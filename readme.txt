@@ -24,7 +24,7 @@ Drag and drop elements relative to one another and then customize them using a s
 
 Adding your own custom elements or functionality is easy.
 
-To learn more about how to create your own extensions, check out our [developer documentation](https://tailor.zendesk.com/hc/en-us/categories/203117247-Extending).  Our Portfolio extension](https://wordpress.org/plugins/tailor-portfolio/) is just one example of what an extensions can do.
+To learn more about how to create your own extensions, check out our [developer documentation](https://tailor.zendesk.com/hc/en-us/categories/203117247-Extending).  Our [Portfolio extension](https://wordpress.org/plugins/tailor-portfolio/) is just one example of what an extensions can do.
 
 = Works with any theme =
 
