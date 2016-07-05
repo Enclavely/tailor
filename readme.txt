@@ -1,7 +1,7 @@
 === Tailor Page Builder ===
 Contributors: andrew.worsfold
 Donate link: http://gettailor.com/donate/
-Tags: frontend, content, layout creator, responsive, page builder, visual composer, drag and drop builder, frontend editor
+Tags: page, layout, builder, frontend, content, page builder, drag and drop builder, home page builder, landing page builder, layout builder, frontend builder, frontend editor, responsive, visual composer, beaver builder
 Stable tag: 1.2.3
 Requires at least: 4.3
 Tested up to: 4.5.3
@@ -24,7 +24,7 @@ Drag and drop elements relative to one another and then customize them using a s
 
 Adding your own custom elements or functionality is easy.
 
-To learn more about how to create your own extensions, check out our [developer documentation](https://tailor.zendesk.com/hc/en-us/categories/203117247-Extending).  Our simple [Portfolio extension](https://wordpress.org/plugins/tailor-portfolio/) is an example of how to add a custom content element to display a post type.
+To learn more about how to create your own extensions, check out our [developer documentation](https://tailor.zendesk.com/hc/en-us/categories/203117247-Extending).  Our Portfolio extension](https://wordpress.org/plugins/tailor-portfolio/) is just one example of what an extensions can do.
 
 = Works with any theme =
 
@@ -34,9 +34,7 @@ By taking care of the layout and providing basic styles for elements, Tailor lea
 
 = Free and open-source =
 
-Tailor is completely free and open-source.
-
-Use it to help create your next website or contribute to the project on [Github](https://github.com/andrew-worsfold/tailor/)
+Tailor is completely free and open-source.  Use it to help create your next website or contribute to the project on [Github](https://github.com/andrew-worsfold/tailor/)
 
 You can get in touch with questions or recommendations in a number of ways:
 
@@ -78,23 +76,23 @@ Visit 'Settings > Tailor' to configure:
 
 == Screenshots ==
 
-1. **Adding elements** - Drag an element from the sidebar into the desired position on the page.  To copy an existing element, hold Shift while dragging.
+1. **Adding elements** - Drag an element from the sidebar into the desired position on the page to add it.  Hold the Shift button while dragging an existing element to copy it.
 
-2. **Editing elements** - Click + Shift to edit (or select the element and click on the Edit button).
+2. **Editing elements** - Click and hold the Shift button to edit an element (or select it and click on the Edit button).
 
-3. **Editing parent/ancestor elements** - Select the parent/ancestor from the dropdown menu and click on the Edit button.
+3. **Editing parent/ancestor elements** - Select a parent/ancestor element from the hierarchy dropdown menu and click on the Edit button to edit it.
 
-4. **Adding columns** - Drag an element to the left or right of an existing element to create a row/column structure.  Drag to the left or right of an existing column to add another column to that row.
+4. **Adding columns** - Drag an element to the left or right of an existing element to create a row/column structure.  Drag it to the left or right of an existing column to add another column to that row.
 
-5. **Adding templates** - Drag a saved template to the desired position on the page
+5. **Adding templates** - Drag a saved template into the desired position on the page to add it.  The available dropzones will depend on the element(s) in the template.
 
-6. **Custom CSS/JS** - Add custom CSS or JavaScript to the page from within Tailor.
+6. **Custom CSS/JS** - Add custom CSS or JavaScript to the page from within Tailor using the editors provided on the Settings panel.
 
-7. **Layout changes** - Make changes to the layout of the page (site-wide changes can be made using the Customizer).
+7. **Layout changes** - Make changes to the layout of the page from within the Settings panel.  To make site-wide changes, use the custom Tailor settings in the Customizer (page-level settings override those in the Customizer).
 
-8. **Device preview** - Preview your page on desktop and mobile device sizes.
+8. **Device preview** - Preview your page on desktop and mobile device sizes in exactly the same way that you do in the Customizer.
 
-9. **Revision history** - View and restore history revision snapshots in a single click.
+9. **Revision history** - View and restore history revision snapshots in a single click on the History panel.
 
 == Frequently Asked Questions ==
 
