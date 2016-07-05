@@ -365,14 +365,14 @@ if ( ! class_exists( 'Tailor_Elements_Panel' ) ) {
 
 			<% } %>
 
-				<!-- <i class="<%= icon %>"></i> -->
+				<div class="element__wrap">
+					<h3 class="list__label">
+						<%= label %>
+						<% if ( badge ) { %><span class="element__badge"><%= badge %></span><% } %>
+					</h3>
 
-				<h3 class="list__label">
-					<%= label %>
-					<% if ( badge ) { %><span class="element__badge"><%= badge %></span><% } %>
-				</h3>
-
-				<div class="element__description"><%= description %></div>
+					<div class="element__description"><%= description %></div>
+				</div>
 			</li>
 
 			<?php

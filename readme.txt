@@ -2,7 +2,7 @@
 Contributors: andrew.worsfold
 Donate link: http://gettailor.com/donate/
 Tags: frontend, content, layout creator, responsive, page builder, visual composer, drag and drop builder, frontend editor
-Stable tag: 1.2.2
+Stable tag: 1.2.3
 Requires at least: 4.3
 Tested up to: 4.5.3
 License: GPLv3 or later
@@ -18,19 +18,25 @@ To get started, refer to our [documentation](https://tailor.zendesk.com/hc/en-us
 
 = Easy to use =
 
-Drag and drop elements relative to one another and then customize them using a set of well-thought-out options.  You'll be up and running in minutes and can use all that saved time for more important things like creating content!
+Drag and drop elements relative to one another and then customize them using a set of intelligent (and intelligible) options.  You'll be up and running in minutes and can use all that saved time for more important things - like creating content!
 
 = Easy to extend =
 
-Adding your own custom elements or functionality is easy.  Please refer to our [developer documentation](https://tailor.zendesk.com/hc/en-us/categories/203117247-Extending) if you are interested in creating your own extensions. The [Portfolio extension](https://wordpress.org/plugins/tailor-portfolio/) is an example of an extension that can be used to display project posts within your site.
+Adding your own custom elements or functionality is easy.
+
+To learn more about how to create your own extensions, check out our [developer documentation](https://tailor.zendesk.com/hc/en-us/categories/203117247-Extending).  Our simple [Portfolio extension](https://wordpress.org/plugins/tailor-portfolio/) is an example of how to add a custom content element to display a post type.
 
 = Works with any theme =
 
-You can use Tailor with any (well coded) free or premium theme. Tailor empowers you to create layouts not possible using the standard editor and leaves a majority of the page style to your selected theme (as it should).
+You can use Tailor with any free or premium theme.
+
+By taking care of the layout and providing basic styles for elements, Tailor leaves a majority of the page style to your selected theme (as it should).
 
 = Free and open-source =
 
-Tailor is completely free and open-source. Use it to help create your next website or contribute to the project on [Github](https://github.com/andrew-worsfold/tailor/)
+Tailor is completely free and open-source.
+
+Use it to help create your next website or contribute to the project on [Github](https://github.com/andrew-worsfold/tailor/)
 
 You can get in touch with questions or recommendations in a number of ways:
 
@@ -72,21 +78,23 @@ Visit 'Settings > Tailor' to configure:
 
 == Screenshots ==
 
-1. **Home panel** - The initial panel provides access to each area of functionality.
+1. **Adding elements** - Drag an element from the sidebar into the desired position on the page.  To copy an existing element, hold Shift while dragging.
 
-2. **Elements panel** - Elements are listed in alphabetically order and can be filtered by entering search criteria.  Simply drag any element onto the page to add it.
+2. **Editing elements** - Click + Shift to edit (or select the element and click on the Edit button).
 
-3. **Templates panel** - Templates are saved pages (or parts of pages).  Simply drag one onto the page to add it.
+3. **Editing parent/ancestor elements** - Select the parent/ancestor from the dropdown menu and click on the Edit button.
 
-4. **General settings section** - The general page settings allow you to change the page title and add custom CSS and JavaScript code.
+4. **Adding columns** - Drag an element to the left or right of an existing element to create a row/column structure.  Drag to the left or right of an existing column to add another column to that row.
 
-5. **Layout settings section** - The page layout settings override those configured in the Customiser, but can in turn be overridden by individual element settings.
+5. **Adding templates** - Drag a saved template to the desired position on the page
 
-6. **History panel** - Actions performed in the current session are listed and you can switch between states by clicking on the list items.
+6. **Custom CSS/JS** - Add custom CSS or JavaScript to the page from within Tailor.
 
-7. **Extra small screen size preview** - Several preview sizes are available, which allow you to see what your layout looks like on different screen sizes.
+7. **Layout changes** - Make changes to the layout of the page (site-wide changes can be made using the Customizer).
 
-8. **Editing a simple element** - Simply select an element and click “Edit” (or hold the Shift button and click on the element) to open the customization window.
+8. **Device preview** - Preview your page on desktop and mobile device sizes.
+
+9. **Revision history** - View and restore history revision snapshots in a single click.
 
 == Frequently Asked Questions ==
 
@@ -107,6 +115,9 @@ Yes.  Tailored pages can be migrated like any other type of page using the [dupl
 Yes, however, users should be directed to the WordPress plugin repository to install the latest version of the plugin.  Consider using a tool like [TGM Plugin Activation](http://tgmpluginactivation.com/) to guide users through the installation process.
 
 == Changelog ==
+
+= 1.2.3 =
+* Fix to element drag-drop ghost image when dragging on Chrome.
 
 = 1.2.2 =
 * Minor improvements to the display of the Tailor this Page link in the Admin Bar.

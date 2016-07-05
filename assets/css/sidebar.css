@@ -825,46 +825,45 @@ html {
     white-space: nowrap;
     text-overflow: ellipsis; }
 
-.list .element {
-  padding-left: 50px; }
-  .list .element .list__label {
-    position: relative;
-    padding-bottom: 5px;
-    color: inherit; }
-  .list .element .element__description {
-    display: block;
-    color: #777;
-    font-size: 12px; }
-  .list .element .element__badge {
-    position: absolute;
-    right: 0;
-    padding: 1px 6px;
-    font-size: 12px;
-    font-weight: 400;
-    line-height: 18px;
-    white-space: nowrap;
-    color: #fff;
-    background-color: #777; }
-  .list .element::before {
-    position: absolute;
-    top: 11px;
-    left: 15px;
-    content: "\f109";
-    font: normal 20px/1 dashicons;
-    color: inherit;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale; }
-  .list .element.is-inactive {
-    color: #aaa;
-    cursor: default;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none; }
-    .list .element.is-inactive .element__badge {
-      background-color: #aaa; }
-    .list .element.is-inactive .element__description {
-      color: #aaa; }
+.list .element__wrap {
+  display: block;
+  overflow: hidden; }
+.list .element__description {
+  display: block;
+  color: #777;
+  font-size: 12px; }
+.list .element__badge {
+  position: absolute;
+  right: -1px;
+  padding: 1px 6px;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+  white-space: nowrap;
+  color: #fff;
+  background-color: #777; }
+.list .element .list__label {
+  padding-bottom: 5px;
+  color: inherit; }
+.list .element::before {
+  content: "\f109";
+  padding-right: 0.75em;
+  float: left;
+  font: normal 20px/1 dashicons;
+  color: inherit;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale; }
+.list .element.is-inactive {
+  color: #aaa;
+  cursor: default;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none; }
+  .list .element.is-inactive .element__badge {
+    background-color: #aaa; }
+  .list .element.is-inactive .element__description {
+    color: #aaa; }
 .list.is-simplified .element .list__label {
   padding-bottom: 0; }
 .list.is-simplified .element .element__description {

@@ -60,6 +60,7 @@
 }
 
 @keyframes shake {
+
 	10%, 90% {
 		transform: translate3d(-1px, 0, 0);
 	}
@@ -130,23 +131,21 @@
 .list {
 
 	.element {
-		padding-left: 50px;
 
-		.list__label {
-			position: relative;
-			padding-bottom: 5px;
-			color: inherit;
+		&__wrap {
+			display: block;
+			overflow: hidden;
 		}
 
-		.element__description {
+		&__description {
 			display: block;
 			color: #777;
 			font-size: 12px;
 		}
 
-		.element__badge {
+		&__badge {
 			position: absolute;
-			right: 0;
+			right: -1px;
 			padding: 1px 6px;
 			font-size: 12px;
 			font-weight: 400;
@@ -156,11 +155,15 @@
 			background-color: #777;
 		}
 
+		.list__label {
+			padding-bottom: 5px;
+			color: inherit;
+		}
+
 		&::before {
-			position: absolute;
-			top: 11px;
-			left: 15px;
 			content: "\f109";
+			padding-right: 0.75em;
+			float: left;
 			font: normal 20px/1 dashicons;
 			color: inherit;
 			-webkit-font-smoothing: antialiased;
