@@ -5,7 +5,7 @@
             <div class="col-md-4">
                 <p>Tailor is a free and open source project that allows WordPress users to free themselves from the layout constraints of the editor.</p>
 
-                <a class="btn btn-outline-secondary" href="{{ site.tailor.wordpress }}" target="_blank"><i class="fa fa-wordpress fa-2x"></i><span>Download Plugin</span></a>
+                <a class="btn btn-outline-secondary" href="{{ site.tailor.wordpress }}" target="_blank" onclick="ga('send', 'event', 'button', 'click', 'download-footer');"><i class="fa fa-wordpress fa-2x"></i><span>Download Plugin</span></a>
             </div>
 
             <div class="col-md-2 col-md-offset-4 col-sm-4">
@@ -35,11 +35,17 @@
                     <li class="menu__item">
                         <h3 class="menu__title">Contact</h3>
                     </li>
-                    <li class="menu__item"><a href="http://support.gettailor.com" target="_blank">Help Center</a></li>
-                    <li class="menu__item"><a href="https://tailor.zendesk.com/hc/en-us/community/topics" target="_blank">Forum</a></li>
-                    <li class="menu__item"><a href="http://www.facebook.com/tailorwp" target="_blank">Facebook</a></li>
-                    <li class="menu__item"><a href="https://www.twitter.com/tailorwp" target="_blank">@tailorwp</a></li>
-                    <li class="menu__item"><a href="https://www.twitter.com/andrewjworsfold" target="_blank">@andrewjworsfold</a></li>
+                    <li class="menu__item"><a href="http://support.gettailor.com" target="_blank" onclick="ga('send', 'event', 'button', 'click', 'hc');">Help Center</a></li>
+                    <li class="menu__item"><a href="https://tailor.zendesk.com/hc/en-us/community/topics" target="_blank" onclick="ga('send', 'event', 'button', 'click', 'forum');">Forum</a></li>
+                    <li class="menu__item"><a href="http://www.facebook.com/tailorwp" target="_blank" onclick="ga('send', 'event', 'button', 'click', 'facebook');">
+                        Facebook</a>
+                    </li>
+                    <li class="menu__item"><a href="https://www.twitter.com/tailorwp" target="_blank" onclick="ga('send', 'event', 'button', 'click', 'twitter-tailor');">
+                        @tailorwp</a>
+                    </li>
+                    <li class="menu__item"><a href="https://www.twitter.com/andrewjworsfold" target="_blank" onclick="ga('send', 'event', 'button', 'click', 'twitter-andrew');">
+                        @andrewjworsfold
+                    </a></li>
                 </ul>
             </div>
 
