@@ -24,7 +24,28 @@
   margin: 1.5em 0 2em;
 }
 
+.product-hunt {
+  position: absolute;
+  z-index: 999;
+  display: none;
+  top: 10px;
+  right: 10px;
+
+  a {
+    display: block;
+
+    @include hover-focus {
+      border-color: transparent;
+    }
+  }
+}
+
+
 @include media-breakpoint-up( 'md' ) {
+
+  .product-hunt {
+    display: block;
+  }
 
   .hero.block {
     position: fixed;
