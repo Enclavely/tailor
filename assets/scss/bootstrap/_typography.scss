@@ -52,6 +52,10 @@ h6 { font-size: $font-size-h6; }
 .display-3 {
   font-size: $display3-size;
   font-weight: $display3-weight;
+
+  @include media-breakpoint-up( sm ) {
+    font-size: 3em;
+  }
 }
 
 .display-4 {
