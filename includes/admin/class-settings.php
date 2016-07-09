@@ -253,6 +253,22 @@ class Tailor_Settings {
 			)
 		);
 
+		$google_maps_api_key_field_id = 'google_maps_api_key';
+		$google_maps_api_key_field_label = __( 'Google Maps API key', 'tailor' );
+
+		add_settings_field(
+			$google_maps_api_key_field_id,
+			$google_maps_api_key_field_label,
+			array( $this, 'render_field' ),
+			$setting_id,
+			$setting_id . '_features',
+			array(
+				'type'              =>  'text',
+				'name'              =>  $setting_id . '[' . $google_maps_api_key_field_id . ']',
+				'value'             =>  tailor_get_setting( $google_maps_api_key_field_id ),
+			)
+		);
+
 		add_settings_section(
 			$setting_id . '_elements',
 			__( 'Elements', 'tailor' ),

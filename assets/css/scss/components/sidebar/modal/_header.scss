@@ -65,7 +65,7 @@
 
 		@include transition(background-color 0.1s ease-in-out);
 
-		&:after {
+		&::after {
 			content: "\f335";
 			font: normal 22px/58px dashicons;
 		}

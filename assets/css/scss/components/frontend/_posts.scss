@@ -41,7 +41,7 @@ $posts-box-shadow: $box-shadow !default;
 					padding-right: 8px;
 					margin-right: 8px;
 
-					&:after {
+					&::after {
 						position: absolute;
 						right: 0;
 						content: '|';

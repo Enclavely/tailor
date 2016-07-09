@@ -48,7 +48,7 @@
 		user-select: none;
 		white-space: nowrap;
 
-		&:after {
+		&::after {
 			position: absolute;
 			right: 0;
 			top: 0;

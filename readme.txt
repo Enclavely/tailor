@@ -2,7 +2,7 @@
 Contributors: andrew.worsfold
 Donate link: http://gettailor.com/donate/
 Tags: page, layout, builder, frontend, content, page builder, drag and drop builder, home page builder, landing page builder, layout builder, frontend builder, frontend editor, responsive, visual composer, beaver builder
-Stable tag: 1.2.3
+Stable tag: 1.2.4
 Requires at least: 4.3
 Tested up to: 4.5.3
 License: GPLv3 or later
@@ -34,7 +34,7 @@ By taking care of the layout and providing basic styles for elements, Tailor lea
 
 = Free and open-source =
 
-Tailor is completely free and open-source.  Use it to help create your next website or contribute to the project on [Github](https://github.com/andrew-worsfold/tailor/)
+Tailor is completely free and open-source.  Use it to help create your next website or contribute to the project on [Github](https://github.com/andrew-worsfold/tailor/).
 
 You can get in touch with questions or recommendations in a number of ways:
 
@@ -113,6 +113,11 @@ Yes.  Tailored pages can be migrated like any other type of page using the [dupl
 Yes, however, users should be directed to the WordPress plugin repository to install the latest version of the plugin.  Consider using a tool like [TGM Plugin Activation](http://tgmpluginactivation.com/) to guide users through the installation process.
 
 == Changelog ==
+
+= 1.2.4 =
+* Added resource links to the admin settings page.
+* Added Google Maps API key setting.
+* Updated CSS to ensure pseudo-elements use double colon notation.
 
 = 1.2.3 =
 * Fix to element drag-drop ghost image when dragging on Chrome.

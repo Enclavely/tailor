@@ -110,7 +110,7 @@ html {
 
 	@include transition( color .1s ease-in-out, background .1s ease-in-out );
 
-	&:before {
+	&::before {
 		font: normal 22px/45px dashicons;
 		content: "\f335";
 		position: relative;

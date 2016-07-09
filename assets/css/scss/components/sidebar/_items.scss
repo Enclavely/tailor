@@ -35,7 +35,7 @@
 			color: #23282d;
 			background: #f5f5f5;
 
-			.list__label:after {
+			.list__label::after {
 				color: #23282d;
 			}
 		}
@@ -336,21 +336,21 @@
 				color: red;
 			}
 
-			&:after {
+			&::after {
 				content: "\f335";
 			}
 		}
 
 		&.button--download {
 
-			&:after {
+			&::after {
 				content: "\f316";
 			}
 		}
 
 		&.button--preview {
 
-			&:after {
+			&::after {
 				content: "\f177";
 			}
 		}

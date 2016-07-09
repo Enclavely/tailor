@@ -13,7 +13,7 @@
 	color: #555;
 	border: none;
 
-	&:before {
+	&::before {
 		position: absolute;
 		top: 5px;
 		left: 6px;
@@ -23,7 +23,7 @@
 	&:focus {
 		outline: 0;
 
-		&:before {
+		&::before {
 			-webkit-box-shadow: 0 0 0 1px #5b9dd9,0 0 2px 1px rgba(30,140,190,.8);
 			box-shadow: 0 0 0 1px #5b9dd9,0 0 2px 1px rgba(30,140,190,.8);
 			-webkit-border-radius: 100%;

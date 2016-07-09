@@ -59,13 +59,13 @@ $slick-border-color: $border-color !default;
 	    //display: -ms-flexbox;
 	    //display: flex;
 
-        &:before,
-        &:after {
+        &::before,
+        &::after {
             content: "";
             display: table;
         }
 
-        &:after {
+        &::after {
             clear: both;
         }
 
@@ -206,7 +206,7 @@ $slick-border-color: $border-color !default;
 					outline: none;
 				}
 
-				&:before {
+				&::before {
 					display: block;
 					height: 14px;
 					width: 14px;
@@ -227,7 +227,7 @@ $slick-border-color: $border-color !default;
 
 			&.slick-active {
 
-				button:before {
+				button::before {
 					opacity: 1;
 					-webkit-transform: scale(1);
 					transform: scale(1);

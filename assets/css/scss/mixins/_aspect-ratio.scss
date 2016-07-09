@@ -8,7 +8,7 @@
 	position: relative;
 	overflow: hidden;
 
-	&:before {
+	&::before {
 		display: block;
 		content: " ";
 		width: 100%;

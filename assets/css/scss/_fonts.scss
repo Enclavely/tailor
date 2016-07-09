@@ -21,26 +21,26 @@
 	-moz-osx-font-smoothing: grayscale;
 }
 
-.tailor-align-center:before {
+.tailor-align-center::before {
 	content: "\e234";
 }
 
-.tailor-align-left:before {
+.tailor-align-left::before {
 	content: "\e236";
 }
 
-.tailor-align-right:before {
+.tailor-align-right::before {
 	content: "\e237";
 }
 
-.tailor-align-bottom:before {
+.tailor-align-bottom::before {
 	content: "\e258";
 }
 
-.tailor-align-middle:before {
+.tailor-align-middle::before {
 	content: "\e259";
 }
 
-.tailor-align-top:before {
+.tailor-align-top::before {
 	content: "\e25a";
 }

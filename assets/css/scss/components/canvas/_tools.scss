@@ -69,14 +69,14 @@
 
 			&--left {
 
-				&:after {
+				&::after {
 					content: ' \25C0';
 				}
 			}
 
 			&--right {
 
-				&:after {
+				&::after {
 					content: ' \25B6';
 				}
 			}
@@ -92,7 +92,7 @@
 				&:not( :only-child ) {
 					cursor: pointer;
 
-					&:first-child:after {
+					&:first-child::after {
 						content: ' \25BE';
 					}
 				}
@@ -108,7 +108,7 @@
 
 			&:not( :only-child ) {
 
-				&:first-child:after {
+				&:first-child::after {
 					content: ' \25B4';
 				}
 			}
@@ -145,7 +145,7 @@
 			-moz-transform-style: preserve-3d;
 			transform-style: preserve-3d;
 
-			&:before {
+			&::before {
 				position: absolute;
 				top: 50%;
 				left: 50%;
@@ -160,7 +160,7 @@
 			}
 		}
 
-		&:after {
+		&::after {
 			position: absolute;
 			top: 0;
 			left: 0;

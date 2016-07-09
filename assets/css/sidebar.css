@@ -15,22 +15,22 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale; }
 
-.tailor-align-center:before {
+.tailor-align-center::before {
   content: "\e234"; }
 
-.tailor-align-left:before {
+.tailor-align-left::before {
   content: "\e236"; }
 
-.tailor-align-right:before {
+.tailor-align-right::before {
   content: "\e237"; }
 
-.tailor-align-bottom:before {
+.tailor-align-bottom::before {
   content: "\e258"; }
 
-.tailor-align-middle:before {
+.tailor-align-middle::before {
   content: "\e259"; }
 
-.tailor-align-top:before {
+.tailor-align-top::before {
   content: "\e25a"; }
 
 html {
@@ -239,7 +239,7 @@ html {
   -moz-box-sizing: border-box;
   box-sizing: border-box; }
 
-*, *:before, *:after {
+*, *::before, *::after {
   -webkit-box-sizing: inherit;
   -moz-box-sizing: inherit;
   box-sizing: inherit; }
@@ -447,7 +447,7 @@ ul {
     -webkit-border-radius: 50%;
     border-radius: 50%;
     overflow: hidden; }
-    .collapse-sidebar-arrow:before {
+    .collapse-sidebar-arrow::before {
       display: block;
       content: "\f148";
       background: #eee;
@@ -468,7 +468,7 @@ ul {
 
   .is-collapsed .collapse-sidebar-label {
     display: none; }
-  .is-collapsed .collapse-sidebar-arrow:before {
+  .is-collapsed .collapse-sidebar-arrow::before {
     -webkit-transform: rotate(180.001deg);
     -ms-transform: rotate(180.001deg);
     transform: rotate(180.001deg); } }
@@ -557,7 +557,7 @@ html {
     float: right;
     margin-top: 13px;
     margin-right: 4px; }
-  .tailor-sidebar__header:after {
+  .tailor-sidebar__header::after {
     content: "";
     display: table;
     clear: both; }
@@ -583,7 +583,7 @@ html {
   -webkit-transition: color 0.1s ease-in-out, background 0.1s ease-in-out;
   -moz-transition: color 0.1s ease-in-out, background 0.1s ease-in-out;
   transition: color 0.1s ease-in-out, background 0.1s ease-in-out; }
-  .tailor-sidebar__control:before {
+  .tailor-sidebar__control::before {
     font: normal 22px/45px dashicons;
     content: "\f335";
     position: relative;
@@ -654,7 +654,7 @@ html {
   cursor: pointer;
   -webkit-transition: left .18s ease-in-out,color .1s ease-in-out,background .1s ease-in-out;
   transition: left .18s ease-in-out,color .1s ease-in-out,background .1s ease-in-out; }
-  .back-button:before {
+  .back-button::before {
     font: normal 20px/72px dashicons;
     content: "\f341";
     position: relative;
@@ -680,14 +680,14 @@ html {
   background: 0 0;
   color: #555;
   border: none; }
-  .help-button:before {
+  .help-button::before {
     position: absolute;
     top: 5px;
     left: 6px;
     padding: 4px; }
   .help-button:focus {
     outline: 0; }
-    .help-button:focus:before {
+    .help-button:focus::before {
       -webkit-box-shadow: 0 0 0 1px #5b9dd9, 0 0 2px 1px rgba(30, 140, 190, 0.8);
       box-shadow: 0 0 0 1px #5b9dd9, 0 0 2px 1px rgba(30, 140, 190, 0.8);
       -webkit-border-radius: 100%;
@@ -767,7 +767,7 @@ html {
   .list--primary .list__item:focus, .list--primary .list__item:hover {
     color: #23282d;
     background: #f5f5f5; }
-    .list--primary .list__item:focus .list__label:after, .list--primary .list__item:hover .list__label:after {
+    .list--primary .list__item:focus .list__label::after, .list--primary .list__item:hover .list__label::after {
       color: #23282d; }
 .list--primary .list__label {
   position: relative; }
@@ -908,11 +908,11 @@ html {
 .list .template .template__controls {
   float: right;
   height: 21px; }
-.list .template:after {
+.list .template::after {
   content: "";
   display: table;
   clear: both; }
-.list .history .history__wrap:after {
+.list .history .history__wrap::after {
   content: "";
   display: table;
   clear: both; }
@@ -943,11 +943,11 @@ html {
     color: #a00; }
     .list .button--icon.button--delete:focus, .list .button--icon.button--delete:hover {
       color: red; }
-    .list .button--icon.button--delete:after {
+    .list .button--icon.button--delete::after {
       content: "\f335"; }
-  .list .button--icon.button--download:after {
+  .list .button--icon.button--download::after {
     content: "\f316"; }
-  .list .button--icon.button--preview:after {
+  .list .button--icon.button--preview::after {
     content: "\f177"; }
   .list .button--icon.button--download, .list .button--icon.button--preview {
     color: #555; }
@@ -1027,7 +1027,7 @@ html {
   margin: 17px 0 20px;
   text-align: center; }
 
-.modal-container.is-medium .control:after, .modal-container.is-large .control:after, .modal-container.is-x-large .control:after {
+.modal-container.is-medium .control::after, .modal-container.is-large .control::after, .modal-container.is-x-large .control::after {
   content: "";
   display: table;
   clear: both; }
@@ -1067,7 +1067,7 @@ html {
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
   -webkit-transition: .05s border-color ease-in-out;
   transition: .05s border-color ease-in-out; }
-  .control--checkbox input[type=checkbox]:checked:before {
+  .control--checkbox input[type=checkbox]:checked::before {
     float: left;
     display: inline-block;
     vertical-align: middle;
@@ -1146,7 +1146,7 @@ html {
         color: #00a0d2; }
     .icon-list__icon input[type=radio]:checked + i {
       color: #00a0d2; }
-  .icon-list:after {
+  .icon-list::after {
     content: "";
     display: table;
     clear: both; }
@@ -1174,7 +1174,7 @@ html {
     max-width: 100%;
     background-color: #fdfdfd; }
 
-.control--gallery .thumbnails:after {
+.control--gallery .thumbnails::after {
   content: "";
   display: table;
   clear: both; }
@@ -1219,9 +1219,9 @@ html {
   -webkit-appearance: none;
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
   transition: .05s border-color ease-in-out; }
-  .control--radio input[type=radio]:before {
+  .control--radio input[type=radio]::before {
     border-radius: 50%; }
-  .control--radio input[type=radio]:checked:before {
+  .control--radio input[type=radio]:checked::before {
     content: '\2022';
     text-indent: -9999px;
     border-radius: 50%;
@@ -1278,7 +1278,7 @@ html {
 
 .control--style ul {
   padding-bottom: 6px; }
-  .control--style ul:after {
+  .control--style ul::after {
     content: "";
     display: table;
     clear: both; }
@@ -1325,7 +1325,7 @@ html {
     text-overflow: ellipsis;
     user-select: none;
     white-space: nowrap; }
-    .list-item__title h4:after {
+    .list-item__title h4::after {
       position: absolute;
       right: 0;
       top: 0;
@@ -1344,7 +1344,7 @@ html {
       -moz-osx-font-smoothing: grayscale;
       text-decoration: none !important;
       cursor: pointer; }
-      .is-open .list-item__title h4:after {
+      .is-open .list-item__title h4::after {
         content: "\f142"; }
 
 .list-item__content {
@@ -1425,7 +1425,7 @@ html {
   border-bottom: 4px solid transparent;
   -webkit-transition: background .1s ease-in-out;
   transition: background .1s ease-in-out; }
-  .devices button:before {
+  .devices button::before {
     display: inline-block;
     -webkit-font-smoothing: antialiased;
     font: 400 20px/30px dashicons;
@@ -1446,13 +1446,13 @@ html {
   .devices button.is-active::before, .devices button:hover::before, .devices button:active::before {
     color: #191e23; }
 
-.preview-desktop:before {
+.preview-desktop::before {
   content: "\f472"; }
 
-.preview-tablet:before {
+.preview-tablet::before {
   content: "\f471"; }
 
-.preview-mobile:before {
+.preview-mobile::before {
   content: "\f470"; }
 
 .tailor-preview {
@@ -1687,7 +1687,7 @@ html {
   background-color: #fff; }
   .modal__header.is-fullscreen .modal__header {
     cursor: default; }
-  .modal__header:after {
+  .modal__header::after {
     content: "";
     display: table;
     clear: both; }
@@ -1718,7 +1718,7 @@ html {
     outline: none;
     box-shadow: none; }
 
-.modal__controls:after {
+.modal__controls::after {
   content: "";
   display: table;
   clear: both; }
@@ -1735,7 +1735,7 @@ html {
   -webkit-transition: background-color 0.1s ease-in-out;
   -moz-transition: background-color 0.1s ease-in-out;
   transition: background-color 0.1s ease-in-out; }
-  .modal__controls button:after {
+  .modal__controls button::after {
     content: "\f335";
     font: normal 22px/58px dashicons; }
   .modal__controls button:hover, .modal__controls button:focus {
@@ -1853,7 +1853,7 @@ html {
   padding-left: 14px;
   padding-right: 14px; }
 
-.dialog__header:after {
+.dialog__header::after {
   content: "";
   display: table;
   clear: both; }
@@ -1887,7 +1887,7 @@ html {
   -webkit-transition: background-color 0.1s ease-in-out;
   -moz-transition: background-color 0.1s ease-in-out;
   transition: background-color 0.1s ease-in-out; }
-  .dialog__close:after {
+  .dialog__close::after {
     content: "\f335";
     font: normal 22px/58px dashicons; }
   .dialog__close:hover, .dialog__close:focus {
@@ -2355,7 +2355,7 @@ div.CodeMirror-cursors {
   .CodeMirror div.CodeMirror-cursors {
     visibility: hidden; } }
 /* See issue #2901 */
-.cm-tab-wrap-hack:after {
+.cm-tab-wrap-hack::after {
   content: ''; }
 
 /* Help users use markselection to safely style text background */

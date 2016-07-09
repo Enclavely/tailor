@@ -14,7 +14,7 @@
 	-webkit-transition: left .18s ease-in-out,color .1s ease-in-out,background .1s ease-in-out;
 	transition: left .18s ease-in-out,color .1s ease-in-out,background .1s ease-in-out;
 
-	&:before {
+	&::before {
 		font: normal 20px/72px dashicons;
 		content: "\f341";
 		position: relative;

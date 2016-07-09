@@ -16,7 +16,7 @@
 	-webkit-transition: background .1s ease-in-out;
 	transition: background .1s ease-in-out;
 
-	&:before {
+	&::before {
 		display: inline-block;
 		-webkit-font-smoothing: antialiased;
 		font: 400 20px/30px dashicons;
@@ -50,15 +50,15 @@
 	}
 }
 
-.preview-desktop:before {
+.preview-desktop::before {
 	content: "\f472";
 }
 
-.preview-tablet:before {
+.preview-tablet::before {
 	content: "\f471";
 }
 
-.preview-mobile:before {
+.preview-mobile::before {
 	content: "\f470";
 }
 

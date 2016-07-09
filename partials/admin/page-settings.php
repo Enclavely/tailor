@@ -10,20 +10,39 @@
  * @var string $page The page slug.
  */
 
-defined( 'ABSPATH' ) or die(); ?>
+defined( 'ABSPATH' ) or die();
+
+$version = tailor()->version(); ?>
 
 <div class="wrap">
 
 	<h1><?php _e( 'Tailor settings', 'tailor' ) ?></h1>
 
-	<?php settings_errors( $page ); ?>
+	<div class="settings-information">
+		<h2><?php _e( 'Tailor', 'tailor' ); ?> <?php echo $version; ?></h2>
 
-	<form method="post" action="options.php">
+		<h3><?php _e( 'Changelog', 'tailor' ); ?></h3>
+		<p><?php printf( __( 'See what\'s new in %1$sversion %2$s%3$s','tailor' ), '<a href="https://wordpress.org/plugins/tailor/changelog/" target="_blank">', $version,'</a>' ); ?></p>
 
-		<?php
-		settings_fields( $page );
-		do_settings_sections( $page );
-		submit_button(); ?>
+		<h3><?php _e( 'Resources', 'tailor' ); ?></h3>
+		<ul>
+			<li><a href="https://tailor.zendesk.com/hc/en-us/categories/202586427" target="_blank"><?php _e( 'Getting started', 'tailor' ); ?></a></li>
+			<li><a href="https://tailor.zendesk.com/hc/en-us/categories/203117247" target="_blank"><?php _e( 'Extending', 'tailor' ); ?></a></li>
+			<li><a href="https://tailor.zendesk.com/hc/en-us/community/topics" target="_blank"><?php _e( 'Community', 'tailor' ); ?></a></li>
+		</ul>
+	</div>
 
-	</form>
+	<div class="settings-form">
+		<?php settings_errors( $page ); ?>
+
+		<form method="post" action="options.php">
+
+			<?php
+			settings_fields( $page );
+			do_settings_sections( $page );
+			submit_button(); ?>
+
+		</form>
+	</div>
 </div>
+

@@ -28,7 +28,7 @@
 		transition: .05s border-color ease-in-out;
 
 
-		&:checked:before {
+		&:checked::before {
 			float: left;
 			display: inline-block;
 			vertical-align: middle;

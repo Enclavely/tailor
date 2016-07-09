@@ -32,7 +32,7 @@
 		border-radius: 50%;
 		overflow: hidden;
 
-		&:before {
+		&::before {
 			display: block;
 			content: "\f148";
 			background: #eee;
@@ -61,7 +61,7 @@
 			display: none;
 		}
 
-		.collapse-sidebar-arrow:before {
+		.collapse-sidebar-arrow::before {
 			-webkit-transform: rotate(180.001deg);
 			-ms-transform: rotate(180.001deg);
 			transform: rotate(180.001deg);

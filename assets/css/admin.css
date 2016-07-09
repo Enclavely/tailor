@@ -4,4 +4,13 @@
   .tailor-icons__actions .spinner {
     float: left; }
 
+.settings-information {
+  background-color: #fff;
+  padding: 1em 2em; }
+
+@media screen and (min-width: 782px) {
+  .settings-information {
+    position: absolute;
+    right: 20px; } }
+
 /*# sourceMappingURL=admin.css.map */

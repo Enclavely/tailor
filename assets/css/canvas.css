@@ -3,7 +3,7 @@ html {
   -moz-box-sizing: border-box;
   box-sizing: border-box; }
 
-*, *:before, *:after {
+*, *::before, *::after {
   -webkit-box-sizing: inherit;
   -moz-box-sizing: inherit;
   box-sizing: inherit; }
@@ -48,8 +48,8 @@ html {
       position: absolute;
       top: 0;
       font-size: inherit; }
-      .tools .select .select__controls:after,
-      .tools .select .select__menu:after {
+      .tools .select .select__controls::after,
+      .tools .select .select__menu::after {
         content: "";
         display: table;
         clear: both; }
@@ -89,9 +89,9 @@ html {
         background-image: none;
         text-shadow: none;
         text-decoration: none; }
-      .tools .select .select__item--left:after {
+      .tools .select .select__item--left::after {
         content: ' \25C0'; }
-      .tools .select .select__item--right:after {
+      .tools .select .select__item--right::after {
         content: ' \25B6'; }
     .tools .select .select__menu .select__item {
       margin-bottom: 2px;
@@ -99,13 +99,13 @@ html {
       cursor: default; }
       .tools .select .select__menu .select__item:not(:only-child) {
         cursor: pointer; }
-        .tools .select .select__menu .select__item:not(:only-child):first-child:after {
+        .tools .select .select__menu .select__item:not(:only-child):first-child::after {
           content: ' \25BE'; }
       .tools .select .select__menu .select__item:not(:first-child) {
         display: none; }
     .tools .select.is-expanded .select__menu .select__item {
       display: block; }
-      .tools .select.is-expanded .select__menu .select__item:not(:only-child):first-child:after {
+      .tools .select.is-expanded .select__menu .select__item:not(:only-child):first-child::after {
         content: ' \25B4'; }
   .tools .guide {
     position: absolute;
@@ -127,7 +127,7 @@ html {
       -webkit-transform-style: preserve-3d;
       -moz-transform-style: preserve-3d;
       transform-style: preserve-3d; }
-      .tools .guide--center:before {
+      .tools .guide--center::before {
         position: absolute;
         top: 50%;
         left: 50%;
@@ -142,7 +142,7 @@ html {
         -ms-transform: translate(-50%, -50%);
         -o-transform: translate(-50%, -50%);
         transform: translate(-50%, -50%); }
-    .tools .guide:after {
+    .tools .guide::after {
       position: absolute;
       top: 0;
       left: 0;

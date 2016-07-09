@@ -98,7 +98,7 @@ $list-icon-box-shadow: $box-shadow !default;
 			span {
 				font-weight: 600;
 
-				&:before {
+				&::before {
 					content: counter( step-counter );
 				}
 			}

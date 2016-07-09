@@ -121,7 +121,7 @@ $mfp-caption-subtitle-color:          #BDBDBD !default;
 // Vertical centerer helper
 .mfp-container {
 
-	&:before {
+	&::before {
 		content: '';
 		display: inline-block;
 		height: 100%;
@@ -134,7 +134,7 @@ $mfp-caption-subtitle-color:          #BDBDBD !default;
 
 	.mfp-container {
 
-		&:before {
+		&::before {
 			display: none;
 		}
 	}
@@ -361,8 +361,8 @@ button {
 				filter: unquote("alpha(opacity=#{1*100})");
 			}
 		}
-		&:before,
-		&:after,
+		&::before,
+		&::after,
 		.mfp-b,
 		.mfp-a {
 			content: '';
@@ -377,7 +377,7 @@ button {
 			border: medium inset transparent;
 		}
 
-		&:after,
+		&::after,
 		.mfp-a {
 
 			border-top-width: 13px;
@@ -385,7 +385,7 @@ button {
 			top:8px;
 		}
 
-		&:before,
+		&::before,
 		.mfp-b {
 			border-top-width: 21px;
 			border-bottom-width: 21px;
@@ -397,13 +397,13 @@ button {
 	.mfp-arrow-left {
 		left: 0;
 
-		&:after,
+		&::after,
 		.mfp-a {
 			border-right: 17px solid $mfp-controls-color;
 			margin-left: 31px;
 		}
 
-		&:before,
+		&::before,
 		.mfp-b {
 			margin-left: 25px;
 			border-right: 27px solid $mfp-controls-border-color;
@@ -413,12 +413,12 @@ button {
 	.mfp-arrow-right {
 		right: 0;
 
-		&:after,
+		&::after,
 		.mfp-a {
 			border-left: 17px solid $mfp-controls-color;
 			margin-left: 39px
 		}
-		&:before,
+		&::before,
 		.mfp-b {
 			border-left: 27px solid $mfp-controls-border-color;
 		}
@@ -487,7 +487,7 @@ button {
 	.mfp-figure {
 		line-height: 0;
 
-		&:after {
+		&::after {
 			content: '';
 			position: absolute;
 			left: 0;
@@ -566,7 +566,7 @@ button {
 				.mfp-figure {
 
 					// The shadow behind the image
-					&:after {
+					&::after {
 						top: 0;
 						bottom: 0;
 					}
