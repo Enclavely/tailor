@@ -41,6 +41,7 @@ You can get in touch with questions or recommendations in a number of ways:
 1. [Facebook](https://www.facebook.com/tailorwp/) or Twitter at [@tailorwp](https://twitter.com/tailorwp) or [@andrewjworsfold](https://twitter.com/andrewjworsfold).
 2. The [Help Center](http://support.gettailor.com)
 3. The [GitHub project](https://github.com/andrew-worsfold/tailor)
+4. The [Community Forum](https://tailor.zendesk.com/hc/en-us/community/topics)
 
 If you like the plugin, you can help by [rating it](https://wordpress.org/support/view/plugin-reviews/tailor?rate=5#postform).
 
@@ -68,9 +69,9 @@ Install Tailor via the plugin directory, or by uploading the files manually to y
 
 Visit 'Settings > Tailor' to configure:
 
-1. Allowable post types and user permissions.
+1. Allowable post types and user roles.
 
-2. Default element settings.
+2. Element and feature settings.
 
 3. Icon kits.
 
