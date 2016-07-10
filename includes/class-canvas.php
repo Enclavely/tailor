@@ -46,11 +46,22 @@ if ( ! class_exists( 'Tailor_Canvas' ) ) {
             add_action( 'wp_head', array( $this, 'canvas_head' ) );
 	        add_filter( 'the_content', array( $this, 'canvas_content' ), -1 );
 	        add_action( 'wp_footer', array( $this, 'canvas_footer' ) );
-
+	        
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_styles' ) );
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ), 999999 );
-
+	        
             add_action( 'tailor_canvas_footer', array( $this, 'print_templates' ), 999 );
+	        
+	        // Address potential plugin conflicts
+	        if ( defined( 'JETPACK__VERSION' ) ) {
+		        remove_filter( 'the_content', 'sharing_display', 19 );
+		        remove_filter( 'the_excerpt', 'sharing_display', 19 );
+		        add_filter( 'sharing_show', '__return_false', 9999 );
+	        }
+
+	        if ( function_exists( 'wpseo_frontend_head_init' ) ) {
+		        remove_action( 'template_redirect', 'wpseo_frontend_head_init', 999 );
+	        }
         }
 
 	    /**

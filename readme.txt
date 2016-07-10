@@ -2,7 +2,7 @@
 Contributors: andrew.worsfold
 Donate link: http://gettailor.com/donate/
 Tags: page, layout, builder, frontend, content, page builder, drag and drop builder, home page builder, landing page builder, layout builder, frontend builder, frontend editor, responsive, visual composer, beaver builder
-Stable tag: 1.2.4
+Stable tag: 1.2.5
 Requires at least: 4.3
 Tested up to: 4.5.3
 License: GPLv3 or later
@@ -114,6 +114,9 @@ Yes.  Tailored pages can be migrated like any other type of page using the [dupl
 Yes, however, users should be directed to the WordPress plugin repository to install the latest version of the plugin.  Consider using a tool like [TGM Plugin Activation](http://tgmpluginactivation.com/) to guide users through the installation process.
 
 == Changelog ==
+
+= 1.2.5 =
+* Added compatibility for the Yoast SEO plugin.
 
 = 1.2.4 =
 * Added resource links to the admin settings page.
