@@ -1148,15 +1148,30 @@ if ( ! function_exists( 'tailor_css_presets' ) ) {
 			$background_image_info = wp_get_attachment_image_src( trim( $atts['background_image'] ), 'full' );
 			$background_image_src = $background_image_info[0];
 
-			if ( array_key_exists( 'background_color', $atts ) && ! empty( $atts['background_color'] ) && ! in_array( 'background_color', $excluded_control_types ) ) {
-				$css_rules[] = array(
-					'selectors'         =>  array(),
-					'declarations'      =>  array(
-						'background'        =>  esc_attr(
-							"{$atts['background_color']} url({$background_image_src}) center center no-repeat"
+			if ( array_key_exists( 'background_color', $atts ) && ! empty( $atts['background_color'] ) && ! in_array( 'background_color', $excluded_control_types )) {
+				if( false !== strpos( $atts['background_color'], 'rgba' ) ) {
+					// this allows you to "tint" your background image with a transparent color
+					// see: https://css-tricks.com/tinted-images-multiple-backgrounds/
+					$css_rules[] = array(
+						'selectors'    => array(),
+						'declarations' => array(
+							'background' => esc_attr(
+								"linear-gradient( {$atts['background_color']}, {$atts['background_color']} ), 
+								url({$background_image_src}) center center no-repeat"
+							),
 						),
-					),
-				);
+					);
+				}else{
+					// otherwise we assume it's going to be a transparent image over a solid background color
+					$css_rules[] = array(
+						'selectors'    => array(),
+						'declarations' => array(
+							'background' => esc_attr(
+								"{$atts['background_color']} url({$background_image_src}) center center no-repeat"
+							),
+						),
+					);
+				}
 			}
 			else {
 				$css_rules[] = array(
