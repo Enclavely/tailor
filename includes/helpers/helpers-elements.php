@@ -82,7 +82,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'label'                 =>  __( 'Hide on', 'tailor' ),
 					'type'                  =>  'select-multi',
 					'choices'               =>  tailor_get_media_queries(),
-					'section'               =>  'attributes',
+					'section'               =>  'general',
 				),
 			),
 
@@ -1234,7 +1234,7 @@ if ( ! function_exists( 'tailor_css_presets' ) ) {
 							'media'                     =>  $hidden_screen_size,
 							'selectors'                 =>  array(),
 							'declarations'              =>  array(
-								'display'                   =>  'none',
+								'display'                   =>  'none!important',
 							),
 						);
 					}

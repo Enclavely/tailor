@@ -49,6 +49,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Section_Element
 		        'min_height',
 		        'horizontal_alignment',
                 'vertical_alignment',
+		        'hidden',
 	        );
 	        $general_control_arguments = array(
 		        'vertical_alignment'    =>  array(
@@ -88,7 +89,6 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Section_Element
 		        'background_repeat',
 		        'background_position',
 		        'background_size',
-		        'hidden',
 	        );
 	        $attribute_control_arguments = array(
 		        'margin'                =>  array(

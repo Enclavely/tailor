@@ -77,7 +77,9 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Row_Element' ) 
 		        'section'               =>  'general',
 	        ) );
 
-	        $general_control_types = array();
+	        $general_control_types = array(
+		        'hidden',
+	        );
 	        $general_control_arguments = array();
 	        tailor_control_presets( $this, $general_control_types, $general_control_arguments, $priority );
 

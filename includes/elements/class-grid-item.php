@@ -46,6 +46,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Grid_Item_Eleme
 		    $general_control_types = array(
 			    'horizontal_alignment',
 			    'vertical_alignment',
+			    'hidden',
 		    );
 		    $general_control_arguments = array();
 		    tailor_control_presets( $this, $general_control_types, $general_control_arguments, $priority );
@@ -68,7 +69,6 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Grid_Item_Eleme
 			    'background_repeat',
 			    'background_position',
 			    'background_size',
-			    'hidden',
 		    );
 		    $attribute_control_arguments = array();
 		    tailor_control_presets( $this, $attribute_control_types, $attribute_control_arguments, $priority );

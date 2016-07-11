@@ -48,6 +48,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Grid_Element' )
                 'items_per_row',
                 'item_spacing',
                 'min_item_height',
+	            'hidden',
             );
             $general_control_arguments = array(
                 'items_per_row'         =>  array(

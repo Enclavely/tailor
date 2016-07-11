@@ -50,7 +50,8 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Column_Element'
 		    $general_control_types = array(
                 'horizontal_alignment',
                 'vertical_alignment',
-            );
+			    'hidden',
+		    );
 		    $general_control_arguments = array();
 		    tailor_control_presets( $this, $general_control_types, $general_control_arguments, $priority );
 
@@ -78,7 +79,6 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Column_Element'
 			    'background_repeat',
 			    'background_position',
 			    'background_size',
-			    'hidden',
 		    );
 		    $attribute_control_arguments = array(
 			    'padding'               =>  array(
