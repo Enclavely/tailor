@@ -85,13 +85,7 @@ ImageControl = AbstractControl.extend( {
         var sizes = attachment.get( 'sizes' );
 
         this.setSettingValue( attachment.get( 'id' ) );
-
-        if ( sizes.hasOwnProperty( 'medium' ) ) {
-            this.updateThumbnail( sizes.medium.url );
-        }
-        else {
-            this.updateThumbnail( sizes.thumbnail.url );
-        }
+        this.updateThumbnail( sizes );
     },
 
     /**
@@ -99,9 +93,19 @@ ImageControl = AbstractControl.extend( {
      *
      * @since 1.0.0
      *
-     * @param url
+     * @param sizes
      */
-    updateThumbnail : function( url ) {
+    updateThumbnail : function( sizes ) {
+        var url;
+        if ( sizes.hasOwnProperty( 'medium' ) ) {
+            url = sizes.medium.url;
+        }else if( sizes.hasOwnProperty( 'thumbnail' ) ){
+            url = sizes.thumbnail.url;
+        }else if( sizes.hasOwnProperty( 'full' ) ){
+            url = sizes.full.url; // small images do not have thumbnail generated
+        }else{
+            return; // invalid sizes
+        }
         this.ui.thumbnails
             .removeClass( 'is-loading' )
             .html( '<li class="thumbnail"><img src="' + url + '"/></li>' );
@@ -131,23 +135,13 @@ ImageControl = AbstractControl.extend( {
             var sizes = attachment.get( 'sizes' );
 
             if ( sizes ) {
-                if ( sizes.hasOwnProperty( 'medium' ) ) {
-                    this.updateThumbnail( sizes.medium.url );
-                }
-                else {
-                    this.updateThumbnail( sizes.thumbnail.url );
-                }
+                this.updateThumbnail( sizes );
             }
             else {
                 attachment.fetch( {
                     success : function() {
                         sizes = attachment.get( 'sizes' );
-                        if ( sizes.hasOwnProperty( 'medium' ) ) {
-                            control.updateThumbnail( sizes.medium.url );
-                        }
-                        else {
-                            control.updateThumbnail( sizes.thumbnail.url );
-                        }
+                        control.updateThumbnail( sizes );
                     }
                 } );
             }
