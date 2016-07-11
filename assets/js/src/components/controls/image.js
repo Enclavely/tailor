@@ -99,13 +99,17 @@ ImageControl = AbstractControl.extend( {
         var url;
         if ( sizes.hasOwnProperty( 'medium' ) ) {
             url = sizes.medium.url;
-        }else if( sizes.hasOwnProperty( 'thumbnail' ) ){
+        }
+        else if ( sizes.hasOwnProperty( 'thumbnail' ) ) {
             url = sizes.thumbnail.url;
-        }else if( sizes.hasOwnProperty( 'full' ) ){
+        }
+        else if ( sizes.hasOwnProperty( 'full' ) ) {
             url = sizes.full.url; // small images do not have thumbnail generated
-        }else{
+        }
+        else {
             return; // invalid sizes
         }
+        
         this.ui.thumbnails
             .removeClass( 'is-loading' )
             .html( '<li class="thumbnail"><img src="' + url + '"/></li>' );

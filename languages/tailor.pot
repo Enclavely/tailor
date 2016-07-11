@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the Tailor package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Tailor 1.2.4\n"
+"Project-Id-Version: Tailor 1.2.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/tailor\n"
-"POT-Creation-Date: 2016-07-10 03:00:46+00:00\n"
+"POT-Creation-Date: 2016-07-11 11:08:03+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -182,67 +182,67 @@ msgstr ""
 msgid "Google Plus"
 msgstr ""
 
-#: includes/class-canvas.php:144 includes/class-sidebar.php:211
+#: includes/class-canvas.php:155 includes/class-sidebar.php:211
 msgctxt "Open Sans font: on or off"
 msgid "on"
 msgstr ""
 
-#: includes/class-canvas.php:151 includes/class-sidebar.php:218
+#: includes/class-canvas.php:162 includes/class-sidebar.php:218
 msgctxt "Open Sans font: add new subset (greek, cyrillic, vietnamese)"
 msgid "no-subset"
 msgstr ""
 
-#: includes/class-canvas.php:223 partials/underscore/canvas-tools.php:13
+#: includes/class-canvas.php:234 partials/underscore/canvas-tools.php:13
 msgid "Edit"
 msgstr ""
 
-#: includes/class-canvas.php:224 includes/class-sidebar.php:314
+#: includes/class-canvas.php:235 includes/class-sidebar.php:314
 #: includes/controls/class-list.php:119 partials/admin/field-icon.php:31
 #: partials/underscore/canvas-tools.php:14
 msgid "Delete"
 msgstr ""
 
-#: includes/class-canvas.php:225 partials/underscore/modal-layout.php:51
+#: includes/class-canvas.php:236 partials/underscore/modal-layout.php:51
 msgid "Preview"
 msgstr ""
 
-#: includes/class-canvas.php:226 includes/class-sidebar.php:308
+#: includes/class-canvas.php:237 includes/class-sidebar.php:308
 msgid "Save"
 msgstr ""
 
-#: includes/class-canvas.php:227
+#: includes/class-canvas.php:238
 msgid "Initialized"
 msgstr ""
 
-#: includes/class-canvas.php:228
+#: includes/class-canvas.php:239
 msgid "Added"
 msgstr ""
 
-#: includes/class-canvas.php:229
+#: includes/class-canvas.php:240
 msgid "Deleted"
 msgstr ""
 
-#: includes/class-canvas.php:230
+#: includes/class-canvas.php:241
 msgid "Edited"
 msgstr ""
 
-#: includes/class-canvas.php:231
+#: includes/class-canvas.php:242
 msgid "Copied"
 msgstr ""
 
-#: includes/class-canvas.php:232
+#: includes/class-canvas.php:243
 msgid "Moved"
 msgstr ""
 
-#: includes/class-canvas.php:233
+#: includes/class-canvas.php:244
 msgid "Resized"
 msgstr ""
 
-#: includes/class-canvas.php:234
+#: includes/class-canvas.php:245
 msgid "Reordered"
 msgstr ""
 
-#: includes/class-canvas.php:235
+#: includes/class-canvas.php:246
 msgid "Template"
 msgstr ""
 
@@ -1385,14 +1385,18 @@ msgid "Background size"
 msgstr ""
 
 #: includes/helpers/helpers-elements.php:878
-msgid "Cover"
+msgid "Auto"
 msgstr ""
 
 #: includes/helpers/helpers-elements.php:879
+msgid "Cover"
+msgstr ""
+
+#: includes/helpers/helpers-elements.php:880
 msgid "Contain"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:895
+#: includes/helpers/helpers-elements.php:896
 msgid "Background video"
 msgstr ""
 
