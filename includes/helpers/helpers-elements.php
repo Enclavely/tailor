@@ -1148,13 +1148,12 @@ if ( ! function_exists( 'tailor_css_presets' ) ) {
 			$background_image_info = wp_get_attachment_image_src( trim( $atts['background_image'] ), 'full' );
 			$background_image_src = $background_image_info[0];
 
-			if ( array_key_exists( 'background_color', $atts ) && ! empty( $atts['background_color'] ) && ! in_array( 'background_color', $excluded_control_types ) && false !== strpos( $atts['background_color'], 'rgba' ) ) {
+			if ( array_key_exists( 'background_color', $atts ) && ! empty( $atts['background_color'] ) && ! in_array( 'background_color', $excluded_control_types ) ) {
 				$css_rules[] = array(
 					'selectors'         =>  array(),
 					'declarations'      =>  array(
 						'background'        =>  esc_attr(
-							"linear-gradient( {$atts['background_color']},{$atts['background_color']} ),
-							url({$background_image_src}) center center no-repeat"
+							"{$atts['background_color']} url({$background_image_src}) center center no-repeat"
 						),
 					),
 				);
