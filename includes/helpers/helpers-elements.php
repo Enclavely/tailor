@@ -869,12 +869,13 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 			'background_size'       =>  array(
 				'setting'               =>  array(
 					'sanitize_callback'     =>  'tailor_sanitize_text',
-					'default'               =>  'cover',
+					'default'               =>  'auto',
 				),
 				'control'               =>  array(
 					'label'                 =>  __( 'Background size', 'tailor' ),
 					'type'                  =>  'select',
 					'choices'               =>  array(
+						'auto'                 =>  __( 'Normal', 'tailor' ),
 						'cover'                 =>  __( 'Cover', 'tailor' ),
 						'contain'               =>  __( 'Contain', 'tailor' ),
 					),
