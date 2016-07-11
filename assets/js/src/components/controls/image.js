@@ -32,10 +32,8 @@ ImageControl = AbstractControl.extend( {
      * Initializes the media frame for the control.
      *
      * @since 1.0.0
-     *
-     * @param options
      */
-    initialize : function( options ) {
+    initialize : function() {
 
         this.frame = wp.media( {
             states: [
@@ -60,7 +58,6 @@ ImageControl = AbstractControl.extend( {
     addEventListeners : function() {
         this.listenTo( this.model.setting, 'change', this.render );
         this.listenTo( this.model.setting.collection, 'change', this.checkDependencies );
-        //this.listenTo( this.frame, 'select', this.selectImage );
 
         this.frame.on( 'select', this.selectImage.bind( this ) );
     },
@@ -99,11 +96,14 @@ ImageControl = AbstractControl.extend( {
         var url;
         if ( sizes.hasOwnProperty( 'medium' ) ) {
             url = sizes.medium.url;
-        }else if( sizes.hasOwnProperty( 'thumbnail' ) ){
+        }
+        else if ( sizes.hasOwnProperty( 'thumbnail' ) ) {
             url = sizes.thumbnail.url;
-        }else if( sizes.hasOwnProperty( 'full' ) ){
+        }
+        else if ( sizes.hasOwnProperty( 'full' ) ) {
             url = sizes.full.url; // small images do not have thumbnail generated
-        }else{
+        }
+        else {
             return; // invalid sizes
         }
         this.ui.thumbnails

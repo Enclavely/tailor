@@ -407,10 +407,6 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 				'control'               =>  array(
 					'label'                 =>  __( 'Stretch-to-fit image', 'tailor' ),
 					'type'                  =>  'switch',
-					//'type'                  =>  'checkbox',
-					//'choices'               =>  array(
-					//	'1'                     =>  __( 'Stretch image to fit container?', 'tailor' ),
-					//),
 					'section'               =>  'general',
 				),
 			),
@@ -875,7 +871,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'label'                 =>  __( 'Background size', 'tailor' ),
 					'type'                  =>  'select',
 					'choices'               =>  array(
-						'auto'                 =>  __( 'Normal', 'tailor' ),
+						'auto'                  =>  __( 'Auto', 'tailor' ),
 						'cover'                 =>  __( 'Cover', 'tailor' ),
 						'contain'               =>  __( 'Contain', 'tailor' ),
 					),
@@ -1153,7 +1149,7 @@ if ( ! function_exists( 'tailor_css_presets' ) ) {
 					'selectors'         =>  array(),
 					'declarations'      =>  array(
 						'background'        =>  esc_attr(
-							"{$atts['background_color']} url({$background_image_src}) center center no-repeat"
+							"linear-gradient( {$atts['background_color']}, {$atts['background_color']} ), url({$background_image_src}) center center no-repeat"
 						),
 					),
 				);
