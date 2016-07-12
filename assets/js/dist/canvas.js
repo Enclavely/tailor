@@ -8388,8 +8388,6 @@ module.exports = Marionette.ItemView.extend( {
         this.el.style.width = $el.outerWidth() + 'px';
         this.el.style.height = $el.outerHeight() + 'px';
         this.el.style.opacity = 1;
-
-        console.log( offset.left - parentOffset.left + 'px' );
     },
 
 	/**

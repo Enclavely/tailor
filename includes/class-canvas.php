@@ -1,4 +1,4 @@
- <?php
+<?php
 
 /**
  * Canvas class.
@@ -43,7 +43,6 @@ if ( ! class_exists( 'Tailor_Canvas' ) ) {
          * @access protected
          */
         protected function add_actions() {
-	        
             add_action( 'wp_head', array( $this, 'canvas_head' ) );
 	        add_filter( 'the_content', array( $this, 'canvas_content' ), -1 );
 	        add_action( 'wp_footer', array( $this, 'canvas_footer' ) );
@@ -60,7 +59,6 @@ if ( ! class_exists( 'Tailor_Canvas' ) ) {
 		        add_filter( 'sharing_show', '__return_false', 9999 );
 	        }
 
-	        // Address Yoast SEO conflict
 	        if ( function_exists( 'wpseo_frontend_head_init' ) ) {
 		        remove_action( 'template_redirect', 'wpseo_frontend_head_init', 999 );
 	        }
@@ -147,8 +145,8 @@ if ( ! class_exists( 'Tailor_Canvas' ) ) {
 	        }
 
 	        if ( apply_filters( 'tailor_enqueue_canvas_stylesheets', true ) ) {
-		        
 		        $open_sans_font_url = '';
+		        $extension = SCRIPT_DEBUG ? '.css' : '.min.css';
 
 		        /**
 		         * Translators: If there are characters in your language that are not supported
@@ -177,17 +175,16 @@ if ( ! class_exists( 'Tailor_Canvas' ) ) {
 		        }
 
 		        wp_enqueue_style( 'open-sans', $open_sans_font_url );
-
-		        $min = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
 		        
 		        wp_enqueue_style(
 			        'tailor-canvas-styles',
-			        tailor()->plugin_url() . "assets/css/canvas{$min}.css",
+			        tailor()->plugin_url() . 'assets/css/canvas' . $extension,
 			        array(),
 			        tailor()->version()
 		        );
 
-		        wp_style_add_data( 'tailor-canvas-styles', 'rtl', tailor()->plugin_url() . "assets/css/canvas-rtl{$min}.css" );
+		        wp_style_add_data( 'tailor-canvas-styles', 'rtl', tailor()->plugin_url() . "assets/css/canvas-rtl{$extension}" );
+
 	        }
 
 	        /**
