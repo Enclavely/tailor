@@ -62,7 +62,6 @@ module.exports = Marionette.Module.extend( {
              * @returns {*}
              */
             getSelectedElement : function() {
-                //return app.selectRegion.currentView;
                 var select = app.selectRegion.currentView;
                 return select ? select.model : null;
             }

@@ -15,11 +15,8 @@
 
 	Views.TailorTabs = require( './components/elements/containers/view-tabs' );
     Views.TailorCarousel = require( './components/elements/containers/view-carousel' );
-
-    //Views.TailorMap = require( './components/elements/view-container' );
-
+	
     Views.Element = require( './components/elements/view-element' );
-    //Views.Composite = require( './components/elements/view-composite' );
     Views.Container = require( './components/elements/view-container' );
     Views.Wrapper = require( './components/elements/view-container' );
     Views.Child = require( './components/elements/view-container' );

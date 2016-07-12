@@ -177,11 +177,8 @@ module.exports = CanvasApplication;
 
 	Views.TailorTabs = require( './components/elements/containers/view-tabs' );
     Views.TailorCarousel = require( './components/elements/containers/view-carousel' );
-
-    //Views.TailorMap = require( './components/elements/view-container' );
-
+	
     Views.Element = require( './components/elements/view-element' );
-    //Views.Composite = require( './components/elements/view-composite' );
     Views.Container = require( './components/elements/view-container' );
     Views.Wrapper = require( './components/elements/view-container' );
     Views.Child = require( './components/elements/view-container' );
@@ -2107,8 +2104,6 @@ TabView = ContainerView.extend( {
 	onRenderTemplate : function() {
 		this.el.draggable = false;
 		this.el.id = this.model.cid;
-
-		console.log( 'render' );
 	}
 
 } );
@@ -8325,7 +8320,6 @@ module.exports = Marionette.Module.extend( {
              * @returns {*}
              */
             getSelectedElement : function() {
-                //return app.selectRegion.currentView;
                 var select = app.selectRegion.currentView;
                 return select ? select.model : null;
             }
@@ -8394,6 +8388,8 @@ module.exports = Marionette.ItemView.extend( {
         this.el.style.width = $el.outerWidth() + 'px';
         this.el.style.height = $el.outerHeight() + 'px';
         this.el.style.opacity = 1;
+
+        console.log( offset.left - parentOffset.left + 'px' );
     },
 
 	/**

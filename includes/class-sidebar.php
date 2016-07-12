@@ -40,8 +40,8 @@ if ( ! class_exists( 'Tailor_Sidebar' ) ) {
          * @access protected
          */
         protected function add_actions() {
-
-            add_filter( 'template_include', array( $this, 'render_page' ), 999 );
+	        
+	        add_filter( 'template_include', array( $this, 'render_page' ), 9999 );
 
 	        add_action( 'tailor_sidebar_head', array( $this, 'enqueue_styles' ) );
 	        add_action( 'tailor_sidebar_head', 'wp_print_styles' );
@@ -201,8 +201,8 @@ if ( ! class_exists( 'Tailor_Sidebar' ) ) {
 	        }
 
 	        if ( apply_filters( 'tailor_enqueue_sidebar_stylesheets', true ) ) {
+		        
 		        $open_sans_font_url = '';
-		        $extension = SCRIPT_DEBUG ? '.css' : '.min.css';
 
 		        /**
 		         * Translators: If there are characters in your language that are not supported
@@ -231,12 +231,19 @@ if ( ! class_exists( 'Tailor_Sidebar' ) ) {
 		        }
 
 		        wp_enqueue_style( 'open-sans', $open_sans_font_url );
-		        wp_enqueue_style(
+
+		        $min = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
+
+		        wp_register_style(
 			        'tailor-sidebar-styles',
-			        tailor()->plugin_url() . 'assets/css/sidebar' . $extension,
+			        tailor()->plugin_url() . "assets/css/sidebar{$min}.css",
 			        array( 'wp-auth-check', 'dashicons', 'buttons' ),
 			        tailor()->version()
 		        );
+
+		        wp_enqueue_style( 'tailor-sidebar-styles' );
+
+		        wp_style_add_data( 'tailor-sidebar-styles', 'rtl', tailor()->plugin_url() . "assets/css/sidebar-rtl{$min}.css" );
 	        }
 
 	        /**
