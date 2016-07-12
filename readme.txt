@@ -117,7 +117,6 @@ Yes, however, users should be directed to the WordPress plugin repository to ins
 
 = 1.2.7 =
 * Added RTL support.
-* Added compatibility for caching plugins.
 
 = 1.2.6 =
 * Fixed image and gallery controls when used with small images (credit: dtbaker).
