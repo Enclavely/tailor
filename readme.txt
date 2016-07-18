@@ -24,13 +24,11 @@ Drag and drop elements relative to one another and then customize them using a s
 
 Adding your own custom elements or functionality is easy.
 
-To learn more about how to create your own extensions, check out our [developer documentation](https://tailor.zendesk.com/hc/en-us/categories/203117247-Extending).  Our [Portfolio extension](https://wordpress.org/plugins/tailor-portfolio/) is just one example of what an extension can do.
+To learn more about how to create your own extensions, check out our [developer documentation](https://tailor.zendesk.com/hc/en-us/categories/203117247-Extending), [Portfolio](https://wordpress.org/plugins/tailor-portfolio/) and [WooCommerce](https://wordpress.org/plugins/tailor-woocommerce/) extensions to learn more about what's possible.
 
 = Works with any theme =
 
-You can use Tailor with any free or premium theme.
-
-By taking care of the layout and providing basic styles for elements, Tailor leaves a majority of the page style to your selected theme (as it should).
+You can use Tailor with any free or premium theme.  By taking care of the layout and providing basic styles for elements, Tailor leaves a majority of the page style to your selected theme (as it should).
 
 = Free and open-source =
 
