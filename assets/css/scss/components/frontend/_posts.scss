@@ -1,103 +1,114 @@
-$posts-spacing-unit: $base-spacing-unit !default;
+//
+// Variables
+//
 
-$posts-border-width: 1px !default;
-$posts-border-style : solid !default;
-$posts-border-color: $border-color !default;
+// General
+$posts-class-prefix: $global-class-prefix !default;
+$posts-spacing-vertical: $global-spacing-vertical !default;
+$posts-padding: 0 !default;
+$posts-font-size: $global-font-size !default;
+$posts-color: inherit !default;
+$posts-border-width: 0 !default;
+$posts-border-style : $global-border-style !default;
+$posts-border-color: $global-border-color !default;
+$posts-border-radius: 0 !default;
+$posts-background-color: transparent !default;
+$posts-box-shadow: none !default;
 
-$posts-background-color: $background-color !default;
-$posts-background-color--active: #fff !default;
-$posts-box-shadow: $box-shadow !default;
+// Element specific
+$posts-entry-border-width: $global-border-width !default;
+$posts-entry-border-style: $global-border-style !default;
+$posts-entry-border-color: $global-border-color !default;
+$posts-entry-background-color: $global-white-color !default;
 
-.tailor-ui {
 
-	.tailor-posts {
-		margin-bottom: #{$posts-spacing-unit}em;
-		border-style: $posts-border-style;
-		border-color: $posts-border-color;
+//
+// Exported selectors
+//
+.#{$global-class-prefix}ui {
 
-		//border: $posts-border-width $posts-border-style $posts-border-color;
+	.#{$posts-class-prefix}posts {
+		padding: $posts-padding;
+		margin-bottom: $posts-spacing-vertical;
+		font-size: $posts-font-size;
+		color: $posts-color;
+		background-color: $posts-background-color;
+		border: $posts-border-width $content-border-style $content-border-color;
+		border-radius: $posts-border-radius;
+		box-shadow: $posts-box-shadow;
 
 		.entry {
-			margin-bottom: #{$posts-spacing-unit}em;
-		}
+			margin-bottom: ( $posts-spacing-vertical * 1.5 );
 
-		.entry__title {
-			margin: 1em 0 0.5em;
+			&__title {
+				margin: $posts-spacing-vertical 0 ( $posts-spacing-vertical / 2 );
 
-			a {
-				color: inherit;
+				a {
+					color: inherit;
+				}
 			}
-		}
 
-		.entry__meta {
-			display: block;
-			font-size: 0.875em;
+			&__meta {
+				display: block;
+				font-size: ( $posts-font-size * 0.8 );
 
-			span {
-				position: relative;
-				display: inline-block;
+				span {
+					position: relative;
+					display: inline-block;
 
-				&:not( :last-child ) {
-					padding-right: 8px;
-					margin-right: 8px;
+					&:not( :last-child ) {
+						padding-right: ( $posts-spacing-vertical / 2 );
+						margin-right: ( $posts-spacing-vertical / 2 );
 
-					&::after {
-						position: absolute;
-						right: 0;
-						content: '|';
+						&::after {
+							position: absolute;
+							right: 0;
+							content: '|';
+						}
 					}
 				}
 			}
-		}
 
-		.entry__thumbnail {
-			overflow: hidden;
+			&__thumbnail {
+				overflow: hidden;
 
-			a {
-				display: block;
+				a {
+					display: block;
+				}
+
+				img {
+					margin: 0;
+				}
 			}
 
-			img {
-				margin: 0;
+			&__more {
+				display: inline-block;
+				margin-top: ( $posts-spacing-vertical / 4 );
+			}
+
+			&:last-child {
+				margin-bottom: 0;
 			}
 		}
 
-		.entry__more {
-			display: inline-block;
-			margin-top: 0.25em;
+		// Variations
+		&--boxed {
+
+			.entry {
+				border: $posts-entry-border-width $posts-entry-border-style $posts-entry-border-color;
+				background-color: $posts-entry-background-color;
+				overflow: hidden;
+
+				&__content {
+					padding: 0 ( $posts-spacing-vertical * 2 ) ( $posts-spacing-vertical * 2 );
+				}
+			}
 		}
 	}
 
-	.tailor-grid--posts {
-
-		.tailor-grid {
-			display: block;
-		}
-
-		.tailor-grid__item {
-			padding: 1em;
-		}
-	}
-
-	.tailor-list--posts {
-
-		.entry:last-child {
-			margin-bottom: 0;
-		}
-	}
-
-	.tailor-posts--boxed {
-
-		.entry {
-			border: $posts-border-width $posts-border-style $posts-border-color;
-			background-color: #fff;
-			overflow: hidden;
-		}
-
-		.entry__content {
-			padding-right: 2em;
-			padding-bottom: 2em;
-			padding-left: 2em;
-		}
-	}
+	//.tailor-list--posts {
+	//	.entry:last-child {
+	//		margin-bottom: 0;
+	//	}
+	//}
 }

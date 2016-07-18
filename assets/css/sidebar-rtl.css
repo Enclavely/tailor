@@ -1,72 +1,78 @@
-[dir=rtl] .tailor {
+[dir=rtl] .tailor-ui .tailor {
   margin-left: 0;
   margin-right: 300px; }
-[dir=rtl] .tailor-sidebar {
+[dir=rtl] .tailor-ui .tailor-sidebar {
   left: auto;
   right: 0;
   border-left: 1px solid #ddd;
   border-right: none; }
-[dir=rtl] .is-collapsed .tailor {
-  margin-right: 0; }
-[dir=rtl] .is-collapsed .tailor-sidebar {
-  margin-left: 0;
-  margin-right: -300px; }
-[dir=rtl] .tailor-sidebar__header {
-  padding-left: 15px;
-  padding-right: 0; }
-  [dir=rtl] .tailor-sidebar__header .spinner {
-    float: left; }
-  [dir=rtl] .tailor-sidebar__header .button-primary {
-    float: left; }
-[dir=rtl] .tailor-sidebar__control {
-  float: right;
-  padding-left: 2px;
-  padding-right: 0;
-  border-left: 1px solid #ddd;
-  border-right: none; }
-  [dir=rtl] .tailor-sidebar__control::before {
-    left: auto;
-    right: 13px; }
-[dir=rtl] .back-button {
+  [dir=rtl] .tailor-ui .tailor-sidebar__header {
+    padding-left: 15px;
+    padding-right: 0; }
+    [dir=rtl] .tailor-ui .tailor-sidebar__header .spinner {
+      float: left; }
+    [dir=rtl] .tailor-ui .tailor-sidebar__header .button-primary {
+      float: left; }
+  [dir=rtl] .tailor-ui .tailor-sidebar__control {
+    float: right;
+    padding-left: 2px;
+    padding-right: 0;
+    border-left: 1px solid #ddd;
+    border-right: none; }
+    [dir=rtl] .tailor-ui .tailor-sidebar__control::before {
+      left: auto;
+      right: 13px; }
+[dir=rtl] .tailor-ui .back-button {
   float: right;
   border-left: 1px solid #ddd;
   border-right: none; }
-  [dir=rtl] .back-button::before {
+  [dir=rtl] .tailor-ui .back-button::before {
     content: "\f345"; }
-[dir=rtl] .help-button {
+[dir=rtl] .tailor-ui .help-button {
   left: 1px;
   right: auto; }
-[dir=rtl] .list--primary .list__label::after {
+[dir=rtl] .tailor-ui .list--primary .list__label::after {
   content: "\f341";
   left: 0;
   right: auto; }
-[dir=rtl] .list .element::before {
+[dir=rtl] .tailor-ui .list .element__badge {
+  left: -1px;
+  right: auto; }
+[dir=rtl] .tailor-ui .list .element::before {
   padding-left: 0.75em;
   padding-right: 0;
   float: right; }
-[dir=rtl] .list .element__badge {
-  left: -1px;
-  right: auto; }
-[dir=rtl] .collapse-sidebar {
+[dir=rtl] .tailor-ui .collapse-sidebar {
   left: auto;
   right: 10px; }
-[dir=rtl] .collapse-sidebar-arrow::before {
-  -webkit-transform: rotate(180.001deg);
-  -ms-transform: rotate(180.001deg);
-  transform: rotate(180.001deg); }
-[dir=rtl] .is-collapsed .collapse-sidebar-arrow::before {
+  [dir=rtl] .tailor-ui .collapse-sidebar-arrow::before {
+    -webkit-transform: rotate(180.001deg);
+    -ms-transform: rotate(180.001deg);
+    transform: rotate(180.001deg); }
+[dir=rtl] .tailor-ui .devices {
+  float: left; }
+[dir=rtl] .tailor-ui.is-collapsed .tailor {
+  margin-right: 0; }
+[dir=rtl] .tailor-ui.is-collapsed .tailor-sidebar {
+  margin-left: 0;
+  margin-right: -300px; }
+[dir=rtl] .tailor-ui.is-collapsed .collapse-sidebar-arrow::before {
   -webkit-transform: rotate(1deg);
   -ms-transform: rotate(0deg);
   transform: rotate(0deg); }
-[dir=rtl] .devices {
-  float: left; }
-[dir=rtl] .modal__title,
-[dir=rtl] .dialog__title {
+[dir=rtl] .tailor-ui .notification-container {
+  left: 25px;
+  right: auto; }
+[dir=rtl] .tailor-ui .modal__title,
+[dir=rtl] .tailor-ui .dialog__title {
   float: right;
   padding-left: 0;
   padding-right: 14px; }
-[dir=rtl] .modal__controls button,
-[dir=rtl] .dialog__close {
+[dir=rtl] .tailor-ui .modal__controls button,
+[dir=rtl] .tailor-ui .dialog__close {
   float: left; }
+[dir=rtl] .tailor-ui .modal__footer,
+[dir=rtl] .tailor-ui .dialog__footer {
+  text-align: left; }
 
 /*# sourceMappingURL=sidebar-rtl.css.map */

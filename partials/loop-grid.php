@@ -16,7 +16,7 @@ defined( 'ABSPATH' ) or die();
 
 if ( $q->have_posts() ) {
 
-	$grid_class_name = "tailor-grid--small tailor-grid--{$layout_args['items_per_row']}";
+	$grid_class_name = "tailor-grid--tablet tailor-grid--{$layout_args['items_per_row']}";
 	if ( true == $layout_args['masonry'] ) {
 		$grid_class_name .= ' tailor-grid--masonry';
 	}

@@ -236,29 +236,41 @@ if ( ! class_exists( 'Tailor_Control' ) ) {
          *
          * @since 1.0.0
          */
-        public function print_template() { ?>
+        public function print_template() {
+
+	        $use_label = in_array( $this->type, array( 'select', 'switch', 'style', 'text', 'textarea' ) );
+
+	        /**
+	         * Filter the boolean value representing whether or not a label should be used in the control markup.
+	         *
+	         * @since 1.3.0
+	         *
+	         * @param bool $use_label
+	         */
+	        $use_label = apply_filters( 'tailor_control_use_label', $use_label, $this->type ); ?>
 
             <script type="text/html" id="tmpl-tailor-control-<?php echo $this->type; ?>">
-	            <div class="control__header">
-		            <% if ( label ) { %>
-	                <span class="control__title">
-		                <%= label %>
+
+	            <?php if ( $use_label ) { echo '<label>'; } ?>
+
+		            <div class="control__header">
+
+			            <% if ( label ) { %><div class="control__title"><%= label %><% } %>
+
 				        <a class="button button-small js-default <% if ( 'undefined' == typeof showDefault || ! showDefault ) { %>is-hidden<% } %>">
 		                    <?php _e( 'Default', 'tailor' ); ?>
 		                </a>
-	                </span>
-		            <% } else { %>
-		            <a class="button button-small js-default <% if ( 'undefined' == typeof showDefault || ! showDefault ) { %>is-hidden<% } %>">
-			            <?php _e( 'Default', 'tailor' ); ?>
-		            </a>
-		            <% } %>
-	                <% if ( description ) { %>
-	                <span class="control__description"><%= description %></span>
-	                <% } %>
-	            </div>
-                <div class="control__body">
-	                <?php $this->render_template(); ?>
-                </div>
+
+				        <% if ( label ) { %></div><% } %>
+			            <% if ( description ) { %><span class="control__description"><%= description %></span><% } %>
+
+	                </div>
+
+		            <div class="control__body">
+			            <?php $this->render_template(); ?>
+		            </div>
+
+	            <?php if ( $use_label ) { echo '</label>'; } ?>
 
             </script>
 

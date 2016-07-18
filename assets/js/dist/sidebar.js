@@ -19,7 +19,7 @@ SidebarApplication = Marionette.Application.extend( {
         this._unsavedChanges = false;
         this.saveButton = document.querySelector( '#tailor-save' );
         this.allowableEvents = [
-	        'element:add', 'element:edit', 'element:move', 'element:resize', 'element:change:order', 'element:copy', 'element:delete',
+	        'element:add', 'element:move', 'element:resize', 'element:change:order', 'element:copy', 'element:delete', // 'element:edit',
 	        'elements:restore', 'elements:reset',
             'modal:open', 'modal:destroy',
             'template:add'
@@ -52,23 +52,22 @@ SidebarApplication = Marionette.Application.extend( {
          *
          * @since 1.0.0
          */
-        sidebarApp.onSettingChange = function( eventName ) {
+        sidebarApp.onSettingChange = function() {
             sidebarApp.saveButton.disabled = false;
             sidebarApp.saveButton.innerHTML = window._l10n.publish;
             sidebarApp._unsavedChanges = true;
         };
 
         sidebarApp.listenTo( sidebarApp.channel, 'sidebar:setting:change', sidebarApp.onSettingChange );
-        sidebarApp.listenTo( sidebarApp.channel, _.without( sidebarApp.allowableEvents, 'modal:open' ).join( ' ' ), sidebarApp.onSettingChange );
+        sidebarApp.listenTo( sidebarApp.channel, _.without( sidebarApp.allowableEvents, 'modal:open', 'modal:destroy' ).join( ' ' ), sidebarApp.onSettingChange );
+        sidebarApp.listenTo( sidebarApp.channel, [ 'modal:apply' ].join( ' ' ), sidebarApp.onSettingChange );
 
         /**
          * Collapses the Sidebar when the Collapse button is selected.
          *
          * @since 1.0.0
-         *
-         * @param e
          */
-        sidebarApp.onCollapse = function( e ) {
+        sidebarApp.onCollapse = function() {
             sidebarApp._collapsed = ! sidebarApp._collapsed;
             sidebarApp.el.classList.toggle( 'is-collapsed', sidebarApp._collapsed );
             sidebarApp.saveButton.setAttribute( 'aria-expanded', ! sidebarApp._collapsed );
@@ -91,6 +90,7 @@ SidebarApplication = Marionette.Application.extend( {
          */
         sidebarApp.onSave = function() {
 	        sidebarApp.el.classList.add( 'is-saving' );
+            sidebarApp.saveButton.setAttribute( 'disabled', true );
 
             var models = sidebarApp.channel.request( 'canvas:elements' );
             var settings = sidebarApp.channel.request( 'sidebar:settings' );
@@ -118,6 +118,32 @@ SidebarApplication = Marionette.Application.extend( {
                      * @since 1.0.0
                      */
                     sidebarApp.channel.trigger( 'sidebar:save' );
+                },
+
+                error: function( response ) {
+
+                    sidebarApp.saveButton.disabled = false;
+
+                    if ( response && response.hasOwnProperty( 'message' ) ) {
+
+                        // Display the error from the server
+                        Tailor.Notify( response.message );
+                    }
+                    else if ( '0' == response ) {
+
+                        // Session expired
+                        Tailor.Notify( window._l10n.expired );
+                    }
+                    else if ( '-1' == response ) {
+
+                        // Invalid nonce
+                        Tailor.Notify( window._l10n.invalid );
+                    }
+                    else {
+
+                        // General error condition
+                        Tailor.Notify( window._l10n.error );
+                    }
                 },
 
 	            /**
@@ -1927,6 +1953,8 @@ GalleryControl = AbstractControl.extend( {
 
         frame
             .on( 'open', function() {
+
+	            // Hide the Cancel Gallery link
                 var mediaFrame = frame.views.get( '.media-frame-menu' )[0];
                 mediaFrame.$el.children().slice( 0, 2 ).hide();
 
@@ -1940,6 +1968,7 @@ GalleryControl = AbstractControl.extend( {
 		            galleryControl.model.setting.trigger( 'change', galleryControl.model.setting, value );
 	            }
 	            galleryControl.updateThumbnails( collection );
+
             } )
             .on( 'close', function() {
                 frame.dispose();
@@ -2449,8 +2478,11 @@ LinkControl = AbstractControl.extend( {
         var $searchResults = this.$el.find( '.search-results' );
 
         if ( $searchResults.length ) {
+
             control.$el.addClass( 'is-searching' );
+
             var options = {
+	            
                 data : {
                     s : term,
                     nonce : window._nonces.query
@@ -2464,6 +2496,10 @@ LinkControl = AbstractControl.extend( {
                 success : function( response ) {
                     $searchResults.html( response );
                 },
+
+	            error: function( response ) {
+		            console.log( arguments );
+	            },
 
 	            /**
 	             * Resets the control classname when searching is complete.
@@ -6461,7 +6497,12 @@ module.exports = Backbone.Marionette.Region.extend( {
         }
 
         if ( ! this.el.style.left ) {
-            this.el.style.left = window.innerWidth - ( rect.width + 40 ) + 'px';
+            if ( document.documentElement.dir && 'rtl' == document.documentElement.dir ) {
+                this.el.style.left = 40 + 'px';
+            }
+            else {
+                this.el.style.left = window.innerWidth - ( rect.width + 40 ) + 'px';
+            }
         }
 
         // Update the element class name
@@ -7389,21 +7430,22 @@ module.exports = Marionette.CompositeView.extend( {
 
 } ) ( window.Tailor.Models || {} );
 },{"./entities/models/library/element":46,"./entities/models/library/model-container":47,"./entities/models/library/model-wrapper":48}],74:[function(require,module,exports){
-
 ( function( Api, $ ) {
 
     var title = document.querySelector( '.tailor__home .title' );
 
     Api( '_post_title', function( to, from ) {
+
         if ( title.hasChildNodes() ) {
             var children = title.childNodes;
-            for ( var i = 0; i < children.length; i++ ) {
-                if ( 3 == children[ i ].nodeType && from == children[ i ].nodeValue.trim() ) {
-                    children[ i ].nodeValue = to
+            for ( var i = 1; i < children.length; i++ ) {
+                if ( 3 == children[ i ].nodeType && -1 !== children[ i ].nodeValue.indexOf( from ) ) {
+                    children[ i ].nodeValue = to;
                 }
             }
         }
-        document.title = document.title.replace( from, to );
+
+        document.title = window._l10n.tailoring + to;
     } );
 
     $( '.preview__control' ).on( 'change', function( e ) {

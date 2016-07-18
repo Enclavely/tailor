@@ -1,14 +1,34 @@
+//
+// Variables
+//
 
-$widgets-spacing-unit: $base-spacing-unit !default;
-
+// General
+$widgets-class-prefix: $global-class-prefix !default;
+$widgets-spacing-vertical: $global-spacing-vertical !default;
+$widgets-padding: 0 !default;
+$widgets-font-size: $global-font-size !default;
+$widgets-color: inherit !default;
 $widgets-border-width: 0 !default;
-$widgets-border-style : solid !default;
-$widgets-border-color: $border-color !default;
+$widgets-border-style : $global-border-style !default;
+$widgets-border-color: $global-border-color !default;
+$widgets-border-radius: 0 !default;
+$widgets-background-color: transparent !default;
+$widgets-box-shadow: none !default;
 
-.tailor-ui {
 
-	.tailor-widget-area {
-		margin-bottom: #{$widgets-spacing-unit}em;
+//
+// Exported selectors
+//
+.#{$global-class-prefix}ui {
+
+	.#{$widgets-class-prefix}widget-area {
+		padding: $widgets-padding;
+		margin-bottom: $widgets-spacing-vertical;
+		font-size: $widgets-font-size;
+		color: $widgets-color;
+		background-color: $widgets-background-color;
 		border: $widgets-border-width $widgets-border-style $widgets-border-color;
+		border-radius: $widgets-border-radius;
+		box-shadow: $widgets-box-shadow;
 	}
 }

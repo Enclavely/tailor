@@ -1,18 +1,19 @@
-
 ( function( Api, $ ) {
 
     var title = document.querySelector( '.tailor__home .title' );
 
     Api( '_post_title', function( to, from ) {
+
         if ( title.hasChildNodes() ) {
             var children = title.childNodes;
-            for ( var i = 0; i < children.length; i++ ) {
-                if ( 3 == children[ i ].nodeType && from == children[ i ].nodeValue.trim() ) {
-                    children[ i ].nodeValue = to
+            for ( var i = 1; i < children.length; i++ ) {
+                if ( 3 == children[ i ].nodeType && -1 !== children[ i ].nodeValue.indexOf( from ) ) {
+                    children[ i ].nodeValue = to;
                 }
             }
         }
-        document.title = document.title.replace( from, to );
+
+        document.title = window._l10n.tailoring + to;
     } );
 
     $( '.preview__control' ).on( 'change', function( e ) {

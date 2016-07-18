@@ -26,7 +26,12 @@ module.exports = Backbone.Marionette.Region.extend( {
         }
 
         if ( ! this.el.style.left ) {
-            this.el.style.left = window.innerWidth - ( rect.width + 40 ) + 'px';
+            if ( document.documentElement.dir && 'rtl' == document.documentElement.dir ) {
+                this.el.style.left = 40 + 'px';
+            }
+            else {
+                this.el.style.left = window.innerWidth - ( rect.width + 40 ) + 'px';
+            }
         }
 
         // Update the element class name

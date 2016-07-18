@@ -340,6 +340,22 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'section'               =>  'general',
 				),
 			),
+			'image_link'            =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_text',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Image link', 'tailor' ),
+					'type'                  =>  'select',
+					'choices'               =>  array(
+						'post'                  =>  __( 'Post', 'tailor' ),
+						'file'                  =>  __( 'Image', 'tailor' ),
+						'lightbox'              =>  __( 'Lightbox', 'tailor' ),
+						'none'                  =>  __( 'None', 'tailor' ),
+					),
+					'section'               =>  'general',
+				),
+			),
 			'image_size'            =>  array(
 				'setting'               =>  array(
 					'sanitize_callback'     =>  'tailor_sanitize_text',

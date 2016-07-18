@@ -111,7 +111,7 @@ class Tailor_Settings {
 
 		add_settings_section(
 			$setting_id,			                        // The section ID
-			__( 'General', 'tailor' ),	    // The section title
+			__( 'General', 'tailor' ),	                    // The section title
 			null,	                                        // The section rendering function
 			$setting_id		                                // The settings page ID
 		);

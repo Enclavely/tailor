@@ -1,8 +1,13 @@
-.tailor-ui {
+$element-border-width: 2px !default;
+$element-border-style: $global-border-style !default;
+$element-border-color: $global-border-color !default;
+$element-opacity--active: 0.5 !default;
+
+.#{$global-class-prefix}ui {
 
 	.is-dragging,
 	.is-rendering {
-		opacity: 0.5 !important;
+		opacity: $element-opacity--active !important;
 	}
 
 	.is-editing,
@@ -17,10 +22,10 @@
 			pointer-events: none;
 
 			// Alternative to outline-offset
-			top: 2px;
-			left: 2px;
-			width: calc( 100% - 4px );
-			height: calc( 100% - 4px );
+			top: $element-border-width;
+			left: $element-border-width;
+			width: calc( 100% - #{( $element-border-width * 2 )} );
+			height: calc( 100% - #{( $element-border-width * 2 )} );
 		}
 	}
 
@@ -28,7 +33,7 @@
 
 		&::before {
 			z-index: 998;
-			outline: solid 2px $border-color;
+			outline: $element-border-width $element-border-style $element-border-color;
 		}
 	}
 
@@ -37,7 +42,7 @@
 
 		&::before {
 			z-index: 999;
-			outline: solid 2px $primary-color;
+			outline: $element-border-width $element-border-style $global-primary-color;
 		}
 	}
 

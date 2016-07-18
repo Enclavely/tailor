@@ -54,8 +54,11 @@ LinkControl = AbstractControl.extend( {
         var $searchResults = this.$el.find( '.search-results' );
 
         if ( $searchResults.length ) {
+
             control.$el.addClass( 'is-searching' );
+
             var options = {
+	            
                 data : {
                     s : term,
                     nonce : window._nonces.query
@@ -69,6 +72,10 @@ LinkControl = AbstractControl.extend( {
                 success : function( response ) {
                     $searchResults.html( response );
                 },
+
+	            error: function( response ) {
+		            console.log( arguments );
+	            },
 
 	            /**
 	             * Resets the control classname when searching is complete.

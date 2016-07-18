@@ -1,12 +1,40 @@
+//
+// Variables
+//
 
-$form-spacing-unit: $base-spacing-unit !default;
+// General
+$form-class-prefix: '' !default;
+$form-spacing-vertical: 0 !default;
+$form-padding: 0 !default;
+$form-font-size: $global-font-size !default;
+$form-color: inherit !default;
+$form-border-width: 0 !default;
+$form-border-style : $global-border-style !default;
+$form-border-color: $global-border-color !default;
+$form-border-radius: 0 !default;
+$form-background-color: transparent !default;
+$form-box-shadow: none !default;
 
-.wpcf7 {
-	margin-bottom: #{$form-spacing-unit}em;
 
-	input,
-	select,
-	textarea {
-		max-width: 100%;
+//
+// Exported selectors
+//
+.#{$global-class-prefix}ui {
+
+	.#{$form-class-prefix}wpcf7 {
+		padding: $form-padding;
+		margin-bottom: $form-spacing-vertical;
+		font-size: $form-font-size;
+		color: $form-color;
+		background-color: $form-background-color;
+		border: $form-border-width $form-border-style $form-border-color;
+		border-radius: $form-border-radius;
+		box-shadow: $form-box-shadow;
+
+		input,
+		select,
+		textarea {
+			max-width: 100%;
+		}
 	}
 }

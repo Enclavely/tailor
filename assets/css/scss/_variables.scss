@@ -1,22 +1,36 @@
-$namespace : '';
+$global-prefix: '';
+$global-class-prefix: 'tailor-' !default;
 
-$primary-color: #0f95ee !default;
-$secondary-color: #fd2e7e !default;
+$global-spacing-vertical: 1rem !default;
+$global-spacing-horizontal: 1rem !default;
+$global-transition-duration: 150ms !default;
+
+$global-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen-Sans", "Ubuntu", "Cantarell", "Helvetica Neue", sans-serif !default;
+$global-font-size: 1em !default;
+$global-line-height: 1.5 !default;
+
+$global-primary-color: #0f95ee !default;
+$global-secondary-color: #a0a5aa !default;
+$global-text-color: #404040 !default;
+$global-background-color: #fdfdfd !default;
+$global-white-color: #fff !default;
+$global-success-color: #7ad03a !default;
+$global-warning-color: #ffba00 !default;
+$global-error-color: #dd3d36 !default;
+
+$global-border-width: 1px !default;
+$global-border-style: solid !default;
+$global-border-color: #efefef !default;
+$global-border-radius: 2px !default;
+$global-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1), 0 1px 0 rgba(0, 0, 0, 0.05) !default;
+
 $text-color: #404040 !default;
 $background-color: #fdfdfd;
 $border-color: #efefef !default; //darken( $background-color, 5% ) !default;
-$border-radius: 2px !default;
-$box-shadow: 0 2px 6px rgba( 0, 0, 0, 0.1 ) !default;
-$base-line-height: 1.5 !default;
-$base-spacing-unit: $base-line-height !default;
 
-$max-width: 75rem !default;
-$column-gutter: 2rem !default;
+$mobile: "only screen and (max-width: 320px)" !default;
+$tablet: "only screen and (min-width: 321px) and (max-width: 720px)" !default;
+$tablet-up: "only screen and (min-width: 321px)" !default;
+$desktop: "only screen and (min-width: 721px)" !default;
 
-//
-// Media query ranges
-//
-$mobile: 			"only screen and (max-width: 320px)" !default;
-$tablet: 			"only screen and (min-width: 321px) and (max-width: 720px)" !default;
-$tablet-up:      	"only screen and (min-width: 321px)" !default;
-$desktop:			"only screen and (min-width: 721px)" !default;
+$wp-medium-up: "only screen and ( min-width: 641px )"

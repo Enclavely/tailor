@@ -8,15 +8,13 @@
 //
 // Tools
 //
-@import "tools/animation";
-@import "tools/appearance";
 @import "tools/keyframes";
 @import "tools/transform";
 @import "tools/transition";
 @import "tools/user-select";
 @import "tools/prefixer";
 @import "tools/clearfix";
-@import "tools/helpers";
+@import "tools/box-shadow";
 
 //
 // Generic styles
@@ -28,10 +26,10 @@
 //
 // Base styles
 //
-@import "base/forms";
-@import "base/headings";
-@import "base/paragraph";
-@import "base/lists";
+@import "base/sidebar/forms";
+@import "base/sidebar/headings";
+@import "base/sidebar/paragraph";
+@import "base/sidebar/lists";
 
 //
 // Components
@@ -41,20 +39,11 @@
 @import "components/sidebar/items";
 @import "components/sidebar/sections";
 @import "components/sidebar/controls";
-@import "components/sidebar/device-preview";
-@import "components/sidebar/notification";
+@import "components/sidebar/preview";
 
-@import "components/sidebar/modal/container";
-@import "components/sidebar/modal/header";
-@import "components/sidebar/modal/content";
-@import "components/sidebar/modal/footer";
-@import "components/sidebar/modal/ghost-pane";
-
-@import "components/sidebar/dialog/container";
-@import "components/sidebar/dialog/header";
-@import "components/sidebar/dialog/content";
-@import "components/sidebar/dialog/footer";
-@import "components/sidebar/dialog/overlay";
+@import "components/sidebar/dialogs";
+@import "components/sidebar/modals";
+@import "components/sidebar/notifications";
 
 //
 // Trumps

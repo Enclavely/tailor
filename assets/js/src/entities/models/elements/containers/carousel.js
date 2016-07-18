@@ -26,15 +26,11 @@ CarouselModel = ContainerModel.extend( {
 
         var $childViewContainer = view.getChildViewContainer( view );
         var $children = $childViewContainer.contents().detach();
-
-        //var $navigation = view.$el.find( '.slick-dots' );
-        //var $navigationItems = $navigation.children().detach();
         var $navigation = view.$el.find( '.slick-dots' ).detach();
 
         this.appendTemplate( id, view );
 
         $childViewContainer.append( $children );
-        //$navigation.append( $navigationItems );
 	    $navigation.insertAfter( $childViewContainer );
 
         this.afterCopyElement( id, view );

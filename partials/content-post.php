@@ -8,6 +8,7 @@
  * @since 1.0.0
  *
  * @var array $meta
+ * @var string $image_link The image link type.
  * @var string $image_size The image size.
  * @var string $aspect_ratio The image aspect ratio.
  * @var bool $stretch True if the image should be stretched to fit the aspect ratio.
@@ -23,10 +24,10 @@ $post = get_post(); ?>
 	<?php
 	if ( in_array( 'thumbnail', $meta ) ) {
 		tailor_partial( 'meta', 'thumbnail', array(
+            'image_link'        =>  $image_link,
             'image_size'        =>  $image_size,
             'aspect_ratio'      =>  $aspect_ratio,
             'stretch'           =>  $stretch,
-            'lightbox'          =>  $lightbox,
         ) );
 	} ?>
 

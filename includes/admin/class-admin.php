@@ -37,39 +37,8 @@ if ( ! class_exists( 'Tailor_Admin' ) ) {
         protected function add_actions() {
 	        add_action( 'admin_init', array( $this, 'restore_content' ) );
 	        add_action( 'admin_notices', array( $this, 'content_notice' ) );
-
-	        //add_action( 'admin_menu', array( $this, 'add_plugin_page' ) );
-            add_action( 'plugin_action_links_' . tailor()->plugin_basename(), array( $this, 'add_settings_page_link' ) );
+	        add_action( 'plugin_action_links_' . tailor()->plugin_basename(), array( $this, 'add_settings_page_link' ) );
         }
-
-	    /**
-	     * Adds the Tailor plugin page.
-	     *
-	     * @since 1.0.0
-	     */
-	    public function add_plugin_page() {
-		    $plugin_name = tailor()->plugin_name();
-
-		    /**
-		     * Filters the user capability required to view the plugin page.
-		     *
-		     * @since 1.0.0
-		     *
-		     * @param string
-		     */
-		    $page_capability = apply_filters( 'tailor_plugin_page_capability', 'activate_plugins' );
-
-		    add_plugins_page( $plugin_name, $plugin_name, $page_capability, $plugin_name, array( $this, 'render_page' ) );
-	    }
-
-	    /**
-	     * Renders the Tailor plugin page.
-	     *
-	     * @since 1.0.0
-	     */
-	    public function render_page() {
-		    tailor_partial( 'admin/page', 'welcome' );
-	    }
 
 	    /**
 	     * Adds a link to the Tailor Settings page in the plugin actions menu.
@@ -94,6 +63,7 @@ if ( ! class_exists( 'Tailor_Admin' ) ) {
 	     * @since 1.0.0
 	     */
 	    public function restore_content() {
+		    
 		    if ( ! isset( $_GET['tailor-restore'] ) || '1' !== $_GET['tailor-restore'] ) {
 			   return;
 		    }
@@ -124,6 +94,7 @@ if ( ! class_exists( 'Tailor_Admin' ) ) {
 	     * @since 1.0.0
 	     */
 	    public function content_notice() {
+		    
 		    $screen = get_current_screen();
 		    if ( 'post' !== $screen->base ) {
 			    return;

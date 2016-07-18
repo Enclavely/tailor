@@ -1,21 +1,21 @@
+.control--link {
+
+	input {
+		margin-bottom: 1em;
+	}
+}
+
+// Contextual styles
 .dialog__container {
 
 	.search--content {
 		padding: 6px 10px;
-		margin-bottom: 8px;
 	}
 
 	.spinner {
 		position: absolute;
-		right: 0;
-		margin: 8px 16px;
-	}
-
-	.is-searching & {
-
-		.spinner {
-			visibility: visible;
-		}
+		right: 1.5em;
+		top: 0.5em;
 	}
 
 	.query-notice {
@@ -27,6 +27,7 @@
 	}
 
 	.search-results {
+		margin-top: 0.5em;
 
 		label {
 			position: relative;
@@ -77,9 +78,12 @@
 	}
 }
 
-.control--link {
+.is-searching {
 
-	input {
-		margin-bottom: 1em;
+	.dialog__container {
+
+		.spinner {
+			visibility: visible;
+		}
 	}
 }

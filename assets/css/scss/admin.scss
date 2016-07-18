@@ -1,3 +1,5 @@
+@import "variables";
+
 .tailor-icons__actions {
 	max-width: 120px;
 
@@ -8,11 +10,11 @@
 }
 
 .settings-information {
-	background-color: #fff;
+	background-color: $global-white-color;
 	padding: 1em 2em;
 }
 
-@media screen and ( min-width: 782px ) {
+@media #{$wp-medium-up} {
 	
 	.settings-information {
 		position: absolute;

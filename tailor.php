@@ -4,7 +4,7 @@
  * Plugin Name: Tailor
  * Plugin URI: http://www.gettailor.com
  * Description: Build beautiful page layouts quickly and easily using your favourite theme.
- * Version: 1.2.7
+ * Version: 1.3.0
  * Author: Andrew Worsfold
  * Author URI:  http://wwww.andrewworsfold.com
  * Text Domain: tailor
@@ -672,9 +672,35 @@ if ( ! class_exists( 'Tailor' ) ) {
 		        return false;
 	        }
 
-	        $allowable_post_types = tailor_get_setting( 'post_types', array() );
+	        $allowable = true;
 
-	        return ! $this->check_post_lock( $post->ID ) && array_key_exists( $post->post_type, $allowable_post_types );
+	        // Check if the post is configured to be the page for posts
+	        if ( $post->ID == get_option( 'page_for_posts' ) ) {
+		        $allowable = false;
+	        }
+
+	        // Check if the post is of an allowable type
+	        $allowable_post_types = tailor_get_setting( 'post_types', array() );
+	        if ( ! array_key_exists( $post->post_type, $allowable_post_types ) ) {
+		        $allowable = false;
+	        }
+
+	        // Check if the post is locked
+	        if ( $this->check_post_lock( $post->ID ) ) {
+		        $allowable = false;
+	        }
+
+	        /**
+	         * Filter the result of the post check.
+	         *
+	         * @since 1.3.0
+	         *
+	         * @param $allowable
+	         * @param $post
+	         */
+	        $allowable = apply_filters( 'tailor_check_post', $allowable, $post );
+
+	        return $allowable;
         }
 
 	    /**

@@ -1,28 +1,45 @@
-$carousel-spacing-unit: $base-spacing-unit !default;
-$carousel-border-width: 1px !default;
-$carousel-border-style : solid !default;
-$carousel-border-color: $border-color !default;
-$carousel-border-radius: $border-radius !default;
-$carousel-background-color: $background-color !default;
-$carousel-box-shadow: $box-shadow !default;
-$carousel-dot-color: #3c4651 !default;
+//
+// Variables
+//
 
-.tailor-ui {
+// General
+$carousel-class-prefix: $global-class-prefix !default;
+$carousel-spacing-vertical: $global-spacing-vertical !default;
+$carousel-padding: 1em !default;
+$carousel-font-size: $global-font-size !default;
+$carousel-color: inherit !default;
+$carousel-border-width: $global-border-width !default;
+$carousel-border-style : $global-border-style !default;
+$carousel-border-color: $global-border-color !default;
+$carousel-border-radius: 0 !default;
+$carousel-background-color: transparent !default;
+$carousel-box-shadow: none !default;
 
-	.tailor-carousel {
+// Element specific
+$carousel-dot-color: $global-primary-color !default;
+
+
+//
+// Exported selectors
+//
+.#{$global-class-prefix}ui {
+
+	.#{$carousel-class-prefix}carousel {
 		position: relative;
-		border-width: $carousel-border-width;
-		border-style: $carousel-border-style;
-		border-color: $carousel-border-color;
+		margin-bottom: $carousel-spacing-vertical;
+		font-size: $carousel-font-size;
+		color: $carousel-color;
+		background-color: $carousel-background-color;
+		border: $carousel-border-width $carousel-border-style $carousel-border-color;
 		border-radius: $carousel-border-radius;
-		margin-bottom: #{$carousel-spacing-unit}em;
+		box-shadow: $carousel-box-shadow;
 
 		&--slider {
 
 			// @todo align position of dot navigation in canvas and frontend
 
 			> .slick-dots,
-			> .tailor-carousel__wrap > .slick-dots {
+			> .#{$carousel-class-prefix}carousel__wrap > .slick-dots {
 				position: absolute;
 				bottom: 0;
 				border-top-width: 0;
@@ -32,7 +49,7 @@ $carousel-dot-color: #3c4651 !default;
 		&:not( [data-slides="1"] ) {
 
 			// Ensure that Flexbox is not automatically applied to child carousels
-			> .tailor-carousel__wrap > .slick-list > .slick-track {
+			> .#{$carousel-class-prefix}carousel__wrap > .slick-list > .slick-track {
 				display: -webkit-flex;
 				display: -ms-flexbox;
 				display: flex;
@@ -40,22 +57,24 @@ $carousel-dot-color: #3c4651 !default;
 		}
 	}
 
-	.tailor-carousel__wrap,
-	.tailor-carousel__item {
-		padding: 0;
-		margin: 0;
-		list-style: none;
-	}
+	.#{$carousel-class-prefix}carousel {
 
-	.tailor-carousel__item {
-		padding: 1em 1.25em;
+		&__wrap,
+		&__item {
+			padding: 0;
+			margin: 0;
+			list-style: none;
+		}
 
-		&.has-custom-height {
-			display: -webkit-flex;
-			display: -ms-flexbox;
-			display: flex;
+		&__item {
+			padding: $carousel-padding ( $carousel-padding * 1.25 );
 
-			flex-direction: column;
+			&.has-custom-height {
+				display: -webkit-flex;
+				display: -ms-flexbox;
+				display: flex;
+				flex-direction: column;
+			}
 		}
 	}
 }

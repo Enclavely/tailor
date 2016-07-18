@@ -11,7 +11,7 @@
 if ( ! function_exists( 'tailor_custom_contact_info') ) {
 
 	/**
-	 * Removes legacy contact fields and adds support for LinkedIn.
+	 * Adds Facebook, Twitter and Google Plus contact fields to the user profile page.
 	 *
 	 * @since 1.0.0
 	 *

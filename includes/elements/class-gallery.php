@@ -64,7 +64,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Gallery_Element
 		        'dots',
 		        'thumbnails',
 		        'fade',
-		        'lightbox',
+		        'image_link',
 		        'image_size',
 		        'aspect_ratio',
 		        'stretch',

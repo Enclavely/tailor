@@ -35,6 +35,7 @@ CanvasApplication = Marionette.Application.extend( {
         this.allowableEvents = [
 	        'canvas:dragstart', 'canvas:drag', 'canvas:dragend',
 	        'history:restore', 'history:undo', 'history:redo',
+            'modal:apply',
 	        'css:add', 'css:delete', 'css:update', 'css:clear',
             'sidebar:setting:change',
             'template:load'
@@ -63,8 +64,7 @@ CanvasApplication = Marionette.Application.extend( {
         document.addEventListener( 'dragover', resetCanvas, false );
         window.addEventListener( 'resize', resetCanvas, false );
 
-        $( 'a' ).attr( { target  : '_blank', draggable  : false } );
-        $( 'img' ).attr( 'draggable', 'false' );
+        $( 'a, img' ).attr( { draggable  : false } );
 
         $( document ).on( 'keydown', function( e ) {
             if ( e.ctrlKey && 89 == e.keyCode ) {
@@ -1152,6 +1152,10 @@ Carousel = function( el, options, callbacks ) {
 	this.$wrap = this.$el.find( '.tailor-carousel__wrap' ).first();
 
 	this.options = $.extend( {}, this.defaults, options );
+	if ( document.documentElement.dir && 'rtl' == document.documentElement.dir ) {
+		this.options.rtl = true;
+	}
+	
     this.callbacks = $.extend( {}, this.callbacks, callbacks );
 
     this.initialize();
@@ -1386,6 +1390,10 @@ Carousel = function( el, options, callbacks ) {
 	this.$wrap = this.$el.find( '.tailor-carousel__wrap' ).first();
 
 	this.options = $.extend( {}, this.defaults, options );
+	if ( document.documentElement.dir && 'rtl' == document.documentElement.dir ) {
+		this.options.rtl = true;
+	}
+	
     this.callbacks = $.extend( {}, this.callbacks, callbacks );
 
     this.initialize();
@@ -1937,7 +1945,7 @@ ColumnView = ContainerView.extend( {
         this.updateClassName( this.model.get( 'atts' ).width );
         this.$el
             .attr( 'draggable', true )
-            .append(
+            .prepend(
 	            '<div class="tailor-column__helper">' +
 	                '<div class="tailor-column__sizer"></div>' +
 	            '</div>'
@@ -2888,8 +2896,9 @@ CompositeView = Marionette.CompositeView.extend( {
 	 */
 	onDomRefresh : function() {
 		this.el.setAttribute( 'draggable', true );
-		this.$el.find( 'a' ).attr( { target : '_blank', draggable : false } );
-		this.$el.find( 'img' ).attr( 'draggable', 'false' );
+		this.$el
+			.find( 'a, img' )
+			.attr( {  draggable : false } );
 	},
 
 	/**
@@ -3484,10 +3493,6 @@ ElementView = Marionette.ItemView.extend( {
 		el.innerHTML = html;
 	},
 
-
-
-
-
 	/**
 	 * Refreshes the element template when the element attributes change.
 	 *
@@ -3591,10 +3596,6 @@ ElementView = Marionette.ItemView.extend( {
 		this.triggerAll( 'element:change:parent', this );
 	},
 
-
-
-
-
 	/**
 	 * Triggers an event on the application channel before the DOM element is rendered.
 	 *
@@ -3612,8 +3613,9 @@ ElementView = Marionette.ItemView.extend( {
 	onDomRefresh : function() {
 		var elementView = this;
 		this.el.setAttribute( 'draggable', true );
-		this.$el.find( 'a' ).attr( { target : '_blank', draggable : false } );
-		this.$el.find( 'img' ).attr( 'draggable', 'false' );
+		this.$el
+			.find( 'a, img' )
+			.attr( {  draggable : false } );
 		this.$el.imagesLoaded( function() {
 
 			elementView._isReady = true;
@@ -3644,11 +3646,7 @@ ElementView = Marionette.ItemView.extend( {
 	onDestroy : function() {
 		this.triggerAll( 'element:destroy', this );
 	},
-
-
-
-
-
+	
 	/**
 	 * Triggers events and methods during a given event in the lifecycle.
 	 *
@@ -4447,6 +4445,10 @@ Slideshow = function( el, options, callbacks ) {
     this.$wrap = this.$el.find( '.tailor-slideshow__slides' );
 
 	this.options = $.extend( {}, this.defaults, this.$el.data(), options );
+    if ( document.documentElement.dir && 'rtl' == document.documentElement.dir ) {
+        this.options.rtl = true;
+    }
+    
     this.callbacks = $.extend( {}, this.callbacks, callbacks );
 
     this.initialize();
@@ -5436,7 +5438,7 @@ module.exports = Marionette.Module.extend( {
 	    this.listenTo( app.channel, 'element:copy', this.onCopyElement );
 	    this.listenTo( app.channel, 'element:move', this.onMoveElement );
 
-        this.listenTo( app.channel, 'element:edit', this.onEditElement );
+        this.listenTo( app.channel, 'modal:apply', this.onEditElement );
         this.listenTo( app.channel, 'element:delete', this.onDeleteElement );
         this.listenTo( app.channel, 'element:resize', this.onResizeElement );
         this.listenTo( app.channel, 'element:change:order', this.onReorderElement );
@@ -5478,6 +5480,13 @@ module.exports = Marionette.Module.extend( {
      * @param model
      */
     onAddElement : function( model ) {
+
+        // Only show elements in the list of snapshots
+        // Templates are added separately
+        if ( 'library' != model.get( 'collection' ) ) {
+            return;
+        }
+
         this.saveSnapshot( this.l10n.added + ' ' + model.get( 'label' ) );
     },
 
@@ -5486,9 +5495,10 @@ module.exports = Marionette.Module.extend( {
      *
      * @since 1.0.0
      *
+     * @param modal
      * @param model
      */
-    onEditElement : function( model ) {
+    onEditElement : function( modal, model ) {
         this.saveSnapshot( this.l10n.edited + ' ' + model.get( 'label' ) );
     },
 
@@ -6478,15 +6488,11 @@ CarouselModel = ContainerModel.extend( {
 
         var $childViewContainer = view.getChildViewContainer( view );
         var $children = $childViewContainer.contents().detach();
-
-        //var $navigation = view.$el.find( '.slick-dots' );
-        //var $navigationItems = $navigation.children().detach();
         var $navigation = view.$el.find( '.slick-dots' ).detach();
 
         this.appendTemplate( id, view );
 
         $childViewContainer.append( $children );
-        //$navigation.append( $navigationItems );
 	    $navigation.insertAfter( $childViewContainer );
 
         this.afterCopyElement( id, view );

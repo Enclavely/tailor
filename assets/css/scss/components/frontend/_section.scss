@@ -1,17 +1,42 @@
+//
+// Variables
+//
 
-$section-border-color: $border-color !default;
-$section-max-width: $max-width !default;
-$section-spacing-unit: $base-spacing-unit !default;
+// General
+$section-class-prefix: $global-class-prefix !default;
+$section-spacing-vertical: $global-spacing-vertical !default;
+$section-padding: 0 !default;
+$section-font-size: $global-font-size !default;
+$section-color: inherit !default;
+$section-border-width: 0 !default;
+$section-border-style : $global-border-style !default;
+$section-border-color: $global-border-color !default;
+$section-border-radius: 0 !default;
+$section-background-color: transparent !default;
+$section-box-shadow: none !default;
 
-.tailor-ui {
+// Element specific
+$section-max-width: 75rem !default;
 
-	.tailor-section {
+
+//
+// Exported selectors
+//
+.#{$global-class-prefix}ui {
+
+	.#{$section-class-prefix}section {
 		position: relative;
-		margin-bottom: #{$section-spacing-unit}em;
-		border-color: $section-border-color;
 		display: flex;
 		justify-content: center;
 		align-items: center;
+		padding: $section-padding;
+		margin-bottom: $section-spacing-vertical;
+		font-size: $section-font-size;
+		color: $section-color;
+		background-color: $section-background-color;
+		border: $section-border-width $section-border-style $section-border-color;
+		border-radius: $section-border-radius;
+		box-shadow: $section-box-shadow;
 
 		&__content {
 			margin: 0 auto;
@@ -22,8 +47,11 @@ $section-spacing-unit: $base-spacing-unit !default;
 		&.is-skewed {
 			transform: skew( 0deg, -3deg );
 
-			.section__content {
-				transform: skew( 0deg, 3deg );
+			.#{$section-class-prefix}section {
+
+				&__content {
+					transform: skew( 0deg, 3deg );
+				}
 			}
 		}
 	}

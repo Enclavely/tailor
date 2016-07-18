@@ -1,131 +1,167 @@
-$list-spacing-unit: $base-spacing-unit !default;
-$list-icon-size: 1.5 !default;
+//
+// Variables
+//
 
-$list-border-style : solid !default;
-$list-border-color: $border-color !default;
+// General
+$list-class-prefix: $global-class-prefix !default;
+$list-spacing-vertical: $global-spacing-vertical !default;
+$list-padding: 0 !default;
+$list-font-size: 1em !default;
+$list-color: inherit !default;
+$list-border-width: 0 !default;
+$list-border-style : $global-border-style !default;
+$list-border-color: $global-border-color !default;
+$list-border-radius: 0 !default;
+$list-background-color: transparent !default;
+$list-box-shadow: none !default;
 
-$list-icon-border-width: 1px !default;
-$list-icon-border-color: $border-color !default;
+// Element specific
+$list-graphic-size: 1.5em !default;
 
-$list-icon-background-color: $background-color !default;
-$list-icon-background-color--hover: #fff !default;
-$list-icon-box-shadow: $box-shadow !default;
 
-.tailor-ui {
+//
+// Exported selectors
+//
+.#{$global-class-prefix}ui {
 
-	.tailor-list {
-		padding: 0;
+	.#{$list-class-prefix}list {
+		padding: $list-padding;
 		margin: 0;
-		margin-bottom: #{$list-spacing-unit}em;
+		font-size: $list-font-size;
+		color: $list-color;
+		background-color: $list-background-color;
+		border: $list-border-width $list-border-style $list-border-color;
+		border-radius: $list-border-radius;
+		box-shadow: $list-box-shadow;
 
-		@include clearfix;
-	}
-
-	.tailor-list__item {
-		padding: 0;
-		margin: 0;
-		list-style: none;
-		border-color: $list-border-color;
-
-		@include clearfix;
-	}
-
-	.tailor-list__item--left {
-		text-align: left;
-
-		.tailor-list__graphic {
+		&__graphic {
+			position: relative;
 			float: left;
-		}
-	}
+			text-align: center;
 
-	.tailor-list__item--right {
-		text-align: right;
-
-		.tailor-list__graphic {
-			float: right;
-		}
-	}
-
-	.tailor-list__graphic {
-		position: relative;
-		text-align: center;
-
-		@include transition( all 150ms );
-	}
-
-	.tailor-list__body {
-		display: block;
-		overflow: hidden;
-	}
-
-	.tailor-list__title {
-		display: block;
-		padding: 0;
-		margin: 1em 0 0.5em;
-		font-size: inherit;
-		line-height: inherit;
-	}
-
-	.tailor-list__item--icon,
-	.tailor-list__item--number {
-
-		.tailor-list__title {
-			margin: calc( #{$list-icon-size}em - 1em ) 0 0.5em;
+			@include transition( all $global-transition-duration );
 		}
 
-		.tailor-list__graphic {
-			display: table;
-			width: #{( $list-icon-size * 2 )}em;
-			height: #{( $list-icon-size * 2 )}em;
-			border-radius: 50%;
+		&__body {
+			display: block;
+			overflow: hidden;
+		}
 
-			span {
-				position: relative;
-				z-index: 2;
-				display: table-cell;
-				width: 100%;
-				vertical-align: middle;
-				font-size: #{$list-icon-size}em;
+		&__title {
+			display: block;
+			padding: 0;
+			margin: 0.65em 0 0.5em;
+			font-size: inherit;
+			line-height: inherit;
+		}
+
+		&__content {
+
+			:last-child {
+				margin-bottom: 0;
 			}
 		}
-	}
 
-	.tailor-list__item--number {
-		counter-increment: step-counter;
+		&__item {
+			padding: 0;
+			margin: 0 0 $list-spacing-vertical;
+			list-style: none;
+			border-color: $list-border-color;
 
-		.tailor-list__graphic {
+			@include clearfix;
 
-			span {
-				font-weight: 600;
+			// Types
+			&--image {
 
-				&::before {
-					content: counter( step-counter );
+				.#{$list-class-prefix}list {
+
+					&__graphic {
+						max-width: ( $list-graphic-size * 2 );
+					}
+				}
+
+				&.#{$list-class-prefix}list {
+
+					&__item {
+
+						&--left {
+
+							.#{$list-class-prefix}list {
+
+								&__graphic {
+									margin-right: $list-spacing-vertical;
+								}
+							}
+						}
+
+						&--right {
+
+							.#{$list-class-prefix}list {
+
+								&__graphic {
+									margin-left: $list-spacing-vertical;
+								}
+							}
+						}
+					}
 				}
 			}
-		}
-	}
 
-	.tailor-list__item--image {
+			&--number {
+				counter-increment: step-counter;
 
-		.tailor-list__title {
-			margin: 1em 0 0.5em;
-		}
+				.#{$list-class-prefix}list {
 
-		.tailor-list__graphic {
-			max-width: #{( $list-icon-size * 2 )}em;
-		}
+					&__graphic {
 
-		&.tailor-list__item--left {
+						span {
+							font-weight: 600;
 
-			.tailor-list__graphic {
-				margin-right: 1em;
+							&::before {
+								content: counter( step-counter );
+							}
+						}
+					}
+				}
 			}
-		}
 
-		&.tailor-list__item--right {
+			&--icon,
+			&--number {
 
-			.tailor-list__graphic {
-				margin-left: 1em;
+				.#{$list-class-prefix}list {
+
+					&__graphic {
+						display: table;
+						width: ( $list-graphic-size * 2 );
+						height: ( $list-graphic-size * 2 );
+						border-radius: 50%;
+
+						span {
+							position: relative;
+							z-index: 2;
+							display: table-cell;
+							width: 100%;
+							vertical-align: middle;
+							font-size: $list-graphic-size;
+						}
+					}
+				}
+			}
+
+			// Alignments
+			&.u-text-right {
+
+				.#{$list-class-prefix}list {
+
+					&__graphic {
+						float: right;
+					}
+				}
+			}
+
+			&.u-text-left,
+			&.u-text-right {
+				@include clearfix;
 			}
 		}
 	}

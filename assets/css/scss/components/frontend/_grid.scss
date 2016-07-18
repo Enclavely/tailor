@@ -1,9 +1,170 @@
+//
+// Variables
+//
 
-$grid-spacing-unit: $base-spacing-unit !default;
+// General
+$grid-class-prefix: $global-class-prefix !default;
+$grid-spacing-vertical: $global-spacing-vertical !default;
+$grid-padding: 0 !default;
+$grid-font-size: $global-font-size !default;
+$grid-color: inherit !default;
+$grid-border-width: 0 !default;
+$grid-border-style : $global-border-style !default;
+$grid-border-color: $global-border-color !default;
+$grid-border-radius: 0 !default;
+$grid-background-color: transparent !default;
+$grid-box-shadow: none !default;
 
-.tailor-ui {
+// Child specific
+$grid-item-padding: 1em !default;
+$grid-item-border-width: $global-border-width !default;
+$grid-item-border-style: $global-border-style !default;
+$grid-item-border-color: $global-border-color !default;
 
-	.tailor-grid {
-		margin-bottom: #{$grid-spacing-unit}em;
+// Element specific
+$grid-column-number : 6 !default;
+
+
+//
+// Mixins
+//
+@mixin grid( $size ) {
+
+	.#{$global-class-prefix}ui {
+
+		.#{$grid-class-prefix}grid {
+
+			&--#{$size} {
+
+				.#{$grid-class-prefix}grid {
+
+					&__item {
+						padding: $grid-item-padding;
+					}
+				}
+
+				@for $i from 1 through $grid-column-number {
+
+					&.#{$grid-class-prefix}grid {
+
+						&--#{$i} {
+
+							> .#{$grid-class-prefix}grid {
+
+								&__item {
+									width: percentage( 1 / $i );
+
+									&:nth-child( #{$i}n + #{( $i + 1 )} ) {
+										clear: left;
+									}
+								}
+							}
+						}
+
+						&--bordered {
+
+							&.#{$grid-class-prefix}grid {
+
+								&--#{$i} {
+
+									> .#{$grid-class-prefix}grid {
+
+										&__item {
+
+											&:nth-child( -n + #{$i} ) {
+												border-top-style: solid;
+											}
+
+											&:nth-child( #{$i}n + 1 ) {
+												border-left-style: solid;
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+
+				&:not( .#{$grid-class-prefix}grid--masonry ) {
+
+					@include flex;
+
+					flex-wrap: wrap;
+
+					> .#{$grid-class-prefix}grid {
+
+						&__item {
+							@include flex( column );
+						}
+					}
+				}
+
+				&.#{$grid-class-prefix}grid--bordered {
+
+					> .#{$grid-class-prefix}grid {
+
+						&__item {
+							border-left-style: none;
+							border-top-style: none;
+							border-right-style: solid;
+							border-bottom-style: solid;
+						}
+					}
+				}
+			}
+		}
 	}
+}
+
+
+//
+// Exported selectors
+//
+.#{$global-class-prefix}ui {
+
+	.#{$grid-class-prefix}grid {
+		padding: $grid-padding;
+		margin-bottom: $grid-spacing-vertical;
+		font-size: $grid-font-size;
+		color: $grid-color;
+		background-color: $grid-background-color;
+		border: $grid-border-width $grid-border-style $grid-border-color;
+		border-radius: $grid-border-radius;
+		box-shadow: $grid-box-shadow;
+
+		&__item {
+			min-height: 1px;
+			width: 100%;
+			border: $grid-item-border-width none $grid-border-color;
+		}
+
+		// Variations
+		&--posts {
+
+			.#{$grid-class-prefix}grid {
+				display: block;
+
+				&__item {
+					padding: $grid-item-padding;
+				}
+			}
+		}
+	}
+}
+
+
+//
+// Media queries
+//
+@include grid( $size: mobile );
+
+@media #{$tablet-up} {
+	@include grid( tablet );
+
+	@include grid( small ); // To provide backward compatibility for old media queries
+}
+
+@media #{$desktop} {
+	@include grid( desktop );
 }

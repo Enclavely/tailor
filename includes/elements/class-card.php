@@ -46,7 +46,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Card_Element' )
 
 	        $general_control_types = array(
 		        'title',
-		        'alignment',
+		        'horizontal_alignment',
 		        'image',
 	        );
 	        $general_control_arguments = array(
@@ -54,15 +54,6 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Card_Element' )
 			        'setting'               =>  array(
 				        'default'               =>  $this->label,
 			        ),
-		        ),
-		        'alignment'             =>  array(
-                    'control'               =>  array(
-                        'choices'               =>  array(
-                            'left'                  =>  __( 'Left', 'tailor' ),
-                            'center'                =>  __( 'Center', 'tailor' ),
-                            'right'                 =>  __( 'Right', 'tailor' ),
-                        ),
-                    ),
 		        ),
 	        );
 	        tailor_control_presets( $this, $general_control_types, $general_control_arguments, $priority );

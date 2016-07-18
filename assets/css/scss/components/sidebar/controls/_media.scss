@@ -1,23 +1,5 @@
 .control {
 
-	&--gallery,
-	&--image,
-	&--video {
-
-		img,
-		video {
-			max-width: 100%;
-		}
-
-		.video-preview,
-		.thumbnails {
-			margin-bottom: 8px;
-		}
-	}
-}
-
-.control {
-
 	.thumbnail  {
 		margin: 1px;
 		width: auto;
@@ -32,17 +14,32 @@
 			background-color: $background-color;
 		}
 	}
-}
 
-.control--gallery {
+	&--gallery,
+	&--image,
+	&--video {
 
-	.thumbnails {
-		@include clearfix;
+		img,
+		video {
+			max-width: 100%;
+		}
+
+		.video-preview,
+		.thumbnails {
+			margin-bottom: 8px;
+		}
 	}
 
-	.thumbnail  {
-		float: left;
-		width: calc( 25% - 2px );
+	&--gallery {
+
+		.thumbnails {
+			@include clearfix;
+		}
+
+		.thumbnail  {
+			float: left;
+			width: calc( 25% - 2px );
+		}
 	}
 }
 
@@ -50,7 +47,6 @@
 .video-preview {
 
 	&.is-loading {
-
 		background: url( ../img/spinner.gif ) no-repeat center;
 
 		> * {
@@ -74,14 +70,6 @@
 	}
 }
 
-
-.media-frame--gallery {
-
-	.media-menu {
-
-		:first-child,
-		.separator {
-			display: none;
-		}
-	}
+.media-frame-content .gallery-settings {
+	display: none;
 }

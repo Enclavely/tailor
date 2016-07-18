@@ -1,14 +1,123 @@
+//
+// Variables
+//
 
-$toggles-spacing-unit: $base-spacing-unit !default;
-
+// General
+$toggles-class-prefix: $global-class-prefix !default;
+$toggles-spacing-vertical: $global-spacing-vertical !default;
+$toggles-padding: 0 !default;
+$toggles-font-size: $global-font-size !default;
+$toggles-color: inherit !default;
 $toggles-border-width: 0 !default;
-$toggles-border-style : solid !default;
-$toggles-border-color: $border-color !default;
+$toggles-border-style : $global-border-style !default;
+$toggles-border-color: $global-border-color !default;
+$toggles-border-radius: 0 !default;
+$toggles-background-color: transparent !default;
+$toggles-box-shadow: none !default;
 
-.tailor-ui {
+// Child specific
+$toggle-class-prefix: $toggles-class-prefix !default;
+$toggle-spacing-vertical: ( $toggles-spacing-vertical / 2 ) !default;
+$toggle-padding: 1em !default;
+$toggle-font-size: $global-font-size !default;
+$toggle-color: inherit !default;
+$toggle-border-width: $global-border-width !default;
+$toggle-border-style : $global-border-style !default;
+$toggle-border-color: $global-border-color !default;
+$toggle-border-radius: 0 !default;
+$toggle-background-color: transparent !default;
+$toggle-box-shadow: none !default;
 
-	.tailor-toggles {
-		margin-bottom: #{$toggles-spacing-unit}em;
-		border: $toggles-border-width $toggles-border-style $toggles-border-color;
+// Element specific
+$toggle-title-background-color: #fff !default;
+
+
+//
+// Exported selectors
+//
+.#{$global-class-prefix}ui {
+
+	.#{$toggles-class-prefix}toggles {
+		padding: $toggles-padding;
+		margin-bottom: $toggles-spacing-vertical;
+		font-size: $toggles-font-size;
+		color: $toggles-color;
+		background-color: $toggles-background-color;
+		//border: $toggles-border-width $toggles-border-style $toggles-border-color;
+		//border-radius: $toggles-border-radius;
+		box-shadow: $toggles-box-shadow;
+	}
+
+	.#{$toggles-class-prefix}toggle {
+		margin-bottom: $toggle-spacing-vertical;
+		font-size: $toggle-font-size;
+		color: $toggle-color;
+		background-color: $toggle-background-color;
+		box-shadow: $toggle-box-shadow;
+
+		&__title {
+			display: block;
+			padding: ( $toggle-padding / 2 ) $toggle-padding;
+			margin: 0;
+			font-size: $toggle-font-size;
+			font-weight: bold;
+			line-height: inherit;
+			border: $toggle-border-width $toggle-border-style $toggle-border-color;
+			background-color: $toggle-title-background-color;
+			cursor: pointer;
+
+			@include user-select( none );
+
+			i {
+				margin-right: 0.5em;
+				font-size: inherit;
+				line-height: inherit;
+			}
+
+			&.is-active {
+				border-bottom-left-radius: 0;
+				border-bottom-right-radius: 0;
+
+				& ~ .#{$toggles-class-prefix}toggle {
+
+					&__body {
+						border-top-left-radius: 0;
+						border-top-right-radius: 0;
+					}
+				}
+			}
+		}
+
+		&__body {
+			display: none;
+			padding: $toggle-padding;
+			margin: 0;
+			border: $toggle-border-width $toggle-border-style $toggle-border-color;
+			border-top-width: 0;
+			border-radius: $toggle-border-radius;
+		}
+	}
+}
+
+// Ensure content is visible when Javascript it not enabled or when viewed in the editor
+.#{$global-class-prefix}editor,
+.no-js {
+
+	.#{$toggle-class-prefix}toggle {
+
+		&__body {
+			display: block;
+		}
+	}
+}
+
+// Canvas style override
+#canvas {
+
+	.#{$toggle-class-prefix}toggle {
+
+		&:not( .is-selected ) .tailor-toggle__title {
+			pointer-events: none;
+		}
 	}
 }

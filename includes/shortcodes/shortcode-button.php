@@ -23,22 +23,25 @@ if ( ! function_exists( 'tailor_shortcode_button' ) ) {
     function tailor_shortcode_button( $atts, $content = null, $tag ) {
 
 	    $atts = shortcode_atts( array(
-		    'id'                =>  '',
-		    'class'             =>  '',
-		    'style'             =>  'default',
-		    'alignment'         =>  'left',
-		    'size'              =>  '',
-		    'icon'              =>  '',
-		    'href'              =>  '',
-		    'target'            =>  '',
+		    'id'                        =>  '',
+		    'class'                     =>  '',
+		    'style'                     =>  'default',
+		    'horizontal_alignment'      =>  '',
+		    'size'                      =>  '',
+		    'icon'                      =>  '',
+		    'href'                      =>  '',
+		    'target'                    =>  '',
 	    ), $atts, $tag );
 
-	    $class = esc_attr( trim( "tailor-element tailor-button tailor-button--{$atts['style']} tailor-button--{$atts['alignment']} tailor-button--{$atts['size']} {$atts['class']}" ) );
-
+	    $id = ( '' !== $atts['id'] ) ? 'id="' . esc_attr( $atts['id'] ) . '"' : '';
+	    $class = trim( esc_attr( "tailor-element tailor-button tailor-button--{$atts['style']} tailor-button--{$atts['size']} {$atts['class']}" ) );
+	    
+	    if ( ! empty( $atts['horizontal_alignment'] ) ) {
+		    $class .= esc_attr( " u-text-{$atts['horizontal_alignment']}" );
+	    }
+	    
 	    if ( ! empty( $atts['icon'] ) ) {
-
 		    $icon = sprintf( '<i class="' . esc_attr( $atts['icon'] ) . '"></i>' );
-
 		    $content = trim( $content );
 
 		    if ( empty( $content ) ) {
@@ -60,7 +63,7 @@ if ( ! function_exists( 'tailor_shortcode_button' ) ) {
 		    $href = '';
 	    }
 
-        return  "<div class=\"{$class}\">" .
+        return '<div ' . trim( "{$id} class=\"{$class}\"" ) . '>' .
                     "<a class=\"tailor-button__inner\" {$href}>{$content}</a>" .
                 '</div>';
     }

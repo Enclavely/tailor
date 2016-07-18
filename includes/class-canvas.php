@@ -43,12 +43,13 @@ if ( ! class_exists( 'Tailor_Canvas' ) ) {
          * @access protected
          */
         protected function add_actions() {
+
             add_action( 'wp_head', array( $this, 'canvas_head' ) );
-	        add_filter( 'the_content', array( $this, 'canvas_content' ), -1 );
+	        add_filter( 'the_content', array( $this, 'canvas_content' ), 999 );
 	        add_action( 'wp_footer', array( $this, 'canvas_footer' ) );
 	        
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_styles' ) );
-            add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ), 999999 );
+            add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ), 999 );
 	        
             add_action( 'tailor_canvas_footer', array( $this, 'print_templates' ), 999 );
 	        
@@ -56,7 +57,7 @@ if ( ! class_exists( 'Tailor_Canvas' ) ) {
 	        if ( defined( 'JETPACK__VERSION' ) ) {
 		        remove_filter( 'the_content', 'sharing_display', 19 );
 		        remove_filter( 'the_excerpt', 'sharing_display', 19 );
-		        add_filter( 'sharing_show', '__return_false', 9999 );
+		        add_filter( 'sharing_show', '__return_false', 999 );
 	        }
 
 	        if ( function_exists( 'wpseo_frontend_head_init' ) ) {
@@ -145,46 +146,15 @@ if ( ! class_exists( 'Tailor_Canvas' ) ) {
 	        }
 
 	        if ( apply_filters( 'tailor_enqueue_canvas_stylesheets', true ) ) {
-		        $open_sans_font_url = '';
-		        $extension = SCRIPT_DEBUG ? '.css' : '.min.css';
 
-		        /**
-		         * Translators: If there are characters in your language that are not supported
-		         * by Open Sans, translate this to 'off'. Do not translate into your own language.
-		         */
-		        if ( 'off' !== _x( 'on', 'Open Sans font: on or off' ) ) {
-			        $subsets = 'latin,latin-ext';
+		        $min = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
 
-			        /**
-			         * Translators: To add an additional Open Sans character subset specific to your language,
-			         * translate this to 'greek', 'cyrillic' or 'vietnamese'. Do not translate into your own language.
-			         */
-			        $subset = _x( 'no-subset', 'Open Sans font: add new subset (greek, cyrillic, vietnamese)' );
-
-			        if ( 'cyrillic' == $subset ) {
-				        $subsets .= ',cyrillic,cyrillic-ext';
-			        }
-			        else if ( 'greek' == $subset ) {
-				        $subsets .= ',greek,greek-ext';
-			        }
-			        else if ( 'vietnamese' == $subset ) {
-				        $subsets .= ',vietnamese';
-			        }
-
-			        $open_sans_font_url = "//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,300,400,600&subset=$subsets";
-		        }
-
-		        wp_enqueue_style( 'open-sans', $open_sans_font_url );
-		        
 		        wp_enqueue_style(
 			        'tailor-canvas-styles',
-			        tailor()->plugin_url() . 'assets/css/canvas' . $extension,
+			        tailor()->plugin_url() . "assets/css/canvas{$min}.css",
 			        array(),
 			        tailor()->version()
 		        );
-
-		        wp_style_add_data( 'tailor-canvas-styles', 'rtl', tailor()->plugin_url() . "assets/css/canvas-rtl{$extension}" );
-
 	        }
 
 	        /**

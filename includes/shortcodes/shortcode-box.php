@@ -23,21 +23,23 @@ if ( ! function_exists( 'tailor_shortcode_box' ) ) {
 	function tailor_shortcode_box( $atts, $content = null, $tag ) {
 
         $atts = shortcode_atts( array(
-            'id'                =>  '',
-            'class'             =>  '',
-
-            'title'             =>  '',
-            'alignment'         =>  'left',
-	        'graphic_type'      =>  'icon',
-
-            'icon'              =>  'dashicons dashicons-wordpress',
-            'image'             =>  '',
+            'id'                        =>  '',
+            'class'                     =>  '',
+            'title'                     =>  '',
+            'horizontal_alignment'      =>  '',
+	        'graphic_type'              =>  'icon',
+            'icon'                      =>  'dashicons dashicons-wordpress',
+            'image'                     =>  '',
 
         ), $atts, $tag );
 
 		$id = ( '' !== $atts['id'] ) ? 'id="' . esc_attr( $atts['id'] ) . '"' : '';
-		$class = trim( esc_attr( "tailor-element tailor-box tailor-box--{$atts['alignment']} tailor-box--{$atts['graphic_type']} {$atts['class']}" ) );
-
+		$class = trim( esc_attr( "tailor-element tailor-box tailor-box--{$atts['graphic_type']} {$atts['class']}" ) );
+		
+		if ( ! empty( $atts['horizontal_alignment'] ) ) {
+			$class .= esc_attr( " u-text-{$atts['horizontal_alignment']}" );
+		}
+		
 		$title = ! empty( $atts['title'] ) ? '<h3 class="tailor-box__title">' . esc_html( (string) $atts['title'] ) . '</h3>' : '';
 
 		if ( 'image' == $atts['graphic_type'] ) {

@@ -23,15 +23,15 @@ if ( ! function_exists( 'tailor_shortcode_map' ) ) {
     function tailor_shortcode_map( $atts, $content = null, $tag ) {
 
         $atts = shortcode_atts( array(
-            'id'                =>  '',
-            'class'             =>  '',
-            'address'           =>  'Melbourne, Australia',//'One World Trade Center',
-            'latitude'          =>  '',
-            'longitude'         =>  '',
-	        'controls'          =>  0,
-            'zoom'              =>  '13',
-            'saturation'        =>  '-50',
-            'hue'               =>  '',
+            'id'                        =>  '',
+            'class'                     =>  '',
+            'address'                   =>  'Melbourne, Australia',
+            'latitude'                  =>  '',
+            'longitude'                 =>  '',
+	        'controls'                  =>  0,
+            'zoom'                      =>  '13',
+            'saturation'                =>  '-50',
+            'hue'                       =>  '',
         ), $atts, $tag );
 
 	    $id = ( '' !== $atts['id'] ) ? 'id="' . esc_attr( $atts['id'] ) . '"' : '';

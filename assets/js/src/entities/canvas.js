@@ -256,7 +256,7 @@ module.exports = Marionette.Module.extend( {
 	    this.listenTo( app.channel, 'element:copy', this.onCopyElement );
 	    this.listenTo( app.channel, 'element:move', this.onMoveElement );
 
-        this.listenTo( app.channel, 'element:edit', this.onEditElement );
+        this.listenTo( app.channel, 'modal:apply', this.onEditElement );
         this.listenTo( app.channel, 'element:delete', this.onDeleteElement );
         this.listenTo( app.channel, 'element:resize', this.onResizeElement );
         this.listenTo( app.channel, 'element:change:order', this.onReorderElement );
@@ -298,6 +298,13 @@ module.exports = Marionette.Module.extend( {
      * @param model
      */
     onAddElement : function( model ) {
+
+        // Only show elements in the list of snapshots
+        // Templates are added separately
+        if ( 'library' != model.get( 'collection' ) ) {
+            return;
+        }
+
         this.saveSnapshot( this.l10n.added + ' ' + model.get( 'label' ) );
     },
 
@@ -306,9 +313,10 @@ module.exports = Marionette.Module.extend( {
      *
      * @since 1.0.0
      *
+     * @param modal
      * @param model
      */
-    onEditElement : function( model ) {
+    onEditElement : function( modal, model ) {
         this.saveSnapshot( this.l10n.edited + ' ' + model.get( 'label' ) );
     },
 

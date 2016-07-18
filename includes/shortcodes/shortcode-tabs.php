@@ -23,9 +23,9 @@ if ( ! function_exists( 'tailor_shortcode_tabs' ) ) {
     function tailor_shortcode_tabs( $atts, $content = null, $tag ) {
 
 	    $atts = shortcode_atts( array(
-		    'id'            =>  '',
-		    'class'         =>  '',
-		    'position'      =>  'top',
+		    'id'                        =>  '',
+		    'class'                     =>  '',
+		    'position'                  =>  'top',
 	    ), $atts, $tag );
 
 	    $id = ( '' !== $atts['id'] ) ? 'id="' . esc_attr( $atts['id'] ) . '"' : '';

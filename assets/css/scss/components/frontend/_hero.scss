@@ -1,34 +1,42 @@
+//
+// Variables
+//
 
-$hero-spacing-unit: $base-spacing-unit !default;
+// General
+$hero-class-prefix: $global-class-prefix !default;
+$hero-spacing-vertical: $global-spacing-vertical !default;
+$hero-padding: 2em !default;
+$hero-font-size: 1em !default;
+$hero-color: inherit !default;
+$hero-border-width: $global-border-width !default;
+$hero-border-style : $global-border-style !default;
+$hero-border-color: $global-border-color !default;
+$hero-border-radius: 0 !default;
+$hero-background-color: transparent !default;
+$hero-box-shadow: none !default;
 
-$hero-border-width: 1px !default;
-$hero-border-style : solid !default;
-$hero-border-color: $border-color !default;
-$hero-border-radius: $border-radius !default;
 
-$hero-background-color: $background-color !default;
-$hero-box-shadow: $box-shadow !default;
+//
+// Exported selectors
+//
+.#{$global-class-prefix}ui {
 
-.tailor-ui {
-
-	.tailor-hero {
-		padding: 2em;
-		margin-bottom: #{$hero-spacing-unit}em;
+	.#{$hero-class-prefix}hero {
+		padding: $hero-padding;
+		margin-bottom: $hero-spacing-vertical;
+		font-size: $hero-font-size;
+		color: $hero-color;
+		background-color: $hero-background-color;
 		border: $hero-border-width $hero-border-style $hero-border-color;
 		border-radius: $hero-border-radius;
-		color: inherit;
-
-		p,
-		.tailor-hero__content {
-			font-size: 1.125em;
-		}
+		box-shadow: $hero-box-shadow;
 
 		h1 {
-			font-size: 2.5em;
+			font-size: ( $hero-font-size * 3 );
 		}
 
 		h2 {
-			font-size: 2.25em;
+			font-size: ( $hero-font-size * 2.25 );
 		}
 
 		h1,
@@ -40,25 +48,16 @@ $hero-box-shadow: $box-shadow !default;
 }
 
 
+//
+// Media queries
+//
 @media #{$tablet-up} {
 
-	.tailor-ui {
+	.#{$global-class-prefix}ui {
 
-		.tailor-hero {
-			padding: 2.5em;
-
-			p,
-			.hero__content {
-				font-size: 1.25em;
-			}
-
-			h1 {
-				font-size: 3em;
-			}
-
-			h2 {
-				font-size: 2.5em;
-			}
+		.#{$hero-class-prefix}hero {
+			padding: ( $hero-padding * 1.25 );
+			font-size: ( $hero-font-size * 1.25 );
 		}
 	}
 }

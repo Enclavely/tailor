@@ -23,10 +23,10 @@ if ( ! function_exists( 'tailor_shortcode_toggles' ) ) {
     function tailor_shortcode_toggles( $atts, $content = null, $tag ) {
 
         $atts = shortcode_atts( array(
-            'id'            =>  '',
-            'class'         =>  '',
-            'initial'       =>  0,
-            'accordion'     =>  0,
+            'id'                        =>  '',
+            'class'                     =>  '',
+            'initial'                   =>  0,
+            'accordion'                 =>  0,
         ), $atts, $tag );
 
 	    $id = ( '' !== $atts['id'] ) ? 'id="' . esc_attr( $atts['id'] ) . '"' : '';

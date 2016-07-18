@@ -42,7 +42,7 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Video_Control' 
         protected function render_template() { ?>
 
 	        <% if ( '' == value ) { %>
-	        <p class="message"><?php _e( 'No video selected', 'tailor' ); ?></p>
+	        <p class="control__message"><?php _e( 'No video selected', 'tailor' ); ?></p>
 	        <div class="actions">
 		        <button type="button" class="button button--select"><?php _e( 'Select Video', 'tailor' ); ?></button>
 	        </div>

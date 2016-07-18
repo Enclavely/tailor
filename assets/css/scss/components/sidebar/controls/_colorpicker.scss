@@ -2,10 +2,10 @@
 	height: auto;
 }
 
-.control--color-picker {
+.wp-picker-container input[type=text].wp-color-picker {
+	width: 65px;
 
-	.wp-picker-container input[data-rgba="true"].wp-color-picker {
+	&[data-rgba="true"] {
 		width: 150px;
 	}
 }
-

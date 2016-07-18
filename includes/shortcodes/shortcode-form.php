@@ -23,9 +23,9 @@ if ( ! function_exists( 'tailor_shortcode_form' ) ) {
     function tailor_shortcode_form( $atts, $content = null, $tag ) {
 
         $atts = shortcode_atts( array(
-            'id'                =>  '',
-            'class'             =>  '',
-	        'form'              =>  '',
+            'id'                        =>  '',
+            'class'                     =>  '',
+	        'form'                      =>  '',
         ), $atts, $tag );
 
 	    $id = ( '' !== $atts['id'] ) ? 'id="' . esc_attr( $atts['id'] ) . '"' : '';

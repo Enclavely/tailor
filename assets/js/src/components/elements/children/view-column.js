@@ -32,7 +32,7 @@ ColumnView = ContainerView.extend( {
         this.updateClassName( this.model.get( 'atts' ).width );
         this.$el
             .attr( 'draggable', true )
-            .append(
+            .prepend(
 	            '<div class="tailor-column__helper">' +
 	                '<div class="tailor-column__sizer"></div>' +
 	            '</div>'

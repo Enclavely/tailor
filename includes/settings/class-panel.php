@@ -573,7 +573,7 @@ if ( ! class_exists( 'Tailor_History_Panel' ) ) {
 		 */
 		protected function item_template() { ?>
 
-			<li class="list__item history">
+			<li class="list__item history" title="<%= label %>">
 				<div class="history__wrap">
 					<div class="history__time"><%= time %></div>
 					<h3 class="list__label"><%= label %></h3>

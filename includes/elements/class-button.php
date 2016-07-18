@@ -57,7 +57,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Button_Element'
 
 		    $general_control_types = array(
 			    'style',
-			    'alignment',
+			    'horizontal_alignment',
 			    'size',
 			    'icon',
 			    'href',
@@ -69,28 +69,19 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Button_Element'
 					    'choices'               =>  array(
 						    'default'               =>  __( 'Default', 'tailor' ),
 						    'primary'               =>  __( 'Primary', 'tailor' ),
+						    'block'                 =>  __( 'Block', 'tailor' ),
 					    ),
 				    ),
 			    ),
-			    'alignment'             =>  array(
-                    'control'               =>  array(
-                        'choices'               =>  array(
-                            'left'                  =>  __( 'Left', 'tailor' ),
-                            'center'                =>  __( 'Center', 'tailor' ),
-                            'right'                 =>  __( 'Right', 'tailor' ),
-                            'block'                 =>  __( 'Block', 'tailor' ),
-                        ),
-                    ),
-			    ),
-			    'size'                  =>  array(
-                    'control'               =>  array(
-                        'dependencies'          =>  array(
-                            'alignment'             =>  array(
-                                'condition'             =>  'not',
-                                'value'                 =>  'block',
-                            ),
-                        ),
-                    ),
+			    'horizontal_alignment'  =>  array(
+				    'control'               =>  array(
+					    'dependencies'          =>  array(
+						    'style'                 =>  array(
+							    'condition'             =>  'not',
+							    'value'                 =>  'block',
+						    ),
+					    ),
+				    ),
 			    ),
 			    'target'                =>  array(
 				    'control'               =>  array(

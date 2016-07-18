@@ -1,20 +1,44 @@
-$slideshow-spacing-unit: $base-spacing-unit !default;
+//
+// Variables
+//
 
-.tailor-ui {
+// General
+$slideshow-class-prefix: $global-class-prefix !default;
+$slideshow-spacing-vertical: 0 !default;
+$slideshow-padding: 0 !default;
 
-	.tailor-slideshow {
-		margin-bottom: #{$slideshow-spacing-unit}em;
+// Element specific
+$slideshow-thumbnail-spacing: 4px !default;
+
+
+//
+// Exported selectors
+//
+.#{$global-class-prefix}ui {
+
+	.#{$slideshow-class-prefix}slideshow {
+		padding: $slideshow-padding;
+
+		&__slides,
+		&__slide {
+			padding: 0;
+			margin: 0;
+			list-style: none;
+		}
+
+		&__slide {
+
+			img {
+				max-width: 100%;
+			}
+		}
 
 		.slick-track {
 			display: block;
 		}
 
-		.slick-list {
-			margin-bottom: #{( $gallery-spacing-unit / 2 )}em;
-		}
-
 		.slick-dots li {
-			margin: 0 2px;
+			margin: 0 $slideshow-thumbnail-spacing;
 			list-style: none;
 		}
 
@@ -26,7 +50,7 @@ $slideshow-spacing-unit: $base-spacing-unit !default;
 		.slick-dots li {
 			display: inline-block;
 			width: 80px;
-			max-width: calc( 25% - 4px );
+			max-width: calc( 25% - #{$slideshow-thumbnail-spacing} );
 			cursor: pointer;
 
 			&:not( .slick-active ) {
@@ -36,20 +60,6 @@ $slideshow-spacing-unit: $base-spacing-unit !default;
 			img {
 				max-width: 100%;
 			}
-		}
-	}
-
-	.tailor-slideshow__slides,
-	.tailor-slideshow__slide {
-		padding: 0;
-		margin: 0;
-		list-style: none;
-	}
-
-	.tailor-slideshow__slide {
-
-		img {
-			max-width: 100%;
 		}
 	}
 }

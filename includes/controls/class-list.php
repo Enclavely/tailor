@@ -135,7 +135,7 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_List_Control' )
 		 */
 		protected function empty_template() { ?>
 
-			<p class="message"><?php _e( 'No items to display', 'tailor' ); ?></p>
+			<p class="control__message"><?php _e( 'No items to display', 'tailor' ); ?></p>
 
 			<?php
 		}

@@ -60,6 +60,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Posts_Element' 
 		        'dots',
 		        'fade',
 		        'meta',
+                'image_link',
                 'image_size',
                 'aspect_ratio',
                 'stretch',
@@ -169,6 +170,21 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Posts_Element' 
                             'comment-number'        =>  __( 'Comment number', 'tailor' ),
                         ),
                     ),
+		        ),
+		        'image_link'            =>  array(
+			        'control'               =>  array(
+				        'choices'               =>  array(
+					        'post'                  =>  __( 'Post', 'tailor' ),
+					        'file'                  =>  __( 'Image', 'tailor' ),
+					        'none'                  =>  __( 'None', 'tailor' ),
+				        ),
+				        'dependencies'          =>  array(
+					        'meta'                  =>  array(
+						        'condition'             =>  'contains',
+						        'value'                 =>  'thumbnail',
+					        ),
+				        ),
+			        ),
 		        ),
                 'image_size'            =>  array(
                     'control'               =>  array(

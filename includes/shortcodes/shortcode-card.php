@@ -23,16 +23,19 @@ if ( ! function_exists( 'tailor_shortcode_card' ) ) {
     function tailor_shortcode_card( $atts, $content = null, $tag ) {
 
         $atts = shortcode_atts( array(
-            'id'                =>  '',
-            'class'             =>  '',
-            'title'             =>  '',
-            'alignment'         =>  'left',
-            'image'             =>  '',
+            'id'                        =>  '',
+            'class'                     =>  '',
+            'title'                     =>  '',
+            'horizontal_alignment'      =>  '',
+            'image'                     =>  '',
         ), $atts, $tag );
 
 	    $id = ( '' !== $atts['id'] ) ? 'id="' . esc_attr( $atts['id'] ) . '"' : '';
-	    $class = trim( esc_attr( "tailor-element tailor-card tailor-card--{$atts['alignment']} {$atts['class']}" ) );
-
+	    $class = trim( esc_attr( "tailor-element tailor-card {$atts['class']}" ) );
+	    if ( ! empty( $atts['horizontal_alignment'] ) ) {
+		    $class .= esc_attr( " u-text-{$atts['horizontal_alignment']}" );
+	    }
+	    
 	    if ( is_numeric( $atts['image'] ) ) {
 		    $class .= ' has-header-image';
 	    }

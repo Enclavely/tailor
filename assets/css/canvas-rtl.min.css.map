@@ -1,7 +1,0 @@
-{
-"version": 3,
-"mappings": "AAGC,gDAAuC,CACtC,cAAc,CAAE,WAAW",
-"sources": ["scss/canvas-rtl.scss"],
-"names": [],
-"file": "canvas-rtl.min.css"
-}

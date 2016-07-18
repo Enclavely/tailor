@@ -23,15 +23,14 @@ if ( ! function_exists( 'tailor_shortcode_carousel' ) ) {
     function tailor_shortcode_carousel( $atts, $content = null, $tag ) {
 
         $atts = shortcode_atts( array(
-            'id'                =>  '',
-            'class'             =>  '',
-            'style'             =>  'default',
-            'items_per_row'     =>  '1',
-
-            'autoplay'          =>  '',
-            'fade'              =>  '',
-            'arrows'            =>  '',
-            'dots'              =>  '',
+            'id'                        =>  '',
+            'class'                     =>  '',
+            'style'                     =>  'default',
+            'items_per_row'             =>  '1',
+            'autoplay'                  =>  '',
+            'fade'                      =>  '',
+            'arrows'                    =>  '',
+            'dots'                      =>  '',
         ), $atts, $tag );
 
         $id = ( '' !== $atts['id'] ) ? 'id="' . esc_attr( $atts['id'] ) . '"' : '';
@@ -81,8 +80,12 @@ if ( ! function_exists( 'tailor_shortcode_carousel_item' ) ) {
 		), $atts, $tag );
 
 		$id = ( '' !== $atts['id'] ) ? 'id="' . esc_attr( $atts['id'] ) . '"' : '';
-		$class = trim( "tailor-carousel__item u-text-{$atts['horizontal_alignment']} " . trim( esc_attr( $atts['class'] ) ) );
-
+		$class = trim( esc_attr( "tailor-carousel__item {$atts['class']}" ) );
+		
+		if ( ! empty( $atts['horizontal_alignment'] ) ) {
+			$class .= esc_attr( " u-text-{$atts['horizontal_alignment']}" );
+		}
+		
 		if ( ! empty( $atts['vertical_alignment'] ) ) {
 			$class .= ' has-custom-height';
 		}

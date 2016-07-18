@@ -1,12 +1,34 @@
-$gallery-spacing-unit: $base-spacing-unit !default;
-$gallery-border-style : solid !default;
-$gallery-border-color: $border-color !default;
+//
+// Variables
+//
 
-.tailor-ui {
+// General
+$gallery-class-prefix: $global-class-prefix !default;
+$gallery-spacing-vertical: $global-spacing-vertical !default;
+$gallery-padding: 0 !default;
+$gallery-font-size: $global-font-size !default;
+$gallery-color: inherit !default;
+$gallery-border-width: 0 !default;
+$gallery-border-style : $global-border-style !default;
+$gallery-border-color: $global-border-color !default;
+$gallery-border-radius: 0 !default;
+$gallery-background-color: transparent !default;
+$gallery-box-shadow: none !default;
 
-	.tailor-gallery {
-		margin-bottom: #{$gallery-spacing-unit}em;
-		//border-style: $gallery-border-style;
-		border-color: $gallery-border-color;
+
+//
+// Exported selectors
+//
+.#{$global-class-prefix}ui {
+
+	.#{$gallery-class-prefix}gallery {
+		padding: $gallery-padding;
+		margin-bottom: $gallery-spacing-vertical;
+		font-size: $gallery-font-size;
+		color: $gallery-color;
+		background-color: $gallery-background-color;
+		border: $gallery-border-width $gallery-border-style $gallery-border-color;
+		border-radius: $gallery-border-radius;
+		box-shadow: $gallery-box-shadow;
 	}
 }

@@ -1,0 +1,43 @@
+$notification-padding: 0.5em 1em !default;
+$notification-border-width: $global-border-width !default;
+$notification-border-style: $global-border-style !default;
+$notification-border-color: $global-border-color !default;
+$notification-background-color: $global-background-color !default;
+$notification-box-shadow: $global-box-shadow !default;
+
+
+//
+// Exported selectors
+//
+.#{$global-class-prefix}ui {
+
+	.error {
+		padding: $notification-padding;
+		margin-bottom: 0;
+		border: $notification-border-width $notification-border-style $notification-border-color;
+	}
+
+	.#{$global-class-prefix}notification {
+		padding: $notification-padding;
+		margin-bottom: 0;
+		border: $notification-border-width $notification-border-style $notification-border-color;
+
+		&--success,
+		&--warning,
+		&--error {
+			border-left-width: 2px;
+		}
+
+		&--success {
+			border-left-color: $global-success-color;
+		}
+
+		&--warning {
+			border-left-color: $global-warning-color;
+		}
+
+		&--error {
+			border-left-color: $global-error-color;
+		}
+	}
+}

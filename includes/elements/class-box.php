@@ -46,7 +46,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Box_Element' ) 
 	        $priority = 0;
 	        $general_control_types = array(
 		        'title',
-		        'alignment',
+		        'horizontal_alignment',
 		        'graphic_type',
 		        'icon',
 		        'image',
@@ -56,15 +56,6 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Box_Element' ) 
 		        'title'                 =>  array(
 			        'setting'               =>  array(
 				        'default'               =>  $this->label,
-			        ),
-		        ),
-		        'alignment'             =>  array(
-			        'control'               =>  array(
-				        'choices'               =>  array(
-					        'left'                  =>  __( 'Left', 'tailor' ),
-					        'center'                =>  __( 'Center', 'tailor' ),
-					        'right'                 =>  __( 'Right', 'tailor' ),
-				        ),
 			        ),
 		        ),
 		        'graphic_type'          =>  array(

@@ -1,11 +1,13 @@
+$switch-margin: 2px !default;
+
 .control--switch {
 
 	.switch {
 		position: relative;
 		display: inline-block;
-		margin: 2px;
-		width: 13px;
-		height: 12px;
+		margin: $switch-margin;
+		width: $global-font-size;
+		height: $global-font-size;
 		visibility: hidden;
 		cursor: pointer;
 
@@ -16,24 +18,24 @@
 			visibility: visible;
 			position: absolute;
 
-			transition: all .150s ease-in-out;
+			transition: all $global-transition-duration ease-in-out;
 		}
 
 		&::before {
 			width: 34px;
-			height: 14px;
-			border-radius: 7px;
+			height: $global-font-size;
+			border-radius: ( $global-font-size / 2 );
 			background-color: #b3b3b3;
 		}
 
 		&::after {
 			width: 20px;
 			height: 20px;
-			top: -3px;
-			left: -2px;
+			top: -( $switch-margin * 2 );
+			left: -( $switch-margin * 2 );
 			border-radius: 50%;
 			background-color: #fff;
-			box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.25);
+			box-shadow: 0 1px 1px 0 rgba( 0, 0, 0, 0.25 );
 		}
 	}
 
@@ -45,14 +47,41 @@
 			&~.switch {
 
 				&::before {
-					background-color: #008ec2;
+					background-color: $global-primary-color;
 				}
 
 				&::after {
-					left: calc(100% + 3px);
+					left: calc( 100% + #{$switch-margin} );
 				}
 			}
 		}
 	}
 }
 
+[dir=rtl] {
+
+	.control--switch {
+
+		.switch {
+
+			&::after {
+				left: auto;
+				right: -( $switch-margin * 2 );
+			}
+		}
+
+		input {
+
+			&:checked {
+
+				&~.switch {
+
+					&::after {
+						left: auto;
+						right: calc( 100% + #{$switch-margin} );
+					}
+				}
+			}
+		}
+	}
+}

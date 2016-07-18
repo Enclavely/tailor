@@ -134,20 +134,24 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Row_Element' ) 
 		    $excluded_control_types = array();
 		    $css_rules = tailor_css_presets( $css_rules, $atts, $excluded_control_types );
 
+		    $media_query = ( ! $atts['collapse'] || 'mobile' == $atts['collapse'] ) ? '' : "{$atts['collapse']}-up";
+
 		    if ( ! empty( $atts['column_spacing'] ) ) {
 			    $value = preg_replace( "/[^0-9\.]/", "", $atts['column_spacing'] );
 			    $unit = str_replace( $value, '', $atts['column_spacing'] );
 
 			    if ( is_numeric( $value ) ) {
 				    $css_rules[] = array(
-					    'selectors'         =>  array( '&.small-columns' ),
+					    'media'             =>  $media_query,
+					    'selectors'         =>  array(),
 					    'declarations'      =>  array(
 						    'margin-left'       =>  '-' . esc_attr( ( $value / 2 ) . $unit ),
 						    'margin-right'      =>  '-' . esc_attr( ( $value / 2 ) . $unit ),
 					    ),
 				    );
 				    $css_rules[] = array(
-					    'selectors'         =>  array( '&.small-columns .tailor-column' ),
+					    'media'             =>  $media_query,
+					    'selectors'         =>  array( '.tailor-column' ),
 					    'declarations'      =>  array(
 						    'padding-left'      =>  esc_attr( ( $value / 2 ) . $unit ),
 						    'padding-right'     =>  esc_attr( ( $value / 2 ) . $unit ),
@@ -158,6 +162,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Row_Element' ) 
 
 		    if ( ! empty( $atts['min_column_height'] ) ) {
 			    $css_rules[] = array(
+				    'media'             =>  $media_query,
 				    'selectors'         =>  array( '.tailor-column' ),
 				    'declarations'      =>  array(
 					    'min-height'        =>  esc_attr( $atts['min_column_height'] ),

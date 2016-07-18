@@ -42,7 +42,7 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Gallery_Control
         protected function render_template() { ?>
 
 	        <% if ( ! ids.length ) { %>
-	        <p class="message"><?php _e( 'No images selected', 'tailor' ); ?></p>
+	        <p class="control__message"><?php _e( 'No images selected', 'tailor' ); ?></p>
 	        <div class="actions">
 		        <button type="button" class="button button--select"><?php _e( 'Create Gallery', 'tailor' ); ?></button>
 	        </div>

@@ -23,10 +23,10 @@ if ( ! function_exists( 'tailor_shortcode_grid' ) ) {
     function tailor_shortcode_grid( $atts, $content = null, $tag ) {
 
         $atts = shortcode_atts( array(
-            'id'                    =>  '',
-            'class'                 =>  '',
-            'items_per_row'         =>  2,
-            'collapse'              =>  'tablet',
+            'id'                        =>  '',
+            'class'                     =>  '',
+            'items_per_row'             =>  2,
+            'collapse'                  =>  'tablet',
         ), $atts, $tag );
 
 	    $id = ( '' !== $atts['id'] ) ? 'id="' . esc_attr( $atts['id'] ) . '"' : '';
@@ -55,11 +55,15 @@ if ( ! function_exists( 'tailor_shortcode_grid_item' ) ) {
         $atts = shortcode_atts( array(
             'id'                        =>  '',
             'class'                     =>  '',
-            'horizontal_alignment'      =>  'left',
+            'horizontal_alignment'      =>  '',
         ), $atts, $tag );
 
 		$id = ( '' !== $atts['id'] ) ? 'id="' . esc_attr( $atts['id'] ) . '"' : '';
-		$class = trim( "tailor-grid__item u-text-{$atts['horizontal_alignment']} " . trim( esc_attr( $atts['class'] ) ) );
+		$class = trim( esc_attr( "tailor-grid__item {$atts['class']}" ) );
+
+		if ( ! empty( $atts['horizontal_alignment'] ) ) {
+			$class .= esc_attr( " u-text-{$atts['horizontal_alignment']}" );
+		}
 
 		return  '<div ' . trim( "{$id} class=\"{$class}\"" ) . '>' . do_shortcode( $content ) . '</div>';
 

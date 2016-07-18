@@ -1,172 +1,184 @@
+//
+// Variables
+//
+$select-background-color: $global-primary-color !default;
 
-.tools {
-	pointer-events: none;
-	overflow: visible;
+$guide-border-width: 4px !default;
+$guide-border-style: $global-border-style !default;
+$guide-border-color: $global-primary-color !default;
+$guide-background-color: $global-primary-color !default;
 
-	.select-container {
-		position: absolute;
-		top: 0;
-		z-index: 999;
-	}
 
-	.select {
-		position: absolute;
-		z-index: 999;
-		font-family: "Open Sans", sans-serif;
-		font-size: 13px;
+//
+// Exported selectors
+//
+.#{$global-class-prefix}ui {
+
+	.tools {
 		pointer-events: none;
+		overflow: visible;
 
-		.select__controls,
-		.select__menu {
+		.select-container {
 			position: absolute;
 			top: 0;
-			font-size: inherit;
-
-			@include clearfix;
+			z-index: 999;
 		}
 
-		.select__controls {
-			top: 1px;
-			right: 1px;
-		}
+		.select {
+			position: absolute;
+			z-index: 999;
+			font-family: $global-font-family;
+			font-size: $global-font-size;
+			pointer-events: none;
 
-		.select__menu {
-			top: 1px;
-			left: 1px;
-		}
+			&__controls,
+			&__menu {
+				position: absolute;
+				top: 1px;
+				font-size: inherit;
+			}
 
-		.select__item {
-			float: left;
-			padding: 2px 6px;
-			margin: 0;
-			border: none;
-			outline: none;
-			cursor: pointer;
-			color: #fff;
-			line-height: 24px;
-			font-size: 13px;
-			font-weight: normal;
-			background-color: $primary-color;
-			pointer-events: all;
-			white-space: nowrap;
-			background-image: none;
-			text-shadow: none;
-			box-shadow: none;
+			&__controls {
+				right: 1px;
+			}
 
-			&:hover,
-			&:focus {
+			&__menu {
+				left: 1px;
+
+				.select {
+
+					&__item {
+						margin-bottom: 2px;
+						clear: both;
+						cursor: default;
+
+						&:not( :only-child ) {
+							cursor: pointer;
+
+							&:first-child::after {
+								content: ' \25BE';
+							}
+						}
+
+						&:not( :first-child ) {
+							display: none;
+						}
+					}
+				}
+			}
+
+			&__item {
+				float: left;
+				padding: 2px 6px;
 				margin: 0;
 				border: none;
 				outline: none;
-				box-shadow: none;
-				background-color: darken( $primary-color, 5% );
-				background-image: none;
+				cursor: pointer;
+				color: $global-white-color;
+				line-height: 24px;
+				font-size: 13px;
+				font-weight: normal;
+				background-color: $select-background-color;
+				pointer-events: all;
+				white-space: nowrap;
 				text-shadow: none;
-				text-decoration: none;
-			}
+				box-shadow: none;
 
-			@include user-select( none );
-
-			&--left {
-
-				&::after {
-					content: ' \25C0';
+				&:hover,
+				&:focus {
+					background-color: darken( $select-background-color, 5% );
 				}
-			}
 
-			&--right {
+				@include user-select( none );
 
-				&::after {
-					content: ' \25B6';
-				}
-			}
-		}
+				&--left {
 
-		.select__menu {
-
-			.select__item {
-				margin-bottom: 2px;
-				clear: both;
-				cursor: default;
-
-				&:not( :only-child ) {
-					cursor: pointer;
-
-					&:first-child::after {
-						content: ' \25BE';
+					&::after {
+						content: ' \25C0';
 					}
 				}
 
-				&:not( :first-child ) {
-					display: none;
+				&--right {
+
+					&::after {
+						content: ' \25B6';
+					}
+				}
+			}
+
+			&.is-expanded .select {
+
+				&__menu  {
+
+					.select {
+
+						&__item {
+							display: block;
+
+							&:not( :only-child ) {
+
+								&:first-child::after {
+									content: ' \25B4';
+								}
+							}
+						}
+					}
 				}
 			}
 		}
 
-		&.is-expanded .select__menu .select__item {
-			display: block;
-
-			&:not( :only-child ) {
-
-				&:first-child::after {
-					content: ' \25B4';
-				}
-			}
-		}
-	}
-
-	.guide {
-		position: absolute;
-		top: 0;
-		bottom: 0;
-		width: 100%;
-		pointer-events: none;
-		z-index: 999;
-
-		&--top {
-			border-top: solid 4px $primary-color;
-		}
-
-		&--right {
-			border-right: solid 4px $primary-color;
-		}
-
-		&--bottom {
-			border-bottom: solid 4px $primary-color;
-		}
-
-		&--left {
-			border-left: solid 4px $primary-color;
-		}
-
-		&--center {
-			-webkit-transform-style: preserve-3d;
-			-moz-transform-style: preserve-3d;
-			transform-style: preserve-3d;
-
-			&::before {
-				position: absolute;
-				top: 50%;
-				left: 50%;
-				content: '\002B';
-				padding: 0 8px;
-				font-family: "Open Sans", sans-serif;
-				font-size: 1em;
-				color: #fff;
-				background-color: $primary-color;
-
-				@include transform( translate( -50%, -50% ) );
-			}
-		}
-
-		&::after {
+		.guide {
 			position: absolute;
 			top: 0;
-			left: 0;
-			right: 0;
 			bottom: 0;
-			content: '';
-			background-color: rgba( 0, 160, 210, 0.1 );
+			width: 100%;
+			pointer-events: none;
+			z-index: 999;
+
+			&--top {
+				border-top: $guide-border-width $guide-border-style $guide-border-color;
+			}
+
+			&--right {
+				border-right: $guide-border-width $guide-border-style $guide-border-color;
+			}
+
+			&--bottom {
+				border-bottom: $guide-border-width $guide-border-style $guide-border-color;
+			}
+
+			&--left {
+				border-left: $guide-border-width $guide-border-style $guide-border-color;
+			}
+
+			&--center {
+
+				@include prefixer( transform-style, preserve-3d, webkit moz spec );
+
+				&::before {
+					position: absolute;
+					top: 50%;
+					left: 50%;
+					content: '\002B';
+					padding: 0 8px;
+					font-family: $global-font-family;
+					font-size: 1em;
+					color: $global-white-color;
+					background-color: $guide-background-color;
+
+					@include transform( translate( -50%, -50% ) );
+				}
+			}
+
+			&::after {
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				content: '';
+				background-color: rgba( 0, 160, 210, 0.1 );
+			}
 		}
 	}
 }

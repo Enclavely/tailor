@@ -1,3 +1,32 @@
-@import "sections/header";
-@import "sections/title";
+//
+// Exported selectors
+//
+.#{$global-class-prefix}ui {
 
+	.header {
+		border: none;
+		border-bottom: 1px solid #ddd;
+		margin-bottom: 15px;
+	}
+
+	.title-block {
+		margin-top: -1px;
+		background: #fff;
+		color: #555;
+		border-left: none;
+		border-right: none;
+		border-bottom: none;
+		cursor: default;
+	}
+
+	.title {
+		padding: 10px 10px 12px 14px;
+		font-size: 20px;
+		font-weight: 200;
+		line-height: 26px;
+		display: block;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
+}

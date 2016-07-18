@@ -1,95 +1,170 @@
+//
+// Variables
+//
 
-$total-columns:                12 !default;
+// General
+$row-class-prefix: $global-class-prefix !default;
+$row-spacing-vertical: $global-spacing-vertical !default;
+$row-spacing-horizontal: $global-spacing-horizontal !default;
+$row-padding: 0 !default;
+$row-font-size: $global-font-size !default;
+$row-color: inherit !default;
+$row-border-width: 0 !default;
+$row-border-style : $global-border-style !default;
+$row-border-color: $global-border-color !default;
+$row-border-radius: 0 !default;
+$row-background-color: transparent !default;
+$row-box-shadow: none !default;
 
+// Child specifc
+$column-class-prefix: $global-class-prefix !default;
+$column-spacing-vertical: 0 !default;
+$column-padding: 0 !default;
+$column-font-size: $global-font-size !default;
+$column-color: inherit !default;
 $column-border-width: 0 !default;
-$column-border-style : solid !default;
-$column-border-color: $border-color !default;
+$column-border-style : $global-border-style !default;
+$column-border-color: $global-border-color !default;
+$column-border-radius: 0 !default;
+$column-background-color: transparent !default;
+$column-box-shadow: none !default;
 
-.tailor-ui {
-	
-	.tailor-column {
-		min-height: 1px;
-		padding: 0;
-		width: 100%;
-		border: $column-border-width $column-border-style $column-border-color;
-	}
-}
+// Element specific
+$column-number: 12 !default;
+$column-sizer-width: 1rem !default;
 
-@mixin columns( $size ) {
 
-	.tailor-ui {
+//
+// Mixins
+//
+@mixin row( $size ) {
 
-		.tailor-row {
+	.#{$global-class-prefix}ui {
 
-			&--full-height {
-				min-height: 100vh;
-			}
-
-			@include clearfix;
-		}
-
+		// Row
 		.#{$size}-columns {
-			display: -webkit-flex;
-			display: -ms-flexbox;
-			display: flex;
-			margin-left: -#{( strip-unit( $column-gutter ) / 2 )}rem;
-			margin-right: -#{( strip-unit( $column-gutter ) / 2 )}rem;
+			margin-left: -$row-spacing-horizontal;
+			margin-right: -$row-spacing-horizontal;
 
-			.tailor-column {
-				position: relative;
-				float: left;
-				padding-left: #{( strip-unit( $column-gutter ) / 2 )}rem;
-				padding-right: #{( strip-unit( $column-gutter ) / 2 )}rem;
+			@include flex;
 
-				display: -webkit-flex;
-				display: -ms-flexbox;
-				display: flex;
-				flex-direction: column;
+			// Column
+			.#{$column-class-prefix}column {
+				padding-left: $row-spacing-horizontal;
+				padding-right: $row-spacing-horizontal;
 
-				.tailor-column__helper {
-					position: absolute;
-					top: 0;
-					left: 0;
-					width: 100%;
-					height: 100%;
+				@include flex( column );
+
+				&__helper {
 					display: block;
-					pointer-events: none;
 				}
 
-				.tailor-column__sizer {
-					position: absolute;
-					top: 0;
-					bottom: 0;
-					right: -0.5rem;
-					width: 1rem;
-					cursor: col-resize;
-					z-index: 1001;
-					pointer-events: all;
+				> :last-child {
+					margin-bottom: 0;
 				}
 
-				&:last-of-type .tailor-column__helper {
-					display: none;
+				&:last-of-type {
+
+					.#{$column-class-prefix}column {
+
+						// Hide the column handle for the last column
+						&__helper {
+							display: none;
+						}
+					}
 				}
-			}
 
-			@for $i from 1 through $total-columns {
+				@for $i from 1 through $column-number {
 
-				.columns-#{$i} {
-					width: percentage( ( $i / $total-columns ) );
+					&.columns-#{$i} {
+						width: percentage( ( $i / $column-number ) );
+					}
 				}
 			}
 		}
 	}
 }
 
-@include columns( $size: mobile );
 
+//
+// Exported selectors
+//
+.#{$global-class-prefix}ui {
+
+	.#{$row-class-prefix}row {
+		position: relative;
+		padding: $row-padding;
+		margin-bottom: $row-spacing-vertical;
+		font-size: $row-font-size;
+		color: $row-color;
+		background-color: $row-background-color;
+		border: $row-border-width $row-border-style $row-border-color;
+		border-radius: $row-border-radius;
+		box-shadow: $row-box-shadow;
+
+		&--full-height {
+			min-height: 100vh;
+		}
+	}
+
+	.#{$column-class-prefix}column {
+		min-height: 1px;
+		padding: $column-padding;
+		margin-bottom: $column-spacing-vertical;
+		width: 100%;
+		font-size: $column-font-size;
+		color: $column-color;
+		background-color: $column-background-color;
+		border: $column-border-width $column-border-style $column-border-color;
+		border-radius: $column-border-radius;
+		box-shadow: $column-box-shadow;
+
+		&__helper {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			display: none;
+			pointer-events: none;
+		}
+
+		&__sizer {
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			right: - ( $column-sizer-width / 2 );
+			width: $column-sizer-width;
+			cursor: col-resize;
+			z-index: 1001;
+			pointer-events: all;
+		}
+	}
+}
+
+// RTL support
+[dir=rtl] {
+
+	.#{$global-class-prefix}ui {
+
+		.#{$row-class-prefix}row {
+			flex-direction: row-reverse;
+		}
+	}
+}
+
+
+//
+// Media queries
+//
+@include row( mobile );
 
 @media #{$tablet-up} {
-	@include columns( $size: small ); // To provide backward compatibility for old media queries
-	@include columns( $size: tablet );
+	@include row( tablet );
+
+	@include row( small ); // To provide backward compatibility for old media queries
 }
 
 @media #{$desktop} {
-	@include columns( $size: desktop );
+	@include row( desktop );
 }

@@ -122,10 +122,6 @@ ElementView = Marionette.ItemView.extend( {
 		el.innerHTML = html;
 	},
 
-
-
-
-
 	/**
 	 * Refreshes the element template when the element attributes change.
 	 *
@@ -229,10 +225,6 @@ ElementView = Marionette.ItemView.extend( {
 		this.triggerAll( 'element:change:parent', this );
 	},
 
-
-
-
-
 	/**
 	 * Triggers an event on the application channel before the DOM element is rendered.
 	 *
@@ -250,8 +242,9 @@ ElementView = Marionette.ItemView.extend( {
 	onDomRefresh : function() {
 		var elementView = this;
 		this.el.setAttribute( 'draggable', true );
-		this.$el.find( 'a' ).attr( { target : '_blank', draggable : false } );
-		this.$el.find( 'img' ).attr( 'draggable', 'false' );
+		this.$el
+			.find( 'a, img' )
+			.attr( {  draggable : false } );
 		this.$el.imagesLoaded( function() {
 
 			elementView._isReady = true;
@@ -282,11 +275,7 @@ ElementView = Marionette.ItemView.extend( {
 	onDestroy : function() {
 		this.triggerAll( 'element:destroy', this );
 	},
-
-
-
-
-
+	
 	/**
 	 * Triggers events and methods during a given event in the lifecycle.
 	 *

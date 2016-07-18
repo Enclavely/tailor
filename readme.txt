@@ -2,7 +2,7 @@
 Contributors: andrew.worsfold
 Donate link: http://gettailor.com/donate/
 Tags: page, layout, builder, frontend, content, page builder, drag and drop builder, home page builder, landing page builder, layout builder, frontend builder, frontend editor, responsive, visual composer, beaver builder
-Stable tag: 1.2.7
+Stable tag: 1.3.0
 Requires at least: 4.3
 Tested up to: 4.5.3
 License: GPLv3 or later
@@ -115,13 +115,30 @@ Yes, however, users should be directed to the WordPress plugin repository to ins
 
 == Changelog ==
 
+= 1.3.0 =
+* Added: image link control to Gallery element.
+* Added: title attribute to history snapshots.
+* Added: compatibility for NextGen gallery plugin.
+* Added: compatibility for Thesis theme framework.
+* Changed: button block style to be a style option instead of alignment option.
+* Changed: Open Sans to system fonts.
+* Improved: vertical spacing for various elements, including rows and columns.
+* Improved: RTL compatibility for modals, notifications and carousels.
+* Fixed: responsive settings for rows and grids being applied inappropriately.
+* Fixed: history snapshots being created when previewing changes to an element.
+* Fixed: page title not being updated correctly.
+* Developer: Cleaned up SCSS project.
+
+= 1.2.8 =
+* Added check to ensure post archives and the posts page cannot be Tailored.
+
 = 1.2.7 =
 * Added RTL support.
 
 = 1.2.6 =
-* Fixed image and gallery controls when used with small images (credit: dtbaker).
-* Improved background image/color settings.
 * Added device-specific visibility setting to rows, columns, grids and grid items under General settings tab.
+* Fixed image and gallery controls breaking when adding small images (credit: dtbaker).
+* Improved background image/color settings.
 
 = 1.2.5 =
 * Added compatibility for the Yoast SEO plugin.
@@ -132,18 +149,18 @@ Yes, however, users should be directed to the WordPress plugin repository to ins
 * Updated CSS to ensure pseudo-elements use double colon notation.
 
 = 1.2.3 =
-* Fix to element drag-drop ghost image when dragging on Chrome.
+* Fixed element drag-drop ghost image disappearing when dragging on Chrome.
 
 = 1.2.2 =
-* Minor improvements to the display of the Tailor this Page link in the Admin Bar.
+* Minor improvements to the display of the 'Tailor this ..' Admin Bar link.
 
 = 1.2.1 =
 * Removed 'Tailor this ..' Admin Bar link from archive pages (credit: BinaryMoon).
 
 = 1.2.0 =
 * Changed container behaviour so that they do not collapse when only one child element remains (excludes row/column layouts). [Learn more about this change](http://www.andrewworsfold.com/2016/06/26/working-with-containers/).
-* Fixed custom CSS within template previews.
-* Fixed tab reordering after tab renaming.
+* Fixed custom CSS not appearing within template previews.
+* Fixed breaking of tab order after tab renaming.
 
 = 1.1.3 =
 * Updated device preview and media query settings to be in line with the WordPress Customizer (i.e., Desktop, Tablet and Mobile sizes).  [Learn more about this change](http://www.andrewworsfold.com/2016/06/25/device-previews/).

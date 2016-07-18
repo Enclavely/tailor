@@ -1,119 +1,145 @@
+//
+// Variables
+//
 
-$button-spacing-unit: $base-spacing-unit !default;
-
-$button-border-width: 1px !default;
-$button-border-style : solid !default;
-$button-border-color: $border-color !default;
-
-$button-color: $text-color !default;
-$button-background-color: #fdfdfd !default;
-
+// General
+$button-class-prefix: $global-class-prefix !default;
+$button-spacing-vertical: $global-spacing-vertical !default;
+$button-padding: 1em !default;
+$button-font-size: $global-font-size !default;
+$button-border-width: $global-border-width !default;
+$button-border-style : $global-border-style !default;
+$button-border-color: $global-border-color !default;
+$button-border-color--primary: darken( $global-primary-color, 2% ) !default;
+$button-border-radius: $global-border-radius !default;
+$button-color: inherit !default;
 $button-color--primary: #fff !default;
-$button-background-color--primary: #4e97e2 !default;
+$button-background-color: $global-background-color !default;
+$button-background-color--primary: $global-primary-color !default;
+$button-box-shadow: $global-box-shadow !default;
 
-.tailor-ui {
 
-	.tailor-button {
-		margin-bottom: #{$button-spacing-unit}em;
+//
+// Exported selectors
+//
+.#{$global-class-prefix}ui {
+
+	.#{$button-class-prefix}button {
+		margin-bottom: $button-spacing-vertical;
 		width: 100%;
 
-		&--small {
-			font-size: 0.75em;
-		}
-
-		&--large {
-			font-size: 1.5em;
-		}
-
-		&--left {
-			text-align: left;
-		}
-
-		&--center {
+		&__inner {
+			display: block;
+			padding: $button-padding ( $button-padding * 1.5 );
+			margin: 0;
 			text-align: center;
-		}
-
-		&--right {
-			text-align: right;
-		}
-
-		&--block {
-			font-size: 1.5em;
-
-			.tailor-button__inner {
-				display: block;
-				padding: 1em 1.5em;
-			}
-		}
-	}
-
-	.tailor-button__inner {
-		display: block;
-		padding: 1em 1.5em;
-		margin: 0;
-		text-align: center;
-		cursor: pointer;
-		font-family: inherit;
-		background-color: $button-background-color;
-		color: inherit;
-		border: 1px solid $border-color;
-		box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1), 0 1px 0 rgba(0, 0, 0, 0.05);
-
-		@include transition( all 150ms );
-
-		i {
-			line-height: inherit;
-			font-size: inherit;
-		}
-
-		i:not( :only-child ) {
-			margin-right: #{( $button-spacing-unit / 4 )}em;
-		}
-
-		&:focus,
-		&:hover {
-			outline: 0;
+			cursor: pointer;
+			font-family: inherit;
+			font-size: $button-font-size;
+			color: $button-color;
+			background-color: $button-background-color;
 			border: $button-border-width $button-border-style $button-border-color;
-			background-color: darken( $button-background-color, 2% );
-		}
+			border-radius: $button-border-radius;
+			box-shadow: $button-box-shadow;
 
-		&:active {
-			background-color: darken( $button-background-color, 5% );
-		}
+			@include transition( all $global-transition-duration );
 
-		&:active,
-		&:focus,
-		&:hover {
-			box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.1) inset, 0 0 rgba(0, 0, 0, 0.05) inset;
-		}
-	}
+			> * {
+				display: inline-table;
+				line-height: inherit;
+				font-size: inherit;
+			}
 
-	.tailor-button--primary {
+			i {
 
-		.tailor-button__inner {
-			color: $button-color--primary;
-			background-color: $button-background-color--primary;
+				&:not( :only-child ) {
+					margin-right: 0.25em;
+				}
+			}
 
+			// States
+			&:focus,
 			&:hover {
-				border-color: darken( $button-background-color--primary, 20% );
-				background-color: darken( $button-background-color--primary, 2% );
+				outline: 0;
+				background-color: darken( $button-background-color, 2% );
 			}
 
 			&:active {
-				background-color: darken( $button-background-color--primary, 5% );
+				background-color: darken( $button-background-color, 5% );
 			}
+
+			&:focus,
+			&:hover,
+			&:active {
+				border-color: darken( $button-border-color, 5% );
+			}
+		}
+
+		// Variations
+		&--primary {
+
+			.#{$button-class-prefix}button {
+
+				&__inner {
+					color: $button-color--primary;
+					background-color: $button-background-color--primary;
+					border-color: $button-border-color--primary;
+
+					// States
+					&:focus,
+					&:hover {
+						background-color: darken( $button-background-color--primary, 2% );
+					}
+
+					&:active {
+						background-color: darken( $button-background-color--primary, 5% );
+					}
+
+					&:hover,
+					&:focus,
+					&:active {
+						border-color: darken( $button-border-color--primary, 5% );
+					}
+				}
+			}
+		}
+
+		&--block {
+			//font-size: ( $button-font-size * 1.6 );
+
+			.#{$button-class-prefix}button {
+
+				&__inner {
+					display: block;
+				}
+			}
+		}
+
+		// Sizes
+		&--small {
+			font-size: ( $button-font-size * 0.8 );
+		}
+
+		&--large {
+			font-size: ( $button-font-size * 1.6 );
 		}
 	}
 }
 
-
+//
+// Media queries
+//
 @media #{$tablet-up} {
 
-	.tailor-ui {
+	.#{$global-class-prefix}ui {
 
-		.tailor-button__inner {
-			display: inline-block;
-			padding: 0.5em 1.5em;
+		.#{$button-class-prefix}button {
+
+			&__inner {
+				display: inline-block;
+				padding-top: ( $button-padding / 2 );
+				padding-bottom: ( $button-padding / 2 );
+			}
 		}
 	}
 }

@@ -1,11 +1,114 @@
+//
+// Variables
+//
 
+// General
 $attachment-caption-color: #fff !default;
 $attachment-caption-background-color: rgba(35,35,35,0.4) !default;
 
-.tailor-ui {
+
+//
+// Mixins
+//
+// @see https://css-tricks.com/snippets/sass/maintain-aspect-ratio-mixin/
+//
+@mixin aspect-ratio( $width, $height ) {
+	position: relative;
+	overflow: hidden;
+
+	&::before {
+		display: block;
+		content: " ";
+		width: 100%;
+		padding-top: percentage( $height / $width );
+	}
+
+	&.is-stretched {
+
+		img {
+			min-height: 100%;
+			min-width: 100%;
+		}
+	}
+
+	> * {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+
+		img {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			backface-visibility: hidden;
+		}
+
+		@if $width == $height  {
+
+			img {
+				width: auto;
+			}
+		}
+		@else if $width > $height {
+
+			img {
+				width: 100%;
+				height: auto;
+				max-height: none;
+			}
+		}
+		@else {
+
+			img {
+				width: auto;
+				max-width: none;
+				height: 100%;
+			}
+		}
+	}
+}
+
+
+//
+// Exported selectors
+//
+.#{$global-class-prefix}ui {
 
 	.tailor-attachment {
 		margin: 0;
+
+		&__image {
+			position: relative;
+			display: block;
+			margin: 0;
+			outline: none;
+			border: none;
+			box-shadow: none;
+			height: 100%;
+
+			img {
+				display: block;
+				margin: 0 auto;
+			}
+		}
+
+		&__caption {
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			display: inline-block;
+			padding: 0.5em 1em;
+			color: $attachment-caption-color;
+			background-color: $attachment-caption-background-color;
+			font-size: 14px;
+			max-width: 100%;
+			overflow: hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+		}
 	}
 
 	.is-stretched {
@@ -15,35 +118,7 @@ $attachment-caption-background-color: rgba(35,35,35,0.4) !default;
 		}
 	}
 
-	.tailor-attachment__image {
-		position: relative;
-		display: block;
-		margin: 0;
-		outline: none;
-		border: none;
-		box-shadow: none;
-
-		img {
-			display: block;
-			margin: 0 auto;
-		}
-	}
-
-	.tailor-attachment__caption {
-		position: absolute;
-		bottom: 0;
-		left: 0;
-		display: inline-block;
-		padding: 0.5em 1em;
-		color: $attachment-caption-color;
-		background-color: $attachment-caption-background-color;
-		font-size: 14px;
-		max-width: 100%;
-		overflow: hidden;
-		white-space: nowrap;
-		text-overflow: ellipsis;
-	}
-
+	// Aspect ratios
 	.aspect-ratio-1-1 {
 		@include aspect-ratio( 1, 1 );
 	}

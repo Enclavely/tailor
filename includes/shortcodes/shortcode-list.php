@@ -23,14 +23,15 @@ if ( ! function_exists( 'tailor_shortcode_list' ) ) {
     function tailor_shortcode_list( $atts, $content = null, $tag ) {
 
         $atts = shortcode_atts( array(
-            'id'                =>  '',
-            'class'             =>  '',
-            'type'              =>  'icon',
-            'style'             =>  'default',
+            'id'                        =>  '',
+            'class'                     =>  '',
+            'type'                      =>  'icon',
+            'style'                     =>  'default',
         ), $atts, $tag );
 
 	    $id = ( '' !== $atts['id'] ) ? 'id="' . esc_attr( $atts['id'] ) . '"' : '';
 	    $class = trim( esc_attr( "tailor-element tailor-list tailor-list--{$atts['type']} tailor-list--{$atts['style']} {$atts['class']}" ) );
+
 
 	    return  '<ul ' . trim( "{$id} class=\"{$class}\"" ) . '>' .
 	                do_shortcode( $content ) .
@@ -55,20 +56,21 @@ if ( ! function_exists( 'tailor_shortcode_list_item' ) ) {
 	function tailor_shortcode_list_item( $atts, $content = null, $tag ) {
 
         $atts = shortcode_atts( array(
-            'id'                =>  '',
-            'class'             =>  '',
-
-            'title'             =>  '',
-            'alignment'         =>  'left',
-            'graphic_type'      =>  'icon',
-
-            'icon'              =>  'dashicons dashicons-wordpress',
-            'image'             =>  '',
-
+            'id'                        =>  '',
+            'class'                     =>  '',
+            'title'                     =>  '',
+            'horizontal_alignment'      =>  '',
+            'graphic_type'              =>  'icon',
+            'icon'                      =>  'dashicons dashicons-wordpress',
+            'image'                     =>  '',
         ), $atts, $tag );
 
 		$id = ( '' !== $atts['id'] ) ? 'id="' . esc_attr( $atts['id'] ) . '"' : '';
-		$class = trim( esc_attr( "tailor-list__item tailor-list__item--{$atts['alignment']} tailor-list__item--{$atts['graphic_type']} {$atts['class']}" ) );
+		$class = trim( esc_attr( "tailor-list__item tailor-list__item--{$atts['graphic_type']} {$atts['class']}" ) );
+
+		if ( ! empty( $atts['horizontal_alignment'] ) ) {
+			$class .= esc_attr( " u-text-{$atts['horizontal_alignment']}" );
+		}
 
 		$title = ! empty( $atts['title'] ) ? '<h3 class="tailor-list__title">' . esc_html( (string) $atts['title'] ) . '</h3>' : '';
 

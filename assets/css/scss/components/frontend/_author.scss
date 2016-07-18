@@ -1,0 +1,99 @@
+
+//
+// Variables
+//
+
+// General
+$author-class-prefix: $global-class-prefix !default;
+$author-spacing-vertical: $global-spacing-vertical !default;
+$author-padding: 0 !default;
+$author-font-size: $global-font-size !default;
+$author-color: inherit !default;
+$author-border-width: $global-border-width !default;
+$author-border-style : $global-border-style !default;
+$author-border-color: $global-border-color !default;
+$author-border-radius: $global-border-radius !default;
+$author-background-color: transparent !default;
+$author-box-shadow: none !default;
+
+// Element specific
+$author-avatar-size: 100px !default;
+
+
+//
+// Exported selectors
+//
+.#{$global-class-prefix}ui {
+
+	.#{$author-class-prefix}author {
+		padding: $author-padding;
+		margin-bottom: $author-spacing-vertical;
+		font-size: $author-font-size;
+		color: $author-color;
+		background-color: $author-background-color;
+		border:  $author-border-width $author-border-style $author-border-color;
+		border-radius: $author-border-radius;
+		box-shadow: $author-box-shadow;
+		overflow: hidden;
+
+		&__wrap {
+			padding: 0 2em 1em;
+		}
+
+		&__header {
+			padding-top: $author-spacing-vertical;
+			text-align: center;
+		}
+
+		&__avatar {
+			margin: 0;
+			width: $author-avatar-size;
+			border-radius: 50%;
+			border: 5px solid $global-white-color;
+		}
+
+		&__name {
+			margin: 0 0 $author-spacing-vertical;
+			font-size: ( $author-font-size * 1.25 );
+			text-align: center;
+		}
+
+		&__social-links {
+			padding: 0;
+			margin: 0 0 ( $author-spacing-vertical / 2 );
+			list-style: none;
+			text-align: center;
+
+			li {
+				display: inline-block;
+				margin-right: ( $author-spacing-vertical / 2 );
+			}
+
+			a {
+				text-decoration: none;
+			}
+		}
+
+		&.has-header-image {
+
+			.#{$author-class-prefix}author {
+
+				&__header {
+					position: relative;
+					margin-bottom: ( $author-avatar-size / 2 );
+					min-height: ( $author-spacing-vertical * 10 );
+					border-top-left-radius: $author-border-radius;
+					border-top-right-radius: $author-border-radius;
+				}
+
+				&__avatar {
+					position: absolute;
+					bottom: -( $author-avatar-size / 2 );
+					left: 0;
+					right: 0;
+					margin: 0 auto;
+				}
+			}
+		}
+	}
+}

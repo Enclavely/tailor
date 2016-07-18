@@ -29,7 +29,7 @@ if ( ! class_exists( 'Tailor_Sidebar' ) ) {
             if ( ! tailor()->is_tailoring() ) {
                 return;
             }
-
+	        
 	        $this->add_actions();
         }
 
@@ -40,8 +40,9 @@ if ( ! class_exists( 'Tailor_Sidebar' ) ) {
          * @access protected
          */
         protected function add_actions() {
-	        
-	        add_filter( 'template_include', array( $this, 'render_page' ), 9999 );
+
+	        remove_all_filters( 'template_include' );
+	        add_filter( 'template_include', array( $this, 'render_page' ) );
 
 	        add_action( 'tailor_sidebar_head', array( $this, 'enqueue_styles' ) );
 	        add_action( 'tailor_sidebar_head', 'wp_print_styles' );
@@ -57,8 +58,10 @@ if ( ! class_exists( 'Tailor_Sidebar' ) ) {
             add_action( 'tailor_sidebar_footer', 'wp_print_footer_scripts' );
             add_action( 'tailor_sidebar_footer', 'wp_auth_check_html' );
 
-	        add_action( 'wp_ajax_tailor_save', array( $this, 'save' ) );
             add_action( 'wp_ajax_tailor_refresh_nonces', array( $this, 'refresh_nonces' ) );
+
+			// Address potential plugin conflicts
+	        add_filter( 'run_ngg_resource_manager', '__return_false' );
         }
 
 	    /**
@@ -201,36 +204,6 @@ if ( ! class_exists( 'Tailor_Sidebar' ) ) {
 	        }
 
 	        if ( apply_filters( 'tailor_enqueue_sidebar_stylesheets', true ) ) {
-		        
-		        $open_sans_font_url = '';
-
-		        /**
-		         * Translators: If there are characters in your language that are not supported
-		         * by Open Sans, translate this to 'off'. Do not translate into your own language.
-		         */
-		        if ( 'off' !== _x( 'on', 'Open Sans font: on or off' ) ) {
-			        $subsets = 'latin,latin-ext';
-
-			        /**
-			         * Translators: To add an additional Open Sans character subset specific to your language,
-			         * translate this to 'greek', 'cyrillic' or 'vietnamese'. Do not translate into your own language.
-			         */
-			        $subset = _x( 'no-subset', 'Open Sans font: add new subset (greek, cyrillic, vietnamese)' );
-
-			        if ( 'cyrillic' == $subset ) {
-				        $subsets .= ',cyrillic,cyrillic-ext';
-			        }
-			        else if ( 'greek' == $subset ) {
-				        $subsets .= ',greek,greek-ext';
-			        }
-			        else if ( 'vietnamese' == $subset ) {
-				        $subsets .= ',vietnamese';
-			        }
-
-			        $open_sans_font_url = "//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,300,400,600&subset=$subsets";
-		        }
-
-		        wp_enqueue_style( 'open-sans', $open_sans_font_url );
 
 		        $min = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
 
@@ -311,6 +284,7 @@ if ( ! class_exists( 'Tailor_Sidebar' ) ) {
 	        ) );
 
 	        wp_localize_script( $sidebar_script_name, '_l10n', array(
+		        'tailoring'         =>  __( 'Tailoring: ', 'tailor' ),
 		        'select'            =>  __( 'Select', 'tailor' ),
 		        'save'              =>  __( 'Save', 'tailor' ),
 		        'saveTemplate'      =>  __( 'Save template', 'tailor' ),
@@ -320,11 +294,9 @@ if ( ! class_exists( 'Tailor_Sidebar' ) ) {
 		        'importTemplate'    =>  __( 'Import template', 'tailor' ),
 		        'delete'            =>  __( 'Delete', 'tailor' ),
 		        'close'             =>  __( 'Close', 'tailor' ),
-
 		        'error'             =>  __( 'An error occurred, please try again', 'tailor' ),
 		        'expired'           =>  __( 'The session has expired', 'tailor' ),
 		        'invalid'           =>  __( 'The request made was invalid', 'tailor' ),
-
 		        'savedPage'         =>  sprintf( __( '%s saved successfully', 'tailor' ), ucfirst( $post_type ) ),
 		        'restoreElements'   =>  __( 'History entry restored successfully', 'tailor' ),
 		        'deletedElement'    =>  __( 'Element deleted successfully', 'tailor' ),
@@ -332,10 +304,8 @@ if ( ! class_exists( 'Tailor_Sidebar' ) ) {
 		        'importedTemplate'  =>  __( 'Template imported successfully', 'tailor' ),
 		        'addedTemplate'     =>  __( 'Template added successfully', 'tailor' ),
 		        'deletedTemplate'   =>  __( 'Template deleted successfully', 'tailor' ),
-
 		        'dragElement'       =>  __( 'To add an element, drag it into the desired position on the page', 'tailor' ),
 		        'dragTemplate'      =>  __( 'To add a template, drag it into the desired position on the page', 'tailor' ),
-
 		        'confirmPage'       =>  __( 'The changes you made will be lost if you navigate away from this page', 'tailor' ),
 		        'confirmElement'    =>  __( 'You have made changes to this element.  Would you like to save them?', 'tailor' ),
 	        ) );

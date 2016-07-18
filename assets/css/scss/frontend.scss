@@ -3,20 +3,14 @@
 //
 // Tools
 //
-@import "tools/animation";
-@import "tools/appearance";
+@import "tools/flex";
 @import "tools/keyframes";
 @import "tools/transform";
 @import "tools/transition";
 @import "tools/user-select";
 @import "tools/prefixer";
 @import "tools/clearfix";
-@import "tools/helpers";
-
-//
-// Mixins
-//
-@import "mixins/aspect-ratio";
+@import "tools/box-shadow";
 
 //
 // Generic styles
@@ -26,13 +20,12 @@
 //
 // Components
 //
-@import "components/frontend/element";
+@import "components/frontend/author";
 @import "components/frontend/box";
 @import "components/frontend/button";
 @import "components/frontend/content";
-@import "components/frontend/contact-form-7";
+@import "components/frontend/contact-form";
 @import "components/frontend/tabs";
-@import "components/frontend/row";
 @import "components/frontend/carousel";
 @import "components/frontend/columns";
 @import "components/frontend/list";
@@ -43,10 +36,8 @@
 @import "components/frontend/card";
 @import "components/frontend/hero";
 @import "components/frontend/toggles";
-@import "components/frontend/toggle";
 @import "components/frontend/posts";
 @import "components/frontend/section";
-@import "components/frontend/user";
 @import "components/frontend/widgets";
 
 //
@@ -54,10 +45,8 @@
 //
 @import "objects/embeds";
 @import "objects/slideshow";
-@import "objects/navigation";
 @import "objects/pagination";
 @import "objects/attachment";
-@import "objects/grid";
 
 //
 // Vendor
@@ -70,7 +59,7 @@
 //
 @import "trumps/placeholder";
 @import "trumps/utility";
-@import "trumps/exceptions";
+@import "trumps/notifications";
 @import "trumps/icons";
 @import "trumps/formats";
 @import "trumps/wordpress";

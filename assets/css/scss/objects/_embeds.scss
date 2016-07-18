@@ -1,4 +1,7 @@
-.tailor-responsive-embed {
+//
+// Exported selectors
+//
+.#{$global-class-prefix}responsive-embed {
 	position: relative;
 	display: block;
 	padding: 0;

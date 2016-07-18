@@ -64,7 +64,6 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Link_Control' )
 		    check_ajax_referer( 'tailor-query', 'nonce' );
 
 		    $term = wp_unslash( $_POST['s'] );
-
 		    $response = '';
 
 		    if ( ! empty( $term ) ) {
@@ -79,31 +78,23 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Link_Control' )
 			    );
 
 			    $parameters = array_merge( $defaults, $_POST );
-
 			    $posts = get_posts( $parameters );
 
 			    if ( empty( $posts ) ) {
-
 				    $response .= sprintf( '<p class="query-notice">%s</p>', __( 'Nothing found matching your criteria. Showing recent items.', 'tailor' ) );
-
 				    $parameters = array_merge( $defaults, array( 'posts_per_page' => 10 ) );
-
 				    $posts = get_posts( $parameters );
-
 			    }
 
 			    foreach ( $posts as $post ) {
-
 				    $post_type = get_post_type( $post->ID );
 				    $post_type_object = get_post_type_object( $post_type );
-
 				    $response .=    '<label>' .
 				                        '<input type="radio" name="url" value="' . get_permalink( $post->ID ) . '">' .
 					                    '<span class="entry-title">' . get_the_title( $post->ID ) . '</span>' .
 					                    '<span class="entry-type">' . $post_type_object->labels->singular_name . '</span>' .
 				                    '</label>';
 			    }
-
 		    }
 
 		    wp_send_json_success( $response );

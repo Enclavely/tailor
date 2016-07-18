@@ -225,8 +225,9 @@ CompositeView = Marionette.CompositeView.extend( {
 	 */
 	onDomRefresh : function() {
 		this.el.setAttribute( 'draggable', true );
-		this.$el.find( 'a' ).attr( { target : '_blank', draggable : false } );
-		this.$el.find( 'img' ).attr( 'draggable', 'false' );
+		this.$el
+			.find( 'a, img' )
+			.attr( {  draggable : false } );
 	},
 
 	/**

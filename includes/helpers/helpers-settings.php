@@ -32,6 +32,7 @@ if ( ! function_exists( 'tailor_get_setting' ) ) {
 			    'roles'                     =>  array(
 				    'editor'                    =>  'on',
 				    'author'                    =>  'on',
+				    'contributor'               =>  'on',
 			    ),
 			    'content_placeholder'       =>  tailor_do_shakespeare(),
 			    'show_element_descriptions' =>  array(

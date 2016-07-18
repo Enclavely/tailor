@@ -1,118 +1,163 @@
+@import "variables";
 
+//
+// Variables
+//
+$sidebar-width: 300px !default;
+$sidebar-border-width: 1px !default;
+$sidebar-border-style: solid !default;
+$sidebar-border-color: #ddd !default;
+
+
+//
+// Exported selectors
+//
 [dir=rtl] {
 
-	.tailor {
-		margin-left: 0;
-		margin-right: 300px;
-	}
-
-	.tailor-sidebar {
-		left: auto;
-		right: 0;
-		border-left: 1px solid #ddd;
-		border-right: none;
-	}
-
-	.is-collapsed {
+	.#{$global-class-prefix}ui {
 
 		.tailor {
-			margin-right: 0;
-		}
-
-		.tailor-sidebar {
 			margin-left: 0;
-			margin-right: -300px;
-		}
-	}
-
-	.tailor-sidebar__header {
-		padding-left: 15px;
-		padding-right: 0;
-
-		.spinner {
-			float: left;
+			margin-right: $sidebar-width;
 		}
 
-		.button-primary {
-			float: left;
-		}
-	}
-
-	.tailor-sidebar__control {
-		float: right;
-		padding-left: 2px;
-		padding-right: 0;
-		border-left: 1px solid #ddd;
-		border-right: none;
-
-		&::before {
+		// Sidebar
+		.tailor-sidebar {
 			left: auto;
-			right: 13px;
+			right: 0;
+			border-left: $sidebar-border-width $sidebar-border-style $sidebar-border-color;
+			border-right: none;
+
+			&__header {
+				padding-left: 15px;
+				padding-right: 0;
+
+				.spinner {
+					float: left;
+				}
+
+				.button-primary {
+					float: left;
+				}
+			}
+
+			&__control {
+				float: right;
+				padding-left: 2px;
+				padding-right: 0;
+				border-left: $sidebar-border-width $sidebar-border-style $sidebar-border-color;
+				border-right: none;
+
+				&::before {
+					left: auto;
+					right: 13px;
+				}
+			}
 		}
-	}
 
-	.back-button {
-		float: right;
-		border-left: 1px solid #ddd;
-		border-right: none;
+		.back-button {
+			float: right;
+			border-left: $sidebar-border-width $sidebar-border-style $sidebar-border-color;
+			border-right: none;
 
-		&::before {
-			content: "\f345";
+			&::before {
+				content: "\f345";
+			}
 		}
-	}
 
-	.help-button {
-		left: 1px;
-		right: auto;
-	}
+		.help-button {
+			left: $sidebar-border-width;
+			right: auto;
+		}
 
-	.list--primary .list__label::after {
-		content: "\f341";
-		left: 0;
-		right: auto;
-	}
+		.list--primary {
 
-	.list .element::before {
-		padding-left: 0.75em;
-		padding-right: 0;
-		float: right;
-	}
+			.list__label::after {
+				content: "\f341";
+				left: 0;
+				right: auto;
+			}
+		}
 
-	.list .element__badge {
-		left: -1px;
-		right: auto;
-	}
+		.list {
 
-	.collapse-sidebar {
-		left: auto;
-		right: 10px;
-	}
+			.element {
 
-	.collapse-sidebar-arrow::before {
-		-webkit-transform: rotate(180.001deg);
-		-ms-transform: rotate(180.001deg);
-		transform: rotate(180.001deg);
-	}
+				&__badge {
+					left: -$sidebar-border-width;
+					right: auto;
+				}
 
-	.is-collapsed .collapse-sidebar-arrow::before {
-		-webkit-transform: rotate(01deg);
-		-ms-transform: rotate(0deg);
-		transform: rotate(0deg);
-	}
+				&::before {
+					padding-left: 0.75em;
+					padding-right: 0;
+					float: right;
+				}
+			}
 
-	.devices {
-		float: left;
-	}
+		}
 
-	.modal__title,
-	.dialog__title {
-		float: right;
-		padding-left: 0;
-		padding-right: 14px;
-	}
+		.collapse-sidebar {
+			left: auto;
+			right: 10px;
 
-	.modal__controls button,
-	.dialog__close {
-		float: left;
+			&-arrow {
+
+				&::before {
+					-webkit-transform: rotate( 180.001deg );
+					-ms-transform: rotate( 180.001deg );
+					transform: rotate( 180.001deg );
+				}
+			}
+		}
+
+		.devices {
+			float: left;
+		}
+
+		&.is-collapsed {
+
+			.tailor {
+				margin-right: 0;
+			}
+
+			.tailor-sidebar {
+				margin-left: 0;
+				margin-right: -$sidebar-width;
+			}
+
+			.collapse-sidebar-arrow {
+
+				&::before {
+					-webkit-transform: rotate( 01deg );
+					-ms-transform: rotate( 0deg );
+					transform: rotate( 0deg );
+				}
+			}
+		}
+
+		// Notifications
+		.notification-container {
+			left: 25px;
+			right: auto;
+		}
+
+		// Modal windows
+		.modal__title,
+		.dialog__title {
+			float: right;
+			padding-left: 0;
+			padding-right: 14px;
+		}
+
+		.modal__controls button,
+		.dialog__close {
+			float: left;
+		}
+
+		.modal__footer,
+		.dialog__footer {
+			text-align: left;
+		}
 	}
 }

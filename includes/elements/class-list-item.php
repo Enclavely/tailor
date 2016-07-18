@@ -45,7 +45,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_List_Item_Eleme
 	        $priority = 0;
 	        $general_control_types = array(
 		        'title',
-		        'alignment',
+		        'horizontal_alignment',
 		        'graphic_type',
 		        'icon',
 		        'image',
@@ -57,11 +57,11 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_List_Item_Eleme
 				        'default'               =>  $this->label,
 			        ),
 		        ),
-		        'alignment'             =>  array(
+		        'horizontal_alignment'  =>  array(
 			        'control'               =>  array(
 				        'choices'               =>  array(
-					        'left'                  =>  __( 'Left', 'tailor' ),
-					        'right'                 =>  __( 'Right', 'tailor' ),
+					        'left'                  =>  '<i class="tailor-icon tailor-align-left"></i>',
+					        'right'                 =>  '<i class="tailor-icon tailor-align-right"></i>',
 				        ),
 			        ),
 		        ),
@@ -232,7 +232,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_List_Item_Eleme
 
                 if ( ! empty( $atts['graphic_background_color'] ) || ! empty( $atts['graphic_background_color_hover'] ) ) {
 
-                    $alignment = empty( $atts['alignment'] ) ? 'left' : $atts['alignment'];
+                    $alignment = empty( $atts['horizontal_alignment'] ) ? 'left' : $atts['horizontal_alignment'];
 
                     $css_rules[] = array(
                         'selectors'                 =>  array( '.tailor-list__body' ),

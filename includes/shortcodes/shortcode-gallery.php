@@ -23,31 +23,29 @@ if ( ! function_exists( 'tailor_shortcode_gallery' ) ) {
     function tailor_shortcode_gallery( $atts, $content = null, $tag ) {
 
         $atts = shortcode_atts( array(
-            'id'                =>  '',
-            'class'             =>  '',
-            'ids'               =>  '',
-            'layout'            =>  'list',
-            'items_per_row'     =>  2,
-
-            'masonry'           =>  false,
-            'lightbox'          =>  false,
-            'caption'           =>  false,
-
-            'autoplay'          =>  '',
-            'fade'              =>  '',
-            'arrows'            =>  '',
-            'dots'              =>  '',
-            'thumbnails'        =>  '',
-
-            'image_size'        =>  'large',
-            'aspect_ratio'      =>  '',
-            'stretch'           =>  false,
+            'id'                        =>  '',
+            'class'                     =>  '',
+            'ids'                       =>  '',
+            'layout'                    =>  'list',
+            'items_per_row'             =>  2,
+            'masonry'                   =>  false,
+            //'lightbox'                  =>  false,
+            'caption'                   =>  false,
+            'autoplay'                  =>  '',
+            'fade'                      =>  '',
+            'arrows'                    =>  '',
+            'dots'                      =>  '',
+            'thumbnails'                =>  '',
+            'image_link'                =>  'large',
+            'image_size'                =>  'large',
+            'aspect_ratio'              =>  '',
+            'stretch'                   =>  false,
         ), $atts, $tag );
 
 	    $id = ( '' !== $atts['id'] ) ? 'id="' . esc_attr( $atts['id'] ) . '"' : '';
 	    $class = trim( esc_attr( "tailor-element tailor-gallery tailor-{$atts['layout']} tailor-{$atts['layout']}--gallery {$atts['class']}" ) );
 
-	    if ( true == $atts['lightbox'] ) {
+	    if ( 'lightbox' == $atts['image_link'] ) {
 		    $class .= ' is-lightbox-gallery';
 	    }
 
@@ -93,7 +91,7 @@ if ( ! function_exists( 'tailor_shortcode_gallery' ) ) {
 			    'pagination'        =>  false,
 		    ),
 		    'entry_args'        =>  array(
-			    'lightbox'          =>  $atts['lightbox'],
+			    'image_link'        =>  $atts['image_link'],
 			    'image_size'        =>  $atts['image_size'],
 			    'aspect_ratio'      =>  $atts['aspect_ratio'],
 			    'stretch'           =>  $atts['stretch'],

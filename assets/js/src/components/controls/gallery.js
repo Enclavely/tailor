@@ -75,6 +75,8 @@ GalleryControl = AbstractControl.extend( {
 
         frame
             .on( 'open', function() {
+
+	            // Hide the Cancel Gallery link
                 var mediaFrame = frame.views.get( '.media-frame-menu' )[0];
                 mediaFrame.$el.children().slice( 0, 2 ).hide();
 
@@ -88,6 +90,7 @@ GalleryControl = AbstractControl.extend( {
 		            galleryControl.model.setting.trigger( 'change', galleryControl.model.setting, value );
 	            }
 	            galleryControl.updateThumbnails( collection );
+
             } )
             .on( 'close', function() {
                 frame.dispose();

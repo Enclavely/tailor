@@ -25,6 +25,10 @@ Carousel = function( el, options, callbacks ) {
 	this.$wrap = this.$el.find( '.tailor-carousel__wrap' ).first();
 
 	this.options = $.extend( {}, this.defaults, options );
+	if ( document.documentElement.dir && 'rtl' == document.documentElement.dir ) {
+		this.options.rtl = true;
+	}
+	
     this.callbacks = $.extend( {}, this.callbacks, callbacks );
 
     this.initialize();

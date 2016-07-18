@@ -24,10 +24,10 @@ if ( ! function_exists( 'tailor_shortcode_user' ) ) {
     function tailor_shortcode_user( $atts, $content = null, $tag ) {
 
         $atts = shortcode_atts( array(
-            'id'                =>  '',
-            'class'             =>  '',
-            'author_id'         =>  '',
-            'image'             =>  '',
+            'id'                        =>  '',
+            'class'                     =>  '',
+            'author_id'                 =>  '',
+            'image'                     =>  '',
 
         ), $atts, $tag );
 

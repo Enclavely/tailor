@@ -235,6 +235,11 @@ $dashicons = array(
 	),
 );
 
+/**
+ * Filter the list of available Dashicons
+ * 
+ * @since 1.0.0
+ */
 $dashicons = apply_filters( 'tailor_dashicons', $dashicons );
 
 return $dashicons;

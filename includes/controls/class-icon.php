@@ -19,43 +19,6 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Icon_Control' )
      */
     class Tailor_Icon_Control extends Tailor_Control {
 
-	    /**
-	     * Prints the Underscore (JS) templates for this control.
-	     *
-	     * @since 1.0.0
-	     */
-	    public function print_template() { ?>
-
-		    <script type="text/html" id="tmpl-tailor-control-<?php echo $this->type; ?>">
-			    <div class="control__header">
-				    <% if ( label ) { %>
-	                <span class="control__title">
-		                <%= label %>
-				        <a class="button button-small js-default <% if ( 'undefined' == typeof showDefault || ! showDefault ) { %>is-hidden<% } %>">
-					        <?php _e( 'Default', 'tailor' ); ?>
-				        </a>
-	                </span>
-				    <% } else { %>
-				    <a class="button button-small js-default <% if ( 'undefined' == typeof showDefault || ! showDefault ) { %>is-hidden<% } %>">
-					    <?php _e( 'Default', 'tailor' ); ?>
-				    </a>
-				    <% } %>
-				    <% if ( description ) { %>
-				    <span class="control__description"><%= description %></span>
-				    <% } %>
-			    </div>
-			    <div class="control__body">
-				    <?php $this->render_template(); ?>
-			    </div>
-		    </script>
-
-		    <script type="text/html" id="tmpl-tailor-control-<?php echo $this->type; ?>-empty">
-			    <?php $this->empty_template(); ?>
-		    </script>
-
-		    <?php
-	    }
-
         /**
          * Prints the Underscore (JS) template for this control.
          *
@@ -70,7 +33,7 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Icon_Control' )
         protected function render_template() { ?>
 
 	        <% if ( '' == value ) { %>
-	        <p class="message"><?php _e( 'No icon selected', 'tailor' ); ?></p>
+	        <p class="control__message"><?php _e( 'No icon selected', 'tailor' ); ?></p>
 	        <div class="actions">
 		        <button type="button" class="button button--select"><?php _e( 'Select Icon', 'tailor' ); ?></button>
 	        </div>

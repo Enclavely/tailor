@@ -1,13 +1,41 @@
+//
+// Variables
+//
 
-$text-border-width: 0 !default;
-$text-border-style : solid !default;
-$text-border-color: $border-color !default;
+// General
+$content-class-prefix: $global-class-prefix !default;
+$content-spacing-vertical: $global-spacing-vertical !default;
+$content-padding: 0 !default;
+$content-font-size: $global-font-size !default;
+$content-color: inherit !default;
+$content-border-width: 0 !default;
+$content-border-style : $global-border-style !default;
+$content-border-color: $global-border-color !default;
+$content-border-radius: 0 !default;
+$content-background-color: transparent !default;
+$content-box-shadow: none !default;
 
-.tailor-ui {
 
-	.tailor-content {
-		border: $text-border-width $text-border-style $text-border-color;
+//
+// Exported selectors
+//
+.#{$global-class-prefix}ui {
 
+	.#{$content-class-prefix}content {
+		padding: $content-padding;
+		margin-bottom: $content-spacing-vertical;
+		font-size: $content-font-size;
+		color: $content-color;
+		background-color: $content-background-color;
+		border: $content-border-width $content-border-style $content-border-color;
+		border-radius: $content-border-radius;
+		box-shadow: $content-box-shadow;
+
+		// To ensure floats used within the content area are cleared
 		@include clearfix;
+
+		> :last-child {
+			margin-bottom: 0;
+		}
 	}
 }

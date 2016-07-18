@@ -23,14 +23,17 @@ if ( ! function_exists( 'tailor_shortcode_column' ) ) {
     function tailor_shortcode_column( $atts, $content = null, $tag ) {
 
         $atts = shortcode_atts( array(
-            'id'                    =>  '',
-            'class'                 =>  '',
-            'width'                 =>  6,
-            'horizontal_alignment'  =>  'left',
+            'id'                        =>  '',
+            'class'                     =>  '',
+            'width'                     =>  6,
+            'horizontal_alignment'      =>  '',
         ), $atts, $tag );
 
 	    $id = ( '' !== $atts['id'] ) ? 'id="' . esc_attr( $atts['id'] ) . '"' : '';
-	    $class = trim( esc_attr( "tailor-column u-text-{$atts['horizontal_alignment']} columns-{$atts['width']} {$atts['class']}" ) );
+	    $class = trim( esc_attr( "tailor-column columns-{$atts['width']} {$atts['class']}" ) );
+	    if ( ! empty( $atts['horizontal_alignment'] ) ) {
+		    $class .= esc_attr( " u-text-{$atts['horizontal_alignment']}" );
+	    }
 
         return '<div ' . trim( "{$id} class=\"{$class}\"" ) . '>' . do_shortcode( $content ) . '</div>';
     }

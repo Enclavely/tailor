@@ -1,8 +1,18 @@
+//
+// Variables
+//
 
+// General
+$pagination-font-size: 0.85em !default;
 $pagination-border-width: 1px !default;
 $pagination-border-style : solid !default;
 $pagination-border-color: $border-color !default;
+$pagination-border-radius: 4px !default;
 
+
+//
+// Exported selectors
+//
 .entry-pagination {
 
 	.next,
@@ -10,9 +20,9 @@ $pagination-border-color: $border-color !default;
 	.page-numbers {
 		display: inline-block;
 		padding: 0.125em 0.5em;
-		border-radius: 4px;
+		border-radius: $pagination-border-radius;
 		background-color: #fefefe;
-		font-size: 0.85em;
+		font-size: $pagination-font-size;
 	}
 
 	a {

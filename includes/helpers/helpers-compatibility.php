@@ -40,3 +40,22 @@ if ( ! function_exists( 'array_combine' ) ) {
 		return $out;
 	}
 }
+
+if ( ! function_exists( 'custom_thesis_body_class' ) ) {
+
+	/**
+	 * Adds the required Tailor body class to pages when the Thesis theme is used.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @param $classes
+	 *
+	 * @return array
+	 */
+	function custom_thesis_body_class( $classes ) {
+		$classes[] = 'tailor-ui';
+		return $classes;
+	}
+
+	add_filter( 'thesis_html_body_class', 'custom_thesis_body_class' );
+}

@@ -144,20 +144,6 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Toggle_Element'
 			    );
 		    }
 
-		    if ( ! empty( $atts['border_width'] ) ) {
-			    $values = array_combine( array( 'top', 'right', 'bottom', 'left' ), explode( '-', $atts['border_width'] ) );
-			    foreach ( $values as $position => $value ) {
-				    if ( ! empty( $value ) ) {
-					    $css_rules[] = array(
-						    'selectors'                 =>  array( '.tailor-toggle__title', '.tailor-toggle__body' ),
-						    'declarations'              =>  array(
-							    "border-{$position}-width"  =>  esc_attr( $value ),
-						    ),
-					    );
-				    }
-			    }
-		    }
-
 		    if ( array_key_exists( 'title_color', $atts ) && ! empty( $atts['title_color'] ) ) {
 			    $css_rules[] = array(
 				    'selectors'         =>  array( '.tailor-toggle__title' ),
@@ -203,12 +189,22 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Toggle_Element'
 					    else {
 						    foreach ( $borders as $position => $border_width ) {
 							    if ( ! empty( $border_width ) ) {
-								    $css_rules[] = array(
-									    'selectors'                 =>  array( '.tailor-toggle__title', '.tailor-toggle__body' ),
-									    'declarations'              =>  array(
-										    "border-{$position}-width"  =>  esc_attr( $border_width ),
-									    ),
-								    );
+								    if ( 'top' == $position ) {
+									    $css_rules[] = array(
+										    'selectors'                 =>  array( '.tailor-toggle__title' ),
+										    'declarations'              =>  array(
+											    "border-{$position}-width"  =>  esc_attr( $border_width ),
+										    ),
+									    );
+								    }
+								    else {
+									    $css_rules[] = array(
+										    'selectors'                 =>  array( '.tailor-toggle__title', '.tailor-toggle__body' ),
+										    'declarations'              =>  array(
+											    "border-{$position}-width"  =>  esc_attr( $border_width ),
+										    ),
+									    );
+								    }
 							    }
 						    }
 					    }

@@ -1,62 +1,84 @@
+//
+// Variables
+//
 
-$tabs-spacing-unit: $base-spacing-unit !default;
+// General
+$tabs-class-prefix: $global-class-prefix !default;
+$tabs-spacing-vertical: $global-spacing-vertical !default;
+$tabs-padding: 0 !default;
+$tabs-font-size: $global-font-size !default;
+$tabs-color: inherit !default;
+$tabs-border-width: 0 !default;
+$tabs-border-style : $global-border-style !default;
+$tabs-border-color: $global-border-color !default;
+$tabs-border-radius: 0 !default;
+$tabs-background-color: transparent !default;
+$tabs-box-shadow: none !default;
 
-$tabs-border-width: 1px !default;
-$tabs-border-style : solid !default;
-$tabs-border-color: $border-color !default;
+// Child specific
+$tabs-tab-padding: 1em !default;
+$tabs-tab-border-width: 1px !default;
+$tabs-tab-border-style : $global-border-style !default;
+$tabs-tab-border-color: $global-border-color !default;
+$tabs-tab-background-color: $background-color !default;
+$tabs-tab-background-color--active: #fff !default;
 
-$tabs-border-width: 1px !default;
-$tabs-border-color: $border-color !default;
-$tabs-spacing-unit: $base-spacing-unit !default;
-$tabs-background-color: $background-color !default;
-$tabs-background-color--active: #fff !default;
-$tabs-box-shadow: $box-shadow !default;
 
-.tailor-ui {
+//
+// Exported selectors
+//
+.#{$global-class-prefix}ui {
 
-	.tailor-tabs {
-		margin-bottom: #{$tabs-spacing-unit}em;
-	}
-
-	.tailor-tabs__navigation,
-	.tailor-tabs__content {
-		padding: 0;
-		margin: 0;
-		list-style: none;
-	}
-
-	.tailor-tabs__navigation-item {
-		position: relative;
-		z-index: 1;
-		display: block;
-		padding: 0.5em 1em;
-		margin-bottom: -#{$tabs-border-width};
+	.#{$tabs-class-prefix}tabs {
+		padding: $tabs-padding;
+		margin-bottom: $tabs-spacing-vertical;
+		font-size: $tabs-font-size;
+		color: $tabs-color;
+		background-color: $tabs-background-color;
 		border: $tabs-border-width $tabs-border-style $tabs-border-color;
-		font-weight: bold;
-		cursor: pointer;
-		overflow: hidden;
-		white-space: nowrap;
-		text-overflow: ellipsis;
+		border-radius: $tabs-border-radius;
+		box-shadow: $tabs-box-shadow;
 
-		@include user-select( none );
-
-		&.is-active {
-			z-index: 3;
-			background-color: $tabs-background-color--active;
+		&__navigation,
+		&__content {
+			padding: 0;
+			margin: 0;
+			list-style: none;
 		}
 
-		&:not( .is-active ) {
-			background-color: $tabs-background-color;
+		&__navigation-item {
+			position: relative;
+			z-index: 1;
+			display: block;
+			padding: 0.5em 1em;
+			margin-bottom: -$tabs-tab-border-width;
+			border: $tabs-tab-border-width $tabs-tab-border-style $tabs-tab-border-color;
+			font-weight: bold;
+			cursor: pointer;
+			overflow: hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+
+			@include user-select( none );
+
+			&.is-active {
+				z-index: 3;
+				background-color: $tabs-tab-background-color--active;
+			}
+
+			&:not( .is-active ) {
+				background-color: $tabs-tab-background-color;
+			}
 		}
 	}
 
-	.tailor-tab {
+	.#{$tabs-class-prefix}tab {
 		position: relative;
 		z-index: 2;
-		padding: 1em;
+		padding: $tabs-tab-padding;
 		margin: 0;
-		border: $tabs-border-width $tabs-border-style $tabs-border-color;
-		background-color: $tabs-background-color--active;
+		border: $tabs-tab-border-width $tabs-tab-border-style $tabs-tab-border-color;
+		background-color: $tabs-tab-background-color--active;
 
 		&:not( :first-child ) {
 			display: none;
@@ -65,93 +87,122 @@ $tabs-box-shadow: $box-shadow !default;
 }
 
 // Ensure content is visible when Javascript it not enabled or when viewed in the editor
-.tailor-editor,
+.#{$global-class-prefix}editor,
 .no-js {
 
-	.tailor-tabs__content .tailor-tab {
-		display: block;
+	.#{$tabs-class-prefix}tabs {
+
+		&__content {
+
+			.tailor-tab {
+				display: block;
+			}
+		}
 	}
 }
 
+
+//
+// Media queries
+//
 @media #{$tablet-up} {
 
-	.tailor-ui {
+	.#{$global-class-prefix}ui {
 
-		.tailor-tabs__navigation {
-			@include clearfix;
-		}
+		.#{$tabs-class-prefix}tabs {
 
-		.tailor-tabs__navigation-item {
-			max-width: 180px;
-		}
+			&__navigation {
+				@include clearfix;
 
-		.tailor-tabs--top {
+				&-item {
+					max-width: 180px;
+				}
+			}
 
-			.tailor-tabs__navigation {
-				margin-bottom: -#{$tabs-border-width};
+			// Variations
+			&--top {
 
-				.tailor-tabs__navigation-item {
-					float: left;
-					margin-bottom: 0;
-					border-bottom: none;
+				.#{$tabs-class-prefix}tabs {
 
-					&:not( :last-child ) {
-						margin-right: -#{$tabs-border-width};
+					&__navigation {
+						margin-bottom: -$tabs-tab-border-width;
+
+						&-item {
+							float: left;
+							margin-bottom: 0;
+							border-bottom: none;
+
+							&:not( :last-child ) {
+								margin-right: -$tabs-tab-border-width;
+							}
+						}
 					}
 				}
 			}
-		}
 
-		.tailor-tabs--left {
+			&--left {
 
-			.tailor-tabs__navigation {
-				float: left;
-				margin-right: -#{$tabs-border-width};
+				.#{$tabs-class-prefix}tabs {
 
-				.tailor-tabs__navigation-item {
-					margin-bottom: 0;
-					border-right: none;
+					&__navigation {
+						float: left;
+						margin-right: -$tabs-tab-border-width;
 
-					&.is-active {
-						border-right-color: $tabs-background-color--active;
+						&-item {
+							margin-bottom: 0;
+							border-right: none;
+
+							&.is-active {
+								border-right-color: $tabs-tab-background-color--active;
+							}
+						}
 					}
 				}
 			}
-		}
 
-		.tailor-tabs--right {
+			&--right {
 
-			.tailor-tabs__navigation {
-				float: right;
-				margin-left: -#{$tabs-border-width};
+				.#{$tabs-class-prefix}tabs {
 
-				.tailor-tabs__navigation-item {
-					margin-bottom: 0;
-					border-left: none;
+					&__navigation {
+					float: right;
+					margin-left: -$tabs-tab-border-width;
 
-					&.is-active {
-						border-left-color: $tabs-background-color--active;
+						&-item {
+							margin-bottom: 0;
+							border-left: none;
+
+							&.is-active {
+								border-left-color: $tabs-tab-background-color--active;
+							}
+						}
 					}
 				}
 			}
-		}
 
-		.tailor-tabs--left,
-		.tailor-tabs--right {
+			&--left,
+			&--right {
 
-			.tailor-tabs__navigation-item {
+				.#{$tabs-class-prefix}tabs {
 
-				&:not( :first-child ) {
-					margin-top: -#{$tabs-border-width};
+					&__navigation-item {
+
+						&:not( :first-child ) {
+							margin-top: -$tabs-tab-border-width;
+						}
+					}
+
+					&__content {
+
+						.tailor-tab {
+							display: block;
+							overflow: hidden;
+						}
+					}
 				}
-			}
 
-			.tailor-tabs__content .tailor-tab {
-				display: block;
-				overflow: hidden;
+				@include clearfix;
 			}
-
-			@include clearfix;
 		}
 	}
 }

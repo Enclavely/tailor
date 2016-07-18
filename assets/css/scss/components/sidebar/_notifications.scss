@@ -1,0 +1,65 @@
+
+@include keyframes( scale ) {
+
+	0% {
+		@include transform( scale( 0.9 ) );
+		opacity: 0;
+	}
+	100% {
+		@include transform( scale( 1 ) );
+		opacity: 1;
+	}
+}
+
+
+//
+// Exported selectors
+//
+.#{$global-class-prefix}ui {
+
+	.notification-container {
+		position: fixed;
+		top: 10px;
+		right: 25px;
+	}
+
+	.notification {
+		float: right;
+		clear: both;
+		padding: 1em;
+		margin-bottom: ( $global-spacing-horizontal / 2 );
+		background-color: $global-white-color;
+		border: $global-border-width $global-border-style $global-border-color;
+		opacity: 0;
+		border-left: 4px solid #fff;
+
+		p {
+			margin: 0;
+		}
+
+		&--success {
+			border-left-color: $global-success-color;
+		}
+
+		&--warning {
+			border-left-color: $global-warning-color;
+		}
+
+		&--error {
+			border-left-color: $global-error-color;
+		}
+
+		@include transform( scale( 0.8 ) );
+		@include transition-property( opacity );
+		@include transition-property( transform );
+		@include transition-duration( 250ms );
+		@include user-select( none );
+		@include box-shadow( 0 1px 1px 0 rgba( 0, 0, 0, 0.1 ), 0 1px 1px 0 rgba( 0, 0, 0, 0.1 ) );
+
+		&.is-visible {
+			opacity: 1;
+
+			@include transform( scale( 1 ) );
+		}
+	}
+}

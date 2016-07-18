@@ -1,35 +1,33 @@
+.#{$global-class-prefix}ui {
 
-.screen-reader-text {
-	position: absolute;
-	margin: -1px;
-	padding: 0;
-	height: 1px;
-	width: 1px;
-	overflow: hidden;
-	clip: rect(0 0 0 0);
-	border: 0;
-	word-wrap: normal !important;
-}
+	.screen-reader-text {
+		position: absolute;
+		margin: -1px;
+		padding: 0;
+		height: 1px;
+		width: 1px;
+		overflow: hidden;
+		clip: rect(0 0 0 0);
+		border: 0;
+		word-wrap: normal !important;
+	}
 
-.spinner {
-	display: inline-block;
-	background: url( ../img/spinner.gif ) no-repeat;
-	-webkit-background-size: 20px 20px;
-	background-size: 20px 20px;
-	vertical-align: middle;
-	opacity: .7;
-	filter: alpha(opacity=70);
-	width: 20px;
-	height: 20px;
-	margin: 4px 10px 0;
-	visibility: hidden;
+	:not( .media-frame ) .spinner {
+		display: inline-block;
+		background: url( ../img/spinner.gif ) no-repeat;
+		-webkit-background-size: 20px 20px;
+		background-size: 20px 20px;
+		vertical-align: middle;
+		opacity: .7;
+		filter: alpha(opacity=70);
+		width: 20px;
+		height: 20px;
+		visibility: hidden;
+	}
 
-	.is-saving & {
+	&.is-saving :not( .media-frame ) .spinner {
 		visibility: visible;
 	}
-}
-
-.tailor-ui {
 
 	.not-a-button {
 		background: 0 0;

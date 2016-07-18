@@ -2,62 +2,66 @@
 	padding: 0;
 	margin: 0;
 	list-style: none;
-}
 
-.list__item {
-	padding: 10px 10px 11px 14px;
-	margin: 0;
-	line-height: 21px;
-	color: $text-color;
-	background-color: #fff;
-	cursor: pointer;
-}
+	&__item {
+		padding: 10px 10px 11px 14px;
+		margin: 0;
+		line-height: 21px;
+		background-color: $global-white-color;
+		cursor: pointer;
+	}
 
-.list__label {
-	font-weight: 600;
-}
+	&__label {
+		font-weight: 600;
+	}
 
-.list--primary {
+	// Variations
+	&--primary {
 
-	.list__item {
-		border-bottom: 1px solid #eee;
+		.list {
 
-		&:last-of-type {
-			border-bottom-color: #ddd;
-		}
+			&__item {
+				border-bottom: 1px solid #eee;
 
-		&:focus {
-			outline: none;
-		}
+				&:last-of-type {
+					border-bottom-color: #ddd;
+				}
 
-		&:focus,
-		&:hover {
-			color: #23282d;
-			background: #f5f5f5;
+				&:focus {
+					outline: none;
+				}
 
-			.list__label::after {
-				color: #23282d;
+				&:focus,
+				&:hover {
+					color: #23282d;
+					background: #f5f5f5;
+
+					.list__label::after {
+						color: #23282d;
+					}
+				}
+			}
+
+			&__label {
+				position: relative;
+
+				&::after {
+					position: absolute;
+					top: 1px;
+					right: 0;
+					z-index: 1;
+					content: "\f345";
+					font: normal 20px/1 'dashicons';
+					color: #a0a5aa;
+					speak: none;
+					-webkit-font-smoothing: antialiased;
+					-moz-osx-font-smoothing: grayscale;
+				}
 			}
 		}
 	}
-
-	.list__label {
-		position: relative;
-
-		&::after {
-			position: absolute;
-			top: 1px;
-			right: 0;
-			z-index: 1;
-			content: "\f345";
-			font: normal 20px/1 'dashicons';
-			color: #a0a5aa;
-			speak: none;
-			-webkit-font-smoothing: antialiased;
-			-moz-osx-font-smoothing: grayscale;
-		}
-	}
 }
+
 
 @keyframes shake {
 
@@ -87,8 +91,7 @@
 		padding-left: 15px;
 		padding-right: 15px;
 		margin-bottom: 4px;
-		background-color: #fff;
-		color: $text-color;
+		background-color: $global-white-color;
 		border: 1px solid #e5e5e5;
 		-webkit-box-shadow: 0 1px 1px rgba(0,0,0,0.04);
 		box-shadow: 0 1px 1px rgba(0,0,0,0.04);
@@ -103,9 +106,7 @@
 
 			&:focus,
 			&:hover {
-				//-webkit-box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-				//box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-				box-shadow: rgba(0, 0, 0, 0.117647) 0px 1px 6px, rgba(0, 0, 0, 0.117647) 0px 1px 4px;
+				box-shadow: rgba(0, 0, 0, 0.117647) 0 1px 6px, rgba(0, 0, 0, 0.117647) 0px 1px 4px;
 			}
 
 			&.shake {
@@ -184,6 +185,74 @@
 
 			@include user-select( none );
 		}
+
+		&--box::before {
+			content: "\f175";
+		}
+
+		&--button::before {
+			content: "\f504";
+		}
+
+		&--card::before {
+			content: "\f336";
+		}
+
+		&--carousel::before {
+			content: "\f181";
+		}
+
+		&--form_cf7::before {
+			content: "\f466";
+		}
+
+		&--gallery::before {
+			content: "\f233";
+		}
+
+		&--grid::before {
+			content: "\f180";
+		}
+
+		&--hero::before {
+			content: "\f116";
+		}
+
+		&--list::before {
+			content: "\f163";
+		}
+
+		&--map::before {
+			content: "\f230";
+		}
+
+		&--panel::before {
+			content: "\f135";
+		}
+
+		&--section::before {
+			content: "\f535";
+		}
+
+		&--tabs::before {
+			content: "\f318";
+		}
+
+		&--content::before {
+			content: "\f478";
+		}
+
+		&--toggles::before {
+			content: "\f164";
+		}
+
+		&--user::before {
+			content: "\f110";
+		}
+
+		&--widgets::before {
+			content: "\f120";
+		}
 	}
 
 	&.is-simplified {
@@ -198,74 +267,6 @@
 				display: none;
 			}
 		}
-	}
-
-	.element--box::before {
-		content: "\f175";
-	}
-
-	.element--button::before {
-		content: "\f504";
-	}
-
-	.element--card::before {
-		content: "\f336";
-	}
-
-	.element--carousel::before {
-		content: "\f181";
-	}
-
-	.element--form_cf7::before {
-		content: "\f466";
-	}
-
-	.element--gallery::before {
-		content: "\f233";
-	}
-
-	.element--grid::before {
-		content: "\f180";
-	}
-
-	.element--hero::before {
-		content: "\f116";
-	}
-
-	.element--list::before {
-		content: "\f163";
-	}
-
-	.element--map::before {
-		content: "\f230";
-	}
-
-	.element--panel::before {
-		content: "\f135";
-	}
-
-	.element--section::before {
-		content: "\f535";
-	}
-
-	.element--tabs::before {
-		content: "\f318";
-	}
-
-	.element--content::before {
-		content: "\f478";
-	}
-
-	.element--toggles::before {
-		content: "\f164";
-	}
-
-	.element--user::before {
-		content: "\f110";
-	}
-
-	.element--widgets::before {
-		content: "\f120";
 	}
 
 	.template {

@@ -1,0 +1,35 @@
+
+//
+// Variables
+//
+
+// General
+$contact-class-prefix: $global-class-prefix !default;
+$contact-spacing-vertical: $global-spacing-vertical !default;
+$contact-padding: 0 !default;
+$contact-font-size: $global-font-size !default;
+$contact-color: inherit !default;
+$contact-border-width: 0 !default;
+$contact-border-style : $global-border-style !default;
+$contact-border-color: $global-border-color !default;
+$contact-border-radius: 0 !default;
+$contact-background-color: transparent !default;
+$contact-box-shadow: none !default;
+
+
+//
+// Exported selectors
+//
+.#{$global-class-prefix}ui {
+
+	.#{$contact-class-prefix}form {
+		padding: $contact-padding;
+		margin-bottom: $contact-spacing-vertical;
+		font-size: $contact-font-size;
+		color: $contact-color;
+		background-color: $contact-background-color;
+		border: $contact-border-width $contact-border-style $contact-border-color;
+		border-radius: $contact-border-radius;
+		box-shadow: $contact-box-shadow;
+	}
+}

@@ -1,83 +1,109 @@
+//
+// Variables
+//
 
-$box-spacing-unit: $base-spacing-unit !default;
+// General
+$box-class-prefix: $global-class-prefix !default;
+$box-spacing-vertical: $global-spacing-vertical !default;
+$box-padding: 2em !default;
+$box-font-size: 1em !default;
+$box-color: inherit !default;
+$box-background-color: transparent !default;
+$box-border-width: $global-border-width !default;
+$box-border-style : $global-border-style !default;
+$box-border-color: $global-border-color !default;
+$box-border-radius: 0 !default;
+$box-box-shadow: none !default;
 
-$box-border-width: 1px !default;
-$box-border-style : solid !default;
-$box-border-color: $border-color !default;
+// Element specific
+$box-icon-size: 2.5em !default;
+$box-image-width: 5em !default;
 
-$box-background-color: $background-color !default;
-$box-box-shadow: $box-shadow !default;
 
-$box-icon-size: 2.5 !default;
+//
+// Exported selectors
+//
+.#{$global-class-prefix}ui {
 
-.tailor-ui {
-
-	.tailor-box {
-		padding: 2em;
-		margin-bottom: #{$box-spacing-unit}em;
+	.#{$box-class-prefix}box {
+		padding: $box-padding;
+		margin-bottom: $box-spacing-vertical;
+		font-size: $box-font-size;
+		color: $box-color;
+		background-color: $box-background-color;
 		border: $box-border-width $box-border-style $box-border-color;
-	}
+		border-radius: $box-border-radius;
+		box-shadow: $box-box-shadow;
 
-	.tailor-box__title {
-		display: block;
-		margin: 1em 0;
-	}
-
-	.tailor-box__graphic {
-		@include transition( all 150ms );
-	}
-
-	.tailor-box--icon {
-
-		.tailor-box__title {
-			margin-top: 0;
+		&__title {
+			display: block;
+			margin: ( $box-padding / 2 ) 0;
 		}
 
-		.tailor-box__graphic {
-			position: relative;
-			display: table;
-			width: #{( $box-icon-size * 2 )}em;
-			height: #{( $box-icon-size * 2 )}em;
-			border-radius: 50%;
+		&__graphic {
+			@include transition( all $global-transition-duration );
+		}
 
-			span {
-				position: relative;
-				z-index: 2;
-				display: table-cell;
-				width: 100%;
-				text-align: inherit;
-				vertical-align: middle;
-				font-size: #{$box-icon-size}em;
+		// Variations
+		&--icon {
+
+			.#{$box-class-prefix}box {
+
+				&__title {
+					margin-top: 0;
+				}
+
+				&__graphic {
+					position: relative;
+					display: table;
+					width: ( $box-icon-size * 2 ); //#{( $box-icon-size * 2 )}em;
+					height: ( $box-icon-size * 2 ); //#{( $box-icon-size * 2 )}em;
+					border-radius: 50%;
+
+					span {
+						position: relative;
+						z-index: 2;
+						display: table-cell;
+						width: 100%;
+						text-align: inherit;
+						vertical-align: middle;
+						font-size: $box-icon-size; //#{$box-icon-size}em;
+					}
+				}
 			}
 		}
-	}
 
-	.tailor-box--image {
+		&--image {
 
-		.tailor-box__graphic {
-			margin-bottom: 1em;
-			max-width: 5em;
+			.#{$box-class-prefix}box {
+
+				&__graphic {
+					margin-bottom: $box-spacing-vertical;
+					max-width: $box-image-width;
+				}
+			}
 		}
-	}
 
-	.tailor-box--left {
-		text-align: left;
-	}
+		// Alignments
+		&.u-text-center {
 
-	.tailor-box--center {
-		text-align: center;
+			.#{$box-class-prefix}box {
 
-		.tailor-box__graphic {
-			margin-left: auto;
-			margin-right: auto;
+				&__graphic {
+					margin-left: auto;
+					margin-right: auto;
+				}
+			}
 		}
-	}
 
-	.tailor-box--right {
-		text-align: right;
+		&.u-text-right {
 
-		.tailor-box__graphic {
-			margin-left: auto;
+			.#{$box-class-prefix}box {
+
+				&__graphic {
+					margin-left: auto;
+				}
+			}
 		}
 	}
 }

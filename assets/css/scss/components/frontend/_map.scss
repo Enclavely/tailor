@@ -1,22 +1,43 @@
+//
+// Variables
+//
 
-$map-border-width: 1px !default;
-$map-border-style : solid !default;
-$map-border-color: $border-color !default;
+// General
+$map-class-prefix: $global-class-prefix !default;
+$map-spacing-vertical: $global-spacing-vertical !default;
+$map-padding: 0 !default;
+$map-font-size: $global-font-size !default;
+$map-color: inherit !default;
+$map-border-width: $global-border-width !default;
+$map-border-style : $global-border-style !default;
+$map-border-color: $global-border-color !default;
+$map-border-radius: 0 !default;
+$map-background-color: transparent !default;
+$map-box-shadow: none !default;
 
-$map-spacing-unit: $base-spacing-unit !default;
 
-.tailor-ui {
+//
+// Exported selectors
+//
+.#{$global-class-prefix}ui {
 
-	.tailor-map {
-		margin-bottom: #{$map-spacing-unit}em;
+	.#{$map-class-prefix}map {
+		padding: $map-padding;
+		margin-bottom: $map-spacing-vertical;
+		font-size: $map-font-size;
+		color: $map-color;
+		background-color: $map-background-color;
 		border: $map-border-width $map-border-style $map-border-color;
-	}
+		border-radius: $map-border-radius;
+		box-shadow: $map-box-shadow;
+		width: 100%;
 
-	.tailor-map__canvas {
-		height: 400px;
-	}
+		&__canvas {
+			height: 400px;
+		}
 
-	.tailor-map__marker {
-		display: none;
+		&__marker {
+			display: none;
+		}
 	}
 }

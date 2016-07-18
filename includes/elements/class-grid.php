@@ -127,10 +127,12 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Grid_Element' )
 			    'border_width',
 		    );
 		    $css_rules = tailor_css_presets( $css_rules, $atts, $excluded_control_types );
+		    
+		    $media_query = ( ! $atts['collapse'] || 'mobile' == $atts['collapse'] ) ? '' : "{$atts['collapse']}-up";
 
 		    if ( ! empty( $atts['min_item_height'] ) ) {
 			    $css_rules[] = array(
-				    'media'             =>  'tablet-up' != $atts['collapse'] ? "{$atts['collapse']}-up" : '',
+				    'media'             =>  $media_query,
 				    'selectors'         =>  array( '.tailor-grid__item' ),
 				    'declarations'      =>  array(
 					    'min-height'        =>  esc_attr( $atts['min_item_height'] ),
@@ -144,7 +146,8 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Grid_Element' )
 
 			    if ( is_numeric( $value ) ) {
 				    $css_rules[] = array(
-					    'selectors'         =>  array( ".tailor-grid__item" ),
+					    'media'             =>  $media_query,
+					    'selectors'         =>  array( ".tailor-grid__item-up" ),
 					    'declarations'      =>  array(
 						    'padding-left'      =>  esc_attr( ( $value / 2 ) . $unit ),
 						    'padding-right'     =>  esc_attr( ( $value / 2 ) . $unit ),
@@ -155,6 +158,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Grid_Element' )
 
 		    if ( ! empty( $atts['border_color'] ) ) {
 			    $css_rules[] = array(
+				    'media'             =>  $media_query,
 				    'selectors'         =>  array( '.tailor-grid__item' ),
 				    'declarations'      =>  array(
 					    'border-color'      =>  esc_attr( $atts['border_color'] ),
@@ -164,6 +168,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Grid_Element' )
 
 		    if ( ! empty( $atts['border_width'] )  ) {
 			    $css_rules[] = array(
+				    'media'             =>  $media_query,
 				    'selectors'         =>  array( '.tailor-grid__item' ),
 				    'declarations'      =>  array(
 					    'border-width'      =>  esc_attr( $atts['border_width'] ),
@@ -173,6 +178,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Grid_Element' )
 
 		    if ( ! empty( $atts['shadow'] ) ) {
 			    $css_rules[] = array(
+				    'media'             =>  $media_query,
 				    'selectors'         =>  array(),
 				    'declarations'      =>  array(
 					    'box-shadow'        =>  '0 2px 6px rgba(0, 0, 0, 0.1)',

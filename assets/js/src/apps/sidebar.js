@@ -18,7 +18,7 @@ SidebarApplication = Marionette.Application.extend( {
         this._unsavedChanges = false;
         this.saveButton = document.querySelector( '#tailor-save' );
         this.allowableEvents = [
-	        'element:add', 'element:edit', 'element:move', 'element:resize', 'element:change:order', 'element:copy', 'element:delete',
+	        'element:add', 'element:move', 'element:resize', 'element:change:order', 'element:copy', 'element:delete', // 'element:edit',
 	        'elements:restore', 'elements:reset',
             'modal:open', 'modal:destroy',
             'template:add'
@@ -51,23 +51,22 @@ SidebarApplication = Marionette.Application.extend( {
          *
          * @since 1.0.0
          */
-        sidebarApp.onSettingChange = function( eventName ) {
+        sidebarApp.onSettingChange = function() {
             sidebarApp.saveButton.disabled = false;
             sidebarApp.saveButton.innerHTML = window._l10n.publish;
             sidebarApp._unsavedChanges = true;
         };
 
         sidebarApp.listenTo( sidebarApp.channel, 'sidebar:setting:change', sidebarApp.onSettingChange );
-        sidebarApp.listenTo( sidebarApp.channel, _.without( sidebarApp.allowableEvents, 'modal:open' ).join( ' ' ), sidebarApp.onSettingChange );
+        sidebarApp.listenTo( sidebarApp.channel, _.without( sidebarApp.allowableEvents, 'modal:open', 'modal:destroy' ).join( ' ' ), sidebarApp.onSettingChange );
+        sidebarApp.listenTo( sidebarApp.channel, [ 'modal:apply' ].join( ' ' ), sidebarApp.onSettingChange );
 
         /**
          * Collapses the Sidebar when the Collapse button is selected.
          *
          * @since 1.0.0
-         *
-         * @param e
          */
-        sidebarApp.onCollapse = function( e ) {
+        sidebarApp.onCollapse = function() {
             sidebarApp._collapsed = ! sidebarApp._collapsed;
             sidebarApp.el.classList.toggle( 'is-collapsed', sidebarApp._collapsed );
             sidebarApp.saveButton.setAttribute( 'aria-expanded', ! sidebarApp._collapsed );
@@ -90,6 +89,7 @@ SidebarApplication = Marionette.Application.extend( {
          */
         sidebarApp.onSave = function() {
 	        sidebarApp.el.classList.add( 'is-saving' );
+            sidebarApp.saveButton.setAttribute( 'disabled', true );
 
             var models = sidebarApp.channel.request( 'canvas:elements' );
             var settings = sidebarApp.channel.request( 'sidebar:settings' );
@@ -117,6 +117,32 @@ SidebarApplication = Marionette.Application.extend( {
                      * @since 1.0.0
                      */
                     sidebarApp.channel.trigger( 'sidebar:save' );
+                },
+
+                error: function( response ) {
+
+                    sidebarApp.saveButton.disabled = false;
+
+                    if ( response && response.hasOwnProperty( 'message' ) ) {
+
+                        // Display the error from the server
+                        Tailor.Notify( response.message );
+                    }
+                    else if ( '0' == response ) {
+
+                        // Session expired
+                        Tailor.Notify( window._l10n.expired );
+                    }
+                    else if ( '-1' == response ) {
+
+                        // Invalid nonce
+                        Tailor.Notify( window._l10n.invalid );
+                    }
+                    else {
+
+                        // General error condition
+                        Tailor.Notify( window._l10n.error );
+                    }
                 },
 
 	            /**

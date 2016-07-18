@@ -6,17 +6,15 @@
 
 	input[type=checkbox] {
 		border: 1px solid #b4b9be;
-		background: #fff;
-		color: #555;
+		background: $global-white-color;
 		clear: none;
 		cursor: pointer;
 		display: inline-block;
 		line-height: 0;
 		height: 16px;
-		margin: -4px 4px 0 0;
+		margin: -4px 5px 0 0;
 		outline: 0;
-		padding: 0!important;
-		margin-right: 5px;
+		padding: 0;
 		text-align: center;
 		vertical-align: middle;
 		width: 16px;
@@ -24,9 +22,8 @@
 		-webkit-appearance: none;
 		-webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,.1);
 		box-shadow: inset 0 1px 2px rgba(0,0,0,.1);
-		-webkit-transition: .05s border-color ease-in-out;
-		transition: .05s border-color ease-in-out;
 
+		@include transition( border-color 50ms ease-in-out );
 
 		&:checked::before {
 			float: left;

@@ -1,7 +1,7 @@
-.tailor-ui,
-.tailor-editor {
+.#{$global-class-prefix}ui,
+.#{$global-class-prefix}editor {
 
-	.tailor-icon {
+	.#{$global-class-prefix}icon {
 		line-height: 1.4;
 	}
 }

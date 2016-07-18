@@ -25,6 +25,10 @@ Slideshow = function( el, options, callbacks ) {
     this.$wrap = this.$el.find( '.tailor-slideshow__slides' );
 
 	this.options = $.extend( {}, this.defaults, this.$el.data(), options );
+    if ( document.documentElement.dir && 'rtl' == document.documentElement.dir ) {
+        this.options.rtl = true;
+    }
+    
     this.callbacks = $.extend( {}, this.callbacks, callbacks );
 
     this.initialize();

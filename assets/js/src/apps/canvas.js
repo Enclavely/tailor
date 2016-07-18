@@ -34,6 +34,7 @@ CanvasApplication = Marionette.Application.extend( {
         this.allowableEvents = [
 	        'canvas:dragstart', 'canvas:drag', 'canvas:dragend',
 	        'history:restore', 'history:undo', 'history:redo',
+            'modal:apply',
 	        'css:add', 'css:delete', 'css:update', 'css:clear',
             'sidebar:setting:change',
             'template:load'
@@ -62,8 +63,7 @@ CanvasApplication = Marionette.Application.extend( {
         document.addEventListener( 'dragover', resetCanvas, false );
         window.addEventListener( 'resize', resetCanvas, false );
 
-        $( 'a' ).attr( { target  : '_blank', draggable  : false } );
-        $( 'img' ).attr( 'draggable', 'false' );
+        $( 'a, img' ).attr( { draggable  : false } );
 
         $( document ).on( 'keydown', function( e ) {
             if ( e.ctrlKey && 89 == e.keyCode ) {

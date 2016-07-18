@@ -12,30 +12,28 @@ html {
 .tailor-editor .tailor-icon {
   line-height: 1.4; }
 
-.lede {
+.tailor-ui .lede {
   font-size: 1.125em;
   letter-spacing: .5px;
   font-weight: 600; }
-
-.dropcap:first-child:first-letter {
+.tailor-ui .dropcap:first-child:first-letter {
   float: left;
   display: block;
   font-style: normal;
   font-size: 5.5em;
   line-height: 1;
   margin: -0.12em 0.08em -0.12em -0.05em; }
-
-.pullquote {
+.tailor-ui .pullquote {
   display: block;
   float: left;
   padding: 1.5em;
   margin: 0 1.5em 0 0;
   width: 20.5em;
   background: #fdfdfd; }
-  .pullquote--right {
+  .tailor-ui .pullquote--right {
     float: right;
     margin: 0 0 0 1.5em; }
-  .pullquote p:last-child {
+  .tailor-ui .pullquote p:last-child {
     margin-bottom: 0; }
 
 /*# sourceMappingURL=tinymce.css.map */
