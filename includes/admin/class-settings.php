@@ -389,7 +389,7 @@ class Tailor_Settings {
 
 			tailor_partial( 'admin/field', $args['type'], $args );
 
-			if ( $args['description'] ) {
+			if ( isset($args['description']) ) {
 				printf( '<p class="description">%s</p>', $args['description'] );
 			} ?>
 
