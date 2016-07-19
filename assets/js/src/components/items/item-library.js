@@ -25,6 +25,11 @@ LibraryItem = Marionette.ItemView.extend( {
 
     onClick : function() {
         var el = this.el;
+
+        if ( el.classList.contains( 'is-inactive') ) {
+            return;
+        }
+
         var onAnimationEnd = function( e ) {
             el.removeEventListener( window.animationEndName, onAnimationEnd );
             el.classList.remove( 'shake' );

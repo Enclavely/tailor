@@ -4,7 +4,7 @@
  * Plugin Name: Tailor
  * Plugin URI: http://www.gettailor.com
  * Description: Build beautiful page layouts quickly and easily using your favourite theme.
- * Version: 1.3.0
+ * Version: 1.3.1
  * Author: Andrew Worsfold
  * Author URI:  http://wwww.andrewworsfold.com
  * Text Domain: tailor
@@ -646,9 +646,21 @@ if ( ! class_exists( 'Tailor' ) ) {
 	     * @return bool
 	     */
 	    public function check_user_role() {
+		    
 		    $user = wp_get_current_user();
-		    $approved_roles = array_merge( array( 'administrator' ), array_keys( tailor_get_setting( 'roles', array() ) ) );
-		    return count( array_intersect( $approved_roles, (array) $user->roles ) ) > 0;
+		    $allowable_roles = array_keys( tailor_get_setting( 'roles', array() ) );
+		    
+		    // A user is allowable if they can manage options or have one of the specifically approved roles
+		    $allowable = current_user_can( 'manage_options' ) || (  count( array_intersect( $allowable_roles, (array) $user->roles ) ) > 0 );
+
+		    /**
+		     * Filter the result of the user role check.
+		     * 
+		     * @since 1.3.1
+		     * 
+		     * @param bool $allowable
+		     */
+		    return apply_filters( 'tailor_check_user', $allowable );
 	    }
 
         /**

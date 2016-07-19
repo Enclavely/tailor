@@ -581,6 +581,11 @@ html {
       display: table;
       clear: both; }
 
+[dir=rtl] .tailor-ui .tailor-list__graphic {
+  float: right; }
+[dir=rtl] .tailor-ui .tailor-list__item.u-text-left .tailor-list__graphic {
+  float: left; }
+
 .tailor-ui .tailor-gallery {
   padding: 0;
   margin-bottom: 1rem;

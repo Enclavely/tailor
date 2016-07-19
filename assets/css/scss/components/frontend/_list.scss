@@ -166,3 +166,30 @@ $list-graphic-size: 1.5em !default;
 		}
 	}
 }
+
+[dir=rtl] {
+
+	.#{$global-class-prefix}ui {
+
+		.#{$list-class-prefix}list {
+
+			&__graphic {
+				float: right;
+			}
+
+			&__item {
+
+				// Alignments
+				&.u-text-left {
+
+					.#{$list-class-prefix}list {
+
+						&__graphic {
+							float: left;
+						}
+					}
+				}
+			}
+		}
+	}
+}

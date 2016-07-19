@@ -1,0 +1,27 @@
+
+[dir=rtl] {
+
+	.#{$global-class-prefix}ui {
+
+		// Tools
+		.tools {
+
+			.select {
+
+				&__menu {
+					left: auto;
+					right: 1px;
+				}
+
+				&__item {
+					float: right;
+				}
+
+				&__controls {
+					left: 1px;
+					right: auto;
+				}
+			}
+		}
+	}
+}

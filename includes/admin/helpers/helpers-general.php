@@ -77,7 +77,7 @@ if ( ! function_exists( 'tailor_get_roles' ) ) {
 		$editable_roles = get_editable_roles();
 
 		foreach ( $editable_roles as $name => $editable_role ) {
-			if ( ! empty( $editable_role['capabilities']['edit_posts'] ) && 1 === (int) $editable_role['capabilities']['edit_posts'] && $name !== 'administrator'  ) {
+			if ( ! empty( $editable_role['capabilities']['edit_posts'] ) && 1 === (int) $editable_role['capabilities']['edit_posts'] ) {
 				$roles[ $name ] = $editable_role['name'];
 			}
 		}

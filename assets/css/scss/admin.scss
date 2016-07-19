@@ -1,11 +1,29 @@
 @import "variables";
 
-.tailor-icons__actions {
-	max-width: 120px;
+//
+// Tools
+//
+@import "tools/clearfix";
 
-	.button,
-	.spinner {
-		float: left;
+
+//
+// Exported selectors
+//
+.tailor {
+
+	&-icon-kits {
+		margin-bottom: 1em;
+	}
+
+	&-icons__actions {
+		max-width: 120px;
+
+		.button,
+		.spinner {
+			float: left;
+		}
+
+		@include clearfix;
 	}
 }
 

@@ -1,9 +1,7 @@
-@import "variables";
 
 //
 // Variables
 //
-$sidebar-width: 300px !default;
 $sidebar-border-width: 1px !default;
 $sidebar-border-style: solid !default;
 $sidebar-border-color: #ddd !default;
@@ -158,23 +156,6 @@ $sidebar-border-color: #ddd !default;
 		.modal__footer,
 		.dialog__footer {
 			text-align: left;
-		}
-
-		// Tools
-		.tools {
-
-			.select {
-
-				&__menu {
-					left: auto;
-					right: 1px;
-				}
-
-				&__controls {
-					left: 1px;
-					right: auto;
-				}
-			}
 		}
 	}
 }

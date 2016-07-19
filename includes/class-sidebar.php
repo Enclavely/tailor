@@ -215,8 +215,6 @@ if ( ! class_exists( 'Tailor_Sidebar' ) ) {
 		        );
 
 		        wp_enqueue_style( 'tailor-sidebar-styles' );
-
-		        wp_style_add_data( 'tailor-sidebar-styles', 'rtl', tailor()->plugin_url() . "assets/css/sidebar-rtl{$min}.css" );
 	        }
 
 	        /**

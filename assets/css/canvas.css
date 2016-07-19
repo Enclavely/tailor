@@ -204,4 +204,13 @@ html {
 .tailor-ui .is-hidden {
   display: none !important; }
 
+[dir=rtl] .tailor-ui .tools .select__menu {
+  left: auto;
+  right: 1px; }
+[dir=rtl] .tailor-ui .tools .select__item {
+  float: right; }
+[dir=rtl] .tailor-ui .tools .select__controls {
+  left: 1px;
+  right: auto; }
+
 /*# sourceMappingURL=canvas.css.map */

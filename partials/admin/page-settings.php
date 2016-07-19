@@ -20,8 +20,6 @@ $version = tailor()->version(); ?>
 
 	<div class="settings-information">
 		<h2><?php _e( 'Tailor', 'tailor' ); ?> <?php echo $version; ?></h2>
-
-		<h3><?php _e( 'Changelog', 'tailor' ); ?></h3>
 		<p><?php printf( __( 'See what\'s new in %1$sversion %2$s%3$s','tailor' ), '<a href="https://wordpress.org/plugins/tailor/changelog/" target="_blank">', $version,'</a>' ); ?></p>
 
 		<h3><?php _e( 'Resources', 'tailor' ); ?></h3>

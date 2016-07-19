@@ -2,7 +2,7 @@
 Contributors: andrew.worsfold
 Donate link: http://gettailor.com/donate/
 Tags: page, layout, builder, frontend, content, page builder, drag and drop builder, home page builder, landing page builder, layout builder, frontend builder, frontend editor, responsive, visual composer, beaver builder
-Stable tag: 1.3.0
+Stable tag: 1.3.1
 Requires at least: 4.3
 Tested up to: 4.5.3
 License: GPLv3 or later
@@ -24,7 +24,7 @@ Drag and drop elements relative to one another and then customize them using a s
 
 Adding your own custom elements or functionality is easy.
 
-To learn more about how to create your own extensions, check out our [developer documentation](https://tailor.zendesk.com/hc/en-us/categories/203117247-Extending), [Portfolio](https://wordpress.org/plugins/tailor-portfolio/) and [WooCommerce](https://wordpress.org/plugins/tailor-woocommerce/) extensions to learn more about what's possible.
+To learn more about how to create your own extensions, check out our [developer documentation](https://tailor.zendesk.com/hc/en-us/categories/203117247-Extending).  The [Portfolio](https://wordpress.org/plugins/tailor-portfolio/) and [WooCommerce](https://wordpress.org/plugins/tailor-woocommerce/) extensions are examples of what's possible.
 
 = Works with any theme =
 
@@ -113,6 +113,13 @@ Yes, however, users should be directed to the WordPress plugin repository to ins
 
 == Changelog ==
 
+= 1.3.1 =
+* Added: descriptions to some admin settings.
+* Added: minor improvements to RTL compatibility for sidebar and canvas.
+* Changed: users with permission to manage options can Tailor pages.
+* Fixed: inactive elements have hover effects and trigger notifications.
+* Removed: separate RTL stylesheet for sidebar (now included within main stylesheet).
+
 = 1.3.0 =
 * Added: image link control to Gallery element.
 * Added: title attribute to history snapshots.
@@ -128,55 +135,55 @@ Yes, however, users should be directed to the WordPress plugin repository to ins
 * Developer: Cleaned up SCSS project.
 
 = 1.2.8 =
-* Added check to ensure post archives and the posts page cannot be Tailored.
+* Added: check to ensure post archives and the posts page cannot be Tailored.
 
 = 1.2.7 =
-* Added RTL support.
+* Added: RTL support.
 
 = 1.2.6 =
-* Added device-specific visibility setting to rows, columns, grids and grid items under General settings tab.
-* Fixed image and gallery controls breaking when adding small images (credit: dtbaker).
-* Improved background image/color settings.
+* Added: device-specific visibility setting to rows, columns, grids and grid items under General settings tab.
+* Fixed: image and gallery controls breaking when adding small images (credit: dtbaker).
+* Improved: background image/color settings.
 
 = 1.2.5 =
-* Added compatibility for the Yoast SEO plugin.
+* Added: compatibility for the Yoast SEO plugin.
 
 = 1.2.4 =
-* Added resource links to the admin settings page.
-* Added Google Maps API key setting.
-* Updated CSS to ensure pseudo-elements use double colon notation.
+* Added: resource links to the admin settings page.
+* Added: Google Maps API key setting.
+* Improved: CSS to ensure pseudo-elements use double colon notation.
 
 = 1.2.3 =
-* Fixed element drag-drop ghost image disappearing when dragging on Chrome.
+* Fixed: element drag-drop ghost image disappearing when dragging on Chrome.
 
 = 1.2.2 =
-* Minor improvements to the display of the 'Tailor this ..' Admin Bar link.
+* Improved: display of the 'Tailor this ..' Admin Bar link.
 
 = 1.2.1 =
-* Removed 'Tailor this ..' Admin Bar link from archive pages (credit: BinaryMoon).
+* Removed: 'Tailor this ..' Admin Bar link from archive pages (credit: BinaryMoon).
 
 = 1.2.0 =
-* Changed container behaviour so that they do not collapse when only one child element remains (excludes row/column layouts). [Learn more about this change](http://www.andrewworsfold.com/2016/06/26/working-with-containers/).
-* Fixed custom CSS not appearing within template previews.
-* Fixed breaking of tab order after tab renaming.
+* Changed: container behaviour so that they do not collapse when only one child element remains (excludes row/column layouts). [Learn more about this change](http://www.andrewworsfold.com/2016/06/26/working-with-containers/).
+* Fixed: custom CSS not appearing within template previews.
+* Fixed: breaking of tab order after tab renaming.
 
 = 1.1.3 =
-* Updated device preview and media query settings to be in line with the WordPress Customizer (i.e., Desktop, Tablet and Mobile sizes).  [Learn more about this change](http://www.andrewworsfold.com/2016/06/25/device-previews/).
+* Improved: device preview and media query settings to be in line with the WordPress Customizer (i.e., Desktop, Tablet and Mobile sizes).  [Learn more about this change](http://www.andrewworsfold.com/2016/06/25/device-previews/).
 
 = 1.1.2 =
-* Added growl notification and UI styles to help instruct new users to drag elements and templates onto the page.
+* Added: growl notification and UI styles to help instruct new users to drag elements and templates onto the page.
 
 = 1.1.1 =
-* Added additional filters for developers to disable panels and elements.
+* Added: additional filters for developers to disable panels and elements.
 
 = 1.1 =
-* Added admin options for hiding the CSS and JavaScript editors.
-* Added admin option for hiding the Attributes panel (contained within the Edit modal window).
-* Changed scripts and styles to only load on Tailored pages.
-* Removed dynamic text domain function.
+* Added: admin options for hiding the CSS and JavaScript editors.
+* Added: admin option for hiding the Attributes panel (contained within the Edit modal window).
+* Improved: scripts and styles to only load on Tailored pages.
+* Removed: dynamic text domain function.
 
 = 1.0.1 =
-* Added fallback functions for PHP 5.4.x.
+* Added: fallback functions for PHP 5.4.x.
 
 = 1.0.0 =
 * Initial release.

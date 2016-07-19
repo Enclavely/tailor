@@ -30,6 +30,7 @@ if ( ! function_exists( 'tailor_get_setting' ) ) {
 				    'page'                      =>  'on',
 			    ),
 			    'roles'                     =>  array(
+				    'administrator'             =>  'on',
 				    'editor'                    =>  'on',
 				    'author'                    =>  'on',
 				    'contributor'               =>  'on',

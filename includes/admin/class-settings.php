@@ -145,6 +145,7 @@ class Tailor_Settings {
 			$setting_id,
 			array(
 				'label'             =>  $role_field_label,
+				'description'       =>  __( 'All roles that have permission to manage options can Tailor pages, regardless of whether they are enabled above.', 'tailor' ),
 				'type'              =>  'checkbox',
 				'name'              =>  $setting_id . '[' . $role_field_id . ']',
 				'value'             =>  tailor_get_setting( $role_field_id ),
@@ -264,6 +265,11 @@ class Tailor_Settings {
 			$setting_id . '_features',
 			array(
 				'type'              =>  'text',
+				'description'       => sprintf(
+					__( '%1$sLearn more%2$s about creating your own Google Maps API key', 'tailor' ),
+					'<a href="https://medium.com/@tailorwp/using-the-google-maps-api-with-tailor-1c4d12f3f7a3" target="_blank">',
+					'</a>'
+				),
 				'name'              =>  $setting_id . '[' . $google_maps_api_key_field_id . ']',
 				'value'             =>  tailor_get_setting( $google_maps_api_key_field_id ),
 			)
@@ -306,6 +312,7 @@ class Tailor_Settings {
 			$setting_id . '_elements',
 			array(
 				'type'              =>  'checkbox',
+				'description'       =>  __( 'Inactive elements are those that depend on a third-party plugin to work (e.g., Contact Form 7).', 'tailor' ),
 				'name'              =>  $setting_id . '[' . $inactive_elements_field_id . ']',
 				'value'             =>  tailor_get_setting( $inactive_elements_field_id ),
 				'options'           =>  array(
@@ -317,7 +324,7 @@ class Tailor_Settings {
 		add_settings_section(
 			$setting_id . '_icons',
 			__( 'Icons', 'tailor' ),
-			array( $this, 'render_icon_section_description' ),
+			null,
 			$setting_id
 		);
 
@@ -332,6 +339,11 @@ class Tailor_Settings {
 			$setting_id . '_icons',
 			array(
 				'label'             =>  $icon_field_label,
+				'description'       =>  sprintf(
+					__( 'Select an existing icon kit from your Media Library or %1$screate%2$s and upload one.', 'tailor' ),
+					'<a href="http://icomoon.io/app" target="_blank">',
+					'</a>'
+				),
 				'type'              =>  'icon',
 				'name'              =>  $setting_id . '[' . $icon_field_id . ']',
 				'value'             =>  tailor_get_setting( $icon_field_id ),
@@ -360,22 +372,6 @@ class Tailor_Settings {
 	}
 
 	/**
-	 * Renders the description for the Icon Kit field.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param $args
-	 */
-	public function render_icon_section_description( $args ) {
-		printf(
-			'<p>%s <a href="http://icomoon.io/app" target="_blank">%s</a> %s</p>',
-			__( 'Select an existing icon kit from your Media Library or ', 'tailor' ),
-			__( 'create', 'tailor' ),
-			__( 'and upload one.', 'tailor' )
-		);
-	}
-
-	/**
 	 * Returns the HTML for a field.
 	 *
 	 * @since 1.0.0
@@ -389,7 +385,13 @@ class Tailor_Settings {
 				<span><?php esc_attr_e( $args['label'] ); ?></span>
 			</legend>
 
-			<?php tailor_partial( 'admin/field', $args['type'], $args ); ?>
+			<?php
+
+			tailor_partial( 'admin/field', $args['type'], $args );
+
+			if ( $args['description'] ) {
+				printf( '<p class="description">%s</p>', $args['description'] );
+			} ?>
 
 		</fieldset>
 

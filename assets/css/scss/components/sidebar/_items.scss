@@ -96,9 +96,9 @@
 		-webkit-box-shadow: 0 1px 1px rgba(0,0,0,0.04);
 		box-shadow: 0 1px 1px rgba(0,0,0,0.04);
 
-		&.draggable {
+		&.draggable:not( .is-inactive ) {
 
-			@include transition( box-shadow 150ms linear );
+			@include transition( box-shadow $global-transition-duration linear );
 
 			&:focus {
 				outline: none;
