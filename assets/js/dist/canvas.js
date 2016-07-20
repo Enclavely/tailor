@@ -14,7 +14,7 @@ CanvasApplication = Marionette.Application.extend( {
 	 */
     onBeforeStart : function() {
         if ( window.location.origin !== window.parent.location.origin ) {
-            console.log( 'The Canvas has a different origin than the Sidebar' );
+            console.error( 'The Canvas has a different origin than the Sidebar' );
             return;
         }
 
@@ -64,7 +64,9 @@ CanvasApplication = Marionette.Application.extend( {
         document.addEventListener( 'dragover', resetCanvas, false );
         window.addEventListener( 'resize', resetCanvas, false );
 
-        $( 'a, img' ).attr( { draggable  : false } );
+        $( 'a' ).attr( { draggable : false, target : '_blank' } );
+
+        $( 'img' ).attr( { draggable : false } );
 
         $( document ).on( 'keydown', function( e ) {
             if ( e.ctrlKey && 89 == e.keyCode ) {
@@ -525,29 +527,36 @@ window.ajax = require( './utility/ajax' );
     require( './canvas-components' );
     require( './canvas-entities' );
     require( './canvas-preview' );
+    
+    if ( null == document.getElementById( "canvas" ) || null == document.getElementById( "select" ) ) {
+        console.error( 'The page canvas could not be initialized.  This could be caused by a plugin or theme conflict.' );
+    }
+    else {
+        app.addRegions( {
 
-    app.addRegions( {
+            // Primary canvas region
+            canvasRegion : {
+                selector : "#canvas",
+                regionClass : require( './modules/canvas/canvas-region' )
+            },
 
-        canvasRegion : {
-            selector : "#canvas",
-            regionClass : require( './modules/canvas/canvas-region' )
-        },
+            // Tools region
+            selectRegion : {
+                selector : "#select",
+                regionClass : require( './modules/tools/select-region' )
+            }
+        } );
 
-        selectRegion : {
-            selector : "#select",
-            regionClass : require( './modules/tools/select-region' )
-        }
-    } );
+        app.on( 'before:start', function() {
+            app.module( 'entities:canvas', require( './entities/canvas' ) );
+        } );
 
-    app.on( 'before:start', function() {
-        app.module( 'entities:canvas', require( './entities/canvas' ) );
-    } );
-
-    app.on( 'start', function() {
-        app.module( 'module:canvas', require( './modules/canvas' ) );
-        app.module( 'module:tools', require( './modules/tools' ) );
-        app.module( 'module:stylesheet', require( './modules/stylesheet' ) );
-    } );
+        app.on( 'start', function() {
+            app.module( 'module:canvas', require( './modules/canvas' ) );
+            app.module( 'module:tools', require( './modules/tools' ) );
+            app.module( 'module:stylesheet', require( './modules/stylesheet' ) );
+        } );
+    }
 
     $( document ).ready( function() {
         app.start( {
@@ -1231,14 +1240,6 @@ Carousel.prototype = {
 
 	        // Fires after the parent element is modified
 	        .on( 'element:parent:change', $.proxy( this.maybeRefreshSlick, this ) );
-
-			/*
-	        .on( 'before:element:refresh', function() { console.log( 'before:element:refresh' ); } )
-	        .on( 'element:change:parent', function() { console.log( 'element:change:parent' ); } )
-	        .on( 'before:element:copy', function() { console.log( 'before:element:copy' ); } )
-	        .on( 'element:copy', function() { console.log( 'element:copy' ); } )
-	        .on( 'before:element:destroy', function() { console.log( 'before:element:destroy' ); } )
-	        .on( 'element:parent:change', function() { console.log( 'element:parent:change' ); } ); */
     },
 
 	/**
@@ -1517,80 +1518,6 @@ Carousel.prototype = {
 
 	        // Fires after a descendant element is destroyed
 	        .on( 'element:descendant:destroy', $.proxy( this.onDestroyDescendant, this ) );
-
-	        /*
-	        .on( 'before:element:refresh', function() { console.log( 'before:element:refresh' ); } )
-	        .on( 'element:refresh', function( e, view ) {
-		        console.log( 'element:refresh' );
-		        console.log( view.el );
-	        } )
-
-	        //.on( 'element:change:parent', function() { console.log( 'element:change:parent' ); } )
-	        //.on( 'before:element:copy', function() { console.log( 'before:element:copy' ); } )
-	        //.on( 'element:copy', function() { console.log( 'element:copy' ); } )
-	        //.on( 'before:element:destroy', function() { console.log( 'before:element:destroy' ); } )
-	        //.on( 'element:parent:change', function() { console.log( 'element:parent:change' ); } )
-	        //.on( 'before:element:change:order', function() { console.log( 'before:element:change:order' ); } )
-	        //.on( 'element:change:order', function() { console.log( 'element:change:order' ); } )
-
-	        .on( 'before:element:child:add', function() { console.log( 'before:element:child:add' ); } )
-	        .on( 'element:child:add', function( e, view ) {
-		        console.log( 'element:child:add' );
-		        if ( showEl ) { console.log( view.el ) }
-	        } )
-	        .on( 'before:element:child:ready', function( e, view ) {
-		        console.log( 'before:element:child:ready' );
-		        if ( showEl ) { console.log( view.el ) }
-	        } )
-	        .on( 'element:child:ready', function( e, view ) {
-		        console.log( 'element:child:ready' );
-		        if ( showEl ) { console.log( view.el ) }
-	        } )
-	        .on( 'before:element:child:remove', function( e, view ) {
-		        console.log( 'before:element:child:remove' );
-		        if ( showEl ) { console.log( view.el ) }
-	        } )
-	        .on( 'element:child:remove', function( e, view ) {
-		        console.log( 'element:child:remove' );
-		        if ( showEl ) { console.log( view.el ) }
-	        } )
-	        .on( 'before:element:child:refresh', function( e, view ) {
-		        console.log( 'before:element:child:refresh' );
-		        if ( showEl ) { console.log( view.el ) }
-	        } )
-	        .on( 'element:child:refresh', function( e, view ) {
-		        console.log( 'element:child:refresh' );
-		        if ( showEl ) { console.log( view.el ) }
-	        } )
-	        .on( 'before:element:child:destroy', function( e, view ) {
-		        console.log( 'before:element:child:destroy' );
-		        if ( showEl ) { console.log( view.el ) }
-	        } )
-	        .on( 'element:child:destroy', function( e, view ) {
-		        console.log( 'element:child:destroy' );
-		        if ( showEl ) { console.log( view.el ) }
-	        } )
-
-	        .on( 'element:descendant:add', function( e, view ) {
-		        console.log( 'element:descendant:add' );
-		        if ( showEl ) { console.log( view.el ) }
-	        } )
-	        .on( 'element:descendant:remove', function( e, view ) {
-		        console.log( 'element:descendant:remove' );
-		        if ( showEl ) { console.log( view.el ) }
-	        } )
-	        .on( 'element:descendant:ready', function( e, view ) {
-		        console.log( 'element:descendant:ready' );
-		        if ( showEl ) { console.log( view.el ) }
-	        } )
-	        .on( 'element:descendant:refresh', function( e, view ) {
-		        console.log( 'element:descendant:refresh' );
-		        if ( showEl ) { console.log( view.el ) }
-	        } )
-	        .on( 'element:descendant:destroy', function( e, view ) {
-		        console.log( 'element:descendant:destroy' );
-		        if ( showEl ) { console.log( view.el ) }
-	        } ) */
     },
 
     /**
@@ -2895,10 +2822,16 @@ CompositeView = Marionette.CompositeView.extend( {
 	 * @since 1.0.0
 	 */
 	onDomRefresh : function() {
+
 		this.el.setAttribute( 'draggable', true );
+
 		this.$el
-			.find( 'a, img' )
-			.attr( {  draggable : false } );
+			.find( 'a' )
+			.attr( { draggable : false, target : '_blank' } );
+
+		this.$el
+			.find( 'img' )
+			.attr( { draggable : false } );
 	},
 
 	/**
@@ -3612,10 +3545,17 @@ ElementView = Marionette.ItemView.extend( {
 	 */
 	onDomRefresh : function() {
 		var elementView = this;
+		
 		this.el.setAttribute( 'draggable', true );
+
 		this.$el
-			.find( 'a, img' )
-			.attr( {  draggable : false } );
+			.find( 'a' )
+			.attr( { draggable : false, target : '_blank' } );
+
+		this.$el
+			.find( 'img' )
+			.attr( { draggable : false } );
+		
 		this.$el.imagesLoaded( function() {
 
 			elementView._isReady = true;

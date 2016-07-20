@@ -73,10 +73,6 @@ LinkControl = AbstractControl.extend( {
                     $searchResults.html( response );
                 },
 
-	            error: function( response ) {
-		            console.log( arguments );
-	            },
-
 	            /**
 	             * Resets the control classname when searching is complete.
 	             */

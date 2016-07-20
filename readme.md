@@ -11,3 +11,5 @@ You can get in touch with questions or recommendations in a number of ways:
 3. The [GitHub project](https://github.com/andrew-worsfold/tailor)
 
 If you like the plugin, you can help by [rating it](https://wordpress.org/support/view/plugin-reviews/tailor?rate=5#postform).
+
+Free extensions for Tailor are also available.  Please check out the [Portfolio](https://github.com/andrew-worsfold/tailor-portfolio) and [WooCommerce](https://github.com/andrew-worsfold/tailor-woocommerce) extensions.

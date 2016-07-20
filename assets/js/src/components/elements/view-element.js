@@ -241,10 +241,17 @@ ElementView = Marionette.ItemView.extend( {
 	 */
 	onDomRefresh : function() {
 		var elementView = this;
+		
 		this.el.setAttribute( 'draggable', true );
+
 		this.$el
-			.find( 'a, img' )
-			.attr( {  draggable : false } );
+			.find( 'a' )
+			.attr( { draggable : false, target : '_blank' } );
+
+		this.$el
+			.find( 'img' )
+			.attr( { draggable : false } );
+		
 		this.$el.imagesLoaded( function() {
 
 			elementView._isReady = true;

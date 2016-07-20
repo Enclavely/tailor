@@ -104,14 +104,6 @@ Carousel.prototype = {
 
 	        // Fires after the parent element is modified
 	        .on( 'element:parent:change', $.proxy( this.maybeRefreshSlick, this ) );
-
-			/*
-	        .on( 'before:element:refresh', function() { console.log( 'before:element:refresh' ); } )
-	        .on( 'element:change:parent', function() { console.log( 'element:change:parent' ); } )
-	        .on( 'before:element:copy', function() { console.log( 'before:element:copy' ); } )
-	        .on( 'element:copy', function() { console.log( 'element:copy' ); } )
-	        .on( 'before:element:destroy', function() { console.log( 'before:element:destroy' ); } )
-	        .on( 'element:parent:change', function() { console.log( 'element:parent:change' ); } ); */
     },
 
 	/**

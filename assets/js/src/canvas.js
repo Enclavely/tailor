@@ -22,29 +22,36 @@ window.ajax = require( './utility/ajax' );
     require( './canvas-components' );
     require( './canvas-entities' );
     require( './canvas-preview' );
+    
+    if ( null == document.getElementById( "canvas" ) || null == document.getElementById( "select" ) ) {
+        console.error( 'The page canvas could not be initialized.  This could be caused by a plugin or theme conflict.' );
+    }
+    else {
+        app.addRegions( {
 
-    app.addRegions( {
+            // Primary canvas region
+            canvasRegion : {
+                selector : "#canvas",
+                regionClass : require( './modules/canvas/canvas-region' )
+            },
 
-        canvasRegion : {
-            selector : "#canvas",
-            regionClass : require( './modules/canvas/canvas-region' )
-        },
+            // Tools region
+            selectRegion : {
+                selector : "#select",
+                regionClass : require( './modules/tools/select-region' )
+            }
+        } );
 
-        selectRegion : {
-            selector : "#select",
-            regionClass : require( './modules/tools/select-region' )
-        }
-    } );
+        app.on( 'before:start', function() {
+            app.module( 'entities:canvas', require( './entities/canvas' ) );
+        } );
 
-    app.on( 'before:start', function() {
-        app.module( 'entities:canvas', require( './entities/canvas' ) );
-    } );
-
-    app.on( 'start', function() {
-        app.module( 'module:canvas', require( './modules/canvas' ) );
-        app.module( 'module:tools', require( './modules/tools' ) );
-        app.module( 'module:stylesheet', require( './modules/stylesheet' ) );
-    } );
+        app.on( 'start', function() {
+            app.module( 'module:canvas', require( './modules/canvas' ) );
+            app.module( 'module:tools', require( './modules/tools' ) );
+            app.module( 'module:stylesheet', require( './modules/stylesheet' ) );
+        } );
+    }
 
     $( document ).ready( function() {
         app.start( {

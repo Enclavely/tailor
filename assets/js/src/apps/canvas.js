@@ -13,7 +13,7 @@ CanvasApplication = Marionette.Application.extend( {
 	 */
     onBeforeStart : function() {
         if ( window.location.origin !== window.parent.location.origin ) {
-            console.log( 'The Canvas has a different origin than the Sidebar' );
+            console.error( 'The Canvas has a different origin than the Sidebar' );
             return;
         }
 
@@ -63,7 +63,9 @@ CanvasApplication = Marionette.Application.extend( {
         document.addEventListener( 'dragover', resetCanvas, false );
         window.addEventListener( 'resize', resetCanvas, false );
 
-        $( 'a, img' ).attr( { draggable  : false } );
+        $( 'a' ).attr( { draggable : false, target : '_blank' } );
+
+        $( 'img' ).attr( { draggable : false } );
 
         $( document ).on( 'keydown', function( e ) {
             if ( e.ctrlKey && 89 == e.keyCode ) {

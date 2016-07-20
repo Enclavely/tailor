@@ -2,7 +2,7 @@
 Contributors: andrew.worsfold
 Donate link: http://gettailor.com/donate/
 Tags: page, layout, builder, frontend, content, page builder, drag and drop builder, home page builder, landing page builder, layout builder, frontend builder, frontend editor, responsive, visual composer, beaver builder
-Stable tag: 1.3.2
+Stable tag: 1.3.3
 Requires at least: 4.3
 Tested up to: 4.5.3
 License: GPLv3 or later
@@ -113,8 +113,12 @@ Yes, however, users should be directed to the WordPress plugin repository to ins
 
 == Changelog ==
 
+= 1.3.3 =
+* Added: error message if the page canvas is not properly initialized.
+* Fixed: clicking links within the canvas will cause the page to be redirected.
+
 = 1.3.2 =
-* Fixed: Debug error message displayed when no admin setting description is provided.
+* Fixed: debug error message displayed when no admin setting description is provided.
 
 = 1.3.1 =
 * Added: descriptions to some admin settings.

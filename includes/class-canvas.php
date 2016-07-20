@@ -45,13 +45,13 @@ if ( ! class_exists( 'Tailor_Canvas' ) ) {
         protected function add_actions() {
 
             add_action( 'wp_head', array( $this, 'canvas_head' ) );
-	        add_filter( 'the_content', array( $this, 'canvas_content' ), 999 );
+	        add_filter( 'the_content', array( $this, 'canvas_content' ), 99999 );
 	        add_action( 'wp_footer', array( $this, 'canvas_footer' ) );
 	        
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_styles' ) );
-            add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ), 999 );
+            add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ), 99999 );
 	        
-            add_action( 'tailor_canvas_footer', array( $this, 'print_templates' ), 999 );
+            add_action( 'tailor_canvas_footer', array( $this, 'print_templates' ), 99999 );
 	        
 	        // Address potential plugin conflicts
 	        if ( defined( 'JETPACK__VERSION' ) ) {
