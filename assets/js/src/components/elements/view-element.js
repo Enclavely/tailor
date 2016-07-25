@@ -90,11 +90,12 @@ ElementView = Marionette.ItemView.extend( {
 	 * @returns {exports}
 	 */
 	attachElContent : function( html ) {
-		var $el = $( html );
 
-		this.$el.replaceWith( $el );
-		this.setElement( $el );
-		this.el.setAttribute( 'draggable', true );
+		var $el = $( html );
+		var el = $el[0]; // Fix for elements like Jetpack portfolio that contain comments
+
+		this.$el.replaceWith( el );
+		this.setElement( el );
 
 		return this;
 	},

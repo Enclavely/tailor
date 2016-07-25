@@ -225,7 +225,8 @@ if ( ! function_exists( 'tailor_get_terms' ) ) {
 
 		if ( 1 == count( $taxonomies ) ) {
 			$taxonomy = reset( $taxonomies );
-			$terms = get_terms( $taxonomy->name, $term_args );
+			$term_args['taxonomy'] = $taxonomy->name;
+			$terms = get_terms( $term_args['taxonomy'] );
 			if ( ! empty( $terms ) && ! is_wp_error( $terms ) ) {
 				foreach ( $terms as $term ) {
 					if ( isset( $term->term_id ) ) {
@@ -237,7 +238,8 @@ if ( ! function_exists( 'tailor_get_terms' ) ) {
 		else {
 			foreach ( $taxonomies as $taxonomy ) {
 				if ( $taxonomy->hierarchical && $taxonomy->show_in_nav_menus ) {
-					$terms = get_terms( $taxonomy->name, $term_args );
+					$term_args['taxonomy'] = $taxonomy->name;
+					$terms = get_terms( $term_args );
 					if ( ! empty( $terms ) && ! is_wp_error( $terms ) ) {
 						$values[ $taxonomy->labels->name ] = array( $taxonomy->object_type[0] => sprintf( __( 'All %s', 'tailor' ), $taxonomy->labels->name ) );
 						foreach ( $terms as $term ) {
@@ -302,6 +304,21 @@ if ( ! function_exists( 'tailor_sanitize_number' ) ) {
 		}
 
 		return $value < 0 ? abs( $value ) : $value;
+	}
+}
+
+if ( ! function_exists( 'tailor_bool_to_string' ) ) {
+
+	/**
+	 * Converts a boolean value to a string representation (i.e., 'true' or 'false').
+	 *
+	 * @since 1.3.3
+	 *
+	 * @param bool $bool
+	 * @return string
+	 */
+	function tailor_bool_to_string( $bool ) {
+		return boolval( $bool ) ? 'true' : 'false';
 	}
 }
 

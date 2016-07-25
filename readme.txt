@@ -2,7 +2,7 @@
 Contributors: andrew.worsfold
 Donate link: http://gettailor.com/donate/
 Tags: page, layout, builder, frontend, content, page builder, drag and drop builder, home page builder, landing page builder, layout builder, frontend builder, frontend editor, responsive, visual composer, beaver builder
-Stable tag: 1.3.3
+Stable tag: 1.3.4
 Requires at least: 4.3
 Tested up to: 4.5.3
 License: GPLv3 or later
@@ -112,6 +112,13 @@ Yes.  Tailored pages can be migrated like any other type of page using the [dupl
 Yes, however, users should be directed to the WordPress plugin repository to install the latest version of the plugin.  Consider using a tool like [TGM Plugin Activation](http://tgmpluginactivation.com/) to guide users through the installation process.
 
 == Changelog ==
+
+= 1.3.4 =
+* Added: Jetpack Portfolio element. [Learn more about this change](https://medium.com/p/f8a1ff571f21/edit).
+* Added: class for managing theme and plugin compatibility.
+* Added: initialization hooks for the sidebar and canvas.
+* Fixed: column width Customizer setting.
+* Fixed: undefined variable warning in attachment partial template.
 
 = 1.3.3 =
 * Added: error message if the page canvas is not properly initialized.

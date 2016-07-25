@@ -514,6 +514,16 @@ html {
         width: 91.66667%; }
       .tailor-ui .desktop-columns .tailor-column.columns-12 {
         width: 100%; } }
+.tailor-ui .tailor-jetpack-portfolio {
+  padding: 0;
+  margin-bottom: 1rem;
+  font-size: 1em;
+  color: inherit;
+  background-color: transparent;
+  border: 0 solid #efefef;
+  border-radius: 0;
+  box-shadow: none; }
+
 .tailor-ui .tailor-list {
   padding: 0;
   margin: 0;

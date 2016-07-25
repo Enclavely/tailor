@@ -65,6 +65,34 @@ if ( ! function_exists( 'is_revolution_slider_active' ) ) {
 	}
 }
 
+if ( ! function_exists( 'is_jetpack_active' ) ) {
+
+	/**
+	 * Returns true if the Jetpack plugin is active.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @return bool
+	 */
+	function is_jetpack_active() {
+		return class_exists( 'Jetpack' );
+	}
+}
+
+if ( ! function_exists( 'is_jetpack_portfolio_active' ) ) {
+
+	/**
+	 * Returns true if the Jetpack Portfolio module is active.
+	 *
+	 * @since  1.3.4
+	 *
+	 * @return bool
+	 */
+	function is_jetpack_portfolio_active() {
+		return is_jetpack_active() && ( ( get_option( 'jetpack_portfolio', '0' ) || current_theme_supports( 'jetpack_portfolio' ) ) );
+	}
+}
+
 if ( ! function_exists( 'require_if_plugin_active' ) ) {
 
 	/**

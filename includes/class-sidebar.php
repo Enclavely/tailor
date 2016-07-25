@@ -40,9 +40,15 @@ if ( ! class_exists( 'Tailor_Sidebar' ) ) {
          * @access protected
          */
         protected function add_actions() {
+	        
+	        /**
+	         * Fires before the sidebar is initialized.
+	         * 
+	         * @since 1.3.4
+	         */
+	        do_action( 'tailor_sidebar_init' );
 
-	        remove_all_filters( 'template_include' );
-	        add_filter( 'template_include', array( $this, 'render_page' ) );
+	        add_filter( 'template_include', array( $this, 'render_page' ), -999999 );
 
 	        add_action( 'tailor_sidebar_head', array( $this, 'enqueue_styles' ) );
 	        add_action( 'tailor_sidebar_head', 'wp_print_styles' );
@@ -59,9 +65,6 @@ if ( ! class_exists( 'Tailor_Sidebar' ) ) {
             add_action( 'tailor_sidebar_footer', 'wp_auth_check_html' );
 
             add_action( 'wp_ajax_tailor_refresh_nonces', array( $this, 'refresh_nonces' ) );
-
-			// Address potential plugin conflicts
-	        add_filter( 'run_ngg_resource_manager', '__return_false' );
         }
 
 	    /**

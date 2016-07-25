@@ -340,9 +340,11 @@ class Tailor_Settings {
 			array(
 				'label'             =>  $icon_field_label,
 				'description'       =>  sprintf(
-					__( 'Select an existing icon kit from your Media Library or %1$screate%2$s and upload one.', 'tailor' ),
+					__( 'Select an existing icon kit from your Media Library or %1$screate%2$s and upload the %3$s.zip%4$s file containing one.', 'tailor' ),
 					'<a href="http://icomoon.io/app" target="_blank">',
-					'</a>'
+					'</a>',
+					'<code>',
+					'</code>'
 				),
 				'type'              =>  'icon',
 				'name'              =>  $setting_id . '[' . $icon_field_id . ']',

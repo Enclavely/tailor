@@ -210,14 +210,6 @@ if ( ! class_exists( 'Tailor_Elements' ) ) {
 		        'type'              =>  'child',
 	        ) );
 
-	        $this->add_element( 'tailor_form_cf7', array(
-		        'label'             =>  __( 'Contact form', 'tailor' ),
-		        'description'       =>  __( 'A contact form.', 'tailor' ),
-		        'badge'             =>  __( 'Contact Form 7', 'tailor' ),
-		        'active_callback'   =>  'is_contact_form_7_active',
-		        'dynamic'           =>  true,
-	        ) );
-
 	        $this->add_element( 'tailor_posts', array(
 		        'label'             =>  __( 'Posts', 'tailor' ),
 		        'description'   =>  __( 'Your site\'s posts.', 'tailor' ),
@@ -267,6 +259,23 @@ if ( ! class_exists( 'Tailor_Elements' ) ) {
 	        $this->add_element( 'tailor_widgets', array(
 		        'label'             =>  __( 'Widgets', 'tailor' ),
 		        'description'       =>  __( 'A widget area from your site.', 'tailor' ),
+		        'dynamic'           =>  true,
+	        ) );
+	        
+	        // Third-party plugin elements
+	        $this->add_element( 'tailor_form_cf7', array(
+		        'label'             =>  __( 'Contact form', 'tailor' ),
+		        'description'       =>  __( 'A contact form.', 'tailor' ),
+		        'badge'             =>  __( 'Contact Form 7', 'tailor' ),
+		        'active_callback'   =>  'is_contact_form_7_active',
+		        'dynamic'           =>  true,
+	        ) );
+
+	        $this->add_element( 'tailor_jetpack_portfolio', array(
+		        'label'             =>  __( 'Portfolio', 'tailor' ),
+		        'description'       =>  __( 'Your site\'s projects.', 'tailor' ),
+		        'badge'             =>  __( 'Jetpack', 'tailor' ),
+		        'active_callback'   =>  'is_jetpack_portfolio_active',
 		        'dynamic'           =>  true,
 	        ) );
         }

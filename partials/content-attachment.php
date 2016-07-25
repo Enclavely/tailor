@@ -28,7 +28,7 @@ if ( ( isset( $stretch ) && true == $stretch ) ) {
 }
 
 // Generate the attachment link class name
-$attachment_link_class_name .= 'tailor-attachment__link';
+$attachment_link_class_name = 'tailor-attachment__link';
 if ( 'lightbox' == $image_link ) {
 	$attachment_link_class_name .= ' is-lightbox-image';
 }

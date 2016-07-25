@@ -114,11 +114,11 @@ if ( ! function_exists( 'tailor_add_dynamic_css' ) ) {
 
 			if ( is_numeric( $value ) ) {
 				$custom_page_css .= (
-					'.tailor-ui .small-columns .tailor-column {' .
+					'.tailor-ui .tablet-columns .tailor-column {' .
 						'padding-left: ' . $value . $unit . ';' .
 						'padding-right: ' . $value . $unit . ';' .
 					'}' .
-					'.tailor-ui .tailor-row.small-columns {' .
+					'.tailor-ui .tailor-row.tablet-columns {' .
 						'margin-left: -' . $value . $unit . ';' .
 						'margin-right: -' . $value . $unit . ';' .
 					'}'
@@ -140,11 +140,6 @@ if ( ! function_exists( 'tailor_add_dynamic_css' ) ) {
 	                '.tailor-ui .tailor-element {' .
 	                    'margin-bottom: ' . $value . $unit . ';' .
 	                '}'
-                    //'@media screen and (min-width: 45em) {' .
-                    //    '.tailor-element {' .
-                    //        'margin-bottom: ' . $value . $unit . ';' .
-                    //    '}' .
-                    //'}'
                 );
             }
         }

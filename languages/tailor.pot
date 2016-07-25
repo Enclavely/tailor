@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the Tailor package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Tailor 1.3.1\n"
+"Project-Id-Version: Tailor 1.3.4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/tailor\n"
-"POT-Creation-Date: 2016-07-19 02:23:17+00:00\n"
+"POT-Creation-Date: 2016-07-25 04:09:41+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -64,7 +64,9 @@ msgstr ""
 #: includes/elements/class-content.php:30
 #: includes/elements/class-gallery.php:31
 #: includes/elements/class-grid-item.php:31 includes/elements/class-grid.php:31
-#: includes/elements/class-hero.php:31 includes/elements/class-list-item.php:31
+#: includes/elements/class-hero.php:31
+#: includes/elements/class-jetpack-portfolio.php:31
+#: includes/elements/class-list-item.php:31
 #: includes/elements/class-map-marker.php:31 includes/elements/class-map.php:31
 #: includes/elements/class-posts.php:31 includes/elements/class-row.php:31
 #: includes/elements/class-section.php:31 includes/elements/class-tab.php:31
@@ -167,11 +169,7 @@ msgid "Icon kits"
 msgstr ""
 
 #: includes/admin/class-settings.php:343
-msgid "Select an existing icon kit from your Media Library or %1$screate%2$s and upload one."
-msgstr ""
-
-#: includes/admin/helpers/helpers-compatibility.php:20
-msgid "Tailor requires at least WordPress version 4.3. You are running version %s. Please upgrade and try again."
+msgid "Select an existing icon kit from your Media Library or %1$screate%2$s and upload the %3$s.zip%4$s file containing one."
 msgstr ""
 
 #: includes/admin/helpers/helpers-general.php:22
@@ -186,58 +184,62 @@ msgstr ""
 msgid "Google Plus"
 msgstr ""
 
-#: includes/class-canvas.php:208 partials/underscore/canvas-tools.php:13
+#: includes/class-canvas.php:204 partials/underscore/canvas-tools.php:13
 msgid "Edit"
 msgstr ""
 
-#: includes/class-canvas.php:209 includes/class-sidebar.php:295
+#: includes/class-canvas.php:205 includes/class-sidebar.php:296
 #: includes/controls/class-list.php:119 partials/admin/field-icon.php:31
 #: partials/underscore/canvas-tools.php:14
 msgid "Delete"
 msgstr ""
 
-#: includes/class-canvas.php:210 partials/underscore/modal-layout.php:51
+#: includes/class-canvas.php:206 partials/underscore/modal-layout.php:51
 msgid "Preview"
 msgstr ""
 
-#: includes/class-canvas.php:211 includes/class-sidebar.php:289
+#: includes/class-canvas.php:207 includes/class-sidebar.php:290
 msgid "Save"
 msgstr ""
 
-#: includes/class-canvas.php:212
+#: includes/class-canvas.php:208
 msgid "Initialized"
 msgstr ""
 
-#: includes/class-canvas.php:213
+#: includes/class-canvas.php:209
 msgid "Added"
 msgstr ""
 
-#: includes/class-canvas.php:214
+#: includes/class-canvas.php:210
 msgid "Deleted"
 msgstr ""
 
-#: includes/class-canvas.php:215
+#: includes/class-canvas.php:211
 msgid "Edited"
 msgstr ""
 
-#: includes/class-canvas.php:216
+#: includes/class-canvas.php:212
 msgid "Copied"
 msgstr ""
 
-#: includes/class-canvas.php:217
+#: includes/class-canvas.php:213
 msgid "Moved"
 msgstr ""
 
-#: includes/class-canvas.php:218
+#: includes/class-canvas.php:214
 msgid "Resized"
 msgstr ""
 
-#: includes/class-canvas.php:219
+#: includes/class-canvas.php:215
 msgid "Reordered"
 msgstr ""
 
-#: includes/class-canvas.php:220
+#: includes/class-canvas.php:216
 msgid "Template"
+msgstr ""
+
+#: includes/class-compatibility.php:86
+msgid "Tailor requires at least WordPress version 4.3. You are running version %s. Please upgrade and try again."
 msgstr ""
 
 #: includes/class-elements.php:124
@@ -332,99 +334,111 @@ msgid "Grid item"
 msgstr ""
 
 #: includes/class-elements.php:214
+msgid "Posts"
+msgstr ""
+
+#: includes/class-elements.php:215
+msgid "Your site's posts."
+msgstr ""
+
+#: includes/class-elements.php:220
+msgid "Gallery"
+msgstr ""
+
+#: includes/class-elements.php:221
+msgid "A flexible image gallery."
+msgstr ""
+
+#: includes/class-elements.php:226
+msgid "Button"
+msgstr ""
+
+#: includes/class-elements.php:227
+msgid "A simple button."
+msgstr ""
+
+#: includes/class-elements.php:231 includes/elements/class-map-marker.php:76
+msgid "Content"
+msgstr ""
+
+#: includes/class-elements.php:232
+msgid "HTML and multimedia content."
+msgstr ""
+
+#: includes/class-elements.php:237 includes/elements/class-user.php:49
+msgid "User"
+msgstr ""
+
+#: includes/class-elements.php:238
+msgid "A user profile box."
+msgstr ""
+
+#: includes/class-elements.php:242
+msgid "Card"
+msgstr ""
+
+#: includes/class-elements.php:243
+msgid "Display content inside a card."
+msgstr ""
+
+#: includes/class-elements.php:248
+msgid "Hero"
+msgstr ""
+
+#: includes/class-elements.php:249
+msgid "Emphasize content in a hero pane."
+msgstr ""
+
+#: includes/class-elements.php:254
+msgid "Box"
+msgstr ""
+
+#: includes/class-elements.php:255
+msgid "Display content inside a box."
+msgstr ""
+
+#: includes/class-elements.php:260
+msgid "Widgets"
+msgstr ""
+
+#: includes/class-elements.php:261
+msgid "A widget area from your site."
+msgstr ""
+
+#: includes/class-elements.php:267
 #: includes/elements/class-contact-form-7.php:56
 msgid "Contact form"
 msgstr ""
 
-#: includes/class-elements.php:215
+#: includes/class-elements.php:268
 msgid "A contact form."
 msgstr ""
 
-#: includes/class-elements.php:216
+#: includes/class-elements.php:269
 msgid "Contact Form 7"
 msgstr ""
 
-#: includes/class-elements.php:222
-msgid "Posts"
+#: includes/class-elements.php:275
+msgid "Portfolio"
 msgstr ""
 
-#: includes/class-elements.php:223
-msgid "Your site's posts."
+#: includes/class-elements.php:276
+msgid "Your site's projects."
 msgstr ""
 
-#: includes/class-elements.php:228
-msgid "Gallery"
+#: includes/class-elements.php:277
+msgid "Jetpack"
 msgstr ""
 
-#: includes/class-elements.php:229
-msgid "A flexible image gallery."
-msgstr ""
-
-#: includes/class-elements.php:234
-msgid "Button"
-msgstr ""
-
-#: includes/class-elements.php:235
-msgid "A simple button."
-msgstr ""
-
-#: includes/class-elements.php:239 includes/elements/class-map-marker.php:76
-msgid "Content"
-msgstr ""
-
-#: includes/class-elements.php:240
-msgid "HTML and multimedia content."
-msgstr ""
-
-#: includes/class-elements.php:245 includes/elements/class-user.php:49
-msgid "User"
-msgstr ""
-
-#: includes/class-elements.php:246
-msgid "A user profile box."
-msgstr ""
-
-#: includes/class-elements.php:250
-msgid "Card"
-msgstr ""
-
-#: includes/class-elements.php:251
-msgid "Display content inside a card."
-msgstr ""
-
-#: includes/class-elements.php:256
-msgid "Hero"
-msgstr ""
-
-#: includes/class-elements.php:257
-msgid "Emphasize content in a hero pane."
-msgstr ""
-
-#: includes/class-elements.php:262
-msgid "Box"
-msgstr ""
-
-#: includes/class-elements.php:263
-msgid "Display content inside a box."
-msgstr ""
-
-#: includes/class-elements.php:268
-msgid "Widgets"
-msgstr ""
-
-#: includes/class-elements.php:269
-msgid "A widget area from your site."
-msgstr ""
-
-#: includes/class-elements.php:413 includes/class-elements.php:769
+#: includes/class-elements.php:422 includes/class-elements.php:778
 msgid "Tailor Elements: Valid models was not provided"
 msgstr ""
 
-#: includes/class-elements.php:467
+#: includes/class-elements.php:476
 msgid "Tailor Elements: A valid model was not provided"
 msgstr ""
 
-#: includes/class-elements.php:575
+#: includes/class-elements.php:584
 msgid "The element associated with shortcode %s could not be found."
 msgstr ""
 
@@ -506,99 +520,99 @@ msgstr ""
 msgid "The amount of vertical space to display between elements."
 msgstr ""
 
-#: includes/class-sidebar.php:95
+#: includes/class-sidebar.php:98
 msgid "Tailoring: %s"
 msgstr ""
 
-#: includes/class-sidebar.php:287
+#: includes/class-sidebar.php:288
 msgid "Tailoring: "
 msgstr ""
 
-#: includes/class-sidebar.php:288 includes/controls/class-search.php:64
+#: includes/class-sidebar.php:289 includes/controls/class-search.php:64
 #: languages/tinymce-localization.php:28
 msgid "Select"
 msgstr ""
 
-#: includes/class-sidebar.php:290 includes/settings/class-panel.php:515
+#: includes/class-sidebar.php:291 includes/settings/class-panel.php:515
 msgid "Save template"
 msgstr ""
 
-#: includes/class-sidebar.php:291 partials/sidebar/sidebar-frame.php:26
+#: includes/class-sidebar.php:292 partials/sidebar/sidebar-frame.php:26
 msgid "Saved"
 msgstr ""
 
-#: includes/class-sidebar.php:292 partials/sidebar/sidebar-frame.php:23
+#: includes/class-sidebar.php:293 partials/sidebar/sidebar-frame.php:23
 msgid "Save & Publish"
 msgstr ""
 
-#: includes/class-sidebar.php:293
+#: includes/class-sidebar.php:294
 msgid "Import"
 msgstr ""
 
-#: includes/class-sidebar.php:294 includes/settings/class-panel.php:521
+#: includes/class-sidebar.php:295 includes/settings/class-panel.php:521
 msgid "Import template"
 msgstr ""
 
-#: includes/class-sidebar.php:296 includes/controls/class-list.php:120
+#: includes/class-sidebar.php:297 includes/controls/class-list.php:120
 #: partials/sidebar/sidebar-frame.php:32
 #: partials/underscore/dialog-layout.php:19
 #: partials/underscore/modal-layout.php:22
 msgid "Close"
 msgstr ""
 
-#: includes/class-sidebar.php:297
+#: includes/class-sidebar.php:298
 msgid "An error occurred, please try again"
 msgstr ""
 
-#: includes/class-sidebar.php:298
+#: includes/class-sidebar.php:299
 msgid "The session has expired"
 msgstr ""
 
-#: includes/class-sidebar.php:299
+#: includes/class-sidebar.php:300
 msgid "The request made was invalid"
 msgstr ""
 
-#: includes/class-sidebar.php:300
+#: includes/class-sidebar.php:301
 msgid "%s saved successfully"
 msgstr ""
 
-#: includes/class-sidebar.php:301
+#: includes/class-sidebar.php:302
 msgid "History entry restored successfully"
 msgstr ""
 
-#: includes/class-sidebar.php:302
+#: includes/class-sidebar.php:303
 msgid "Element deleted successfully"
 msgstr ""
 
-#: includes/class-sidebar.php:303
+#: includes/class-sidebar.php:304
 msgid "Template saved successfully"
 msgstr ""
 
-#: includes/class-sidebar.php:304
+#: includes/class-sidebar.php:305
 msgid "Template imported successfully"
 msgstr ""
 
-#: includes/class-sidebar.php:305
+#: includes/class-sidebar.php:306
 msgid "Template added successfully"
 msgstr ""
 
-#: includes/class-sidebar.php:306
+#: includes/class-sidebar.php:307
 msgid "Template deleted successfully"
 msgstr ""
 
-#: includes/class-sidebar.php:307
+#: includes/class-sidebar.php:308
 msgid "To add an element, drag it into the desired position on the page"
 msgstr ""
 
-#: includes/class-sidebar.php:308
+#: includes/class-sidebar.php:309
 msgid "To add a template, drag it into the desired position on the page"
 msgstr ""
 
-#: includes/class-sidebar.php:309
+#: includes/class-sidebar.php:310
 msgid "The changes you made will be lost if you navigate away from this page"
 msgstr ""
 
-#: includes/class-sidebar.php:310
+#: includes/class-sidebar.php:311
 msgid "You have made changes to this element.  Would you like to save them?"
 msgstr ""
 
@@ -762,13 +776,14 @@ msgstr ""
 #: includes/elements/class-content.php:35
 #: includes/elements/class-gallery.php:36
 #: includes/elements/class-grid-item.php:36 includes/elements/class-grid.php:36
-#: includes/elements/class-hero.php:36 includes/elements/class-list-item.php:36
-#: includes/elements/class-list.php:31 includes/elements/class-map.php:36
-#: includes/elements/class-posts.php:41 includes/elements/class-row.php:36
-#: includes/elements/class-section.php:36 includes/elements/class-tab.php:36
-#: includes/elements/class-tabs.php:36 includes/elements/class-toggle.php:36
-#: includes/elements/class-toggles.php:36 includes/elements/class-user.php:34
-#: includes/elements/class-widgets.php:34
+#: includes/elements/class-hero.php:36
+#: includes/elements/class-jetpack-portfolio.php:41
+#: includes/elements/class-list-item.php:36 includes/elements/class-list.php:31
+#: includes/elements/class-map.php:36 includes/elements/class-posts.php:41
+#: includes/elements/class-row.php:36 includes/elements/class-section.php:36
+#: includes/elements/class-tab.php:36 includes/elements/class-tabs.php:36
+#: includes/elements/class-toggle.php:36 includes/elements/class-toggles.php:36
+#: includes/elements/class-user.php:34 includes/elements/class-widgets.php:34
 msgid "Colors"
 msgstr ""
 
@@ -781,13 +796,14 @@ msgstr ""
 #: includes/elements/class-content.php:40
 #: includes/elements/class-gallery.php:41
 #: includes/elements/class-grid-item.php:41 includes/elements/class-grid.php:41
-#: includes/elements/class-hero.php:41 includes/elements/class-list-item.php:41
-#: includes/elements/class-list.php:36 includes/elements/class-map.php:41
-#: includes/elements/class-posts.php:46 includes/elements/class-row.php:41
-#: includes/elements/class-section.php:41 includes/elements/class-tab.php:41
-#: includes/elements/class-tabs.php:41 includes/elements/class-toggle.php:41
-#: includes/elements/class-toggles.php:41 includes/elements/class-user.php:39
-#: includes/elements/class-widgets.php:39
+#: includes/elements/class-hero.php:41
+#: includes/elements/class-jetpack-portfolio.php:46
+#: includes/elements/class-list-item.php:41 includes/elements/class-list.php:36
+#: includes/elements/class-map.php:41 includes/elements/class-posts.php:46
+#: includes/elements/class-row.php:41 includes/elements/class-section.php:41
+#: includes/elements/class-tab.php:41 includes/elements/class-tabs.php:41
+#: includes/elements/class-toggle.php:41 includes/elements/class-toggles.php:41
+#: includes/elements/class-user.php:39 includes/elements/class-widgets.php:39
 msgid "Attributes"
 msgstr ""
 
@@ -859,6 +875,34 @@ msgstr ""
 msgid "Select the smallest screen size on which items are displayed in a grid layout"
 msgstr ""
 
+#: includes/elements/class-jetpack-portfolio.php:36
+#: includes/elements/class-posts.php:36
+msgid "Query"
+msgstr ""
+
+#: includes/elements/class-jetpack-portfolio.php:69
+#: includes/helpers/helpers-elements.php:298
+msgid "Type"
+msgstr ""
+
+#: includes/elements/class-jetpack-portfolio.php:70
+msgid "Tag"
+msgstr ""
+
+#: includes/elements/class-jetpack-portfolio.php:71
+#: includes/elements/class-posts.php:168
+msgid "Excerpt"
+msgstr ""
+
+#: includes/elements/class-jetpack-portfolio.php:84
+msgid "Types"
+msgstr ""
+
+#: includes/elements/class-jetpack-portfolio.php:95
+#: includes/helpers/helpers-elements.php:510
+msgid "Tags"
+msgstr ""
+
 #: includes/elements/class-list-item.php:73
 msgid "Number"
 msgstr ""
@@ -895,10 +939,6 @@ msgstr ""
 msgid "Saturation"
 msgstr ""
 
-#: includes/elements/class-posts.php:36
-msgid "Query"
-msgstr ""
-
 #: includes/elements/class-posts.php:75
 msgid "Boxed"
 msgstr ""
@@ -915,10 +955,6 @@ msgstr ""
 #: includes/elements/class-posts.php:167
 #: includes/helpers/helpers-elements.php:524
 msgid "Date"
-msgstr ""
-
-#: includes/elements/class-posts.php:168
-msgid "Excerpt"
 msgstr ""
 
 #: includes/elements/class-posts.php:169
@@ -1086,10 +1122,6 @@ msgstr ""
 msgid "Show pagination links?"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:298
-msgid "Type"
-msgstr ""
-
 #: includes/helpers/helpers-elements.php:308
 msgid "Graphic type"
 msgstr ""
@@ -1189,10 +1221,6 @@ msgstr ""
 
 #: includes/helpers/helpers-elements.php:499
 msgid "Categories"
-msgstr ""
-
-#: includes/helpers/helpers-elements.php:510
-msgid "Tags"
 msgstr ""
 
 #: includes/helpers/helpers-elements.php:521
@@ -1408,39 +1436,39 @@ msgstr ""
 msgid "Current user"
 msgstr ""
 
-#: includes/helpers/helpers-settings.php:242
+#: includes/helpers/helpers-settings.php:244
 msgid "All %s"
 msgstr ""
 
-#: includes/helpers/helpers-settings.php:516
+#: includes/helpers/helpers-settings.php:533
 msgid "Desktop"
 msgstr ""
 
-#: includes/helpers/helpers-settings.php:521
+#: includes/helpers/helpers-settings.php:538
 msgid "Tablet"
 msgstr ""
 
-#: includes/helpers/helpers-settings.php:526
+#: includes/helpers/helpers-settings.php:543
 msgid "Mobile"
 msgstr ""
 
-#: includes/helpers/helpers-settings.php:534
+#: includes/helpers/helpers-settings.php:551
 msgid "All"
 msgstr ""
 
-#: includes/helpers/helpers-settings.php:586
+#: includes/helpers/helpers-settings.php:603
 msgid "%1$s is <strong>deprecated</strong> since Tailor version %2$s! Use %3$s instead."
 msgstr ""
 
-#: includes/helpers/helpers-settings.php:603
+#: includes/helpers/helpers-settings.php:620
 msgid "Enter desktop preview mode"
 msgstr ""
 
-#: includes/helpers/helpers-settings.php:607
+#: includes/helpers/helpers-settings.php:624
 msgid "Enter tablet preview mode"
 msgstr ""
 
-#: includes/helpers/helpers-settings.php:610
+#: includes/helpers/helpers-settings.php:627
 msgid "Enter mobile preview mode"
 msgstr ""
 
@@ -1525,6 +1553,10 @@ msgstr ""
 
 #: includes/shortcodes/shortcode-gallery.php:73
 msgid "Please select one or more images to display in this gallery"
+msgstr ""
+
+#: includes/shortcodes/shortcode-jetpack-portfolio.php:100
+msgid "Please enable Jetpack and the Portfolio custom post type"
 msgstr ""
 
 #: includes/shortcodes/shortcode-toggles.php:75

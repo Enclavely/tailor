@@ -1,0 +1,34 @@
+//
+// Variables
+//
+
+// General
+$portfolio-class-prefix: $global-class-prefix !default;
+$portfolio-spacing-vertical: $global-spacing-vertical !default;
+$portfolio-padding: 0 !default;
+$portfolio-font-size: $global-font-size !default;
+$portfolio-color: inherit !default;
+$portfolio-border-width: 0 !default;
+$portfolio-border-style : $global-border-style !default;
+$portfolio-border-color: $global-border-color !default;
+$portfolio-border-radius: 0 !default;
+$portfolio-background-color: transparent !default;
+$portfolio-box-shadow: none !default;
+
+
+//
+// Exported selectors
+//
+.#{$global-class-prefix}ui {
+
+	.#{$portfolio-class-prefix}jetpack-portfolio {
+		padding: $portfolio-padding;
+		margin-bottom: $portfolio-spacing-vertical;
+		font-size: $portfolio-font-size;
+		color: $portfolio-color;
+		background-color: $portfolio-background-color;
+		border: $portfolio-border-width $content-border-style $content-border-color;
+		border-radius: $portfolio-border-radius;
+		box-shadow: $portfolio-box-shadow;
+	}
+}
