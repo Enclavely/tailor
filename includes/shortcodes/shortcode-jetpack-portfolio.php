@@ -27,7 +27,7 @@ if ( ! function_exists( 'tailor_shortcode_jetpack_portfolio' ) ) {
             'class'                     =>  '',
 	        'items_per_row'             =>  '3',
             'meta'                      =>  '',
-            'posts_per_page'            =>  6,
+            'posts_per_page'            =>  '6',
             'types'                     =>  '',
             'tags'                      =>  '',
             'order_by'                  =>  'date',
@@ -39,8 +39,8 @@ if ( ! function_exists( 'tailor_shortcode_jetpack_portfolio' ) ) {
 
 	    // Get the attribute string
 	    $attr_string = '';
-	    $items_per_row = intval( $atts['items_per_row'] );
-	    $posts_per_page = intval( $atts['posts_per_page'] );
+	    $items_per_row = $atts['items_per_row'];
+	    $posts_per_page = $atts['posts_per_page'];
 	    $meta = explode( ',', $atts['meta'] );
 
 	    /**

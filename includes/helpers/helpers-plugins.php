@@ -89,7 +89,21 @@ if ( ! function_exists( 'is_jetpack_portfolio_active' ) ) {
 	 * @return bool
 	 */
 	function is_jetpack_portfolio_active() {
-		return is_jetpack_active() && ( ( get_option( 'jetpack_portfolio', '0' ) || current_theme_supports( 'jetpack_portfolio' ) ) );
+		return is_jetpack_active() && ( ( get_option( 'jetpack_portfolio', '0' ) || current_theme_supports( 'jetpack-portfolio' ) ) );
+	}
+}
+
+if ( ! function_exists( 'is_jetpack_testimonials_active' ) ) {
+
+	/**
+	 * Returns true if the Jetpack Testimonials module is active.
+	 *
+	 * @since  1.3.5
+	 *
+	 * @return bool
+	 */
+	function is_jetpack_testimonials_active() {
+		return is_jetpack_active() && ( ( get_option( 'jetpack_testimonial', '0' ) || current_theme_supports( 'jetpack-testimonial' ) ) );
 	}
 }
 

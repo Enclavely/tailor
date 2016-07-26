@@ -278,6 +278,14 @@ if ( ! class_exists( 'Tailor_Elements' ) ) {
 		        'active_callback'   =>  'is_jetpack_portfolio_active',
 		        'dynamic'           =>  true,
 	        ) );
+
+	        $this->add_element( 'tailor_jetpack_testimonials', array(
+		        'label'             =>  __( 'Testimonals', 'tailor' ),
+		        'description'       =>  __( 'Your site\'s testimonials.', 'tailor' ),
+		        'badge'             =>  __( 'Jetpack', 'tailor' ),
+		        'active_callback'   =>  'is_jetpack_testimonials_active',
+		        'dynamic'           =>  true,
+	        ) );
         }
 
         /**

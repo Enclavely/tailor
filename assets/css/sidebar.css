@@ -848,6 +848,10 @@ ul {
   content: "\f110"; }
 .list .element--widgets::before {
   content: "\f120"; }
+.list .element--jetpack_portfolio::before {
+  content: "\f161"; }
+.list .element--jetpack_testimonials::before {
+  content: "\f122"; }
 .list.is-simplified .element .list__label {
   padding-bottom: 0; }
 .list.is-simplified .element .element__description {

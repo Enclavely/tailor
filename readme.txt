@@ -2,7 +2,7 @@
 Contributors: andrew.worsfold
 Donate link: http://gettailor.com/donate/
 Tags: page, layout, builder, frontend, content, page builder, drag and drop builder, home page builder, landing page builder, layout builder, frontend builder, frontend editor, responsive, visual composer, beaver builder
-Stable tag: 1.3.4
+Stable tag: 1.3.5
 Requires at least: 4.3
 Tested up to: 4.5.3
 License: GPLv3 or later
@@ -113,19 +113,24 @@ Yes, however, users should be directed to the WordPress plugin repository to ins
 
 == Changelog ==
 
+= 1.3.5 =
+* Added: Jetpack Testimonials element.
+* Added: actions for modifying default element settings and controls. [Learn more about this change](https://medium.com/p/c9efb5cb3016).
+* Fixed: not displaying singular post type labels in the "Tailor this.." link
+
 = 1.3.4 =
-* Added: Jetpack Portfolio element. [Learn more about this change](https://medium.com/p/f8a1ff571f21/edit).
+* Added: Jetpack Portfolio element. [Learn more about this change](https://medium.com/p/f8a1ff571f21).
 * Added: class for managing theme and plugin compatibility.
 * Added: initialization hooks for the sidebar and canvas.
-* Fixed: column width Customizer setting.
+* Fixed: column width Customizer setting not working.
 * Fixed: undefined variable warning in attachment partial template.
 
 = 1.3.3 =
 * Added: error message if the page canvas is not properly initialized.
-* Fixed: clicking links within the canvas will cause the page to be redirected.
+* Fixed: clicking links within the canvas causes the page to be redirected.
 
 = 1.3.2 =
-* Fixed: debug error message displayed when no admin setting description is provided.
+* Fixed: debug error message is displayed when no admin setting description is provided.
 
 = 1.3.1 =
 * Added: descriptions to some admin settings.
@@ -143,9 +148,9 @@ Yes, however, users should be directed to the WordPress plugin repository to ins
 * Changed: Open Sans to system fonts.
 * Improved: vertical spacing for various elements, including rows and columns.
 * Improved: RTL compatibility for modals, notifications and carousels.
-* Fixed: responsive settings for rows and grids being applied inappropriately.
-* Fixed: history snapshots being created when previewing changes to an element.
-* Fixed: page title not being updated correctly.
+* Fixed: responsive settings for rows and grids are not being applied appropriately.
+* Fixed: history snapshots are created when previewing changes to an element.
+* Fixed: page title is not updated correctly.
 * Developer: Cleaned up SCSS project.
 
 = 1.2.8 =
@@ -156,7 +161,7 @@ Yes, however, users should be directed to the WordPress plugin repository to ins
 
 = 1.2.6 =
 * Added: device-specific visibility setting to rows, columns, grids and grid items under General settings tab.
-* Fixed: image and gallery controls breaking when adding small images (credit: dtbaker).
+* Fixed: image and gallery controls are breaking when adding small images (credit: dtbaker).
 * Improved: background image/color settings.
 
 = 1.2.5 =
@@ -168,7 +173,7 @@ Yes, however, users should be directed to the WordPress plugin repository to ins
 * Improved: CSS to ensure pseudo-elements use double colon notation.
 
 = 1.2.3 =
-* Fixed: element drag-drop ghost image disappearing when dragging on Chrome.
+* Fixed: element drag-drop ghost images are disappearing when dragging on Chrome.
 
 = 1.2.2 =
 * Improved: display of the 'Tailor this ..' Admin Bar link.
@@ -178,8 +183,8 @@ Yes, however, users should be directed to the WordPress plugin repository to ins
 
 = 1.2.0 =
 * Changed: container behaviour so that they do not collapse when only one child element remains (excludes row/column layouts). [Learn more about this change](http://www.andrewworsfold.com/2016/06/26/working-with-containers/).
-* Fixed: custom CSS not appearing within template previews.
-* Fixed: breaking of tab order after tab renaming.
+* Fixed: custom CSS is not appearing within template previews.
+* Fixed: tabs break after a tab is renamed.
 
 = 1.1.3 =
 * Improved: device preview and media query settings to be in line with the WordPress Customizer (i.e., Desktop, Tablet and Mobile sizes).  [Learn more about this change](http://www.andrewworsfold.com/2016/06/25/device-previews/).

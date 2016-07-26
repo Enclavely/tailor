@@ -253,6 +253,14 @@
 		&--widgets::before {
 			content: "\f120";
 		}
+
+		&--jetpack_portfolio::before {
+			content: "\f161";
+		}
+
+		&--jetpack_testimonials::before {
+			content: "\f122";
+		}
 	}
 
 	&.is-simplified {

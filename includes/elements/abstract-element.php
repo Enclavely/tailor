@@ -133,6 +133,25 @@ if ( class_exists( 'Tailor_Setting_Manager' ) && ! class_exists( 'Tailor_Element
 		    }
 
 		    $this->register_controls();
+
+		    /**
+		     * Fires after element controls are registered.
+		     *
+		     * @since 1.3.5
+		     *
+		     * @param Tailor_Element $this
+		     */
+		    do_action( 'tailor_element_register_controls', $this );
+		    
+		    /**
+		     * Fires after element controls are registered.
+		     *
+		     * @since 1.3.5
+		     *
+		     * @param Tailor_Element $this
+		     */
+		    do_action( 'tailor_element_register_controls_' . $this->tag, $this );
+		    
 		    $this->prepare_controls();
 	    }
 

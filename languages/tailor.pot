@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the Tailor package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Tailor 1.3.4\n"
+"Project-Id-Version: Tailor 1.3.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/tailor\n"
-"POT-Creation-Date: 2016-07-25 04:09:41+00:00\n"
+"POT-Creation-Date: 2016-07-26 02:21:24+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -66,6 +66,7 @@ msgstr ""
 #: includes/elements/class-grid-item.php:31 includes/elements/class-grid.php:31
 #: includes/elements/class-hero.php:31
 #: includes/elements/class-jetpack-portfolio.php:31
+#: includes/elements/class-jetpack-testimonials.php:31
 #: includes/elements/class-list-item.php:31
 #: includes/elements/class-map-marker.php:31 includes/elements/class-map.php:31
 #: includes/elements/class-posts.php:31 includes/elements/class-row.php:31
@@ -238,7 +239,7 @@ msgstr ""
 msgid "Template"
 msgstr ""
 
-#: includes/class-compatibility.php:86
+#: includes/class-compatibility.php:89
 msgid "Tailor requires at least WordPress version 4.3. You are running version %s. Please upgrade and try again."
 msgstr ""
 
@@ -426,19 +427,27 @@ msgstr ""
 msgid "Your site's projects."
 msgstr ""
 
-#: includes/class-elements.php:277
+#: includes/class-elements.php:277 includes/class-elements.php:285
 msgid "Jetpack"
 msgstr ""
 
-#: includes/class-elements.php:422 includes/class-elements.php:778
+#: includes/class-elements.php:283
+msgid "Testimonals"
+msgstr ""
+
+#: includes/class-elements.php:284
+msgid "Your site's testimonials."
+msgstr ""
+
+#: includes/class-elements.php:430 includes/class-elements.php:786
 msgid "Tailor Elements: Valid models was not provided"
 msgstr ""
 
-#: includes/class-elements.php:476
+#: includes/class-elements.php:484
 msgid "Tailor Elements: A valid model was not provided"
 msgstr ""
 
-#: includes/class-elements.php:584
+#: includes/class-elements.php:592
 msgid "The element associated with shortcode %s could not be found."
 msgstr ""
 
@@ -778,6 +787,7 @@ msgstr ""
 #: includes/elements/class-grid-item.php:36 includes/elements/class-grid.php:36
 #: includes/elements/class-hero.php:36
 #: includes/elements/class-jetpack-portfolio.php:41
+#: includes/elements/class-jetpack-testimonials.php:41
 #: includes/elements/class-list-item.php:36 includes/elements/class-list.php:31
 #: includes/elements/class-map.php:36 includes/elements/class-posts.php:41
 #: includes/elements/class-row.php:36 includes/elements/class-section.php:36
@@ -798,6 +808,7 @@ msgstr ""
 #: includes/elements/class-grid-item.php:41 includes/elements/class-grid.php:41
 #: includes/elements/class-hero.php:41
 #: includes/elements/class-jetpack-portfolio.php:46
+#: includes/elements/class-jetpack-testimonials.php:46
 #: includes/elements/class-list-item.php:41 includes/elements/class-list.php:36
 #: includes/elements/class-map.php:41 includes/elements/class-posts.php:46
 #: includes/elements/class-row.php:41 includes/elements/class-section.php:41
@@ -812,7 +823,9 @@ msgstr ""
 msgid "Icon"
 msgstr ""
 
-#: includes/elements/class-box.php:65 includes/elements/class-list-item.php:72
+#: includes/elements/class-box.php:65
+#: includes/elements/class-jetpack-testimonials.php:69
+#: includes/elements/class-list-item.php:72
 #: includes/elements/class-posts.php:178
 #: includes/helpers/helpers-elements.php:328
 #: includes/helpers/helpers-elements.php:352
@@ -876,6 +889,7 @@ msgid "Select the smallest screen size on which items are displayed in a grid la
 msgstr ""
 
 #: includes/elements/class-jetpack-portfolio.php:36
+#: includes/elements/class-jetpack-testimonials.php:36
 #: includes/elements/class-posts.php:36
 msgid "Query"
 msgstr ""
@@ -1428,7 +1442,7 @@ msgstr ""
 msgid "Background video"
 msgstr ""
 
-#: includes/helpers/helpers-links.php:49 tailor.php:810
+#: includes/helpers/helpers-links.php:52 tailor.php:807
 msgid "Tailor this %s"
 msgstr ""
 
@@ -1547,7 +1561,7 @@ msgstr ""
 msgid "Please select a contact form to display"
 msgstr ""
 
-#: includes/shortcodes/shortcode-form.php:44
+#: includes/shortcodes/shortcode-form.php:45
 msgid "Please enable the Contact Form 7 plugin"
 msgstr ""
 
@@ -1557,6 +1571,10 @@ msgstr ""
 
 #: includes/shortcodes/shortcode-jetpack-portfolio.php:100
 msgid "Please enable Jetpack and the Portfolio custom post type"
+msgstr ""
+
+#: includes/shortcodes/shortcode-jetpack-testimonials.php:73
+msgid "Please enable Jetpack and the Testimonial custom post type"
 msgstr ""
 
 #: includes/shortcodes/shortcode-toggles.php:75

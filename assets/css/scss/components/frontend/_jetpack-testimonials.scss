@@ -1,0 +1,38 @@
+//
+// Variables
+//
+
+// General
+$testimonials-class-prefix: $global-class-prefix !default;
+$testimonials-spacing-vertical: $global-spacing-vertical !default;
+$testimonials-padding: 0 !default;
+$testimonials-font-size: $global-font-size !default;
+$testimonials-color: inherit !default;
+$testimonials-border-width: 0 !default;
+$testimonials-border-style : $global-border-style !default;
+$testimonials-border-color: $global-border-color !default;
+$testimonials-border-radius: 0 !default;
+$testimonials-background-color: transparent !default;
+$testimonials-box-shadow: none !default;
+
+
+//
+// Exported selectors
+//
+.#{$global-class-prefix}ui {
+
+	.#{$testimonials-class-prefix}jetpack-testimonials {
+		padding: $testimonials-padding;
+		margin-bottom: $testimonials-spacing-vertical;
+		font-size: $testimonials-font-size;
+		color: $testimonials-color;
+		background-color: $testimonials-background-color;
+		border: $testimonials-border-width $content-border-style $content-border-color;
+		border-radius: $testimonials-border-radius;
+		box-shadow: $testimonials-box-shadow;
+
+		.testimonial-entry {
+			margin-bottom: 0;
+		}
+	}
+}

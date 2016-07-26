@@ -35,13 +35,14 @@ if ( ! function_exists( 'tailor_shortcode_form' ) ) {
 		    $contact_form = WPCF7_ContactForm::get_instance( $atts['form'] );
 
 		    if ( empty( $contact_form ) ) {
-			    return sprintf( '<p class="tailor-notification tailor-notification--warning">%s</p>', __( 'Please select a contact form to display' ) );
+			    $content = sprintf( '<p class="tailor-notification tailor-notification--warning">%s</p>', __( 'Please select a contact form to display' ) );
 		    }
-
-		    $content = sprintf( '[contact-form-7 id="%1$d" title="%2$s"]', $contact_form->id(), $contact_form->title() );
+			else {
+				$content = sprintf( '[contact-form-7 id="%1$d" title="%2$s"]', $contact_form->id(), $contact_form->title() );
+			}
 	    }
 	    else {
-		    return sprintf( '<p class="tailor-notification tailor-notification--warning">%s</p>', __( 'Please enable the Contact Form 7 plugin' ) );
+		    $content = sprintf( '<p class="tailor-notification tailor-notification--warning">%s</p>', __( 'Please enable the Contact Form 7 plugin' ) );
 	    }
 
         return '<div ' . trim( "{$id} class=\"{$class}\"" ) . '>' . do_shortcode( $content ) . '</div>';

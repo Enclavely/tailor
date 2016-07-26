@@ -1,28 +1,28 @@
 <?php
 
 /**
- * Tailor Jetpack Portfolio element class.
+ * Tailor Jetpack Testimonials element class.
  *
  * @package Tailor
  * @subpackage Elements
- * @since 1.3.4
+ * @since 1.3.5
  */
 
 defined( 'ABSPATH' ) or die();
 
-if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Jetpack_Portfolio_Element' ) ) {
+if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Jetpack_Testimonials_Element' ) ) {
 
     /**
-     * Tailor Jetpack Portfolio element class.
+     * Tailor Jetpack Testimonials element class.
      *
-     * @since 1.3.4
+     * @since 1.3.5
      */
-    class Tailor_Jetpack_Portfolio_Element extends Tailor_Element {
+    class Tailor_Jetpack_Testimonials_Element extends Tailor_Element {
 
 	    /**
 	     * Registers element settings, sections and controls.
 	     *
-	     * @since 1.3.4
+	     * @since 1.3.5
 	     * @access protected
 	     */
 	    protected function register_controls() {
@@ -62,13 +62,11 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Jetpack_Portfol
 			    ),
 			    'meta'                  =>  array(
 				    'setting'               =>  array(
-					    'default'               =>  'type,excerpt',
+					    'default'               =>  'image',
 				    ),
 				    'control'               =>  array(
 					    'choices'               =>  array(
-						    'type'                  =>  __( 'Type', 'tailor' ),
-						    'tag'                   =>  __( 'Tag', 'tailor' ),
-						    'excerpt'               =>  __( 'Excerpt', 'tailor' ),
+						    'image'                 =>  __( 'Image', 'tailor' ),
 					    ),
 				    ),
 			    ),
@@ -76,29 +74,6 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Jetpack_Portfol
 		    tailor_control_presets( $this, $general_control_types, $general_control_arguments, $priority );
 
 		    $priority = 0;
-
-		    $this->add_setting( 'types', array(
-			    'sanitize_callback'     =>  'tailor_sanitize_text',
-		    ) );
-		    $this->add_control( 'types', array(
-			    'label'                 =>  __( 'Types', 'tailor' ),
-			    'type'                  =>  'select-multi',
-			    'choices'               =>  tailor_get_terms( 'jetpack-portfolio-type' ),
-			    'section'               =>  'query',
-			    'priority'              =>  $priority += 10,
-		    ) );
-
-		    $this->add_setting( 'tags', array(
-			    'sanitize_callback'     =>  'tailor_sanitize_text',
-		    ) );
-		    $this->add_control( 'tags', array(
-			    'label'                 =>  __( 'Tags', 'tailor' ),
-			    'type'                  =>  'select-multi',
-			    'choices'               =>  tailor_get_terms( 'jetpack-portfolio-tag' ),
-			    'section'               =>  'query',
-			    'priority'              =>  $priority += 10,
-		    ) );
-		    
 		    $query_control_types = array(
 			    'order_by',
 			    'order',
@@ -138,7 +113,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Jetpack_Portfol
 	    /**
 	     * Returns custom CSS rules for the element.
 	     *
-	     * @since 1.3.4
+	     * @since 1.3.5
 	     *
 	     * @param array $atts
 	     * @return array

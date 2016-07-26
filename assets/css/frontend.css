@@ -524,6 +524,18 @@ html {
   border-radius: 0;
   box-shadow: none; }
 
+.tailor-ui .tailor-jetpack-testimonials {
+  padding: 0;
+  margin-bottom: 1rem;
+  font-size: 1em;
+  color: inherit;
+  background-color: transparent;
+  border: 0 solid #efefef;
+  border-radius: 0;
+  box-shadow: none; }
+  .tailor-ui .tailor-jetpack-testimonials .testimonial-entry {
+    margin-bottom: 0; }
+
 .tailor-ui .tailor-list {
   padding: 0;
   margin: 0;
