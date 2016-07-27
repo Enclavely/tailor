@@ -2,7 +2,7 @@
 Contributors: andrew.worsfold
 Donate link: http://gettailor.com/donate/
 Tags: page, layout, builder, frontend, content, page builder, drag and drop builder, home page builder, landing page builder, layout builder, frontend builder, frontend editor, responsive, visual composer, beaver builder
-Stable tag: 1.3.5
+Stable tag: 1.3.6
 Requires at least: 4.3
 Tested up to: 4.5.3
 License: GPLv3 or later
@@ -14,7 +14,7 @@ Build beautiful layouts quickly and easily using your favourite theme with this 
 
 [Tailor](http://gettailor.com/) is a simple yet powerful plugin that allows you to easily create stunning pages using an intuitive drag and drop interface.  Everything is done in the frontend of your website, meaning that what you see is what you get. The best part is that it’s all completely free!
 
-To get started, refer to our [documentation](https://tailor.zendesk.com/hc/en-us/categories/202586427-Getting-started).
+To get started, refer to our [documentation](https://tailor.zendesk.com/hc/en-us/categories/202586427-Getting-started).  You can also [give it a try in a sandbox](https://addendio.com/try-plugin/?slug=tailor) if you're curious.
 
 = Easy to use =
 
@@ -113,10 +113,14 @@ Yes, however, users should be directed to the WordPress plugin repository to ins
 
 == Changelog ==
 
+= 1.3.6 =
+* Added: additional actions for adding/modifying/removing custom CSS rules associated with existing elements.
+* Fixed: minor color inconsistency between sidebar and preview screen during loading.
+
 = 1.3.5 =
 * Added: Jetpack Testimonials element.
 * Added: actions for modifying default element settings and controls. [Learn more about this change](https://medium.com/p/c9efb5cb3016).
-* Fixed: not displaying singular post type labels in the "Tailor this.." link
+* Fixed: not displaying singular post type labels in the "Tailor this.." link.
 
 = 1.3.4 =
 * Added: Jetpack Portfolio element. [Learn more about this change](https://medium.com/p/f8a1ff571f21).

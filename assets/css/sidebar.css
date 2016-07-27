@@ -428,9 +428,9 @@ ul {
     -webkit-transition-property: transition-property-names(margin, "webkit");
     -moz-transition-property: transition-property-names(margin, "moz");
     transition-property: transition-property-names(margin, false);
-    -webkit-transition-duration: 0.2s;
-    -moz-transition-duration: 0.2s;
-    transition-duration: 0.2s; }
+    -webkit-transition-duration: 150ms;
+    -moz-transition-duration: 150ms;
+    transition-duration: 150ms; }
     .tailor-ui .tailor__panel {
       display: none; }
     .tailor-ui .tailor__section {
@@ -514,7 +514,7 @@ ul {
       background: url(../img/spinner.gif) no-repeat center center;
       -webkit-background-size: 20px 20px;
       background-size: 20px 20px;
-      background-color: #f1f1f1; }
+      background-color: #efefef; }
       .tailor-ui .tailor-preview__viewport > * {
         opacity: 0;
         -webkit-transition: opacity 150ms;

@@ -40,7 +40,7 @@ $preview-background-color: #191e23 !default;
 		background-color: $preview-background-color;
 
 		@include transition-property( margin );
-		@include transition-duration( 0.2s );
+		@include transition-duration( $global-transition-duration );
 
 		&__panel {
 			display: none;
@@ -133,7 +133,7 @@ $preview-background-color: #191e23 !default;
 				left: 0;
 				width: 300px;
 				height: 45px;
-				border-top: 1px solid #ddd;
+				border-top: 1px $sidebar-border-style $sidebar-border-color;
 				display: none;
 			}
 		}
@@ -144,7 +144,7 @@ $preview-background-color: #191e23 !default;
 				background: url( ../img/spinner.gif ) no-repeat center center;
 				-webkit-background-size: 20px 20px;
 				background-size: 20px 20px;
-				background-color: #f1f1f1;
+				background-color: $tailor-background-color;
 
 				> * {
 					opacity: 0;

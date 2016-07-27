@@ -101,6 +101,20 @@ if ( ! class_exists( 'Tailor_Custom_CSS' ) ) {
 
 				    $css_rule_sets = $element->generate_css( $sanitized_model['atts'] );
 
+				    /**
+				     * Filter the element CSS rule sets.
+				     *
+				     * @since 1.3.6
+				     */
+				    $css_rule_sets = apply_filters( 'tailor_element_css_rule_sets', $css_rule_sets, $sanitized_model['atts'], $element );
+
+				    /**
+				     * Filter the element CSS rule sets.
+				     *
+				     * @since 1.3.6
+				     */
+				    $css_rule_sets = apply_filters( 'tailor_element_css_rule_sets_' . $sanitized_model['tag'], $css_rule_sets, $sanitized_model['atts'], $element );
+
 				    foreach ( $css_rule_sets as $css_rule_set ) {
 
 					    $media = empty( $css_rule_set['media'] ) ? 'all' : $css_rule_set['media'];
