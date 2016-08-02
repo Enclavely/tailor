@@ -113,6 +113,12 @@ Yes, however, users should be directed to the WordPress plugin repository to ins
 
 == Changelog ==
 
+= 1.3.7 =
+* Improved: style for empty placeholder content.
+* Improved: hover outline color for improved contrast on themes with grey backgrounds.
+* Improved: various sidebar and canvas style tweaks.
+* Fixed: section reordering.
+
 = 1.3.6 =
 * Added: additional actions for adding/modifying/removing custom CSS rules associated with existing elements.
 * Fixed: minor color inconsistency between sidebar and preview screen during loading.

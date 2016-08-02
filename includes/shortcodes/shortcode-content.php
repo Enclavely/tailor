@@ -31,6 +31,7 @@ if ( ! function_exists( 'tailor_shortcode_content' ) ) {
 	    $class = trim( esc_attr( "tailor-element tailor-content {$atts['class']}" ) );
 
 	    if ( empty( $content ) ) {
+		    $class .= ' tailor-content--placeholder';
 		    $content = tailor_get_setting( 'content_placeholder', tailor_do_shakespeare() );
 	    }
 

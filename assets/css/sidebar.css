@@ -692,7 +692,8 @@ ul {
   border-top: 1px solid #ddd;
   width: 100%; }
 .tailor-ui .template-actions {
-  text-align: center; }
+  text-align: center;
+  margin-bottom: 1em; }
   .tailor-ui .template-actions .or {
     margin: 0 4px;
     line-height: 28px; }

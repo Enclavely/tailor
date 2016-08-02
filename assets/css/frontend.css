@@ -165,6 +165,8 @@ html {
     clear: both; }
   .tailor-ui .tailor-content > :last-child {
     margin-bottom: 0; }
+  .tailor-ui .tailor-content--placeholder p {
+    opacity: 0.5; }
 
 .tailor-ui .tailor-form {
   padding: 0;

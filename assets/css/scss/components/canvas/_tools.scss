@@ -56,7 +56,16 @@ $guide-background-color: $global-primary-color !default;
 							cursor: pointer;
 
 							&:first-child::after {
-								content: ' \25BE';
+								content: "\f140";
+								display: inline-block;;
+								font-size: 1.25em;
+								font-family: dashicons;
+								text-decoration: inherit;
+								font-weight: 400;
+								font-style: normal;
+								vertical-align: top;
+								text-align: center;
+								-webkit-font-smoothing: antialiased;
 							}
 						}
 
@@ -118,7 +127,7 @@ $guide-background-color: $global-primary-color !default;
 							&:not( :only-child ) {
 
 								&:first-child::after {
-									content: ' \25B4';
+									content: "\f142";
 								}
 							}
 						}

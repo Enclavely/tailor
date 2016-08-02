@@ -1,6 +1,7 @@
 $element-border-width: 2px !default;
 $element-border-style: $global-border-style !default;
 $element-border-color: $global-border-color !default;
+$element-border-color--hover: #ccc !default;
 $element-opacity--active: 0.5 !default;
 
 .#{$global-class-prefix}ui {
@@ -33,7 +34,7 @@ $element-opacity--active: 0.5 !default;
 
 		&::before {
 			z-index: 998;
-			outline: $element-border-width $element-border-style $element-border-color;
+			outline: $element-border-width $element-border-style $element-border-color--hover;
 		}
 	}
 

@@ -7932,6 +7932,29 @@ module.exports = Marionette.CollectionView.extend( {
                 laterView.model.set( 'order', laterView._index );
             }
         }, this );
+    },
+
+    /**
+     * Triggers events and methods during a given event in the lifecycle.
+     *
+     * @since 1.0.0
+     *
+     * @param event
+     * @param view
+     * @param atts
+     */
+    triggerAll : function( event, view, atts ) {
+
+        this.$el.trigger( event, view );
+
+        this.triggerMethod( event, view );
+
+        if ( atts ) {
+            app.channel.trigger( event, this, atts);
+        }
+        else {
+            app.channel.trigger( event, this );
+        }
     }
 
 } );
