@@ -2,7 +2,7 @@
 Contributors: andrew.worsfold
 Donate link: http://gettailor.com/donate/
 Tags: page, layout, builder, frontend, content, page builder, drag and drop builder, home page builder, landing page builder, layout builder, frontend builder, frontend editor, responsive, visual composer, beaver builder
-Stable tag: 1.3.6
+Stable tag: 1.3.7
 Requires at least: 4.3
 Tested up to: 4.5.3
 License: GPLv3 or later
