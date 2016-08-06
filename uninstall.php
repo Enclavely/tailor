@@ -1,4 +1,4 @@
-<?php
+`<?php
 
 /**
  * Uninstalls the Tailor plugin.

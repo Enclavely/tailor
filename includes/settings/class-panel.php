@@ -199,6 +199,13 @@ if ( ! class_exists( 'Tailor_Panel' ) ) {
 
 		    <?php
 
+		    /**
+		     * Fires after panel templates have been printed.
+		     *
+		     * @since 1.0.0
+		     *
+		     * @param string $type
+		     */
 		    do_action( 'tailor_print_panel_templates', $this->type );
 	    }
 

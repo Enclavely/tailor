@@ -17,9 +17,6 @@ TemplateItem = Marionette.ItemView.extend( {
     },
 
     events : {
-        //'click @ui.download' : 'download',
-        //'click @ui.delete' : 'delete',
-        //'click @ui.preview' : 'preview',
         'click' : 'onClick'
     },
 

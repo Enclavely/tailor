@@ -48,8 +48,9 @@ if ( ! class_exists( 'Tailor_Sidebar' ) ) {
 	         */
 	        do_action( 'tailor_sidebar_init' );
 
-	        add_filter( 'template_include', array( $this, 'render_page' ), -999999 );
+	        add_filter( 'template_include', array( $this, 'render_page' ) );
 
+	        // Print WordPress related stuff
 	        add_action( 'tailor_sidebar_head', array( $this, 'enqueue_styles' ) );
 	        add_action( 'tailor_sidebar_head', 'wp_print_styles' );
             add_action( 'tailor_sidebar_head', 'wp_print_head_scripts' );
@@ -202,30 +203,28 @@ if ( ! class_exists( 'Tailor_Sidebar' ) ) {
          */
         public function enqueue_styles() {
 
-	        if ( did_action( 'tailor_enqueue_sidebar_styles' ) ) {
-		        return;
-	        }
-
-	        if ( apply_filters( 'tailor_enqueue_sidebar_stylesheets', true ) ) {
-
+	        if ( apply_filters( 'tailor_enable_sidebar_styles', true ) && ! did_action( 'tailor_enqueue_sidebar_styles' ) ) {
+		        $handle = 'tailor-sidebar-styles';
 		        $min = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
 
 		        wp_register_style(
-			        'tailor-sidebar-styles',
+			        $handle,
 			        tailor()->plugin_url() . "assets/css/sidebar{$min}.css",
 			        array( 'wp-auth-check', 'dashicons', 'buttons' ),
 			        tailor()->version()
 		        );
 
-		        wp_enqueue_style( 'tailor-sidebar-styles' );
-	        }
+		        wp_enqueue_style( $handle );
 
-	        /**
-	         * Fires after sidebar styles have been enqueued.
-	         *
-	         * @since 1.0.0
-	         */
-            do_action( 'tailor_enqueue_sidebar_styles' );
+		        /**
+		         * Fires after sidebar styles have been enqueued.
+		         *
+		         * @since 1.4.0
+		         *
+		         * @param string $handle
+		         */
+		        do_action( 'tailor_enqueue_sidebar_styles', $handle );
+	        }
         }
 
         /**
@@ -241,23 +240,16 @@ if ( ! class_exists( 'Tailor_Sidebar' ) ) {
 
 	        wp_enqueue_media();
 
-            $extension = SCRIPT_DEBUG ? '.js' : '.min.js';
-	        $sidebar_script_name = 'tailor-sidebar';
+	        $handle = 'tailor-sidebar';
+	        $extension = SCRIPT_DEBUG ? '.js' : '.min.js';
 
 	        wp_enqueue_script(
-		        $sidebar_script_name,
+		        $handle,
                 tailor()->plugin_url() . 'assets/js/dist/sidebar' . $extension,
                 array( 'wp-auth-check', 'media-views', 'media-editor', 'media-audiovideo', 'mce-view', 'modernizr', 'backbone-marionette' ),
                 tailor()->version(),
                 true
             );
-
-            /**
-             * Enqueue additional Tailor scripts.
-             *
-             * @since 1.0.0
-             */
-            do_action( 'tailor_enqueue_scripts' );
 
 	        $allowed_urls = array( home_url( '/' ) );
 	        $is_cross_domain = $this->is_cross_domain();
@@ -268,14 +260,14 @@ if ( ! class_exists( 'Tailor_Sidebar' ) ) {
 	        $post_id = get_the_ID();
 	        $post_type = get_post_type( $post_id );
 
-	        wp_localize_script( $sidebar_script_name, 'post', array(
+	        wp_localize_script( $handle, 'post', array(
 		        'id'                =>  $post_id,
 		        'type'              =>  $post_type,
 	        ) );
 
-	        wp_localize_script( $sidebar_script_name, 'ajaxurl', esc_url_raw( admin_url( 'admin-ajax.php', 'relative' ) ) );
+	        wp_localize_script( $handle, 'ajaxurl', esc_url_raw( admin_url( 'admin-ajax.php', 'relative' ) ) );
 
-	        wp_localize_script( $sidebar_script_name, '_urls', array(
+	        wp_localize_script( $handle, '_urls', array(
 		        'ajax'              =>  esc_url_raw( admin_url( 'admin-ajax.php', 'relative' ) ),
 		        'home'              =>  esc_url_raw( home_url( '/' ) ),
 		        'edit'              =>  esc_url_raw( get_edit_post_link() ),
@@ -284,13 +276,13 @@ if ( ! class_exists( 'Tailor_Sidebar' ) ) {
 		        'isCrossDomain'     =>  $is_cross_domain,
 	        ) );
 
-	        wp_localize_script( $sidebar_script_name, '_l10n', array(
+	        wp_localize_script( $handle, '_l10n', array(
 		        'tailoring'         =>  __( 'Tailoring: ', 'tailor' ),
 		        'select'            =>  __( 'Select', 'tailor' ),
 		        'save'              =>  __( 'Save', 'tailor' ),
 		        'saveTemplate'      =>  __( 'Save template', 'tailor' ),
 		        'saved'             =>  __( 'Saved', 'tailor' ),
-		        'publish'           =>  __( 'Save & Publish', 'tailor' ),
+		        'publish'           =>  'publish' == get_post_status( $post_id ) ? __( 'Save & Publish', 'tailor' ) : __( 'Save', 'tailor' ),
 		        'import'            =>  __( 'Import', 'tailor' ),
 		        'importTemplate'    =>  __( 'Import template', 'tailor' ),
 		        'delete'            =>  __( 'Delete', 'tailor' ),
@@ -311,14 +303,18 @@ if ( ! class_exists( 'Tailor_Sidebar' ) ) {
 		        'confirmElement'    =>  __( 'You have made changes to this element.  Would you like to save them?', 'tailor' ),
 	        ) );
 
-	        wp_localize_script( $sidebar_script_name, '_nonces', $this->create_nonces() );
+	        wp_localize_script( $handle, '_nonces', $this->create_nonces() );
+
+	        wp_localize_script( $handle, '_media_queries', tailor_get_registered_media_queries( ) );
 
 	        /**
 	         * Fires after sidebar scripts have been enqueued.
 	         *
-	         * @since 1.0.0
+	         * @since 1.4.0
+	         *
+	         * @param string $handle
 	         */
-	        do_action( 'tailor_enqueue_sidebar_scripts' );
+	        do_action( 'tailor_enqueue_sidebar_scripts', $handle );
         }
 
 	    /**
@@ -346,16 +342,6 @@ if ( ! class_exists( 'Tailor_Sidebar' ) ) {
             }
 
             $nonces = $this->create_nonces();
-
-            /**
-             * Filter nonces for a tailor_refresh_nonces AJAX request.
-             *
-             * @since 1.0.0
-             *
-             * @param array $nonces
-             * @param Tailor_Sidebar $manager
-             */
-            $nonces = apply_filters( 'tailor_refresh_nonce', $nonces, $this );
 
             wp_send_json_success( $nonces );
         }

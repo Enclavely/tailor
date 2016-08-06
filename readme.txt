@@ -2,9 +2,9 @@
 Contributors: andrew.worsfold
 Donate link: http://gettailor.com/donate/
 Tags: page, layout, builder, frontend, content, page builder, drag and drop builder, home page builder, landing page builder, layout builder, frontend builder, frontend editor, responsive, visual composer, beaver builder
-Stable tag: 1.3.7
+Stable tag: 1.4.0
 Requires at least: 4.3
-Tested up to: 4.5.3
+Tested up to: 4.6
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl.html
 
@@ -113,6 +113,24 @@ Yes, however, users should be directed to the WordPress plugin repository to ins
 
 == Changelog ==
 
+= 1.4.0 =
+* Added: REST API endpoints for elements, models and templates. Please refer to the associated upgrade notice.
+* Added: parallax background images for sections.
+* Added: background-attachment:fixed option ("fake parallax") for all elements with background images.
+* Changed: post revisions are used to restore an earlier Tailor layouts or recover the original content.
+* Changed: a dismissible notice is displayed on the Edit page of a Tailored post to advise of the effect of modifying content in the WordPress Editor.
+* Changed: users that can modify options or edit the current post type can Tailor pages if they don't have a restricted role type.
+* Changed: default Card background color to transparent.
+* Improved: the Map element displays a notice when a Google Maps API key has not been added.
+* Improved: order and grouping of settings on the Settings page.
+* Improved: the handling of Customizer, custom and dynamic element CSS.
+* Improved: posts in the Trash cannot be Tailored.
+* Fixed: save button label indicates that the page will be published when Tailoring a draft post.
+* Fixed: canvas errors are presented when the Jetpack Publicize module is active.
+* Developer: added new PHP class for managing element models.
+* Developer: added, changed and removed various [actions](https://github.com/andrew-worsfold/tailor/blob/master/actions.md) and [filters](https://github.com/andrew-worsfold/tailor/blob/master/filters.md) for consistency and to accommodate new REST API.
+* Developer: code refactoring and general improvements.
+
 = 1.3.7 =
 * Improved: style for empty placeholder content.
 * Improved: hover outline color for improved contrast on themes with grey backgrounds.
@@ -218,3 +236,7 @@ Yes, however, users should be directed to the WordPress plugin repository to ins
 * Initial release.
 
 == Upgrade Notice ==
+
+= 1.4.0 =
+
+This is a major version change which introduced new classes, actions and filters in order to accommodate a robust REST API.  Please review all direct function calls and hooks in your code.

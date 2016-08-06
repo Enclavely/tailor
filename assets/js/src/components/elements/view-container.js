@@ -521,19 +521,14 @@ CompositeView = Marionette.CompositeView.extend( {
 		'element:copy' : 'stopEventPropagation',
 
 		'element:child:add' : 'onDescendantAdded',
-		//'element:child:add' : 'stopEventPropagation',
 		'element:child:remove' : 'onDescendantRemoved',
-		//'element:child:remove' : 'stopEventPropagation',
 
 		'before:element:child:ready' : 'stopEventPropagation',
 		'element:child:ready' : 'onDescendantReady',
-		//'element:child:ready' : 'stopEventPropagation',
 		'before:element:child:refresh' : 'stopEventPropagation',
 		'element:child:refresh' : 'stopEventPropagation',
-		//'element:child:refresh' : 'stopEventPropagation',
 		'before:element:child:destroy' : 'stopEventPropagation',
 		'element:child:destroy' : 'onDescendantDestroyed'
-		//'element:child:destroy' : 'stopEventPropagation'
 	},
 
 	/**
@@ -673,7 +668,7 @@ CompositeView = Marionette.CompositeView.extend( {
 	 *
 	 * @param event
 	 * @param view
-\	 * @param atts
+	 * @param atts
 	 */
 	triggerAll : function( event, view, atts ) {
 

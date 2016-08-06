@@ -15,24 +15,7 @@ defined( 'ABSPATH' ) or die(); ?>
         <div class="modal__header" id="header">
             <h2 class="modal__title"><%= label %></h2>
 	        <div class="modal__controls">
-
-		        <?php
-		        $modal_header_controls = sprintf(
-			        '<button class="js-close" title="%s"></button>',
-			        __( 'Close', 'tailor' )
-		        );
-
-		        /**
-		         * Filter the modal header controls.
-		         *
-		         * @since 1.0.0
-		         *
-		         * @param string $modal_header_controls
-		         */
-		        $modal_header_controls = apply_filters( 'tailor_modal_header_controls', $modal_header_controls );
-
-		        echo $modal_header_controls; ?>
-
+		        <button class="js-close" title="<?php _e( 'Close', 'tailor' ); ?>"></button>
 	        </div>
             <div id="tailor-modal-tabs"></div>
         </div>
@@ -43,25 +26,12 @@ defined( 'ABSPATH' ) or die(); ?>
 	    <!-- Modal footer container -->
         <div class="modal__footer" id="tailor-modal-footer">
 
-            <?php
-
-            $modal_footer_actions = sprintf( '
-				<button class="button button-large js-preview" disabled>%s</button>
+            <?php printf(
+	            '<button class="button button-large js-preview" disabled>%s</button>
  				<button class="button button-large button-primary js-apply" disabled>%s</button>',
                 __( 'Preview', 'tailor' ),
                 __( 'Apply', 'tailor' )
-            );
-
-            /**
-             * Filters the modal footer actions.
-             *
-             * @since 1.0.0
-             *
-             * @param string $modal_header_actions
-             */
-            $modal_footer_actions = apply_filters( 'tailor_modal_footer_actions', $modal_footer_actions );
-
-            echo $modal_footer_actions; ?>
+            ); ?>
 
         </div>
     </div>

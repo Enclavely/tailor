@@ -22,7 +22,7 @@ defined( 'ABSPATH' ) or die(); ?>
             </button>
         </div>
         <div class="help-description">
-	        <?php _e( 'Tailor allows you to layout your content in new and exciting ways through the use of elements and templates.', 'tailor' ); ?>
+	        <p><?php _e( 'Create beautiful layouts for your content by simply dragging and dropping elements and templates on to the page.', 'tailor' ); ?></p>
         </div>
     </div>
     

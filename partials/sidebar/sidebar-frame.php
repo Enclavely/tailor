@@ -16,11 +16,13 @@ defined( 'ABSPATH' ) or die(); ?>
 
 	        <?php
 	        $post = get_post();
-	        $tailor_layout = get_post_meta( $post->ID, '_tailor_layout', true );
-	        $saved_content = get_post_meta( $post->ID, '_tailor_saved_content', true );
-
-	        if ( false == $tailor_layout || wpautop( $post->post_content ) != wpautop( $saved_content ) ) {
-		        echo '<button class="button button-primary save" id="tailor-save">' . __( 'Save & Publish', 'tailor' ) . '</button>';
+	        if ( false == get_post_meta( $post->ID, '_tailor_layout', true ) ) {
+		        if ( 'publish' == get_post_status( $post->ID ) ) {
+			        echo '<button class="button button-primary save" id="tailor-save">' . __( 'Save & Publish', 'tailor' ) . '</button>';
+		        }
+		        else {
+			        echo '<button class="button button-primary save" id="tailor-save">' . __( 'Save', 'tailor' ) . '</button>';
+		        }
 	        }
 	        else {
 		        echo '<button class="button button-primary save" id="tailor-save" disabled >' . __( 'Saved', 'tailor' ) . '</button>';

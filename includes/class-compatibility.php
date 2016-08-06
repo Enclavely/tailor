@@ -64,7 +64,7 @@ if ( ! class_exists( 'Tailor_Compatibility' ) ) {
 	     */
 	    public function add_canvas_actions() {
 
-		    //remove_all_filters( 'the_content' );
+		    remove_all_filters( 'the_content' );
 
 		    // Jetpack compatibility
 		    if ( is_jetpack_active() ) {

@@ -409,9 +409,9 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'label'                 =>  __( 'Vertical alignment', 'tailor' ),
 					'type'                  =>  'button-group',
 					'choices'               =>  array(
-						'flex-start'            =>  '<i class="tailor-icon tailor-align-top"></i>', //__( 'Top', 'tailor' ),
-						'center'                =>  '<i class="tailor-icon tailor-align-middle"></i>', //__( 'Middle', 'tailor' ),
-						'flex-end'              =>  '<i class="tailor-icon tailor-align-bottom"></i>', //__( 'Bottom', 'tailor' ),
+						'flex-start'            =>  '<i class="tailor-icon tailor-align-top"></i>',
+						'center'                =>  '<i class="tailor-icon tailor-align-middle"></i>',
+						'flex-end'              =>  '<i class="tailor-icon tailor-align-bottom"></i>',
 					),
 					'section'               =>  'general',
 				),
@@ -423,10 +423,6 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 				'control'               =>  array(
 					'label'                 =>  __( 'Stretch-to-fit image', 'tailor' ),
 					'type'                  =>  'switch',
-					//'type'                  =>  'checkbox',
-					//'choices'               =>  array(
-					//	'1'                     =>  __( 'Stretch image to fit container?', 'tailor' ),
-					//),
 					'section'               =>  'general',
 				),
 			),
@@ -834,7 +830,6 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 			'background_repeat'     =>  array(
 				'setting'               =>  array(
 					'sanitize_callback'     =>  'tailor_sanitize_text',
-					'default'               =>  'no-repeat',
 				),
 				'control'               =>  array(
 					'label'                 =>  __( 'Background repeat', 'tailor' ),
@@ -857,7 +852,6 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 			'background_position'   =>  array(
 				'setting'               =>  array(
 					'sanitize_callback'     =>  'tailor_sanitize_text',
-					'default'               =>  'center center',
 				),
 				'control'               =>  array(
 					'label'                 =>  __( 'Background position', 'tailor' ),
@@ -885,7 +879,6 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 			'background_size'       =>  array(
 				'setting'               =>  array(
 					'sanitize_callback'     =>  'tailor_sanitize_text',
-					'default'               =>  'auto',
 				),
 				'control'               =>  array(
 					'label'                 =>  __( 'Background size', 'tailor' ),
@@ -894,6 +887,26 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 						'auto'                  =>  __( 'Auto', 'tailor' ),
 						'cover'                 =>  __( 'Cover', 'tailor' ),
 						'contain'               =>  __( 'Contain', 'tailor' ),
+					),
+					'dependencies'          =>  array(
+						'background_image'      =>  array(
+							'condition'             =>  'not',
+							'value'                 =>  '',
+						),
+					),
+					'section'               =>  'attributes',
+				),
+			),
+			'background_attachment' =>  array(
+				'setting'               =>  array(
+					'sanitize_callback'     =>  'tailor_sanitize_text',
+				),
+				'control'               =>  array(
+					'label'                 =>  __( 'Background attachment', 'tailor' ),
+					'type'                  =>  'select',
+					'choices'               =>  array(
+						'scroll'                =>  __( 'Scroll', 'tailor' ),
+						'fixed'                 =>  __( 'Fixed', 'tailor' ),
 					),
 					'dependencies'          =>  array(
 						'background_image'      =>  array(
@@ -918,7 +931,6 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 
 		foreach ( $control_ids as $control_id ) {
 			if ( array_key_exists( $control_id, $control_definitions ) ) {
-
                 if ( array_key_exists( $control_id, $control_arguments ) ) {
                     if ( array_key_exists( 'control', $control_arguments[ $control_id ] ) ) {
                         $control_definitions[ $control_id ]['control'] = array_merge(
@@ -934,10 +946,54 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
                     }
                 }
 
-                $control_definitions[ $control_id ]['control']['priority'] = $priority += 10;
+				$setting_args = $control_definitions[ $control_id ]['setting'];
 
-				$element->add_setting( $control_id, $control_definitions[ $control_id ]['setting'] );
-				$element->add_control( $control_id, $control_definitions[ $control_id ]['control'] );
+				/**
+				 * Filter the setting arguments.
+				 *
+				 * @since 1.4.0
+				 *
+				 * @param array $setting_args
+				 * @param Tailor_Element $element
+				 */
+				$setting_args= apply_filters( 'tailor_setting_args_' . $element->tag, $setting_args, $element );
+
+				/**
+				 * Filter the setting arguments.
+				 *
+				 * @since 1.4.0
+				 *
+				 * @param array $setting_args
+				 * @param Tailor_Element $element
+				 */
+				$setting_args = apply_filters( 'tailor_setting_args_' . $element->tag . '_' . $control_id, $setting_args, $element );
+
+                $control_definitions[ $control_id ]['control']['priority'] = $priority += 10;
+				$control_args = $control_definitions[ $control_id ]['control'];
+
+				/**
+				 * Filter the control arguments.
+				 *
+				 * @since 1.4.0
+				 *
+				 * @param array $control_args
+				 * @param Tailor_Element $element
+				 */
+				$control_args = apply_filters( 'tailor_control_args_' . $element->tag, $control_args, $element );
+
+				/**
+				 * Filter the control arguments.
+				 *
+				 * @since 1.4.0
+				 *
+				 * @param array $control_args
+				 * @param Tailor_Element $element
+				 */
+				$control_args = apply_filters( 'tailor_control_args_' . $element->tag . '_' . $control_id, $control_args, $element );
+
+				// Register the element setting and control
+				$element->add_setting( $control_id, $setting_args );
+				$element->add_control( $control_id, $control_args );
 			}
 		}
 
@@ -1167,8 +1223,8 @@ if ( ! function_exists( 'tailor_css_presets' ) ) {
 			if ( array_key_exists( 'background_color', $atts ) && ! empty( $atts['background_color'] ) && ! in_array( 'background_color', $excluded_control_types ) ) {
 				if ( false !== strpos( $atts['background_color'], 'rgba' ) ) {
 
-					// this allows you to "tint" your background image with a transparent color
-					// see: https://css-tricks.com/tinted-images-multiple-backgrounds/
+					// Tint the background image with a transparent color
+					// @see: https://css-tricks.com/tinted-images-multiple-backgrounds/
 					$css_rules[] = array(
 						'selectors'    => array(),
 						'declarations' => array(
@@ -1181,7 +1237,7 @@ if ( ! function_exists( 'tailor_css_presets' ) ) {
 				}
 				else {
 
-					// otherwise we assume it's going to be a transparent image over a solid background color
+					// Possibly semi-transparent image over color
 					$css_rules[] = array(
 						'selectors'    => array(),
 						'declarations' => array(
@@ -1224,6 +1280,16 @@ if ( ! function_exists( 'tailor_css_presets' ) ) {
 					'selectors'         =>  array(),
 					'declarations'      =>  array(
 						'background-size'   =>  esc_attr( $atts['background_size'] ),
+					),
+				);
+			}
+
+
+			if ( array_key_exists( 'background_attachment', $atts ) && ! in_array( 'background_attachment', $excluded_control_types ) ) {
+				$css_rules[] = array(
+					'selectors'         =>  array(),
+					'declarations'      =>  array(
+						'background-attachment' =>  esc_attr( $atts['background_attachment'] ),
 					),
 				);
 			}

@@ -1,9 +1,17 @@
-Tailor.Collections = Tailor.Collections || {};
+/**
+ * The Canvas Marionette module.
+ *
+ * @class
+ */
+var $ = window.jQuery,
+    Tailor = window.Tailor,
+    Canvas;
 
+Tailor.Collections = Tailor.Collections || {};
 Tailor.Collections.Element = require( './collections/elements' );
 Tailor.Collections.History = require( './collections/history' );
 
-module.exports = Marionette.Module.extend( {
+Canvas = Marionette.Module.extend( {
 
     /**
      * Initializes the module.
@@ -84,6 +92,8 @@ module.exports = Marionette.Module.extend( {
                         // Record the template HTML and append it to the page
                         templates = response.templates;
 
+                        $( 'body' ).append( templates );
+
 	                    /**
 	                     * Fires when existing custom CSS rules are clear.
 	                     *
@@ -105,9 +115,8 @@ module.exports = Marionette.Module.extend( {
                      * @since 1.0.0
                      */
                     complete : function( response ) {
-                        if ( templates ) {
 
-	                        jQuery( 'body' ).append( templates );
+                        if ( templates ) {
 
                             /**
                              * Fires before the element collection is restored.
@@ -126,7 +135,10 @@ module.exports = Marionette.Module.extend( {
                              * @since 1.0.0
                              */
                             app.channel.trigger( 'elements:restore' );
+
+                            $( window ).trigger( 'resize' );
                         }
+
                         canvas.classList.remove( 'is-loading' );
                     }
                 };
@@ -167,10 +179,14 @@ module.exports = Marionette.Module.extend( {
                      * @param response
                      */
                     success : function( response ) {
+
+                        // Update the model collection with the sanitized models
                         models = response.models;
+
+                        // Record the template HTML and append it to the page
                         templates = response.templates;
 
-                        jQuery( 'body' ).append( templates );
+                        $( 'body' ).append( templates );
 
 	                    /**
 	                     * Fires when custom CSS rules are added.
@@ -184,6 +200,7 @@ module.exports = Marionette.Module.extend( {
                      * Resets the collection with the given set of elements.
                      */
                     complete : function( response ) {
+
                         if ( templates ) {
                             var parents = [];
                             var children = [];
@@ -207,14 +224,16 @@ module.exports = Marionette.Module.extend( {
                                 parents[0].order = index;
                                 module.elementCollection.add( parents );
                             }
-                        }
 
-                        /**
-                         * Fires when a template is added.
-                         *
-                         * @since 1.0.0
-                         */
-                        app.channel.trigger( 'template:add', model );
+                            /**
+                             * Fires when a template is added.
+                             *
+                             * @since 1.0.0
+                             */
+                            app.channel.trigger( 'template:add', model );
+
+                            $( window ).trigger( 'resize' );
+                        }
 
                         canvas.classList.remove( 'is-loading' );
                     }
@@ -266,7 +285,6 @@ module.exports = Marionette.Module.extend( {
         this.listenTo( app.channel, 'history:restore', this.restoreSnapshot );
         this.listenTo( app.channel, 'history:undo', this.undoStep );
         this.listenTo( app.channel, 'history:redo', this.redoStep );
-
     },
 
     /**
@@ -427,3 +445,5 @@ module.exports = Marionette.Module.extend( {
     }
 
 } );
+
+module.exports = Canvas;

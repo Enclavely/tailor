@@ -72,9 +72,7 @@ if ( ! function_exists( 'tailor_inline_edit_link' ) ) {
 	function tailor_inline_edit_link( $actions, $page_object ) {
 		$post = $page_object;
 		if ( tailor()->check_user_role() && tailor()->check_post( $post ) ) {
-
 			$post_type_object = get_post_type_object( get_post_type( $post ) );
-
 			$actions['tailor'] = tailor()->get_edit_link( $post->ID, $post_type_object->labels->singular_name );
 		}
 
@@ -83,26 +81,4 @@ if ( ! function_exists( 'tailor_inline_edit_link' ) ) {
 
 	add_filter( 'page_row_actions', 'tailor_inline_edit_link', 10, 2 );
 	add_filter( 'post_row_actions', 'tailor_inline_edit_link', 10, 2 );
-}
-
-if ( ! function_exists( 'tailor_frontend_edit_link' ) ) {
-
-	/**
-	 * Adds an edit link in the front end when the user is logged in.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param $links
-	 * @return string
-	 */
-	function tailor_frontend_edit_link( $links ) {
-		$post = get_post();
-		if ( ! tailor()->is_canvas() && tailor()->check_user_role() && tailor()->check_post( $post ) ) {
-			$links .= ' ' . tailor()->get_edit_link( $post->ID, $post->post_type );
-		}
-
-		return $links;
-	}
-
-	//add_filter( 'edit_post_link', 'tailor_frontend_edit_link' );
 }

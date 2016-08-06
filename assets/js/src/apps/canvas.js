@@ -32,12 +32,24 @@ CanvasApplication = Marionette.Application.extend( {
      */
 	onStart : function() {
         this.allowableEvents = [
+
+            // Canvas actions
 	        'canvas:dragstart', 'canvas:drag', 'canvas:dragend',
+
+            // Template actions
+            'template:load',
+
+            // History actions
 	        'history:restore', 'history:undo', 'history:redo',
+
+            // Modal actions
             'modal:apply',
+
+            // CSS actions
 	        'css:add', 'css:delete', 'css:update', 'css:clear',
-            'sidebar:setting:change',
-            'template:load'
+
+            // Settings actions
+            'sidebar:setting:change'
         ];
         this.addEventListeners();
 	},
@@ -112,11 +124,22 @@ CanvasApplication = Marionette.Application.extend( {
          * @param id
          * @returns {*|{}}
          */
-        var getLibrary = function( id ) {
+        this.channel.reply( 'sidebar:library', function( id ) {
             return remoteChannel.request( 'sidebar:library', id );
-        };
+        } );
 
-        this.channel.reply( 'sidebar:library', getLibrary );
+        /**
+         * Returns the current sidebar setting values from the registered remote channel.
+         *
+         * @since 1.4.0
+         *
+         * @returns {*|{}}
+         */
+        this.channel.reply( 'sidebar:settings', function() {
+            return remoteChannel.request( 'sidebar:settings');
+        } );
+
+        // Forward allowable events to the remote channel
 	    this.listenTo( remoteChannel, 'all', this.forwardRemoteEvent );
 
         /**
@@ -133,8 +156,7 @@ CanvasApplication = Marionette.Application.extend( {
      * @since 1.0.0
      */
     forwardRemoteEvent : function( eventName ) {
-        var validEvent = _.contains( this.allowableEvents, eventName );
-        if ( validEvent ) {
+        if ( _.contains( this.allowableEvents, eventName ) ) {
             this.channel.trigger.apply( this.channel, arguments );
         }
     }

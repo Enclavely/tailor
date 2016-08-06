@@ -298,13 +298,7 @@ Carousel.prototype = {
      */
     maybeRefreshSlick : function( e ) {
         if ( e.target == this.el ) {
-
 	        this.refreshSlick();
-
-	        //var carousel = this;
-	        //carousel.$el.imagesLoaded( function() {
-		    //    carousel.refreshSlick();
-	        //} );
         }
     },
 
@@ -378,21 +372,18 @@ Carousel.prototype = {
 		    fade : false,
 		    initialSlide : currentIndex
 	    } );
+	    
+        carousel.$wrap
+            .slick( options )
+            .on( 'beforeChange', function( event, slick, currentSlide, nextSlide ) {
+                if ( slick.$slider[0] == carousel.$wrap[0] && currentSlide != nextSlide ) {
+                    carousel.updateDots( nextSlide );
+                }
+            } );
 
-        //this.$el.imagesLoaded( function() {
-
-            carousel.$wrap
-                .slick( options )
-                .on( 'beforeChange', function( event, slick, currentSlide, nextSlide ) {
-                    if ( slick.$slider[0] == carousel.$wrap[0] && currentSlide != nextSlide ) {
-                        carousel.updateDots( nextSlide );
-                    }
-                } );
-
-	        if ( 'function' == typeof callback ) {
-		        callback.call( carousel );
-	        }
-        //} );
+        if ( 'function' == typeof callback ) {
+	        callback.call( carousel );
+        }
     },
 
     /**

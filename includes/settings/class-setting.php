@@ -164,7 +164,7 @@ if ( ! class_exists( 'Tailor_Setting' ) ) {
 		    }
 
 		    /**
-		     * Fires when the Tailor_Setting::save() method is called.
+		     * Fires before Tailor_Setting::save() method is called.
 		     *
 		     * @since 1.0.0
 		     *

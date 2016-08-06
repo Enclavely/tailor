@@ -136,9 +136,11 @@ module.exports = Marionette.ItemView.extend( {
      *
      * @since 1.0.0
      */
-    onControlChange : function( e ) {
-        this.setSettingValue( this.ui.input.val() );
-    },
+    onControlChange : _.debounce( function( e ) {
+        if ( 'function' == typeof this.ui.input.val ) {
+            this.setSettingValue( this.ui.input.val() );
+        }
+    }, 250 ),
 
     /**
      * Toggles the default button based on the setting value.

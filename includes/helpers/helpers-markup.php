@@ -94,7 +94,7 @@ if ( ! function_exists( 'tailor_partial' ) ) {
 		if ( $partial ) {
 
 			/**
-			 * Executes before the partial is loaded.
+			 * Fires before a template partial is loaded.
 			 *
 			 * @since 1.0.0
 			 *
@@ -302,8 +302,6 @@ function responsive_wrap_oembed_dataparse( $html, $data ) {
 	}
 
 	$html = preg_replace( '/(width|height)="\d*"\s/', "", $html );
-
-	return '<div class="' . $class_name . '">' . $html . '</div>';
-
+	
 	return "<div class=\"{$class_name}\">{$html}</div>";
 }

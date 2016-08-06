@@ -150,6 +150,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Map_Element' ) 
 		        'background_repeat',
 		        'background_position',
 		        'background_size',
+		        'background_attachment',
 	        );
 	        $attribute_control_arguments = array(
 		        'border_width'          =>  array(

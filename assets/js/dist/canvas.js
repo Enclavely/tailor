@@ -33,12 +33,24 @@ CanvasApplication = Marionette.Application.extend( {
      */
 	onStart : function() {
         this.allowableEvents = [
+
+            // Canvas actions
 	        'canvas:dragstart', 'canvas:drag', 'canvas:dragend',
+
+            // Template actions
+            'template:load',
+
+            // History actions
 	        'history:restore', 'history:undo', 'history:redo',
+
+            // Modal actions
             'modal:apply',
+
+            // CSS actions
 	        'css:add', 'css:delete', 'css:update', 'css:clear',
-            'sidebar:setting:change',
-            'template:load'
+
+            // Settings actions
+            'sidebar:setting:change'
         ];
         this.addEventListeners();
 	},
@@ -113,11 +125,22 @@ CanvasApplication = Marionette.Application.extend( {
          * @param id
          * @returns {*|{}}
          */
-        var getLibrary = function( id ) {
+        this.channel.reply( 'sidebar:library', function( id ) {
             return remoteChannel.request( 'sidebar:library', id );
-        };
+        } );
 
-        this.channel.reply( 'sidebar:library', getLibrary );
+        /**
+         * Returns the current sidebar setting values from the registered remote channel.
+         *
+         * @since 1.4.0
+         *
+         * @returns {*|{}}
+         */
+        this.channel.reply( 'sidebar:settings', function() {
+            return remoteChannel.request( 'sidebar:settings');
+        } );
+
+        // Forward allowable events to the remote channel
 	    this.listenTo( remoteChannel, 'all', this.forwardRemoteEvent );
 
         /**
@@ -134,8 +157,7 @@ CanvasApplication = Marionette.Application.extend( {
      * @since 1.0.0
      */
     forwardRemoteEvent : function( eventName ) {
-        var validEvent = _.contains( this.allowableEvents, eventName );
-        if ( validEvent ) {
+        if ( _.contains( this.allowableEvents, eventName ) ) {
             this.channel.trigger.apply( this.channel, arguments );
         }
     }
@@ -211,7 +233,6 @@ module.exports = CanvasApplication;
 
 } ) ( window.Tailor.Views || {} );
 },{"./components/elements/children/view-carousel-item":16,"./components/elements/children/view-column":17,"./components/elements/children/view-list-item":18,"./components/elements/children/view-tab":19,"./components/elements/children/view-toggle":20,"./components/elements/containers/view-carousel":25,"./components/elements/containers/view-tabs":26,"./components/elements/view-container":27,"./components/elements/view-element":28,"./components/elements/wrappers/view-box":29,"./components/elements/wrappers/view-card":30,"./components/elements/wrappers/view-hero":31,"./components/elements/wrappers/view-section":32}],4:[function(require,module,exports){
-
 ( function( Models ) {
 
     'use strict';
@@ -238,12 +259,14 @@ module.exports = CanvasApplication;
             return Models[ tag ];
         }
 
-        type = type.replace( /_/g, ' ' ).replace( /(?: |\b)(\w)/g, function( key ) {
-            return key.toUpperCase().replace( /\s+/g, '' );
-        } );
+        if ( type ) {
+            type = type.replace( /_/g, ' ' ).replace( /(?: |\b)(\w)/g, function( key ) {
+                return key.toUpperCase().replace( /\s+/g, '' );
+            } );
 
-        if ( Models.hasOwnProperty( type ) ) {
-            return Models[ type ];
+            if ( Models.hasOwnProperty( type ) ) {
+                return Models[ type ];
+            }
         }
 
         return Models.Element;
@@ -252,115 +275,130 @@ module.exports = CanvasApplication;
     window.Tailor.Models = Models;
 
 } ) ( window.Tailor.Models || {} );
-},{"./entities/models/elements/children/column":42,"./entities/models/elements/children/grid-item":43,"./entities/models/elements/containers/carousel":44,"./entities/models/elements/containers/row":45,"./entities/models/elements/containers/tabs":46,"./entities/models/elements/element":47,"./entities/models/elements/model-child":49,"./entities/models/elements/model-container":51,"./entities/models/elements/model-wrapper":52,"./entities/models/elements/wrappers/section":53}],5:[function(require,module,exports){
+},{"./entities/models/elements/children/column":43,"./entities/models/elements/children/grid-item":44,"./entities/models/elements/containers/carousel":45,"./entities/models/elements/containers/row":46,"./entities/models/elements/containers/tabs":47,"./entities/models/elements/element":48,"./entities/models/elements/model-child":50,"./entities/models/elements/model-container":52,"./entities/models/elements/model-wrapper":53,"./entities/models/elements/wrappers/section":54}],5:[function(require,module,exports){
 Tailor.Objects = Tailor.Objects || {};
 
 ( function( Tailor, Api, $ ) {
 
     'use strict';
 
-    var stylesheet = document.getElementById( 'tailor-custom-page-css' );
-    var originalCSS = stylesheet.innerHTML;
-    var rules = [];
+	var $win = $( window );
+
+	// Create a new stylesheet for managing custom and dynamic CSS
+	var stylesheet = document.createElement( 'style' );
+	stylesheet.appendChild( document.createTextNode( '' ) );
+	stylesheet.setAttribute( 'media', 'screen' );
+	stylesheet.setAttribute( 'id', 'tailor-canvas-css' );
+	document.head.appendChild( stylesheet );
+
+	// CSS rule sets associated with sidebar settings
+	var cssRules = window._pageRules || [];
+
+	// Setting IDs for which CSS should be generated
+	var dynamicSettingIds = [
+		'_tailor_section_width',
+		'_tailor_column_spacing',
+		'_tailor_element_spacing'
+	];
+
+	// Collection of CSS by setting ID
+	var cssCollection = {
+		'_tailor_section_width' : '',
+		'_tailor_column_spacing' : '',
+		'_tailor_element_spacing' : '',
+		'_tailor_page_css' : '' // Custom page CSS
+	};
+
+	// Generate CSS on app start
+	app.on( 'start', function() {
+
+		// Get the saved settings
+		var settings = app.channel.request( 'sidebar:settings' );
+		if ( settings.length ) {
+			settings.each( function( setting ) {
+				var id = setting.get( 'id' );
+				var value = setting.get( 'value' );
+				value = _.isString( value ) ? value.trim() : value;
+
+				if ( ! _.isEmpty( value ) && cssCollection.hasOwnProperty( id ) ) {
+					if ( cssRules.hasOwnProperty( id ) ) {
+						generateCSS( id, setting.get( 'value' ) );
+					}
+					else {
+						cssCollection[ id ] = setting.get( 'value' )
+					}
+				}
+			} );
+		}
+
+		updateStylesheet();
+	} );
+
+	// Re-generate CSS when a setting value changes
+	_.each( dynamicSettingIds, function( settingId ) {
+		if ( cssRules.hasOwnProperty( settingId ) ) {
+			Api.Setting( settingId, function( to, from ) {
+				generateCSS( settingId, to );
+				updateStylesheet();
+			} );
+		}
+	} );
+
+	// Update custom page CSS
+	Api.Setting( '_tailor_page_css', function( to, from ) {
+		cssCollection[ '_tailor_page_css' ] = to;
+		updateStylesheet();
+	} );
+
+	// Update the post title
+	Api.Setting( '_post_title', function( to, from ) {
+		$( 'h1, h2, h1 a, h2 a'  ).each( function() {
+			if ( from == this.textContent ) {
+				this.textContent = to;
+			}
+		} );
+	} );
 
 	/**
-	 * Generates custom CSS for the page.
-	 *
-	 * Ensures that any preexisting custom CSS is preserved.
-	 *
-	 * @since 1.0.0
+	 * Generates CSS for a given setting.
+	 * 
+	 * @since 1.4.0
+	 * 
+	 * @param settingId
+	 * @param value
 	 */
-    var generateCSS = function() {
-        var customCSS = '';
-        for ( var settingId in rules ) {
-            if ( rules.hasOwnProperty( settingId ) ) {
-                var rule = rules[ settingId ];
-                var selectorString = Tailor.CSS.parseSelectors( rule.selectors );
-                var declarationString = Tailor.CSS.parseDeclarations( rule.declarations );
+	function generateCSS( settingId, value ) {
+		cssCollection[ settingId ] = '';
+		value = _.isString( value ) ? value.trim() : value;
+		
+		// Compile the CSS rules for non-empty setting values
+		if ( ! _.isEmpty( value ) ) {
+			_.each( cssRules[ settingId ], function( rule ) {
+				var selectors = Tailor.CSS.parseSelectors( rule.selectors );
+				var declarations = Tailor.CSS.parseDeclarations( rule.declarations ).replace( /\{\{(.*?)\}\}/g, value );
+				cssCollection[ settingId ] += "\n" + selectors + " {" + declarations + "}";
+			} );
+		}
+	}
+	
+	/**
+	 * Updates the stylesheet.
+	 *
+	 * @since 1.4.0
+	 */
+	function updateStylesheet() {
+		var value = '';
+		for ( var settingId in cssCollection ) {
+			if ( cssCollection.hasOwnProperty( settingId ) ) {
+				value += cssCollection[ settingId ];
+			}
+		}
+		stylesheet.innerHTML = value;
 
-                customCSS += "\n" + selectorString + " {" + declarationString + "}";
-            }
-        }
-
-        customCSS = originalCSS + customCSS;
-        stylesheet.innerHTML = customCSS;
-    };
-
-    Api.Setting( '_post_title', function( to, from ) {
-        $( 'h1, h2, h1 a, h2 a' ).each( function() {
-            if ( from == this.textContent ) {
-                this.textContent = to;
-            }
-        } );
-    } );
-
-    Api.Setting( '_tailor_page_css', function( to, from ) {
-        originalCSS = to;
-
-        generateCSS();
-    } );
-
-    Api.Setting( '_tailor_section_width', function( to, from ) {
-        var unit = to.replace( /[0-9]/g, '' );
-        var value = to.replace( unit, '' );
-
-        if ( value ) {
-            rules['sectionWidth'] = {
-                selectors : ['.tailor-section .tailor-section__content'],
-                declarations : { 'max-width' : value + unit }
-            };
-
-            generateCSS();
-        }
-        else if ( rules['sectionWidth'] ) {
-            delete rules['sectionWidth'];
-
-            generateCSS();
-        }
-    } );
-
-    Api.Setting( '_tailor_element_spacing', function( to, from ) {
-        var value = to.replace( /[a-z]/g, '' );
-        var unit = to.replace( /[0-9]/g, '' );
-
-        if ( value ) {
-            rules['elementSpacing'] = {
-                selectors : ['.tailor-element'],
-                declarations : { 'margin-bottom' : value + unit }
-            };
-
-            generateCSS();
-        }
-        else if ( rules['elementSpacing'] ) {
-            delete rules['elementSpacing'];
-
-            generateCSS();
-        }
-    } );
-
-    Api.Setting( '_tailor_column_spacing', function( to, from ) {
-        var value = to.replace( /[a-z]/g, '' ) / 2;
-        var unit = to.replace( /[0-9]/g, '' );
-
-        if ( value ) {
-            rules['columnSpacing'] = {
-                selectors : ['.tailor-element.tailor-row .tailor-column'],
-                declarations : { 'padding-left' : value + unit, 'padding-right' : value + unit }
-            };
-            rules['rowMargin'] = {
-                selectors : ['.tailor-element.tailor-row'],
-                declarations : { 'margin-left' : ( -value ) + unit, 'margin-right' : ( -value ) + unit }
-            };
-
-            generateCSS();
-        }
-        else if ( rules['columnSpacing'] ) {
-            delete rules['columnSpacing'];
-            delete rules['rowMargin'];
-
-            generateCSS();
-        }
-    } );
+		console.log( value );
+		
+		$win.trigger( 'resize' );
+	}
 
 	_.extend( Tailor.Objects, {
 		Carousel : require( './components/carousel' ),
@@ -370,15 +408,25 @@ Tailor.Objects = Tailor.Objects || {};
 		Map : require( './components/map' ),
 		Masonry : require( './components/masonry' ),
 		Slideshow : require( './components/slideshow' ),
-		Lightbox : require( './components/lightbox' )
+		Lightbox : require( './components/lightbox' ),
+		Parallax : require( './components/parallax' )
 	} );
 
-	Api.Element.onRender( 'tailor_section', function( atts, model ) {
-		var section = this;
+	Api.Element.onRender( 'tailor_carousel', function( atts, model ) {
+		var carousel = this;
+		var options = {
+			autoplay : '1' == atts.autoplay,
+			arrows : '1' == atts.arrows,
+			dots : false,
+			fade : '1' == atts.fade && '1' == atts.items_per_row,
+			slidesToShow : parseInt( atts.items_per_row, 10 ) || 1,
+			adaptiveHeight : true
+		};
 
-		// Refreshes all child elements when the section width setting changes
-		Api.Setting( '_tailor_section_width', function( to, from ) {
-			section.triggerAll( 'element:parent:change', section );
+		carousel.$el.tailorCarousel( options );
+
+		Api.Setting( '_tailor_element_spacing', function( to, from ) {
+			carousel.triggerAll( 'element:parent:change', carousel );
 		} );
 	} );
 
@@ -391,25 +439,70 @@ Tailor.Objects = Tailor.Objects || {};
 		} );
 	} );
 
-	Api.Element.onRender( 'tailor_carousel', function( atts, model ) {
-        var carousel = this;
-		var options = {
-            autoplay : '1' == atts.autoplay,
-            arrows : '1' == atts.arrows,
-            dots : false,
-            fade : '1' == atts.fade && '1' == atts.items_per_row,
-            slidesToShow : parseInt( atts.items_per_row, 10 ) || 1,
-            adaptiveHeight : true
-        };
-
-		carousel.$el.tailorCarousel( options );
-
-		Api.Setting( '_tailor_element_spacing', function( to, from ) {
-			carousel.triggerAll( 'element:parent:change', carousel );
+	Api.Element.onRender( 'tailor_content', function( atts, model ) {
+		this.$el.tailorLightbox( {
+			disableOn : function() {
+				return $el.hasClass( 'is-selected' );
+			}
 		} );
-    } );
+	} );
 
-    Api.Element.onRender( 'tailor_posts', function( atts, model ) {
+	Api.Element.onRender( 'tailor_gallery', function( atts, model ) {
+		var $el = this.$el;
+		var options;
+
+		if ( 'carousel' == atts.layout ) {
+			options = {
+				autoplay : '1' == atts.autoplay,
+				arrows : '1' == atts.arrows,
+				dots : '1' == atts.dots,
+				fade : ( '1' == atts.fade && '1' == atts.items_per_row ),
+				infinite: false,
+				slidesToShow : parseInt( atts.items_per_row, 10 ) || 2
+			};
+
+			$el.tailorSimpleCarousel( options ) ;
+		}
+		else if ( 'slideshow' == atts.layout ) {
+			options = {
+				autoplay : '1' == atts.autoplay,
+				arrows : '1' == atts.arrows,
+				dots : false,
+				fade : true,
+				items : '.tailor-slideshow__slide',
+				adaptiveHeight : true,
+				draggable : false,
+				speed : 250
+			};
+
+			if ( '1' == atts.thumbnails ) {
+				options.customPaging = function( slider, i ) {
+					var thumb = $( slider.$slides[ i ] ).data( 'thumb' );
+					return '<img class="slick-thumbnail" src="' + thumb + '">';
+				};
+				options.dots = true;
+			}
+
+			$el.tailorSlideshow( options );
+		}
+		else if ( atts.masonry ) {
+			$el.tailorMasonry();
+		}
+
+		if ( this.el.classList.contains( 'is-lightbox-gallery' ) ) {
+			$el.tailorLightbox( {
+				disableOn : function() {
+					return $el.hasClass( 'is-selected' );
+				}
+			} );
+		}
+	} );
+
+	Api.Element.onRender( 'tailor_map', function( atts, model ) {
+		this.$el.tailorGoogleMap();
+	} );
+
+	Api.Element.onRender( 'tailor_posts', function( atts, model ) {
         var $el = this.$el;
         var options;
 
@@ -430,64 +523,19 @@ Tailor.Objects = Tailor.Objects || {};
 	    }
     } );
 
-    Api.Element.onRender( 'tailor_gallery', function( atts, model ) {
-        var $el = this.$el;
-        var options;
+	Api.Element.onRender( 'tailor_section', function( atts, model ) {
+		var section = this;
 
-	    if ( 'carousel' == atts.layout ) {
-		    options = {
-			    autoplay : '1' == atts.autoplay,
-			    arrows : '1' == atts.arrows,
-			    dots : '1' == atts.dots,
-			    fade : ( '1' == atts.fade && '1' == atts.items_per_row ),
-			    infinite: false,
-			    slidesToShow : parseInt( atts.items_per_row, 10 ) || 2
-		    };
+		// Refreshes all child elements when the section width setting changes
+		Api.Setting( '_tailor_section_width', function( to, from ) {
+			section.triggerAll( 'element:parent:change', section );
+		} );
 
-		    $el.tailorSimpleCarousel( options ) ;
-	    }
-	    else if ( 'slideshow' == atts.layout ) {
-		    options = {
-			    autoplay : '1' == atts.autoplay,
-			    arrows : '1' == atts.arrows,
-			    dots : false,
-			    fade : true,
-			    items : '.tailor-slideshow__slide',
-			    adaptiveHeight : true,
-			    draggable : false,
-			    speed : 250
-		    };
-
-		    if ( '1' == atts.thumbnails ) {
-			    options.customPaging = function( slider, i ) {
-				    var thumb = $( slider.$slides[ i ] ).data( 'thumb' );
-				    return '<img class="slick-thumbnail" src="' + thumb + '">';
-			    };
-			    options.dots = true;
-		    }
-
-		    $el.tailorSlideshow( options );
-	    }
-	    else if ( atts.masonry ) {
-		    $el.tailorMasonry();
-	    }
-
-        if ( this.el.classList.contains( 'is-lightbox-gallery' ) ) {
-            $el.tailorLightbox( {
-	            disableOn : function() {
-		            return $el.hasClass( 'is-selected' );
-	            }
-            } );
-        }
-    } );
-
-    Api.Element.onRender( 'tailor_content', function( atts, model ) {
-	    this.$el.tailorLightbox( {
-		    disableOn : function() {
-			    return $el.hasClass( 'is-selected' );
-		    }
-	    } );
-    } );
+		var ratio = this.el.getAttribute( 'data-ratio' );
+		if ( atts.parallax && ratio ) {
+			this.$el.tailorParallax( { ratio: ratio } );
+		}
+	} );
 
     Api.Element.onRender( 'tailor_tabs', function( atts, model ) {
         this.$el.tailorTabs();
@@ -497,12 +545,8 @@ Tailor.Objects = Tailor.Objects || {};
         this.$el.tailorToggles();
     } );
 
-    Api.Element.onRender( 'tailor_map', function( atts, model ) {
-        this.$el.tailorGoogleMap();
-    } );
-
 } ) ( window.Tailor, window.Tailor.Api, jQuery );
-},{"./components/carousel":15,"./components/carousel-simple":14,"./components/lightbox":33,"./components/map":34,"./components/masonry":35,"./components/slideshow":36,"./components/tabs":37,"./components/toggles":38}],6:[function(require,module,exports){
+},{"./components/carousel":15,"./components/carousel-simple":14,"./components/lightbox":33,"./components/map":34,"./components/masonry":35,"./components/parallax":36,"./components/slideshow":37,"./components/tabs":38,"./components/toggles":39}],6:[function(require,module,exports){
 require( './utility/polyfills/classlist' );
 require( './utility/polyfills/raf' );
 
@@ -571,7 +615,7 @@ window.ajax = require( './utility/ajax' );
 } ) ( window.app, jQuery );
 
 //require( './utility/debug' );
-},{"./apps/canvas":1,"./canvas-behaviors":2,"./canvas-components":3,"./canvas-entities":4,"./canvas-preview":5,"./components/api/element":7,"./components/api/setting":8,"./entities/canvas":39,"./modules/canvas":54,"./modules/canvas/canvas-region":55,"./modules/stylesheet":57,"./modules/tools":59,"./modules/tools/select-region":60,"./utility/ajax":64,"./utility/css":65,"./utility/polyfills/classlist":66,"./utility/polyfills/raf":67}],7:[function(require,module,exports){
+},{"./apps/canvas":1,"./canvas-behaviors":2,"./canvas-components":3,"./canvas-entities":4,"./canvas-preview":5,"./components/api/element":7,"./components/api/setting":8,"./entities/canvas":40,"./modules/canvas":55,"./modules/canvas/canvas-region":56,"./modules/stylesheet":58,"./modules/tools":60,"./modules/tools/select-region":61,"./utility/ajax":65,"./utility/css":66,"./utility/polyfills/classlist":67,"./utility/polyfills/raf":68}],7:[function(require,module,exports){
 var callbacks = {
     'render' : [],
     'destroy' : []
@@ -1664,13 +1708,7 @@ Carousel.prototype = {
      */
     maybeRefreshSlick : function( e ) {
         if ( e.target == this.el ) {
-
 	        this.refreshSlick();
-
-	        //var carousel = this;
-	        //carousel.$el.imagesLoaded( function() {
-		    //    carousel.refreshSlick();
-	        //} );
         }
     },
 
@@ -1744,21 +1782,18 @@ Carousel.prototype = {
 		    fade : false,
 		    initialSlide : currentIndex
 	    } );
+	    
+        carousel.$wrap
+            .slick( options )
+            .on( 'beforeChange', function( event, slick, currentSlide, nextSlide ) {
+                if ( slick.$slider[0] == carousel.$wrap[0] && currentSlide != nextSlide ) {
+                    carousel.updateDots( nextSlide );
+                }
+            } );
 
-        //this.$el.imagesLoaded( function() {
-
-            carousel.$wrap
-                .slick( options )
-                .on( 'beforeChange', function( event, slick, currentSlide, nextSlide ) {
-                    if ( slick.$slider[0] == carousel.$wrap[0] && currentSlide != nextSlide ) {
-                        carousel.updateDots( nextSlide );
-                    }
-                } );
-
-	        if ( 'function' == typeof callback ) {
-		        callback.call( carousel );
-	        }
-        //} );
+        if ( 'function' == typeof callback ) {
+	        callback.call( carousel );
+        }
     },
 
     /**
@@ -3119,19 +3154,14 @@ CompositeView = Marionette.CompositeView.extend( {
 		'element:copy' : 'stopEventPropagation',
 
 		'element:child:add' : 'onDescendantAdded',
-		//'element:child:add' : 'stopEventPropagation',
 		'element:child:remove' : 'onDescendantRemoved',
-		//'element:child:remove' : 'stopEventPropagation',
 
 		'before:element:child:ready' : 'stopEventPropagation',
 		'element:child:ready' : 'onDescendantReady',
-		//'element:child:ready' : 'stopEventPropagation',
 		'before:element:child:refresh' : 'stopEventPropagation',
 		'element:child:refresh' : 'stopEventPropagation',
-		//'element:child:refresh' : 'stopEventPropagation',
 		'before:element:child:destroy' : 'stopEventPropagation',
 		'element:child:destroy' : 'onDescendantDestroyed'
-		//'element:child:destroy' : 'stopEventPropagation'
 	},
 
 	/**
@@ -3271,7 +3301,7 @@ CompositeView = Marionette.CompositeView.extend( {
 	 *
 	 * @param event
 	 * @param view
-\	 * @param atts
+	 * @param atts
 	 */
 	triggerAll : function( event, view, atts ) {
 
@@ -3680,10 +3710,15 @@ SectionView = ContainerView.extend( {
 	},
 
     modelEvents : {
-        'change:atts' : 'onChangeAttributes'
+        'change:atts' : 'onChangeAttributes',
+        'change:order' : 'onChangeOrder'
     },
 
-    childViewContainer : '.tailor-section__content'
+    childViewContainer : '.tailor-section__content',
+
+	onChangeOrder : function() {
+		jQuery( window ).trigger( 'resize' );
+	}
 
 } );
 
@@ -4358,7 +4393,277 @@ $.fn.tailorMasonry = function( options, callbacks ) {
         }
     } );
 };
+
+module.exports = Masonry;
 },{}],36:[function(require,module,exports){
+/**
+ * Tailor.Objects.Parallax
+ *
+ * A parallax module.
+ *
+ * @class
+ */
+var $ = window.jQuery,
+	Parallax;
+
+/**
+ * De-bounces events using requestAnimationFrame
+ *
+ * @param callback
+ * @constructor
+ */
+function DeBouncer( callback ) {
+	this.callback = callback;
+	this.ticking = false;
+}
+
+DeBouncer.prototype = {
+
+	/**
+	 * dispatches the event to the supplied callback
+	 * @private
+	 */
+	update : function () {
+		this.callback && this.callback();
+		this.ticking = false;
+	},
+
+	/**
+	 * ensures events don't get stacked
+	 * @private
+	 */
+	requestTick : function () {
+		if ( ! this.ticking ) {
+			requestAnimationFrame( this.rafCallback || ( this.rafCallback = this.update.bind( this ) ) );
+			this.ticking = true;
+		}
+	},
+
+	/**
+	 * Attach this as the event listeners
+	 */
+	handleEvent : function () {
+		this.requestTick();
+	}
+};
+
+var id = 0;
+
+/**
+ * Translates an element on scroll to create a parallax effect.
+ *
+ * @param el
+ * @param options
+ * @constructor
+ */
+Parallax = function( el, options ) {
+	this.id = 'tailor.parallax.' + id ++;
+	this.options = $.extend( this.defaults, options );
+	this.el = el.querySelector( this.options.selector );
+	if ( ! this.el ) {
+		return;
+	}
+
+	this.$el = $( el );
+	this.$win = $( window );
+	this.container = {
+		el: el
+	};
+
+	this.initialize();
+};
+
+Parallax.prototype = {
+
+	defaults : {
+		ratio : 0.25,
+		selector : '.tailor-section__background'
+	},
+
+	/**
+	 * Initializes the Parallax element.
+	 */
+	initialize : function() {
+
+		this.onResizeCallback = $.proxy( this.onResize, this );
+		this.onScrollCallback = $.proxy( this.onScroll, this );
+
+		this.addEventListeners();
+		this.onResize();
+	},
+
+
+	/**
+	 * Adds the required event listeners
+	 */
+	addEventListeners : function() {
+		this.$win
+			.on( 'resize.' + this.id, this.onResizeCallback )
+			.on( 'scroll.' + this.id, this.onScrollCallback );
+
+		this.$el
+
+			// Fires before the element template is refreshed
+			.on( 'before:element:refresh', $.proxy( this.maybeDestroy, this ) )
+
+			// Fires before the element is destroyed
+			.on( 'before:element:destroy', $.proxy( this.maybeDestroy, this ) )
+
+			/**
+			 * Child event listeners
+			 */
+
+			// Fires before and after a child element is added
+			.on( 'element:child:ready', this.onResizeCallback )
+
+			// Fires after a child element is added
+			.on( 'element:child:add', this.onResizeCallback )
+
+			// Fires after a child element is removed
+			.on( 'element:child:remove', this.onResizeCallback )
+
+			// Fires before and after a child element is refreshed
+			.on( 'element:child:refresh', this.onResizeCallback )
+
+			// Fires before and after the position of an item is changed
+			.on( 'element:change:order', this.onResizeCallback )
+
+			// Fires before and after a child element is destroyed
+			.on( 'element:child:destroy', this.onResizeCallback )
+	},
+
+	/**
+	 * Removes all registered event listeners.
+	 *
+	 * @since 1.4.0
+	 */
+	removeEventListeners: function() {
+		this.$win
+			.off( 'resize.' + this.id, this.onResizeCallback )
+			.off( 'scroll.' + this.id, this.onScrollCallback );
+
+		this.$el.off();
+	},
+
+	/**
+	 * Perform checks and do parallax when the window is resized.
+	 *
+	 * @since 1.4.0
+	 */
+	onResize : function() {
+		this.setup();
+		this.doParallax();
+	},
+
+	onScroll : function() {
+		requestAnimationFrame( this.doParallax.bind( this ) );
+	},
+
+	/**
+	 * Get and set attributes w
+	 */
+	setup : function() {
+
+		// Store window height
+		this.windowHeight = Math.max( document.documentElement.clientHeight, window.innerHeight || 0 );
+
+		// Store container attributes
+		var containerRect = this.container.el.getBoundingClientRect();
+		var containerHeight = this.container.el.offsetHeight;
+		var containerTop = containerRect.top + window.pageYOffset;
+
+		this.container.top = containerTop;
+		this.container.height = containerHeight;
+		this.container.bottom = containerTop + containerHeight;
+
+		// Adjust the element height
+		this.el.style.top = '0px';
+		this.el.style.height = Math.round( ( containerHeight + ( containerHeight * this.options.ratio ) ) ) + 'px';
+	},
+
+	/**
+	 * Returns true if the parallax element is visible in the viewport.
+	 *
+	 * @since 1.4.0
+	 *
+	 * @returns {boolean}
+	 */
+	inViewport : function() {
+		var winTop = window.pageYOffset;
+		var winBottom = winTop + this.windowHeight;
+		var containerBottom = this.container.top + this.container.height;
+
+		return (
+			this.container.top < winBottom &&   // Top of element is above the bottom of the window
+			winTop < containerBottom            // Bottom of element is below top of the window
+		);
+	},
+
+	/**
+	 * Translate the element relative to its container to achieve the parallax effect.
+	 * 
+	 * @since 1.4.0
+	 */
+	doParallax : function() {
+
+		// Do nothing if the parent is not in view
+		if ( ! this.inViewport() ) {
+			return;
+		}
+
+		var amountScrolled = 1 - (
+				( this.container.bottom - window.pageYOffset  ) /
+				( this.container.height + this.windowHeight )
+			);
+
+		var translateY = Math.round( ( amountScrolled * this.container.height * this.options.ratio ) * 100 ) / 100;
+
+		this.el.style[ Modernizr.prefixed( 'transform' ) ] = 'translate3d( 0px, -' + translateY + 'px, 0px )';
+	},
+
+	/**
+	 * Destroys the parallax instance if the event target is the parallax element.
+	 *
+	 * @since 1.4.0
+	 *
+	 * @param e
+	 */
+	maybeDestroy : function( e ) {
+		if ( e.target == this.container.el ) {
+			this.destroy();
+		}
+	},
+
+	/**
+	 * Destroys the parallax instance.
+	 *
+	 * @since 1.4.0
+	 */
+	destroy: function() {
+		this.removeEventListeners();
+	}
+};
+
+/**
+ * Parallax jQuery plugin.
+ *
+ * @since 1.4.0
+ *
+ * @param options
+ * @param callbacks
+ * @returns {*}
+ */
+$.fn.tailorParallax = function( options, callbacks ) {
+	return this.each( function() {
+		var instance = $.data( this, 'tailorParallax' );
+		if ( ! instance ) {
+			$.data( this, 'tailorParallax', new Parallax( this, options, callbacks ) );
+		}
+	} );
+};
+
+module.exports = Parallax;
+},{}],37:[function(require,module,exports){
 /**
  * Tailor.Objects.Slideshow
  *
@@ -4583,7 +4888,7 @@ $.fn.tailorSlideshow = function( options, callbacks ) {
         }
     } );
 };
-},{}],37:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 /**
  * Tailor.Objects.Tabs
  *
@@ -4874,7 +5179,7 @@ $.fn.tailorTabs = function( options, callbacks ) {
 };
 
 module.exports = Tabs;
-},{}],38:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 /**
  * Tailor.Objects.Toggles
  *
@@ -5120,13 +5425,21 @@ $.fn.tailorToggles = function( options, callbacks ) {
 };
 
 module.exports = Toggles;
-},{}],39:[function(require,module,exports){
-Tailor.Collections = Tailor.Collections || {};
+},{}],40:[function(require,module,exports){
+/**
+ * The Canvas Marionette module.
+ *
+ * @class
+ */
+var $ = window.jQuery,
+    Tailor = window.Tailor,
+    Canvas;
 
+Tailor.Collections = Tailor.Collections || {};
 Tailor.Collections.Element = require( './collections/elements' );
 Tailor.Collections.History = require( './collections/history' );
 
-module.exports = Marionette.Module.extend( {
+Canvas = Marionette.Module.extend( {
 
     /**
      * Initializes the module.
@@ -5207,6 +5520,8 @@ module.exports = Marionette.Module.extend( {
                         // Record the template HTML and append it to the page
                         templates = response.templates;
 
+                        $( 'body' ).append( templates );
+
 	                    /**
 	                     * Fires when existing custom CSS rules are clear.
 	                     *
@@ -5228,9 +5543,8 @@ module.exports = Marionette.Module.extend( {
                      * @since 1.0.0
                      */
                     complete : function( response ) {
-                        if ( templates ) {
 
-	                        jQuery( 'body' ).append( templates );
+                        if ( templates ) {
 
                             /**
                              * Fires before the element collection is restored.
@@ -5249,7 +5563,10 @@ module.exports = Marionette.Module.extend( {
                              * @since 1.0.0
                              */
                             app.channel.trigger( 'elements:restore' );
+
+                            $( window ).trigger( 'resize' );
                         }
+
                         canvas.classList.remove( 'is-loading' );
                     }
                 };
@@ -5290,10 +5607,14 @@ module.exports = Marionette.Module.extend( {
                      * @param response
                      */
                     success : function( response ) {
+
+                        // Update the model collection with the sanitized models
                         models = response.models;
+
+                        // Record the template HTML and append it to the page
                         templates = response.templates;
 
-                        jQuery( 'body' ).append( templates );
+                        $( 'body' ).append( templates );
 
 	                    /**
 	                     * Fires when custom CSS rules are added.
@@ -5307,6 +5628,7 @@ module.exports = Marionette.Module.extend( {
                      * Resets the collection with the given set of elements.
                      */
                     complete : function( response ) {
+
                         if ( templates ) {
                             var parents = [];
                             var children = [];
@@ -5330,14 +5652,16 @@ module.exports = Marionette.Module.extend( {
                                 parents[0].order = index;
                                 module.elementCollection.add( parents );
                             }
-                        }
 
-                        /**
-                         * Fires when a template is added.
-                         *
-                         * @since 1.0.0
-                         */
-                        app.channel.trigger( 'template:add', model );
+                            /**
+                             * Fires when a template is added.
+                             *
+                             * @since 1.0.0
+                             */
+                            app.channel.trigger( 'template:add', model );
+
+                            $( window ).trigger( 'resize' );
+                        }
 
                         canvas.classList.remove( 'is-loading' );
                     }
@@ -5389,7 +5713,6 @@ module.exports = Marionette.Module.extend( {
         this.listenTo( app.channel, 'history:restore', this.restoreSnapshot );
         this.listenTo( app.channel, 'history:undo', this.undoStep );
         this.listenTo( app.channel, 'history:redo', this.redoStep );
-
     },
 
     /**
@@ -5550,7 +5873,9 @@ module.exports = Marionette.Module.extend( {
     }
 
 } );
-},{"./collections/elements":40,"./collections/history":41}],40:[function(require,module,exports){
+
+module.exports = Canvas;
+},{"./collections/elements":41,"./collections/history":42}],41:[function(require,module,exports){
 /**
  * Tailor.Collections.Element
  *
@@ -6117,7 +6442,7 @@ ElementCollection = Backbone.Collection.extend( {
 } );
 
 module.exports = ElementCollection;
-},{}],41:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 /**
  * Tailor.Collections.History
  *
@@ -6324,7 +6649,7 @@ HistoryCollection = Backbone.Collection.extend( {
 } );
 
 module.exports = HistoryCollection;
-},{}],42:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 /**
  * Tailor.Models.Column
  *
@@ -6362,7 +6687,7 @@ ColumnModel = ChildModel.extend( {
 } );
 
 module.exports = ColumnModel;
-},{"./../model-child":49}],43:[function(require,module,exports){
+},{"./../model-child":50}],44:[function(require,module,exports){
 /**
  * Tailor.Models.GridItem
  *
@@ -6400,7 +6725,7 @@ GridItemModel = ChildModel.extend( {
 } );
 
 module.exports = GridItemModel;
-},{"./../model-child":49}],44:[function(require,module,exports){
+},{"./../model-child":50}],45:[function(require,module,exports){
 /**
  * Tailor.Models.Carousel
  *
@@ -6446,7 +6771,7 @@ CarouselModel = ContainerModel.extend( {
 } );
 
 module.exports = CarouselModel;
-},{"./../model-container":51}],45:[function(require,module,exports){
+},{"./../model-container":52}],46:[function(require,module,exports){
 /**
  * Tailor.Models.Row
  *
@@ -6479,7 +6804,7 @@ RowModel = ContainerModel.extend( {
 } );
 
 module.exports = RowModel;
-},{"./../model-container":51}],46:[function(require,module,exports){
+},{"./../model-container":52}],47:[function(require,module,exports){
 /**
  * Tailor.Models.Tabs
  *
@@ -6526,7 +6851,7 @@ TabsModel = ContainerModel.extend( {
 } );
 
 module.exports = TabsModel;
-},{"./../model-container":51}],47:[function(require,module,exports){
+},{"./../model-container":52}],48:[function(require,module,exports){
 /**
  * Tailor.Models.Element
  *
@@ -6769,7 +7094,7 @@ ElementModel = BaseModel.extend( {
 } );
 
 module.exports = ElementModel;
-},{"./model-base":48}],48:[function(require,module,exports){
+},{"./model-base":49}],49:[function(require,module,exports){
 /**
  * Wrap `model.set()` and update the internal unsaved changes record keeping.
  *
@@ -7089,7 +7414,7 @@ var Model = Backbone.Model.extend( {
 } );
 
 module.exports = Model;
-},{}],49:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 /**
  * Tailor.Models.Child
  *
@@ -7153,7 +7478,7 @@ ChildModel = CompositeModel.extend( {
 } );
 
 module.exports = ChildModel;
-},{"./model-composite":50}],50:[function(require,module,exports){
+},{"./model-composite":51}],51:[function(require,module,exports){
 /**
  * Tailor.Models.Composite
  *
@@ -7328,7 +7653,7 @@ CompositeModel = BaseModel.extend( {
 } );
 
 module.exports = CompositeModel;
-},{"./model-base":48}],51:[function(require,module,exports){
+},{"./model-base":49}],52:[function(require,module,exports){
 /**
  * Tailor.Models.Container
  *
@@ -7403,7 +7728,7 @@ ContainerModel = CompositeModel.extend( {
 } );
 
 module.exports = ContainerModel;
-},{"./model-composite":50}],52:[function(require,module,exports){
+},{"./model-composite":51}],53:[function(require,module,exports){
 /**
  * Tailor.Models.Wrapper
  *
@@ -7510,7 +7835,7 @@ WrapperModel = CompositeModel.extend( {
 } );
 
 module.exports = WrapperModel;
-},{"./model-composite":50}],53:[function(require,module,exports){
+},{"./model-composite":51}],54:[function(require,module,exports){
 /**
  * Tailor.Models.Section
  *
@@ -7539,7 +7864,7 @@ SectionModel = WrapperModel.extend( {
 } );
 
 module.exports = SectionModel;
-},{"./../model-wrapper":52}],54:[function(require,module,exports){
+},{"./../model-wrapper":53}],55:[function(require,module,exports){
 module.exports = Marionette.Module.extend( {
 
     /**
@@ -7814,7 +8139,7 @@ module.exports = Marionette.Module.extend( {
     }
 
 } );
-},{"./canvas/canvas":56}],55:[function(require,module,exports){
+},{"./canvas/canvas":57}],56:[function(require,module,exports){
 module.exports = Backbone.Marionette.Region.extend( {
 
     initialize : function() {
@@ -7849,7 +8174,7 @@ module.exports = Backbone.Marionette.Region.extend( {
     }
 
 } );
-},{}],56:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 module.exports = Marionette.CollectionView.extend( {
 
 	behaviors : {
@@ -7958,7 +8283,7 @@ module.exports = Marionette.CollectionView.extend( {
     }
 
 } );
-},{}],57:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 module.exports = Marionette.Module.extend( {
 
     /**
@@ -8111,7 +8436,7 @@ module.exports = Marionette.Module.extend( {
     }
 
 } );
-},{"./stylesheet/stylesheet":58}],58:[function(require,module,exports){
+},{"./stylesheet/stylesheet":59}],59:[function(require,module,exports){
 
 function Stylesheet( id, media ) {
     this.id = id;
@@ -8225,7 +8550,7 @@ Stylesheet.prototype = {
 };
 
 module.exports = Stylesheet;
-},{}],59:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 module.exports = Marionette.Module.extend( {
 
     /**
@@ -8303,7 +8628,7 @@ module.exports = Marionette.Module.extend( {
     }
 
 } );
-},{"./tools/show/guide":61,"./tools/show/select":63}],60:[function(require,module,exports){
+},{"./tools/show/guide":62,"./tools/show/select":64}],61:[function(require,module,exports){
 module.exports = Backbone.Marionette.Region.extend( {
 
     /**
@@ -8333,7 +8658,7 @@ module.exports = Backbone.Marionette.Region.extend( {
     }
 
 } );
-},{}],61:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 module.exports = Marionette.ItemView.extend( {
 
 	template : false,
@@ -8371,7 +8696,7 @@ module.exports = Marionette.ItemView.extend( {
     }
 
 } );
-},{}],62:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 module.exports = Marionette.ItemView.extend( {
 
     tagName : 'a',
@@ -8417,7 +8742,7 @@ module.exports = Marionette.ItemView.extend( {
 	}
 
 } );
-},{}],63:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 module.exports = Marionette.CompositeView.extend( {
 
     className : 'select',
@@ -8551,7 +8876,7 @@ module.exports = Marionette.CompositeView.extend( {
     }
 
 } );
-},{"./menu-item":62}],64:[function(require,module,exports){
+},{"./menu-item":63}],65:[function(require,module,exports){
 /**
  * window.ajax
  *
@@ -8560,7 +8885,8 @@ module.exports = Marionette.CompositeView.extend( {
  * @class
  */
 var $ = jQuery,
-    Ajax;
+    Ajax,
+    Tailor = window.Tailor;
 
 var Ajax = {
 
@@ -8648,7 +8974,11 @@ var Ajax = {
      * @param response
      */
     onError : function( response ) {
-        if ( response && response.hasOwnProperty( 'message' ) ) {
+
+        if ( ! Tailor.Notify ) {
+            console.error( response );
+        }
+        else if ( response && response.hasOwnProperty( 'message' ) ) {
 
             // Display the error from the server
             Tailor.Notify( response.message );
@@ -8672,7 +9002,7 @@ var Ajax = {
 };
 
 module.exports = Ajax;
-},{}],65:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 /**
  * Tailor.CSS
  *
@@ -8739,11 +9069,11 @@ CSS = {
             return selectors;
         }
 
-        var elementClass = elementId ? '.' + elementId : '';
+        var elementClass = elementId ? '.tailor-ui .' + elementId : '';
         var selector;
 
         if ( ! selectors.length ) {
-            selector = elementClass ? '.tailor-ui ' + elementClass : '';
+            selector = elementClass;
         }
         else {
 
@@ -8763,7 +9093,7 @@ CSS = {
                 } );
             }
 
-            selector = '.tailor-ui ' + selectors.join( ',.tailor-ui ' );
+            selector = selectors.join( ',.tailor-ui ' );
         }
 
         return selector;
@@ -8794,7 +9124,7 @@ CSS = {
 };
 
 module.exports = CSS;
-},{}],66:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 /**
  * classList Polyfill
  *
@@ -8883,7 +9213,7 @@ module.exports = CSS;
 	} );
 
 } )();
-},{}],67:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 /**
  * requestAnimationFrame polyfill.
  *

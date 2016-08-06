@@ -26,6 +26,8 @@ if ( ! function_exists( 'tailor_shortcode_section' ) ) {
 		    'id'                        =>  '',
 		    'class'                     =>  '',
 		    'horizontal_alignment'      =>  '',
+		    'background_image'          =>  '',
+		    'parallax'                  =>  1,
 	    ), $atts, $tag );
 
 	    $id = ( '' !== $atts['id'] ) ? 'id="' . esc_attr( $atts['id'] ) . '"' : '';
@@ -34,8 +36,16 @@ if ( ! function_exists( 'tailor_shortcode_section' ) ) {
 		    $class .= esc_attr( " u-text-{$atts['horizontal_alignment']}" );
 	    }
 
-	    return  '<div ' . trim( "{$id} class=\"{$class}\"" ) . '>' .
-	                '<div class="tailor-section__content">' . do_shortcode( $content ) . '</div>' .
+	    $data = '';
+	    $section_content = '<div class="tailor-section__content">' . do_shortcode( $content ) . '</div>';
+	    
+	    if ( ( $atts['background_image'] && 1 == $atts['parallax'] ) ) {
+		    $section_content .= '<div class="tailor-section__background"></div>';
+		    $data = ' ' . tailor_get_attributes( array( 'ratio' => '0.5' ), 'data-' );
+	    }
+	    
+	    return  '<div ' . trim( "{$id} class=\"{$class}\"" ) . "{$data}>" .
+	                $section_content .
 	            '</div>';
     }
 

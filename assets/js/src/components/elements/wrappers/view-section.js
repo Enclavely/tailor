@@ -15,10 +15,15 @@ SectionView = ContainerView.extend( {
 	},
 
     modelEvents : {
-        'change:atts' : 'onChangeAttributes'
+        'change:atts' : 'onChangeAttributes',
+        'change:order' : 'onChangeOrder'
     },
 
-    childViewContainer : '.tailor-section__content'
+    childViewContainer : '.tailor-section__content',
+
+	onChangeOrder : function() {
+		jQuery( window ).trigger( 'resize' );
+	}
 
 } );
 

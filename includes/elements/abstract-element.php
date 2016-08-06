@@ -51,14 +51,6 @@ if ( class_exists( 'Tailor_Setting_Manager' ) && ! class_exists( 'Tailor_Element
 	     */
 	    public $badge = '';
 
-        /**
-         * The element icon to show in the UI.
-         *
-         * @since 1.0.0
-         * @var string
-         */
-        public $icon = 'dashicons-admin-post';
-
 	    /**
 	     * The element type.
 	     *
@@ -117,7 +109,7 @@ if ( class_exists( 'Tailor_Setting_Manager' ) && ! class_exists( 'Tailor_Element
 
 	        $this->tag = $this->id = $tag;
 
-	        add_action( 'wp_loaded', array( $this, 'add_actions' ) );
+	        $this->add_actions();
         }
 
 	    /**
@@ -132,27 +124,7 @@ if ( class_exists( 'Tailor_Setting_Manager' ) && ! class_exists( 'Tailor_Element
 			    return;
 		    }
 
-		    $this->register_controls();
-
-		    /**
-		     * Fires after element controls are registered.
-		     *
-		     * @since 1.3.5
-		     *
-		     * @param Tailor_Element $this
-		     */
-		    do_action( 'tailor_element_register_controls', $this );
-		    
-		    /**
-		     * Fires after element controls are registered.
-		     *
-		     * @since 1.3.5
-		     *
-		     * @param Tailor_Element $this
-		     */
-		    do_action( 'tailor_element_register_controls_' . $this->tag, $this );
-		    
-		    $this->prepare_controls();
+		    add_action( 'after_setup_theme', array( $this, 'register_element_controls' ) );
 	    }
 
 	    /**
@@ -184,6 +156,26 @@ if ( class_exists( 'Tailor_Setting_Manager' ) && ! class_exists( 'Tailor_Element
 		    return $active;
 	    }
 
+	    /**
+	     * Returns the element properties in an array.
+	     *
+	     * @since 1.4.0
+	     *
+	     * @return array $properties
+	     */
+	    public function to_array() {
+		    $properties = array( 'tag', 'label', 'description', 'badge', 'type' );
+		    $properties = wp_array_slice_assoc( (array) $this, $properties );
+
+		    if ( isset( $this->child ) ) {
+			    $properties['child'] = $this->child;
+		    }
+
+		    $properties['active'] = $this->active();
+
+			return $properties;
+	    }
+
         /**
          * Returns the properties that will be passed to the client JavaScript via JSON.
          *
@@ -192,16 +184,7 @@ if ( class_exists( 'Tailor_Setting_Manager' ) && ! class_exists( 'Tailor_Element
          * @return array $properties
          */
         public function to_json() {
-
-	        $properties = array( 'tag', 'label', 'description', 'badge', 'icon', 'type' );
-
-	        $properties = wp_array_slice_assoc( (array) $this, $properties );
-
-	        if ( isset( $this->child ) ) {
-		        $properties['child'] = $this->child;
-	        }
-
-	        $properties['active'] = $this->active();
+	        $properties = $this->to_array();
 
 	        $properties['settings'] = $properties['sections'] = $properties['controls'] = array();
 
@@ -260,6 +243,36 @@ if ( class_exists( 'Tailor_Setting_Manager' ) && ! class_exists( 'Tailor_Element
 
             return $shortcode . ']' . $content . '[/' . $this->tag . ']';
         }
+
+	    /**
+	     * Registers and prepares element controls.
+	     *
+	     * @since 1.4.0
+	     */
+	    public function register_element_controls() {
+
+		    $this->register_controls();
+
+		    /**
+		     * Fires after element controls are registered.
+		     *
+		     * @since 1.3.5
+		     *
+		     * @param Tailor_Element $this
+		     */
+		    do_action( 'tailor_element_register_controls', $this );
+		    
+		    /**
+		     * Fires after element controls are registered.
+		     *
+		     * @since 1.3.5
+		     *
+		     * @param Tailor_Element $this
+		     */
+		    do_action( 'tailor_element_register_controls_' . $this->tag, $this );
+
+		    $this->prepare_controls();
+	    }
 
         /**
          * Registers element settings, sections and controls.
@@ -324,7 +337,17 @@ if ( class_exists( 'Tailor_Setting_Manager' ) && ! class_exists( 'Tailor_Element
 
 			    $controls[ $control->id ] = $control;
 		    }
+
 		    $this->controls = $controls;
+
+		    /**
+		     * Fires after element controls have been prepared.
+		     *
+		     * @since 1.4.0
+		     *
+		     * @param Tailor_Element $this
+		     */
+		    do_action( 'tailor_element_prepare_controls', $this );
 	    }
     }
 }

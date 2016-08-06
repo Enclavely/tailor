@@ -167,18 +167,6 @@ if ( ! class_exists( 'Tailor_Control' ) ) {
              if ( 1 === $this->instance_number ) {
                  add_action( 'tailor_sidebar_head', array( $this, 'enqueue' ), -1 );
                  add_action( 'tailor_sidebar_footer', array( $this, 'print_template' ), -1 );
-
-	             /**
-	              * Allows developers to use controls in the administrative backend.
-	              *
-	              * @since 1.0.0
-	              *
-	              * @param bool
-	              */
-	             if ( true == apply_filters( 'tailor_admin_print_control_templates', false ) ) {
-		             add_action( 'admin_enqueue_scripts', array( $this, 'enqueue' ), -1 );
-		             add_action( 'admin_print_footer_scripts', array( $this, 'print_template' ), -1 );
-	             }
             }
         }
 

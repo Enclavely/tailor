@@ -1,4 +1,3 @@
-
 ( function( Models ) {
 
     'use strict';
@@ -25,12 +24,14 @@
             return Models[ tag ];
         }
 
-        type = type.replace( /_/g, ' ' ).replace( /(?: |\b)(\w)/g, function( key ) {
-            return key.toUpperCase().replace( /\s+/g, '' );
-        } );
+        if ( type ) {
+            type = type.replace( /_/g, ' ' ).replace( /(?: |\b)(\w)/g, function( key ) {
+                return key.toUpperCase().replace( /\s+/g, '' );
+            } );
 
-        if ( Models.hasOwnProperty( type ) ) {
-            return Models[ type ];
+            if ( Models.hasOwnProperty( type ) ) {
+                return Models[ type ];
+            }
         }
 
         return Models.Element;

@@ -139,7 +139,7 @@ module.exports = Marionette.Module.extend( {
              * @returns {*}
              */
             getSettings : function( model ) {
-
+                
                 // Return the sidebar control collection if no element is provided
                 if ( ! model ) {
                     return module.settings['sidebar'];

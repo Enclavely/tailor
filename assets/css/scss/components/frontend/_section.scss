@@ -37,13 +37,35 @@ $section-max-width: 75rem !default;
 		border: $section-border-width $section-border-style $section-border-color;
 		border-radius: $section-border-radius;
 		box-shadow: $section-box-shadow;
+		overflow: hidden;
 
 		&__content {
+			position: relative;
+			z-index: 2;
 			margin: 0 auto;
 			width: 100%;
 			max-width: $section-max-width;
 		}
 
+		&__background {
+			position: absolute;
+			z-index: 1;
+			top: 0;
+			right: 0;
+			left: 0;
+			height: 100%;
+			width: 100%;
+			background-size: cover;
+			background-position: center center;
+
+			-webkit-transform: translatez(0);
+			-moz-transform: translatez(0);
+			-ms-transform: translatez(0);
+			-o-transform: translatez(0);
+			transform: translatez(0);
+		}
+
+		// Variations
 		&.is-skewed {
 			transform: skew( 0deg, -3deg );
 

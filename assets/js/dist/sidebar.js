@@ -19,10 +19,21 @@ SidebarApplication = Marionette.Application.extend( {
         this._unsavedChanges = false;
         this.saveButton = document.querySelector( '#tailor-save' );
         this.allowableEvents = [
-	        'element:add', 'element:move', 'element:resize', 'element:change:order', 'element:copy', 'element:delete', // 'element:edit',
+            
+            // Element actions
+	        'element:add', 'element:move', 'element:resize', 'element:change:order', 'element:copy', 'element:delete',
+            
+            // Collection actions
 	        'elements:restore', 'elements:reset',
+            
+            // Template actions
+            'template:add',
+            
+            // Modal actions
             'modal:open', 'modal:destroy',
-            'template:add'
+            
+            // Setting actions
+            'sidebar:settings'
         ];
 
         this.addEventListeners();
@@ -67,7 +78,7 @@ SidebarApplication = Marionette.Application.extend( {
          *
          * @since 1.0.0
          */
-        sidebarApp.onCollapse = function() {
+        $( '#tailor-collapse' ).on( 'click', function() {
             sidebarApp._collapsed = ! sidebarApp._collapsed;
             sidebarApp.el.classList.toggle( 'is-collapsed', sidebarApp._collapsed );
             sidebarApp.saveButton.setAttribute( 'aria-expanded', ! sidebarApp._collapsed );
@@ -78,18 +89,15 @@ SidebarApplication = Marionette.Application.extend( {
              * @since 1.0.0
              */
             sidebarApp.triggerMethod( 'collapse:sidebar' );
-        };
-
-        var collapseButton = document.querySelector( '#tailor-collapse' );
-        collapseButton.addEventListener( 'click', sidebarApp.onCollapse );
+        } );
 
         /**
-         * Saves settings and elements and updates the sidebar.
+         * Saves settings and models when the Save button is clicked.
          *
          * @since 1.0.0
          */
-        sidebarApp.onSave = function() {
-	        sidebarApp.el.classList.add( 'is-saving' );
+        $( sidebarApp.saveButton ).on( 'click', function() {
+            sidebarApp.el.classList.add( 'is-saving' );
             sidebarApp.saveButton.setAttribute( 'disabled', true );
 
             var models = sidebarApp.channel.request( 'canvas:elements' );
@@ -102,11 +110,11 @@ SidebarApplication = Marionette.Application.extend( {
                     nonce : window._nonces.save
                 },
 
-	            /**
-	             * Updates the sidebar after a save action is completed successfully.
-	             *
-	             * @since 1.0.0
-	             */
+                /**
+                 * Updates the sidebar after a save action is completed successfully.
+                 *
+                 * @since 1.0.0
+                 */
                 success : function() {
                     sidebarApp.saveButton.disabled = true;
                     sidebarApp.saveButton.innerHTML = window._l10n.saved;
@@ -146,22 +154,26 @@ SidebarApplication = Marionette.Application.extend( {
                     }
                 },
 
-	            /**
-	             * Updates the sidebar after a save action is completed.
-	             *
-	             * @since 1.0.0
-	             */
+                /**
+                 * Updates the sidebar after a save action is completed.
+                 *
+                 * @since 1.0.0
+                 */
                 complete : function( response ) {
                     sidebarApp.el.classList.remove( 'is-saving' );
                 }
             };
 
             window.ajax.send( 'tailor_save', options );
-        };
+        } );
 
-        sidebarApp.saveButton.addEventListener( 'click', sidebarApp.onSave );
         sidebarApp.listenToOnce( sidebarApp.channel, 'canvas:initialize', sidebarApp.registerRemoteChannel );
 
+        /**
+         * Restores the next history snapshot, if available.
+         *
+         * @since 1.0.0
+         */
         $( document ).on( 'keydown', function( e ) {
             if ( e.ctrlKey && 89 == e.keyCode ) {
                 if ( ! _.contains( [ 'INPUT', 'SELECT', 'TEXTAREA' ], e.target.tagName ) ) {
@@ -176,6 +188,11 @@ SidebarApplication = Marionette.Application.extend( {
             }
         } );
 
+	    /**
+         * Restores the previous history snapshot, if available.
+         *
+         * @since 1.0.0
+         */
         $( document ).on( 'keydown', function( e ) {
             if ( e.ctrlKey && 90 == e.keyCode ) {
                 if ( ! _.contains( [ 'INPUT', 'SELECT', 'TEXTAREA' ], e.target.tagName ) ) {
@@ -199,6 +216,7 @@ SidebarApplication = Marionette.Application.extend( {
     registerRemoteChannel : function() {
         var sidebarApp = this;
         var iFrame = this.el.querySelector( '#tailor-sidebar-preview' );
+
         if ( window.location.origin === iFrame.contentWindow.location.origin ) {
             var remoteChannel = iFrame.contentWindow.app.channel;
 
@@ -207,36 +225,33 @@ SidebarApplication = Marionette.Application.extend( {
              *
              * @since 1.0.0
              */
-            var getElements = function( id ) {
+            app.channel.reply( 'canvas:elements', function( id ) {
                 return remoteChannel.request( 'canvas:elements', id );
-            };
+            } );
 
             /**
              * Returns the history entry collection from the remote window.
              *
              * @since 1.0.0
              */
-            var getHistory = function( id ) {
+            app.channel.reply( 'sidebar:history', function( id ) {
                 return remoteChannel.request( 'sidebar:history', id );
-            };
+            } );
 
             /**
              * Returns the selected element (if any) from the remote window.
              *
              * @since 1.0.0
              */
-            var getSelectedElement = function() {
+            app.channel.reply( 'canvas:element:selected', function() {
                 return remoteChannel.request( 'canvas:element:selected' );
-            };
+            } );
 
-            app.channel.reply( 'canvas:elements', getElements );
-	        app.channel.reply( 'sidebar:history', getHistory );
-	        app.channel.reply( 'canvas:element:selected', getSelectedElement );
+            // Forward allowable events from the canvas
+            app.listenTo( remoteChannel, 'all', sidebarApp.forwardRemoteEvent );
 
-            sidebarApp.listenTo( remoteChannel, 'all', sidebarApp.forwardRemoteEvent );
-
-            sidebarApp.el.classList.add( 'is-initialized' );
-            sidebarApp.el.querySelector( '.tailor-preview__viewport' ).classList.add( 'is-loaded' );
+            app.el.classList.add( 'is-initialized' );
+            app.el.querySelector( '.tailor-preview__viewport' ).classList.add( 'is-loaded' );
 
             /**
              * Fires when the sidebar is initialized.
@@ -253,8 +268,7 @@ SidebarApplication = Marionette.Application.extend( {
      * @since 1.0.0
      */
     forwardRemoteEvent : function( eventName ) {
-        var validEvent = _.contains( this.allowableEvents, eventName );
-        if ( validEvent ) {
+        if ( _.contains( this.allowableEvents, eventName ) ) {
             this.channel.trigger.apply( this.channel, arguments );
         }
     },
@@ -1059,9 +1073,11 @@ module.exports = Marionette.ItemView.extend( {
      *
      * @since 1.0.0
      */
-    onControlChange : function( e ) {
-        this.setSettingValue( this.ui.input.val() );
-    },
+    onControlChange : _.debounce( function( e ) {
+        if ( 'function' == typeof this.ui.input.val ) {
+            this.setSettingValue( this.ui.input.val() );
+        }
+    }, 250 ),
 
     /**
      * Toggles the default button based on the setting value.
@@ -2496,10 +2512,6 @@ LinkControl = AbstractControl.extend( {
                 success : function( response ) {
                     $searchResults.html( response );
                 },
-
-	            error: function( response ) {
-		            console.log( arguments );
-	            },
 
 	            /**
 	             * Resets the control classname when searching is complete.
@@ -4151,9 +4163,6 @@ TemplateItem = Marionette.ItemView.extend( {
     },
 
     events : {
-        //'click @ui.download' : 'download',
-        //'click @ui.delete' : 'delete',
-        //'click @ui.preview' : 'preview',
         'click' : 'onClick'
     },
 
@@ -6160,7 +6169,7 @@ module.exports = Marionette.Module.extend( {
              * @returns {*}
              */
             getSettings : function( model ) {
-
+                
                 // Return the sidebar control collection if no element is provided
                 if ( ! model ) {
                     return module.settings['sidebar'];
@@ -7439,8 +7448,8 @@ module.exports = Marionette.CompositeView.extend( {
 
     var title = document.querySelector( '.tailor__home .title' );
 
+    // Update the post title when the post title setting is changed
     Api( '_post_title', function( to, from ) {
-
         if ( title.hasChildNodes() ) {
             var children = title.childNodes;
             for ( var i = 1; i < children.length; i++ ) {
@@ -7453,34 +7462,28 @@ module.exports = Marionette.CompositeView.extend( {
         document.title = window._l10n.tailoring + to;
     } );
 
-    $( '.preview__control' ).on( 'change', function( e ) {
-        var size = this.value;
-        var preview = document.querySelector( '.tailor-preview' );
-        var viewport = document.querySelector( '.tailor-preview__viewport' );
-
-        viewport.classList.remove( 'is-loaded' );
-
-        setTimeout( function() {
-            preview.className = 'tailor-preview ' + size + '-screens';
-        }, 250 );
-
-        setTimeout( function() {
-            viewport.classList.add( 'is-loaded' );
-        }, 1000 );
-
-    } );
-
     var $buttons = $( '.devices button' );
+    var preview = document.querySelector( '.tailor-preview' );
+    var viewport = document.querySelector( '.tailor-preview__viewport' );
+    var mediaQueries = window._media_queries;
 
+    // Change the viewport size based on which device preview size is selected
     $buttons.on( 'click', function( e ) {
         var button = e.target;
-        var preview = document.querySelector( '.tailor-preview' );
-
+        
         $buttons.each( function() {
             if ( this == button ) {
+                var device = button.getAttribute( 'data-device' );
                 this.classList.add( 'is-active' );
                 this.setAttribute( 'aria-pressed', 'true' );
-                preview.className = 'tailor-preview ' + button.getAttribute( 'data-device' ) + '-screens';
+                preview.className = 'tailor-preview ' + device + '-screens';
+
+                if ( mediaQueries.hasOwnProperty( device ) && mediaQueries[ device ].max ) {
+                    viewport.style.maxWidth = mediaQueries[ device ].max;
+                }
+                else {
+                    viewport.style.maxWidth ='';
+                }
             }
             else {
                 this.classList.remove( 'is-active' );
@@ -7602,7 +7605,8 @@ wp.media.view.settings.post.id = window.post.id;
  * @class
  */
 var $ = jQuery,
-    Ajax;
+    Ajax,
+    Tailor = window.Tailor;
 
 var Ajax = {
 
@@ -7690,7 +7694,11 @@ var Ajax = {
      * @param response
      */
     onError : function( response ) {
-        if ( response && response.hasOwnProperty( 'message' ) ) {
+
+        if ( ! Tailor.Notify ) {
+            console.error( response );
+        }
+        else if ( response && response.hasOwnProperty( 'message' ) ) {
 
             // Display the error from the server
             Tailor.Notify( response.message );

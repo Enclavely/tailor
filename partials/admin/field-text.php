@@ -13,5 +13,5 @@
 defined( 'ABSPATH' ) or die(); ?>
 
 <label>
-	<input name="<?php esc_attr_e( $args['name'] ); ?>" type="text" value="<?php esc_attr_e( $args['value'] ); ?>" />
+	<input class="regular-text code" name="<?php esc_attr_e( $args['name'] ); ?>" type="text" value="<?php esc_attr_e( $args['value'] ); ?>" />
 </label>

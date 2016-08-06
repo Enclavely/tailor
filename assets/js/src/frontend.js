@@ -7,9 +7,18 @@
     require( './components/map' );
     require( './components/lightbox' );
     require( './components/slideshow' );
+    require( './components/parallax' );
     require( './components/frontend/carousel' );
 
     $( document ).ready( function() {
+
+	    /**
+	     * Parallax sections.
+	     */
+	    $( '.tailor-section[data-ratio]' ).each( function() {
+		    var $el = $( this );
+		    $el.tailorParallax( { ratio: $el.data( 'ratio' ) } );
+	    } );
 
 	    /**
 	     * Tabs.

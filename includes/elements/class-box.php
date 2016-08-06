@@ -158,6 +158,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Box_Element' ) 
 		        'background_repeat',
 		        'background_position',
 		        'background_size',
+		        'background_attachment',
 	        );
 	        $attribute_control_arguments = array();
 	        tailor_control_presets( $this, $attribute_control_types, $attribute_control_arguments, $priority );

@@ -6,7 +6,8 @@
  * @class
  */
 var $ = jQuery,
-    Ajax;
+    Ajax,
+    Tailor = window.Tailor;
 
 var Ajax = {
 
@@ -94,7 +95,11 @@ var Ajax = {
      * @param response
      */
     onError : function( response ) {
-        if ( response && response.hasOwnProperty( 'message' ) ) {
+
+        if ( ! Tailor.Notify ) {
+            console.error( response );
+        }
+        else if ( response && response.hasOwnProperty( 'message' ) ) {
 
             // Display the error from the server
             Tailor.Notify( response.message );

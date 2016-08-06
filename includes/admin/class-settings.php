@@ -89,7 +89,7 @@ class Tailor_Settings {
 
 		ob_start();
 
-		tailor_partial( 'admin/help', 'settings' );
+		tailor_partial( 'admin/html/help', 'settings' );
 
 		$content = ob_get_clean();
 		$screen->add_help_tab( array(
@@ -117,8 +117,7 @@ class Tailor_Settings {
 		);
 
 		$post_type_field_id = 'post_types';
-		$post_type_field_label = __( 'Post types', 'tailor' );
-
+		$post_type_field_label = __( 'Enabled post types', 'tailor' );
 		add_settings_field(
 			$post_type_field_id,						    // The field ID
 			$post_type_field_label,                         // The field label
@@ -134,9 +133,8 @@ class Tailor_Settings {
 			)
 		);
 
-		$role_field_id = 'roles';
-		$role_field_label = __( 'User roles', 'tailor' );
-
+		$role_field_id = 'restricted_roles';
+		$role_field_label = __( 'Restricted user roles', 'tailor' );
 		add_settings_field(
 			$role_field_id,
 			$role_field_label,
@@ -145,7 +143,7 @@ class Tailor_Settings {
 			$setting_id,
 			array(
 				'label'             =>  $role_field_label,
-				'description'       =>  __( 'All roles that have permission to manage options can Tailor pages, regardless of whether they are enabled above.', 'tailor' ),
+				'description'       =>  __( 'By default, user roles that can manage options or edit posts can Tailor posts.', 'tailor' ),
 				'type'              =>  'checkbox',
 				'name'              =>  $setting_id . '[' . $role_field_id . ']',
 				'value'             =>  tailor_get_setting( $role_field_id ),
@@ -153,40 +151,64 @@ class Tailor_Settings {
 			)
 		);
 
+		add_settings_section(
+			$setting_id . '_elements',
+			__( 'Elements', 'tailor' ),
+			null,
+			$setting_id
+		);
+
+		$element_descriptions_field_id = 'show_element_descriptions';
+		$element_descriptions_field_label = __( 'Descriptions', 'tailor' );
+		add_settings_field(
+			$element_descriptions_field_id,
+			$element_descriptions_field_label,
+			array( $this, 'render_field' ),
+			$setting_id,
+			$setting_id . '_elements',
+			array(
+				'type'              =>  'checkbox',
+				'name'              =>  $setting_id . '[' . $element_descriptions_field_id . ']',
+				'value'             =>  tailor_get_setting( $element_descriptions_field_id ),
+				'options'           =>  array(
+					'on'                =>  __( 'Show element descriptions in the Elements list?', 'tailor' )
+				),
+			)
+		);
+
+		$inactive_elements_field_id = 'show_inactive_elements';
+		$inactive_elements_field_label = __( 'Inactive elements', 'tailor' );
+		add_settings_field(
+			$inactive_elements_field_id,
+			$inactive_elements_field_label,
+			array( $this, 'render_field' ),
+			$setting_id,
+			$setting_id . '_elements',
+			array(
+				'type'              =>  'checkbox',
+				'description'       =>  __( 'Inactive elements are those that depend on a third-party plugin to work (e.g., Contact Form 7).', 'tailor' ),
+				'name'              =>  $setting_id . '[' . $inactive_elements_field_id . ']',
+				'value'             =>  tailor_get_setting( $inactive_elements_field_id ),
+				'options'           =>  array(
+					'on'                =>  __( 'Show inactive elements in the Elements list?', 'tailor' )
+				),
+			)
+		);
+
 		$role_field_id = 'content_placeholder';
 		$role_field_label = __( 'Content placeholder', 'tailor' );
-
 		add_settings_field(
 			$role_field_id,
 			$role_field_label,
 			array( $this, 'render_field' ),
 			$setting_id,
-			$setting_id,
+			$setting_id . '_elements',
 			array(
 				'label'             =>  $role_field_label,
 				'type'              =>  'textarea',
 				'name'              =>  $setting_id . '[' . $role_field_id . ']',
 				'value'             =>  tailor_get_setting( $role_field_id, tailor_do_shakespeare() ),
 				'options'           =>  tailor_get_roles(),
-			)
-		);
-
-		$scripts_field_id = 'enable_scripts_all_pages';
-		$scripts_field_label = __( 'Styles and scripts', 'tailor' );
-
-		add_settings_field(
-			$scripts_field_id,
-			$scripts_field_label,
-			array( $this, 'render_field' ),
-			$setting_id,
-			$setting_id,
-			array(
-				'type'              =>  'checkbox',
-				'name'              =>  $setting_id . '[' . $scripts_field_id . ']',
-				'value'             =>  tailor_get_setting( $scripts_field_id ),
-				'options'           =>  array(
-					'on'                =>  __( 'Load CSS and JavaScript on pages that have not been Tailored?', 'tailor' )
-				),
 			)
 		);
 
@@ -197,28 +219,26 @@ class Tailor_Settings {
 			$setting_id
 		);
 
-		$attributes_field_id = 'hide_attributes_panel';
-		$attributes_field_label = __( 'Advanced settings', 'tailor' );
-
+		$api_field_id = 'enable_rest_api';
+		$api_field_label = __( 'REST API', 'tailor' );
 		add_settings_field(
-			$attributes_field_id,
-			$attributes_field_label,
+			$api_field_id,
+			$api_field_label,
 			array( $this, 'render_field' ),
 			$setting_id,
 			$setting_id . '_features',
 			array(
 				'type'              =>  'checkbox',
-				'name'              =>  $setting_id . '[' . $attributes_field_id . ']',
-				'value'             =>  tailor_get_setting( $attributes_field_id ),
+				'name'              =>  $setting_id . '[' . $api_field_id . ']',
+				'value'             =>  tailor_get_setting( $api_field_id ),
 				'options'           =>  array(
-					'on'                =>  __( 'Hide the Attributes panel when editing elements?', 'tailor' )
+					'on'                =>  __( 'Enable the Tailor REST API?', 'tailor' )
 				),
 			)
 		);
 
 		$custom_css_field_id = 'hide_css_editor';
 		$custom_css_field_label = __( 'Custom CSS', 'tailor' );
-
 		add_settings_field(
 			$custom_css_field_id,
 			$custom_css_field_label,
@@ -237,7 +257,6 @@ class Tailor_Settings {
 
 		$custom_js_field_id = 'hide_js_editor';
 		$custom_js_field_label = __( 'Custom JavaScript', 'tailor' );
-
 		add_settings_field(
 			$custom_js_field_id,
 			$custom_js_field_label,
@@ -249,14 +268,31 @@ class Tailor_Settings {
 				'name'              =>  $setting_id . '[' . $custom_js_field_id . ']',
 				'value'             =>  tailor_get_setting( $custom_js_field_id ),
 				'options'           =>  array(
-					'on'                =>  __( 'Hide the custom  JavaScript editor?', 'tailor' )
+					'on'                =>  __( 'Hide the custom JavaScript editor?', 'tailor' )
+				),
+			)
+		);
+
+		$scripts_field_id = 'enable_scripts_all_pages';
+		$scripts_field_label = __( 'Styles and scripts', 'tailor' );
+		add_settings_field(
+			$scripts_field_id,
+			$scripts_field_label,
+			array( $this, 'render_field' ),
+			$setting_id,
+			$setting_id . '_features',
+			array(
+				'type'              =>  'checkbox',
+				'name'              =>  $setting_id . '[' . $scripts_field_id . ']',
+				'value'             =>  tailor_get_setting( $scripts_field_id ),
+				'options'           =>  array(
+					'on'                =>  __( 'Load CSS and JavaScript on pages that have not been Tailored?', 'tailor' )
 				),
 			)
 		);
 
 		$google_maps_api_key_field_id = 'google_maps_api_key';
 		$google_maps_api_key_field_label = __( 'Google Maps API key', 'tailor' );
-
 		add_settings_field(
 			$google_maps_api_key_field_id,
 			$google_maps_api_key_field_label,
@@ -275,68 +311,32 @@ class Tailor_Settings {
 			)
 		);
 
-		add_settings_section(
-			$setting_id . '_elements',
-			__( 'Elements', 'tailor' ),
-			null,
-			$setting_id
-		);
-
-		$element_descriptions_field_id = 'show_element_descriptions';
-		$element_descriptions_field_label = __( 'Descriptions', 'tailor' );
-
+		$attributes_field_id = 'hide_attributes_panel';
+		$attributes_field_label = __( 'Advanced settings', 'tailor' );
 		add_settings_field(
-			$element_descriptions_field_id,
-			$element_descriptions_field_label,
+			$attributes_field_id,
+			$attributes_field_label,
 			array( $this, 'render_field' ),
 			$setting_id,
-			$setting_id . '_elements',
+			$setting_id . '_features',
 			array(
 				'type'              =>  'checkbox',
-				'name'              =>  $setting_id . '[' . $element_descriptions_field_id . ']',
-				'value'             =>  tailor_get_setting( $element_descriptions_field_id ),
+				'name'              =>  $setting_id . '[' . $attributes_field_id . ']',
+				'value'             =>  tailor_get_setting( $attributes_field_id ),
 				'options'           =>  array(
-					'on'                =>  __( 'Show element descriptions?', 'tailor' )
+					'on'                =>  __( 'Hide the Attributes panel when editing elements?', 'tailor' )
 				),
 			)
-		);
-
-		$inactive_elements_field_id = 'show_inactive_elements';
-		$inactive_elements_field_label = __( 'Inactive elements', 'tailor' );
-
-		add_settings_field(
-			$inactive_elements_field_id,
-			$inactive_elements_field_label,
-			array( $this, 'render_field' ),
-			$setting_id,
-			$setting_id . '_elements',
-			array(
-				'type'              =>  'checkbox',
-				'description'       =>  __( 'Inactive elements are those that depend on a third-party plugin to work (e.g., Contact Form 7).', 'tailor' ),
-				'name'              =>  $setting_id . '[' . $inactive_elements_field_id . ']',
-				'value'             =>  tailor_get_setting( $inactive_elements_field_id ),
-				'options'           =>  array(
-					'on'                =>  __( 'Show inactive elements?', 'tailor' )
-				),
-			)
-		);
-
-		add_settings_section(
-			$setting_id . '_icons',
-			__( 'Icons', 'tailor' ),
-			null,
-			$setting_id
 		);
 
 		$icon_field_id = 'icon_kits';
 		$icon_field_label = __( 'Icon kits', 'tailor' );
-
 		add_settings_field(
 			$icon_field_id,
 			$icon_field_label,
 			array( $this, 'render_field' ),
 			$setting_id,
-			$setting_id . '_icons',
+			$setting_id . '_features',
 			array(
 				'label'             =>  $icon_field_label,
 				'description'       =>  sprintf(
@@ -370,7 +370,7 @@ class Tailor_Settings {
 	 */
 	public function render_page() {
 		$args = array( 'page' => TAILOR_SETTING_ID );
-		tailor_partial( 'admin/page', 'settings', $args );
+		tailor_partial( 'admin/html/page', 'settings', $args );
 	}
 
 	/**

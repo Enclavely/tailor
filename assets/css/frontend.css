@@ -112,6 +112,7 @@ html {
     border: 1px solid #efefef;
     border-radius: 2px;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1), 0 1px 0 rgba(0, 0, 0, 0.05);
+    text-decoration: none;
     -webkit-transition: all 150ms;
     -moz-transition: all 150ms;
     transition: all 150ms; }
@@ -935,7 +936,7 @@ html {
   margin-bottom: 1rem;
   font-size: 1em;
   color: inherit;
-  background-color: #fdfdfd;
+  background-color: transparent;
   border: 1px solid #efefef;
   border-radius: 0;
   overflow: hidden;
@@ -1089,11 +1090,29 @@ html {
   background-color: transparent;
   border: 0 solid #efefef;
   border-radius: 0;
-  box-shadow: none; }
+  box-shadow: none;
+  overflow: hidden; }
   .tailor-ui .tailor-section__content {
+    position: relative;
+    z-index: 2;
     margin: 0 auto;
     width: 100%;
     max-width: 75rem; }
+  .tailor-ui .tailor-section__background {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-size: cover;
+    background-position: center center;
+    -webkit-transform: translatez(0);
+    -moz-transform: translatez(0);
+    -ms-transform: translatez(0);
+    -o-transform: translatez(0);
+    transform: translatez(0); }
   .tailor-ui .tailor-section.is-skewed {
     transform: skew(0deg, -3deg); }
     .tailor-ui .tailor-section.is-skewed .tailor-section__content {

@@ -35,11 +35,12 @@ if ( ! class_exists( 'Tailor_Panels' ) ) {
          */
         public function add_actions() {
 
-	        // Load panels after WordPress to ensure that post attributes are accessible
-            add_action( 'wp', array( $this, 'load_panels' ) );
-            add_action( 'tailor_register_panels', array( $this, 'register_panels' ) );
+            add_action( 'tailor_init', array( $this, 'load_panels' ) );
+
+	        // Register panels after WordPress is loaded to ensure that post attributes are accessible
+            add_action( 'wp', array( $this, 'register_panels' ) );
             add_action( 'tailor_register_panels', array( $this, 'prepare_controls' ), 99 );
-            add_action( 'tailor_enqueue_scripts', array( $this, 'print_panel_data' ) );
+            add_action( 'tailor_enqueue_sidebar_scripts', array( $this, 'print_panel_data' ) );
 
 	        add_action( 'tailor_save', array( $this, 'save_settings' ) );
 	        add_action( 'tailor_save_settings', array( $this, 'update_post_title' ) );
@@ -52,73 +53,62 @@ if ( ! class_exists( 'Tailor_Panels' ) ) {
          */
         public function load_panels() {
 
-	        if ( did_action( 'tailor_register_panels' ) ) {
-		        return;
-	        }
-
-            tailor()->load_directory( 'panels' );
-
-            /**
-             * Fires during initialization, allowing panels to be registered.
-             *
-             * @since 1.0.0
-             *
-             * @param Tailor_Panels $this
-             */
-            do_action( 'tailor_register_panels', $this );
+            tailor()->load_directory( 'settings' );
 
 	        /**
-	         * Fires after the panels have been registered.
+	         * Fires after panels, sections, settings and controls have been loaded.
 	         *
 	         * @since 1.0.0
 	         *
 	         * @param Tailor_Panels $this
 	         */
-	        do_action( 'tailor_register_panels_after', $this );
+	        do_action( 'tailor_load_panels', $this );
         }
 
         /**
          * Registers the default set of panels, sections and controls.
          *
          * @since 1.0.0
-         *
-         * @param $panel_manager Tailor_Panels
          */
-        public function register_panels( $panel_manager ) {
+        public function register_panels() {
 
-	        $panel_manager->add_panel( new Tailor_Elements_Panel( 'library', array(
+	        if ( did_action( 'tailor_register_panels' ) ) {
+		        return;
+	        }
+
+	        $this->add_panel( new Tailor_Elements_Panel( 'library', array(
 		        'title'                 =>  __( 'Elements', 'tailor' ),
 		        'description'           =>  __( 'Elements are the building blocks of your page.  Drag one from the list below to the desired position on the page to get started.', 'tailor' ),
 		        'priority'              =>  10,
 	        ) ) );
 
-	        $panel_manager->add_panel( new Tailor_Templates_Panel( 'templates', array(
+	        $this->add_panel( new Tailor_Templates_Panel( 'templates', array(
 	            'title'                 =>  __( 'Templates', 'tailor' ),
 	            'description'           =>  __( 'Templates allow you to save customized elements, or the entire layout, for future use.', 'tailor' ),
 	            'priority'              =>  20,
 	        ) ) );
 
-	        $panel_manager->add_panel( 'settings', array(
+	        $this->add_panel( 'settings', array(
 		        'title'                 =>  __( 'Settings', 'tailor' ),
 		        'priority'              =>  30,
 	        ) );
 
-	        $panel_manager->add_panel( new Tailor_History_Panel( 'history', array(
+	        $this->add_panel( new Tailor_History_Panel( 'history', array(
 		        'title'                 =>  __( 'History', 'tailor' ),
 		        'priority'              =>  40,
 	        ) ) );
 
-	        $panel_manager->add_section( 'general', array(
+	        $this->add_section( 'general', array(
 		        'title'                 =>  __( 'General', 'tailor' ),
 		        'priority'              =>  10,
 		        'panel'                 =>  'settings',
 	        ) );
 
-	        $panel_manager->add_setting( '_post_title', array(
+	        $this->add_setting( '_post_title', array(
 		        'default'               =>  get_the_title(),
 		        'sanitize_callback'     =>  'tailor_sanitize_text',
 	        ) );
-	        $panel_manager->add_control( 'title', array(
+	        $this->add_control( 'title', array(
 		        'label'                 =>  __( 'Page title', 'tailor' ),
 		        'type'                  =>  'text',
 		        'priority'              =>  10,
@@ -126,11 +116,11 @@ if ( ! class_exists( 'Tailor_Panels' ) ) {
 		        'setting'               =>  '_post_title',
 	        ) );
 
-	        $panel_manager->add_setting( '_tailor_page_css', array(
+	        $this->add_setting( '_tailor_page_css', array(
 		        'default'               =>  "/**\n * Custom CSS\n */\n",
 		        'sanitize_callback'     =>  'tailor_sanitize_text',
 	        ) );
-	        $panel_manager->add_control( 'custom_css', array(
+	        $this->add_control( 'custom_css', array(
 		        'label'                 =>  __( 'Custom CSS', 'tailor' ),
 		        'description'           =>  __( 'Enter custom declarations and rules in the editor below to see them applied to the page in real-time.', 'tailor' ),
 		        'type'                  =>  'code',
@@ -140,11 +130,11 @@ if ( ! class_exists( 'Tailor_Panels' ) ) {
 		        'setting'               =>  '_tailor_page_css',
 	        ) );
 
-	        $panel_manager->add_setting( '_tailor_page_js', array(
+	        $this->add_setting( '_tailor_page_js', array(
 		        'default'               =>  "// Custom JavaScript\n",
 		        'sanitize_callback'     =>  'tailor_sanitize_text',
 	        ) );
-	        $panel_manager->add_control( 'custom_js', array(
+	        $this->add_control( 'custom_js', array(
 		        'label'                 =>  __( 'Custom JavaScript', 'tailor' ),
 		        'description'           =>  __( 'Enter custom JavaScript in the editor below.  Saved code will be run when the page is reloaded.', 'tailor' ),
 		        'type'                  =>  'code',
@@ -154,17 +144,17 @@ if ( ! class_exists( 'Tailor_Panels' ) ) {
 		        'setting'               =>  '_tailor_page_js',
 	        ) );
 
-	        $panel_manager->add_section( 'layout', array(
+	        $this->add_section( 'layout', array(
 		        'title'                 =>  __( 'Layout', 'tailor' ),
 		        'description'           =>  __( 'The settings on this page override those specified in the Customizer.', 'tailor' ),
 		        'priority'              =>  20,
 		        'panel'                 =>  'settings',
 	        ) );
 
-	        $panel_manager->add_setting( '_tailor_section_width', array(
+	        $this->add_setting( '_tailor_section_width', array(
 		        'sanitize_callback'     =>  'tailor_sanitize_text',
 	        ) );
-	        $panel_manager->add_control( 'section-width', array(
+	        $this->add_control( 'section-width', array(
 		        'label'                 =>  __( 'Section width', 'tailor' ),
 		        'description'           =>  __( 'The maximum width for sections.', 'tailor' ),
 		        'type'                  =>  'text',
@@ -173,10 +163,10 @@ if ( ! class_exists( 'Tailor_Panels' ) ) {
 		        'setting'               =>  '_tailor_section_width',
 	        ) );
 
-	        $panel_manager->add_setting( '_tailor_column_spacing', array(
+	        $this->add_setting( '_tailor_column_spacing', array(
 		        'sanitize_callback'     =>  'tailor_sanitize_text',
 	        ) );
-	        $panel_manager->add_control( 'column-spacing', array(
+	        $this->add_control( 'column-spacing', array(
 		        'label'                 =>  __( 'Column spacing', 'tailor' ),
 		        'description'           =>  __( 'The amount of horizontal space to display between columns.', 'tailor' ),
 		        'type'                  =>  'text',
@@ -185,10 +175,10 @@ if ( ! class_exists( 'Tailor_Panels' ) ) {
 		        'setting'               =>  '_tailor_column_spacing',
 	        ) );
 
-            $panel_manager->add_setting( '_tailor_element_spacing', array(
+            $this->add_setting( '_tailor_element_spacing', array(
                 'sanitize_callback'     =>  'tailor_sanitize_text',
             ) );
-            $panel_manager->add_control( 'vertical-spacing', array(
+            $this->add_control( 'vertical-spacing', array(
                 'label'                 =>  __( 'Element spacing', 'tailor' ),
                 'description'           =>  __( 'The amount of vertical space to display between elements.', 'tailor' ),
                 'type'                  =>  'text',
@@ -196,6 +186,15 @@ if ( ! class_exists( 'Tailor_Panels' ) ) {
                 'section'               =>  'layout',
                 'setting'               =>  '_tailor_element_spacing',
             ) );
+
+	        /**
+	         * Fires after panels, sections, settings and controls have been registered.
+	         *
+	         * @since 1.0.0
+	         *
+	         * @param Tailor_Panels $this
+	         */
+	        do_action( 'tailor_register_panels', $this );
         }
 
 	    /**
@@ -344,6 +343,7 @@ if ( ! class_exists( 'Tailor_Panels' ) ) {
 	    public function save_settings( $post_id ) {
 
 		    $this->load_panels();
+		    $this->register_panels();
 
 		    $settings = $this->settings();
 

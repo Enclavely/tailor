@@ -29,12 +29,6 @@ if ( ! function_exists( 'tailor_get_setting' ) ) {
 			    'post_types'                =>  array(
 				    'page'                      =>  'on',
 			    ),
-			    'roles'                     =>  array(
-				    'administrator'             =>  'on',
-				    'editor'                    =>  'on',
-				    'author'                    =>  'on',
-				    'contributor'               =>  'on',
-			    ),
 			    'content_placeholder'       =>  tailor_do_shakespeare(),
 			    'show_element_descriptions' =>  array(
 				    'on'                        =>  'on',
@@ -563,7 +557,10 @@ if ( ! function_exists( 'tailor_get_registered_media_queries' ) ) {
 		 */
 		$media_queries = apply_filters( 'tailor_get_registered_media_queries', $media_queries );
 
-		return $media_queries;
+		// Only allow all, mobile, tablet and desktop media queries
+		$allowed = array( 'all', 'mobile', 'tablet', 'desktop' ) ;
+		
+		return array_intersect_key( $media_queries, array_flip( $allowed ) );
 	}
 }
 

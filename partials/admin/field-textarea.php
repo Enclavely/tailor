@@ -12,4 +12,4 @@
 
 defined( 'ABSPATH' ) or die(); ?>
 
-<textarea class="widefat" name="<?php esc_attr_e( $args['name'] ); ?>"><?php echo esc_textarea( $args['value'] ); ?></textarea>
+<textarea class="widefat" name="<?php esc_attr_e( $args['name'] ); ?>" rows="5"><?php echo esc_textarea( $args['value'] ); ?></textarea>

@@ -2,8 +2,8 @@
 
     var title = document.querySelector( '.tailor__home .title' );
 
+    // Update the post title when the post title setting is changed
     Api( '_post_title', function( to, from ) {
-
         if ( title.hasChildNodes() ) {
             var children = title.childNodes;
             for ( var i = 1; i < children.length; i++ ) {
@@ -16,34 +16,28 @@
         document.title = window._l10n.tailoring + to;
     } );
 
-    $( '.preview__control' ).on( 'change', function( e ) {
-        var size = this.value;
-        var preview = document.querySelector( '.tailor-preview' );
-        var viewport = document.querySelector( '.tailor-preview__viewport' );
-
-        viewport.classList.remove( 'is-loaded' );
-
-        setTimeout( function() {
-            preview.className = 'tailor-preview ' + size + '-screens';
-        }, 250 );
-
-        setTimeout( function() {
-            viewport.classList.add( 'is-loaded' );
-        }, 1000 );
-
-    } );
-
     var $buttons = $( '.devices button' );
+    var preview = document.querySelector( '.tailor-preview' );
+    var viewport = document.querySelector( '.tailor-preview__viewport' );
+    var mediaQueries = window._media_queries;
 
+    // Change the viewport size based on which device preview size is selected
     $buttons.on( 'click', function( e ) {
         var button = e.target;
-        var preview = document.querySelector( '.tailor-preview' );
-
+        
         $buttons.each( function() {
             if ( this == button ) {
+                var device = button.getAttribute( 'data-device' );
                 this.classList.add( 'is-active' );
                 this.setAttribute( 'aria-pressed', 'true' );
-                preview.className = 'tailor-preview ' + button.getAttribute( 'data-device' ) + '-screens';
+                preview.className = 'tailor-preview ' + device + '-screens';
+
+                if ( mediaQueries.hasOwnProperty( device ) && mediaQueries[ device ].max ) {
+                    viewport.style.maxWidth = mediaQueries[ device ].max;
+                }
+                else {
+                    viewport.style.maxWidth ='';
+                }
             }
             else {
                 this.classList.remove( 'is-active' );

@@ -206,3 +206,5 @@ $.fn.tailorMasonry = function( options, callbacks ) {
         }
     } );
 };
+
+module.exports = Masonry;

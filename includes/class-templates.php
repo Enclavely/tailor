@@ -57,9 +57,7 @@ if ( ! class_exists( 'Tailor_Templates' ) ) {
          * @since 1.0.0
          */
         public function __construct() {
-
 	        $this->post_name = apply_filters( 'tailor_templates_post_name', 'tailor_templates' );
-
 	        $this->register_post_type();
             $this->add_actions();
 
@@ -68,10 +66,9 @@ if ( ! class_exists( 'Tailor_Templates' ) ) {
 		        // Hides the Admin Bar
 		        define( 'IFRAME_REQUEST', true );
 
-		        add_filter( 'the_content', array( $this, 'replace_content' ), -1 );
+		        add_filter( 'the_content', array( $this, 'template_preview_content' ), -999999 );
 	        }
         }
-
 
 		/**
 		 * Registers the template storage post type.
@@ -105,7 +102,7 @@ if ( ! class_exists( 'Tailor_Templates' ) ) {
 		 * @access protected
 		 */
 		protected function add_actions() {
-			add_action( 'tailor_enqueue_scripts', array( $this, 'print_template_data' ) );
+			add_action( 'tailor_enqueue_sidebar_scripts', array( $this, 'print_template_data' ) );
 
 			add_action( 'wp_ajax_tailor_save_template', array( $this, 'save_template' ) );
 			add_action( 'wp_ajax_tailor_load_template', array( $this, 'load_template' ) );
@@ -113,68 +110,20 @@ if ( ! class_exists( 'Tailor_Templates' ) ) {
 		}
 
 		/**
-		 * Prints the template ID/label combinations for all saved templates to the page.
-		 *
-		 * @since 1.0.0
-		 */
-		public function print_template_data() {
-
-			$templates = array();
-			$storage_post_id = $this->get_storage_post_id();
-
-			foreach ( (array) $this->get_template_ids() as $template_id ) {
-				if ( $template = get_post_meta( $storage_post_id, $template_id, true ) ) {
-					$templates[] = array(
-						'id'            =>  $template_id,
-						'label'         =>  $template['label'],
-						'tag'           =>  $template['tag'],
-						'type'          =>  $template['type'],
-					);
-				}
-			}
-
-			wp_localize_script( 'tailor-sidebar', '_templates', $templates );
-		}
-
-		/**
-		 * Replaces the post content with that of the template being previewed.
+		 * Returns the template storage post ID.
 		 *
 		 * @since 1.0.0
 		 *
-		 * @param string $content
-		 * @return string
+		 * @return int|WP_Error
 		 */
-		public function replace_content( $content ) {
+		protected function get_storage_post_id() {
 
-			if ( empty( $_GET['template_id'] ) || false == $template = $this->get_template( $_GET['template_id'] ) ) {
-				return $content;
-			}
-
-			$sanitized_models = tailor_elements()->sanitize_models( $template['models'] );
-			$ordered_sanitized_models = tailor_elements()->order_models_by_parent( $sanitized_models );
-
-			return tailor_elements()->get_shortcodes( '', $ordered_sanitized_models );
-		}
-
-		public function get_template( $template_id ) {
-			return get_post_meta( $this->get_storage_post_id(), wp_unslash( $template_id ), true );
-		}
-
-        /**
-         * Returns the template storage post ID.
-         *
-         * @since 1.0.0
-         *
-         * @return int|WP_Error
-         */
-        protected function get_storage_post_id() {
-
-	        $args = array(
+			$args = array(
 				'post_type'         =>  $this->post_name,
-			    'post_title'        =>  $this->post_name,
-			    'post_status'       =>  'draft',
+				'post_title'        =>  $this->post_name,
+				'post_status'       =>  'draft',
 				'comment_status'    =>  'closed',
-			    'ping_status'       =>  'closed',
+				'ping_status'       =>  'closed',
 			);
 
 			if ( is_null( $post = get_page_by_title( $this->post_name, 'object', $this->post_name ) ) ) {
@@ -187,6 +136,25 @@ if ( ! class_exists( 'Tailor_Templates' ) ) {
 			}
 
 			return $post->ID;
+		}
+
+		/**
+		 * Returns the IDs for all saved templates.
+		 *
+		 * @since 1.0.0
+		 * @access protected
+		 *
+		 * @return array
+		 */
+		public function get_template_ids() {
+
+			global $wpdb;
+
+			return $wpdb->get_col( $wpdb->prepare(
+				"SELECT meta_key FROM {$wpdb->postmeta} WHERE meta_key LIKE '%s' AND post_id = '%s'",
+				$this->post_name . '_%',
+				$this->get_storage_post_id()
+			) );
 		}
 
 		/**
@@ -216,118 +184,234 @@ if ( ! class_exists( 'Tailor_Templates' ) ) {
 
 			return $template_id;
 		}
-
+		
 		/**
-		 * Returns the IDs for all saved templates.
+		 * Creates a new template based on the provided template definition.
 		 *
-		 * @since 1.0.0
-		 * @access protected
+		 * @since 1.4.0
 		 *
-		 * @return array
+		 * @param array $template_definition The template definition
+		 *
+		 * @return bool|int The created template ID
 		 */
-		protected function get_template_ids() {
+		public function add_models( $template_definition ) {
 
-			global $wpdb;
+			// Ensure a tag and label have been provided
+			if ( empty( $template_definition['tag'] ) || empty( $template_definition['label'] ) ) {
+				return false;
+			}
 
-			return $wpdb->get_col( $wpdb->prepare(
-				"SELECT meta_key FROM {$wpdb->postmeta} WHERE meta_key LIKE '%s' AND post_id = '%s'",
-				$this->post_name . '_%',
-				$this->get_storage_post_id()
-			) );
+			// Ensure the tag corresponds to a valid element
+			$element = tailor_elements()->get_element( $template_definition['tag'] );
+			if ( empty( $element ) ) {
+				return false;
+			}
+
+			// Ensure a valid collection of models have been provided
+			$sanitized_models = tailor_models()->sanitize_models( $template_definition['models'] );
+			if ( empty( $sanitized_models ) ) {
+				return false;
+			}
+
+			$template_label = tailor_sanitize_text( $template_definition['label'] );
+			$template_id = $this->generate_template_id( $template_label );
+			$template = array(
+				'label'         =>  $template_label,
+				'tag'           =>  $element->tag,
+				'type'          =>  $element->type,
+				'models'        =>  $sanitized_models,
+			);
+
+			if ( update_post_meta( $this->get_storage_post_id(), $template_id, $template ) ) {
+				$template['id'] = $template_id;
+
+				/**
+				 * Fires after a template has been added.
+				 *
+				 * @since 1.4.0
+				 */
+				do_action( 'tailor_add_template', $template );
+				
+				return $template;
+			}
+
+			return false;
 		}
 
-        /**
-         * Saves the current layout as a template.
-         *
-         * @since 1.0.0
-         */
+		/**
+		 * Returns a template based on the provided ID.
+		 *
+		 * @since 1.4.0
+		 *
+		 * @param int $template_id The template ID
+		 *
+		 * @return bool|array The template
+		 */
+		public function get_models( $template_id ) {
+			if ( ! empty( $template_id ) ) {
+				return get_post_meta( $this->get_storage_post_id(), wp_unslash( $template_id ), true );
+			}
+			return false;
+		}
+
+		/**
+		 * Updates a template based on the provided template definition.
+		 *
+		 * @since 1.4.0
+		 *
+		 * @param array $template_definition The template definition
+		 *
+		 * @return bool|int The created template ID
+		 */
+		public function update_models( $template_definition ) {
+
+			$template_id = $template_definition['id'];
+			$template = $this->get_models( $template_id );
+			if ( false == $template ) {
+				return false;
+			}
+
+			// Validate the template tag
+			if ( ! empty( $template_definition['tag'] ) ) {
+				$element = tailor_elements()->get_element( $template_definition['tag'] );
+				if ( $element ) {
+					$template['tag'] = $element->tag;
+					$template['type'] = $element->type;
+				}
+			}
+
+			// Maybe update the template label
+			if ( ! empty( $template_definition['label'] ) ) {
+				$template['label'] = tailor_sanitize_text( $template_definition['label'] );
+			}
+
+			// Maybe update the template models
+			if ( ! empty( $template_definition['models'] ) ) {
+
+				foreach ( $template['models'] as &$model ) {
+					foreach ( $template_definition['models'] as $model_definition ) {
+						if ( ! empty( $model_definition['id'] ) && $model['id'] == $model_definition['id'] ) {
+							$model = array_merge( $model, $model_definition );
+						}
+					}
+				}
+
+				$template['models'] = tailor_models()->sanitize_models( $template['models'] );
+			}
+
+			if ( update_post_meta( $this->get_storage_post_id(), $template_id, $template ) ) {
+
+				/**
+				 * Fires after a template has been updated.
+				 *
+				 * @since 1.4.0
+				 */
+				do_action( 'tailor_update_template', $template );
+				
+				return $template;
+			}
+
+			return false;
+		}
+
+		/**
+		 * Deletes a template based on the provided ID.
+		 *
+		 * @since 1.4.0
+		 *
+		 * @param int $template_id The template ID
+		 *
+		 * @return bool
+		 */
+		public function delete_models( $template_id ) {
+			
+			if ( ! empty( $template_id ) && delete_post_meta( $this->get_storage_post_id(), $template_id ) ) {
+
+				/**
+				 * Fires after a template has been deleted.
+				 *
+				 * @since 1.4.0
+				 */
+				do_action( 'tailor_delete_template', $template_id );
+
+				return true;
+			}
+			
+			return false;
+		}
+
+		/**
+		 * Saves the a collection of models as a template.
+		 *
+		 * @since 1.0.0
+		 */
 		public function save_template() {
 
 			check_ajax_referer( 'tailor-save-template', 'nonce' );
 
 			$unsanitized_models = json_decode( wp_unslash( $_POST['models'] ), true );
-
 			if ( ! is_array( $unsanitized_models ) ) {
 				wp_send_json_error( array(
-					'message'           =>  __( 'Invalid template', 'tailor' )
+					'message'           =>  _x( 'The collection provided does not contain any valid models', 'error message', 'tailor' )
 				) );
 			}
 
-			$sanitized_models = tailor_elements()->sanitize_models( $unsanitized_models );
-
-			$element = tailor_elements()->get_element( $_POST['tag'] );
-
-			$storage_post_id = $this->get_storage_post_id();
-			$template_label = tailor_sanitize_text( $_POST['label'] );
-			$template_id = $this->generate_template_id( $template_label );
-
-			$update = update_post_meta( $storage_post_id, $template_id, array(
-				'label'         =>  $template_label,
-				'tag'           =>  $element->tag,
-				'type'          =>  $element->type,
-				'models'        =>  $sanitized_models,
+			$template = $this->add_models( array(
+				'tag'               =>  $_POST['tag'],
+				'label'             =>  $_POST['label'],
+				'models'            =>  $unsanitized_models,
 			) );
 
-			if ( false == $update ) {
+			if ( false == $template ) {
 				wp_send_json_error( array(
-					'message'           =>  __( 'The template could not be saved', 'tailor' )
+					'message'           =>  _x( 'The template could not be saved', 'error message', 'tailor' )
 				) );
 			}
-
-			$response = array(
-				'id'            =>  $template_id,
-				'label'         =>  $template_label,
-				'tag'           =>  $element->tag,
-				'type'          =>  $element->type,
-			);
 
 			/**
 			 * Filter response data for a successful tailor_save_template AJAX request.
 			 *
 			 * This filter does not apply if there was a nonce or authentication failure.
 			 *
-			 * @since 1.0.0
+			 * @since 1.4.0
 			 *
-			 * @param array $response
-			 * @param string $storage_post_id
-			 * @param Tailor_Templates $this
+			 * @param array $template The saved template
+			 * @param int $template['id']
 			 */
-			$response = apply_filters( 'tailor_save_template_response', $response, $storage_post_id, $this );
+			$response = apply_filters( 'tailor_save_template_response', $template, $template['id'] );
 
 			wp_send_json_success( $response );
 		}
 
-        /**
-         * Returns a JSON representation of a template with a given ID.
-         *
-         * @since 1.0.0
-         */
+		/**
+		 * Returns a JSON representation of a template with a given ID.
+		 *
+		 * @since 1.0.0
+		 */
 		public function load_template() {
 
 			check_ajax_referer( 'tailor-load-template', 'nonce' );
 
-			if ( ! isset( $_POST['template_id'] ) ) {
+			$template_id = $_POST['template_id'];
+			if ( ! isset( $template_id ) ) {
 				wp_send_json_error( array(
-					'message'           =>  __( 'Invalid template', 'tailor' )
+					'message'           =>  _x( 'Invalid template ID', 'error message', 'tailor' )
 				) );
 			}
 
-			$template_id = wp_unslash( $_POST['template_id'] );
-			$template = get_post_meta( $this->get_storage_post_id(), $template_id, true );
-
+			$template = $this->get_models( $template_id );
 			if ( false == $template ) {
 				wp_send_json_error( array(
-					'message'           =>  __( 'The template does not exist', 'tailor' )
+					'message'           =>  _x( 'The template does not exist', 'error message', 'tailor' )
 				) );
 			}
 
-			$sanitized_models = tailor_elements()->sanitize_models( $template['models'] );
-			$sanitized_models = tailor_elements()->refresh_ids( $sanitized_models );
-
+			$sanitized_models = tailor_models()->sanitize_models( $template['models'] );
+			$refreshed_models = tailor_models()->refresh_model_ids( $sanitized_models );
 			$response = array(
-				'models'            =>  $sanitized_models,
-				'templates'         =>  tailor_elements()->get_templates_html( $sanitized_models ),
-				'css'               =>  tailor_css()->generate_element_css( $sanitized_models ),
+				'models'            =>  $refreshed_models,
+				'templates'         =>  tailor_elements()->generate_element_html( $refreshed_models ),
+				'css'               =>  tailor_css()->generate_dynamic_css_rules( $refreshed_models ),
 			);
 
 			/**
@@ -354,16 +438,16 @@ if ( ! class_exists( 'Tailor_Templates' ) ) {
 
 			check_ajax_referer( 'tailor-delete-template', 'nonce' );
 
-			if ( ! isset( $_POST[ 'id' ] ) ) {
+			$template_id = $_POST[ 'id' ];
+			if ( ! isset( $template_id ) ) {
 				wp_send_json_error( array(
-					'message'           =>  __( 'Invalid template', 'tailor' )
+					'message'           =>  _x( 'Invalid template ID', 'error message', 'tailor' )
 				) );
 			}
 
-			$template_id = wp_unslash( $_POST[ 'id' ] );
-			if ( ! delete_post_meta( $this->get_storage_post_id(), $template_id ) ) {
+			if ( false == $this->delete_models( $template_id ) ) {
 				wp_send_json_error( array(
-					'message'           =>  __( 'The template could not be deleted', 'tailor' )
+					'message'           =>  _x( 'The template could not be deleted', 'error message', 'tailor' )
 				) );
 			}
 
@@ -380,6 +464,62 @@ if ( ! class_exists( 'Tailor_Templates' ) ) {
 			$response = apply_filters( 'tailor_delete_template_response', array(), $template_id );
 
 			wp_send_json_success( $response );
+		}
+		
+		/**
+		 * Prints the template ID/label combinations for all saved templates to the page.
+		 *
+		 * @since 1.0.0
+		 */
+		public function print_template_data() {
+			$templates = array();
+
+			foreach ( (array) $this->get_template_ids() as $template_id ) {
+
+				// Do nothing if the template doesn't exist
+				$template = $this->get_models( $template_id );
+				if ( false == $template ) {
+					continue;
+				}
+
+				$allowed = array( 'tag', 'label', 'type') ;
+				$template = array_intersect_key( $template, array_flip( $allowed ) );
+				$template['id'] = $template_id;
+				$templates[] = $template;
+			}
+
+			wp_localize_script( 'tailor-sidebar', '_templates', $templates );
+		}
+
+		/**
+		 * Replaces the post content with that of the template being previewed.
+		 *
+		 * @since 1.4.0
+		 *
+		 * @param string $content
+		 * @return string
+		 */
+		public function template_preview_content( $content ) {
+
+			$template = $this->get_models( $_GET['template_id'] );
+			if ( false == $template ) {
+				return $content;
+			}
+
+			$sanitized_models = tailor_models()->sanitize_models( $template['models'] );
+			$ordered_sanitized_models = tailor_models()->order_models_by_parent( $sanitized_models );
+			$template_preview_content = tailor_models()->generate_shortcodes( '', $ordered_sanitized_models );
+
+			/**
+			 * Filter the template preview content.
+			 *
+			 * @since 1.4.0
+			 *
+			 * @param string $template_preview_content
+			 */
+			apply_filters( 'get_template_preview', $template_preview_content );
+
+			return $template_preview_content;
 		}
 	}
 }

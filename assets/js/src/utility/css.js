@@ -64,11 +64,11 @@ CSS = {
             return selectors;
         }
 
-        var elementClass = elementId ? '.' + elementId : '';
+        var elementClass = elementId ? '.tailor-ui .' + elementId : '';
         var selector;
 
         if ( ! selectors.length ) {
-            selector = elementClass ? '.tailor-ui ' + elementClass : '';
+            selector = elementClass;
         }
         else {
 
@@ -88,7 +88,7 @@ CSS = {
                 } );
             }
 
-            selector = '.tailor-ui ' + selectors.join( ',.tailor-ui ' );
+            selector = selectors.join( ',.tailor-ui ' );
         }
 
         return selector;

@@ -41,6 +41,7 @@ $button-box-shadow: $global-box-shadow !default;
 			border: $button-border-width $button-border-style $button-border-color;
 			border-radius: $button-border-radius;
 			box-shadow: $button-box-shadow;
+			text-decoration: none;
 
 			@include transition( all $global-transition-duration );
 
