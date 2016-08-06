@@ -4,7 +4,7 @@ This is the official GitHub repository for the Tailor page builder WordPress plu
 
 Please visit the [Plugin Repository](http://wordpress.org/plugins/tailor/) on WordPress.org to download the latest stable release and check out the free [Portfolio](https://github.com/andrew-worsfold/tailor-portfolio) and [WooCommerce](https://github.com/andrew-worsfold/tailor-woocommerce) extensions.
 
-Tailor exposes a series of endpoints in the [WP REST API v2](https://wordpress.org/plugins/rest-api/) and contains a comprehensive set of [actions](https://github.com/andrew-worsfold/tailor/blob/master/actions.md) and [filters](https://github.com/andrew-worsfold/tailor/blob/master/filters.md).
+Tailor exposes a [series of endpoints](https://github.com/andrew-worsfold/tailor/blob/master/api.md) in the [WP REST API v2](https://wordpress.org/plugins/rest-api/) and contains a comprehensive set of [actions](https://github.com/andrew-worsfold/tailor/blob/master/actions.md) and [filters](https://github.com/andrew-worsfold/tailor/blob/master/filters.md).
 
 | Endpoint | POST | GET | PUT | DELETE |
 |----------|:--------:|:--------:|:--------:|:--------:|
