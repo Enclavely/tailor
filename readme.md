@@ -6,15 +6,6 @@ Please visit the [Plugin Repository](http://wordpress.org/plugins/tailor/) on Wo
 
 Tailor exposes a [series of endpoints](https://github.com/andrew-worsfold/tailor/blob/master/api.md) in the [WP REST API v2](https://wordpress.org/plugins/rest-api/) and contains a comprehensive set of [actions](https://github.com/andrew-worsfold/tailor/blob/master/actions.md) and [filters](https://github.com/andrew-worsfold/tailor/blob/master/filters.md).
 
-| Endpoint | POST | GET | PUT | DELETE |
-|----------|:--------:|:--------:|:--------:|:--------:|
-| /wp-json/tailor/v2/elements/ | &#x2717; | &#10004; | &#x2717; | &#x2717; |
-| /wp-json/tailor/v2/elements/**{tag}** | &#x2717; | &#10004; | &#x2717; | &#x2717; |
-| /wp-json/tailor/v2/templates/ | &#10004; | &#10004; | &#x2717; | &#x2717; |
-| /wp-json/tailor/v2/templates/**{id}** | &#x2717; | &#10004; | &#10004; | &#10004; |
-| /wp-json/tailor/v2/models/**{post_id}** | &#10004; | &#10004; | &#10004; | &#10004; |
-| /wp-json/tailor/v2/models/**{post_id}**/**{id}** | &#x2717; | &#10004; | &#10004; | &#10004; |
-
 You can get in touch with questions or recommendations in a number of ways:
 
 1. [Facebook](https://www.facebook.com/tailorwp/) or Twitter at [@tailorwp](https://twitter.com/tailorwp) or [@andrewjworsfold](https://twitter.com/andrewjworsfold).
