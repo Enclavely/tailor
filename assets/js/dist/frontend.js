@@ -709,6 +709,28 @@ Parallax.prototype = {
 
 			// Fires before the element is destroyed
 			.on( 'before:element:destroy', $.proxy( this.maybeDestroy, this ) )
+
+			/**
+			 * Child event listeners
+			 */
+
+			// Fires before and after a child element is added
+			.on( 'element:child:ready', this.onResizeCallback )
+
+			// Fires after a child element is added
+			.on( 'element:child:add', this.onResizeCallback )
+
+			// Fires after a child element is removed
+			.on( 'element:child:remove', this.onResizeCallback )
+
+			// Fires before and after a child element is refreshed
+			.on( 'element:child:refresh', this.onResizeCallback )
+
+			// Fires before and after the position of an item is changed
+			.on( 'element:change:order', this.onResizeCallback )
+
+			// Fires before and after a child element is destroyed
+			.on( 'element:child:destroy', this.onResizeCallback )
 	},
 
 	/**

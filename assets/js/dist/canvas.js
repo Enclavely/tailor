@@ -314,7 +314,7 @@ Tailor.Objects = Tailor.Objects || {};
 
 		// Get the saved settings
 		var settings = app.channel.request( 'sidebar:settings' );
-		if ( settings.length ) {
+		if ( settings && settings.length ) {
 			settings.each( function( setting ) {
 				var id = setting.get( 'id' );
 				var value = setting.get( 'value' );
@@ -394,9 +394,6 @@ Tailor.Objects = Tailor.Objects || {};
 			}
 		}
 		stylesheet.innerHTML = value;
-
-		console.log( value );
-		
 		$win.trigger( 'resize' );
 	}
 
