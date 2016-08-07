@@ -20,15 +20,15 @@ Build beautiful layouts for your content faster and easier than ever before usin
 
 = Easy to use =
 
-- Add elements and create row and column structures instantly in a single drag and drop movement.
-- Copy elements to any other position on the page by dragging and holding the Shift key.
-- Move content independently throughout the page and have it adopt the style of its parent elements!
-- Save one or more elements as templates, which can then be added to any page using the same drag and drop action.
+- Add elements and create columns instantly in a single drag and drop movement.
+- Copy elements anywhere on the page by dragging and holding the Shift key.
+- Move content independently and have it adopt the style of its parent elements!
+- Save one or more elements as templates, then drag and drop them onto any page.
 - Change the appearance of any element using a set of carefully selected options.
-- Undo and redo actions using the History panel or keyboard shortcuts.
-- Control global layout settings in the Customizer, or override them with page specific layout settings.
-- Manage page settings and add custom CSS and JavaScript while Tailoring a page.
-- Preview your layouts on different device sizes.
+- Undo and redo actions using the History panel (or keyboard shortcuts).
+- Control global layout settings in the Customizer.
+- Control page specific layout settings and add custom CSS and JavaScript.
+- Preview your layouts on different device sizes and manage responsive behavior.
 
 Because Tailor works with any theme, choosing one that you like is now the hardest part of creating a website.
 
