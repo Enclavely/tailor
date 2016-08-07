@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tailor 1.4.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/tailor\n"
-"POT-Creation-Date: 2016-08-06 09:16:08+00:00\n"
+"POT-Creation-Date: 2016-08-07 03:40:36+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -167,47 +167,47 @@ msgstr ""
 msgid "Google Plus"
 msgstr ""
 
-#: includes/api/endpoints/class-api-controller.php:35
+#: includes/api/endpoints/class-api-controller.php:150
 msgctxt "error message"
 msgid "The post could not be found"
 msgstr ""
 
-#: includes/api/endpoints/class-api-controller.php:50
+#: includes/api/endpoints/class-api-controller.php:165
 msgctxt "error message"
 msgid "No items could be found"
 msgstr ""
 
-#: includes/api/endpoints/class-api-controller.php:65
+#: includes/api/endpoints/class-api-controller.php:180
 msgctxt "error message"
 msgid "No item could be found"
 msgstr ""
 
-#: includes/api/endpoints/class-api-controller.php:80
+#: includes/api/endpoints/class-api-controller.php:195
 msgctxt "error message"
 msgid "The request format is invalid"
 msgstr ""
 
-#: includes/api/endpoints/class-api-models-controller.php:163
+#: includes/api/endpoints/class-api-models-controller.php:168
 msgctxt "error message"
 msgid "The models could not be created"
 msgstr ""
 
-#: includes/api/endpoints/class-api-models-controller.php:343
+#: includes/api/endpoints/class-api-models-controller.php:350
 msgctxt "error message"
 msgid "The models could not be updated"
 msgstr ""
 
-#: includes/api/endpoints/class-api-models-controller.php:392
+#: includes/api/endpoints/class-api-models-controller.php:399
 msgctxt "error message"
 msgid "The model could not be updated"
 msgstr ""
 
-#: includes/api/endpoints/class-api-models-controller.php:432
+#: includes/api/endpoints/class-api-models-controller.php:439
 msgctxt "error message"
 msgid "The models could not be deleted"
 msgstr ""
 
-#: includes/api/endpoints/class-api-models-controller.php:472
+#: includes/api/endpoints/class-api-models-controller.php:479
 msgctxt "error message"
 msgid "The model could not be deleted"
 msgstr ""
@@ -237,7 +237,7 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
-#: includes/class-canvas.php:199 includes/class-sidebar.php:287
+#: includes/class-canvas.php:199 includes/class-sidebar.php:288
 #: includes/controls/class-list.php:119 partials/admin/field-icon.php:31
 #: partials/underscore/canvas-tools.php:14
 msgid "Delete"
@@ -247,8 +247,8 @@ msgstr ""
 msgid "Preview"
 msgstr ""
 
-#: includes/class-canvas.php:201 includes/class-sidebar.php:281
-#: includes/class-sidebar.php:284 partials/sidebar/sidebar-frame.php:24
+#: includes/class-canvas.php:201 includes/class-sidebar.php:282
+#: includes/class-sidebar.php:285 partials/sidebar/sidebar-frame.php:24
 msgid "Save"
 msgstr ""
 
@@ -512,17 +512,17 @@ msgstr ""
 msgid "Icon kit is invalid"
 msgstr ""
 
-#: includes/class-models.php:469
+#: includes/class-models.php:533
 msgctxt "error message"
 msgid "The post with the given ID could not be found"
 msgstr ""
 
-#: includes/class-models.php:478
+#: includes/class-models.php:542
 msgctxt "error message"
 msgid "No valid models were provided"
 msgstr ""
 
-#: includes/class-models.php:601
+#: includes/class-models.php:682
 msgid "%1$sThe element associated with shortcode %2$s could not be found.%3$s "
 msgstr ""
 
@@ -588,99 +588,99 @@ msgstr ""
 msgid "The amount of vertical space to display between elements."
 msgstr ""
 
-#: includes/class-sidebar.php:98
+#: includes/class-sidebar.php:99
 msgid "Tailoring: %s"
 msgstr ""
 
-#: includes/class-sidebar.php:279
+#: includes/class-sidebar.php:280
 msgid "Tailoring: "
 msgstr ""
 
-#: includes/class-sidebar.php:280 includes/controls/class-search.php:64
+#: includes/class-sidebar.php:281 includes/controls/class-search.php:64
 #: languages/tinymce-localization.php:28
 msgid "Select"
 msgstr ""
 
-#: includes/class-sidebar.php:282 includes/settings/class-panel.php:522
+#: includes/class-sidebar.php:283 includes/settings/class-panel.php:522
 msgid "Save template"
 msgstr ""
 
-#: includes/class-sidebar.php:283 partials/sidebar/sidebar-frame.php:28
+#: includes/class-sidebar.php:284 partials/sidebar/sidebar-frame.php:28
 msgid "Saved"
 msgstr ""
 
-#: includes/class-sidebar.php:284 partials/sidebar/sidebar-frame.php:21
+#: includes/class-sidebar.php:285 partials/sidebar/sidebar-frame.php:21
 msgid "Save & Publish"
 msgstr ""
 
-#: includes/class-sidebar.php:285
+#: includes/class-sidebar.php:286
 msgid "Import"
 msgstr ""
 
-#: includes/class-sidebar.php:286 includes/settings/class-panel.php:528
+#: includes/class-sidebar.php:287 includes/settings/class-panel.php:528
 msgid "Import template"
 msgstr ""
 
-#: includes/class-sidebar.php:288 includes/controls/class-list.php:120
+#: includes/class-sidebar.php:289 includes/controls/class-list.php:120
 #: partials/sidebar/sidebar-frame.php:34
 #: partials/underscore/dialog-layout.php:19
 #: partials/underscore/modal-layout.php:18
 msgid "Close"
 msgstr ""
 
-#: includes/class-sidebar.php:289
+#: includes/class-sidebar.php:290
 msgid "An error occurred, please try again"
 msgstr ""
 
-#: includes/class-sidebar.php:290
+#: includes/class-sidebar.php:291
 msgid "The session has expired"
 msgstr ""
 
-#: includes/class-sidebar.php:291
+#: includes/class-sidebar.php:292
 msgid "The request made was invalid"
 msgstr ""
 
-#: includes/class-sidebar.php:292
+#: includes/class-sidebar.php:293
 msgid "%s saved successfully"
 msgstr ""
 
-#: includes/class-sidebar.php:293
+#: includes/class-sidebar.php:294
 msgid "History entry restored successfully"
 msgstr ""
 
-#: includes/class-sidebar.php:294
+#: includes/class-sidebar.php:295
 msgid "Element deleted successfully"
 msgstr ""
 
-#: includes/class-sidebar.php:295
+#: includes/class-sidebar.php:296
 msgid "Template saved successfully"
 msgstr ""
 
-#: includes/class-sidebar.php:296
+#: includes/class-sidebar.php:297
 msgid "Template imported successfully"
 msgstr ""
 
-#: includes/class-sidebar.php:297
+#: includes/class-sidebar.php:298
 msgid "Template added successfully"
 msgstr ""
 
-#: includes/class-sidebar.php:298
+#: includes/class-sidebar.php:299
 msgid "Template deleted successfully"
 msgstr ""
 
-#: includes/class-sidebar.php:299
+#: includes/class-sidebar.php:300
 msgid "To add an element, drag it into the desired position on the page"
 msgstr ""
 
-#: includes/class-sidebar.php:300
+#: includes/class-sidebar.php:301
 msgid "To add a template, drag it into the desired position on the page"
 msgstr ""
 
-#: includes/class-sidebar.php:301
+#: includes/class-sidebar.php:302
 msgid "The changes you made will be lost if you navigate away from this page"
 msgstr ""
 
-#: includes/class-sidebar.php:302
+#: includes/class-sidebar.php:303
 msgid "You have made changes to this element.  Would you like to save them?"
 msgstr ""
 
@@ -1685,11 +1685,11 @@ msgstr ""
 msgid "1{Documentation} can be found on the Tailor website and you can ask questions on the 2{community forum} if you get stuck."
 msgstr ""
 
-#: partials/admin/html/notice-missing-rest-api.php:14
-msgid "The Tailor REST API is dependent on the WordPress API being available"
+#: partials/admin/html/notice-missing-rest-api.php:16
+msgid "The Tailor REST API is dependent on the %1$sWordPress REST API v2%2$s."
 msgstr ""
 
-#: partials/admin/html/notice-missing-rest-api.php:16
+#: partials/admin/html/notice-missing-rest-api.php:22
 #: partials/admin/html/notice-tailored-content.php:27
 #: partials/underscore/admin-notice.php:17
 msgid "Dismiss this notice."

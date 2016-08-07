@@ -867,7 +867,7 @@ ul {
   display: none; }
 .list .template .list__label {
   float: left;
-  max-width: calc( 100% - 60px ); }
+  max-width: calc( 100% - 80px ); }
 .list .template .template__controls {
   float: right;
   height: 21px; }

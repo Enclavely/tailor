@@ -8,40 +8,46 @@ Tested up to: 4.6
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl.html
 
-Build beautiful layouts quickly and easily using your favourite theme with this frontend drag and drop page builder.
+Build beautiful layouts for your content faster and easier than ever before using your favourite theme!
 
 == Description ==
 
-[Tailor](http://gettailor.com/) is a simple yet powerful plugin that allows you to easily create stunning pages using an intuitive drag and drop interface.  Everything is done in the frontend of your website, meaning that what you see is what you get. The best part is that it’s all completely free!
+[Tailor](http://gettailor.com/) is a free frontend page builder for WordPress that features a simple and intuitive drag and drop interface.  To get started:
 
-To get started, refer to our [documentation](https://tailor.zendesk.com/hc/en-us/categories/202586427-Getting-started).  You can also [give it a try in a sandbox](https://addendio.com/try-plugin/?slug=tailor) if you're curious.
+- [Read the user documentation](support.gettailor.com/hc/en-us/categories/202586427).
+- [View instructional videos on YouTube](https://www.youtube.com/channel/UCiFGt6qqPwN1ruuEnjlVOqA).
+- [Give it a try in a sandbox](https://addendio.com/try-plugin/?slug=tailor).
 
 = Easy to use =
 
-Drag and drop elements relative to one another and then customize them using a set of intelligent (and intelligible) options.  You'll be up and running in minutes and can use all that saved time for more important things - like creating content!
+- Add elements and create row and column structures instantly in a single drag and drop movement.
+- Copy elements to any other position on the page by dragging and holding the Shift key.
+- Move content independently throughout the page and have it adopt the style of its parent elements!
+- Save one or more elements as templates, which can then be added to any page using the same drag and drop action.
+- Change the appearance of any element using a set of carefully selected options.
+- Undo and redo actions using the History panel or keyboard shortcuts.
+- Control global layout settings in the Customizer, or override them with page specific layout settings.
+- Manage page settings and add custom CSS and JavaScript while Tailoring a page.
+- Preview your layouts on different device sizes.
+
+Because Tailor works with any theme, choosing one that you like is now the hardest part of creating a website.
 
 = Easy to extend =
 
-Adding your own custom elements or functionality is easy.
+Tailor is open source and built based on WordPress' coding standards and best practices.  The plugin features:
 
-To learn more about how to create your own extensions, check out our [developer documentation](https://tailor.zendesk.com/hc/en-us/categories/203117247-Extending).  The [Portfolio](https://wordpress.org/plugins/tailor-portfolio/) and [WooCommerce](https://wordpress.org/plugins/tailor-woocommerce/) extensions are examples of what's possible.
+- A comprehensive set of [actions](https://github.com/andrew-worsfold/tailor/blob/master/actions.md) and [filters](https://github.com/andrew-worsfold/tailor/blob/master/filters.md).
+- An API for adding, changing or removing elements.
+- An API for adding, changing or removing settings and controls.
+- A [REST API](https://github.com/andrew-worsfold/tailor/blob/master/api.md) to manage elements, templates and models.
 
-= Works with any theme =
+For more information:
 
-You can use Tailor with any free or premium theme.  By taking care of the layout and providing basic styles for elements, Tailor leaves a majority of the page style to your selected theme (as it should).
+- [Read the developer documentation](support.gettailor.com/hc/en-us/categories/202586427).
+- Check out the free [Portfolio](https://wordpress.org/plugins/tailor-portfolio/) and [WooCommerce](https://wordpress.org/plugins/tailor-woocommerce/) extensions.
+- Get involved in the [GitHub project](https://github.com/andrew-worsfold/tailor).
 
-= Free and open-source =
-
-Tailor is completely free and open-source.  Use it to help create your next website or contribute to the project on [Github](https://github.com/andrew-worsfold/tailor/).
-
-You can get in touch with questions or recommendations in a number of ways:
-
-1. [Facebook](https://www.facebook.com/tailorwp/) or Twitter at [@tailorwp](https://twitter.com/tailorwp) or [@andrewjworsfold](https://twitter.com/andrewjworsfold).
-2. The [Help Center](http://support.gettailor.com)
-3. The [GitHub project](https://github.com/andrew-worsfold/tailor)
-4. The [Community Forum](https://tailor.zendesk.com/hc/en-us/community/topics)
-
-If you like the plugin, you can help by [rating it](https://wordpress.org/support/view/plugin-reviews/tailor?rate=5#postform).
+If you like the plugin, please consider [rating it](https://wordpress.org/support/view/plugin-reviews/tailor?rate=5#postform) or providing your feedback and suggestions through [Facebook](https://www.facebook.com/tailorwp/), [Twitter](https://twitter.com/tailorwp) or the [Community Forum](support.gettailor.com/hc/en-us/community/topics).
 
 == Installation ==
 
