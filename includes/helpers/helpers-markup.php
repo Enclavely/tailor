@@ -72,7 +72,7 @@ if ( ! function_exists( 'tailor_partial' ) ) {
 				$partial = tailor_locate_partial( "{$slug}-{$name}.php" );
 			}
 		}
-		else {
+		if (!$partial) {
 			$partial = locate_template( array( "{$slug}.php", trailingslashit( $theme_partial_dir ) . "{$slug}.php" ) );
 
 			if ( ! $partial ) {
@@ -302,6 +302,6 @@ function responsive_wrap_oembed_dataparse( $html, $data ) {
 	}
 
 	$html = preg_replace( '/(width|height)="\d*"\s/', "", $html );
-	
+
 	return "<div class=\"{$class_name}\">{$html}</div>";
 }
