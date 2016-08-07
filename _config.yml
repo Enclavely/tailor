@@ -3,7 +3,8 @@ permalink:           pretty
 
 # Setup
 title:               Tailor
-tagline:             Build amazing page layouts using WordPress for free!
+tagline:             Simple yet powerful free page builder for WordPress!
+keywords:            WordPress, free, page builder, frontend, open source
 url:                 http://gettailor.com
 paginate:            1
 baseurl:             ""
