@@ -692,4 +692,18 @@ if ( ! class_exists( 'Tailor_Custom_CSS' ) ) {
     }
 }
 
-new Tailor_Custom_CSS;
+if ( ! function_exists( 'tailor_css' ) ) {
+
+	/**
+	 * Returns a singleton instance of the custom CSS manager.
+	 *
+	 * @since 1.0.0.
+	 *
+	 * @return Tailor_Custom_CSS
+	 */
+	function tailor_css() {
+		return Tailor_Custom_CSS::get_instance();
+	}
+}
+
+tailor_css();

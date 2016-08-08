@@ -61,6 +61,7 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Style_Control' 
                     <span><%= choice %></span>
                 </li>
                 <% } %>
+                <li><button class="button button-small js-link"><i class="dashicons"></i></button></li>
             </ul>
 
             <?php

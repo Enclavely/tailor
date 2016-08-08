@@ -50,7 +50,10 @@ CanvasApplication = Marionette.Application.extend( {
 	        'css:add', 'css:delete', 'css:update', 'css:clear',
 
             // Settings actions
-            'sidebar:setting:change'
+            'sidebar:setting:change',
+
+            // Canvas actions
+            'canvas:reset'
         ];
         this.addEventListeners();
 	},
@@ -8619,7 +8622,8 @@ module.exports = Marionette.Module.extend( {
 
         this.listenTo( app.channel, 'canvas:guide', api.positionGuide );
         this.listenTo( app.channel, 'canvas:select', api.selectElement );
-        this.listenTo( app.channel, 'canvas:reset element:refresh:template', api.resetGuide );
+        this.listenTo( app.channel, 'canvas:reset', api.resetGuide );
+        this.listenTo( app.channel, 'element:refresh:template', api.resetGuide );
 
         app.channel.reply( 'canvas:element:selected', api.getSelectedElement );
     }

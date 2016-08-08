@@ -49,7 +49,10 @@ CanvasApplication = Marionette.Application.extend( {
 	        'css:add', 'css:delete', 'css:update', 'css:clear',
 
             // Settings actions
-            'sidebar:setting:change'
+            'sidebar:setting:change',
+
+            // Canvas actions
+            'canvas:reset'
         ];
         this.addEventListeners();
 	},

@@ -4,7 +4,7 @@
  * Plugin Name: Tailor
  * Plugin URI: http://www.gettailor.com
  * Description: Build beautiful page layouts quickly and easily using your favourite theme.
- * Version: 1.4.0
+ * Version: 1.4.1
  * Author: Andrew Worsfold
  * Author URI:  http://www.andrewworsfold.com
  * Text Domain: tailor
@@ -191,12 +191,12 @@ if ( ! class_exists( 'Tailor' ) ) {
 		        'class-custom-css',
 		        'class-custom-js',
 		        'class-icons',
+		        'class-revisions',
 		        'api/class-api',
 	        ) );
 
 	        if ( is_admin() ) {
 		        $this->load_files( array(
-			        'class-revisions',
 			        'admin/class-admin',
 			        'admin/class-settings',
 			        'admin/helpers/helpers-general',

@@ -91,9 +91,9 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Editor_Control'
             $editor_settings = array(
                 'textarea_rows'     =>  30,
                 'tinymce'           =>  array(
-                    'toolbar1'          =>  'bold,italic,bullist,numlist,blockquote,hr,wp_adv,tailoricon', //fullscreen,strikethrough,alignleft,aligncenter,alignright,alignjustify
-                    'toolbar2'          =>  'link,unlink,alignleft,aligncenter,alignright,alignjustify,outdent,indent', // wp_more
-                    'toolbar3'          =>  'formatselect,styleselect,forecolor,underline,strikethrough,undo,redo,pastetext,removeformat',
+                    'toolbar1'          =>  'bold,italic,bullist,numlist,blockquote,hr,wp_adv,tailoricon',
+                    'toolbar2'          =>  'link,unlink,alignleft,aligncenter,alignright,alignjustify,outdent,indent',
+                    'toolbar3'          =>  'formatselect,styleselect,charmap,forecolor,underline,strikethrough,undo,redo,pastetext,removeformat',
                 ),
             );
 

@@ -19,12 +19,21 @@ if ( ! class_exists( 'Tailor_Revisions' ) ) {
      */
     class Tailor_Revisions {
 
+	    /**
+	     * Post meta keys to manage.
+	     *
+	     * @since 1.4.1
+	     * @var array
+	     */
+	    private $meta_keys = array();
+
         /**
          * Constructor.
          *
          * @since 1.0.0
          */
         public function __construct() {
+	        $this->meta_keys = $this->get_meta_keys();
 	        $this->add_actions();
         }
 
@@ -38,6 +47,29 @@ if ( ! class_exists( 'Tailor_Revisions' ) ) {
 	        add_action( 'wp_restore_post_revision', array( $this, 'restore_revision' ), 10, 2 );
         }
 
+	    public function get_meta_keys() {
+
+		    $meta_keys = array(
+			    '_tailor_page_css',
+			    '_tailor_page_js',
+			    '_tailor_section_width',
+			    '_tailor_column_spacing',
+			    '_tailor_element_spacing',
+			    '_tailor_layout',
+		    );
+
+		    /**
+		     * Filter the tracked meta keys.
+		     *
+		     * @since 1.4.1
+		     *
+		     * @param array $meta_keys
+		     */
+		    $meta_keys = apply_filters( 'tailor_revision_meta_keys', $meta_keys );
+
+		    return $meta_keys;
+	    }
+
 	    /**
 	     * Saves the element collection against a post revision.
 	     *
@@ -48,9 +80,15 @@ if ( ! class_exists( 'Tailor_Revisions' ) ) {
         public function save_revision( $post_id ) {
 	        if ( $revision_id = wp_is_post_revision( $post_id ) ) {
 		        $revision = get_post( $revision_id );
-		        $meta_data = get_post_meta( $revision->ID, '_tailor_layout', true );
-		        if ( false != $meta_data ) {
-			        add_metadata( 'post', $post_id, '_tailor_layout', $meta_data );
+
+		        // Save tracked post meta
+		        if ( ! empty( $this->meta_keys ) ) {
+			        foreach( $this->meta_keys as $meta_key ) {
+				        $meta_data = get_post_meta( $revision->ID, $meta_key, true );
+				        if ( false != $meta_data ) {
+					        add_metadata( 'post', $post_id, $meta_key, $meta_data );
+				        }
+			        }
 		        }
 	        }
         }
@@ -64,13 +102,17 @@ if ( ! class_exists( 'Tailor_Revisions' ) ) {
 	     * @param string $revision_id
 	     */
 	    public function restore_revision( $post_id, $revision_id ) {
-		    $revision = get_post( $revision_id );
-		    $meta_data = get_post_meta( $revision->ID, '_tailor_layout', true );
-		    if ( false == $meta_data ) {
-			    delete_post_meta( $post_id, '_tailor_layout' );
-		    }
-		    else {
-			    update_post_meta( $post_id, '_tailor_layout', $meta_data );
+		    if ( ! empty( $this->meta_keys ) ) {
+			    foreach( $this->meta_keys as $meta_key ) {
+
+				    $restore_value = get_metadata( 'post', $revision_id, $meta_key, true );
+				    if ( ! empty( $restore_value ) ) {
+					    update_post_meta( $post_id, $meta_key, $restore_value );
+				    }
+				    else {
+					    delete_post_meta( $post_id, $meta_key );
+				    }
+			    }
 		    }
 	    }
     }

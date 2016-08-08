@@ -122,6 +122,7 @@
 | tailor_settings_page_capability | Applies to the user capability required to manage plugin settings | string $capability |
 | tailor_default_settings | Applies to the set of default admin setting values | array $setting_defaults |
 | tailor_get_registered_media_queries | Applies to the set of default media queries | array $media_queries |
+| tailor_revision_meta_keys | Applies to the set of meta keys monitored for post revisions | array $meta_keys |
 
 ## Template partial filters
 

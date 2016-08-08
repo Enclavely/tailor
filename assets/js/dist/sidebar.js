@@ -3405,7 +3405,35 @@ StyleControl = AbstractControl.extend( {
 
     ui : {
         'input' : 'input',
-        'default' : '.js-default'
+        'default' : '.js-default',
+        'link' : '.js-link'
+    },
+
+    events : {
+        'input @ui.input' : 'onControlChange',
+        'change @ui.input' : 'onControlChange',
+        'click @ui.default' : 'restoreDefaultValue',
+        'click @ui.link' : 'onLinkChange'
+    },
+
+    /**
+     * Initializes the media frame for the control.
+     *
+     * @since 1.0.0
+     *
+     * @param options
+     */
+    initialize : function( options ) {
+
+        this.linked = false;
+
+        this.addEventListeners();
+        this.checkDependencies( this.model.setting );
+    },
+    
+    onLinkChange: function() {
+        this.linked = ! this.linked;
+        this.ui.link.toggleClass( 'is-active', this.linked );
     },
 
     /**
@@ -3441,11 +3469,25 @@ StyleControl = AbstractControl.extend( {
      */
     onControlChange : function( e ) {
 
-        var values = [];
+        var values;
 
-        _.each( this.ui.input, function( input, index ) {
-            values.push( input.value );
-        }, this );
+        if ( this.linked ) {
+
+            // Update the values
+            values = Array( this.ui.input.length ).fill( e.currentTarget.value );
+
+            // Update the other inputs
+            var $inputs = this.ui.input.filter( function( i, el ) {
+                return el != e.currentTarget;
+            } );
+            $inputs.val( e.currentTarget.value );
+        }
+        else {
+            values = [];
+            _.each( this.ui.input, function( input, index ) {
+                values.push( input.value );
+            }, this );
+        }
 
         this.setSettingValue( values.join( '-' ) );
     },

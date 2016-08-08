@@ -18,7 +18,30 @@ if ( ! class_exists( 'Tailor_Panels' ) ) {
      * @since 1.0.0
      */
     class Tailor_Panels extends Tailor_Setting_Manager {
+	    
+	    /**
+	     * The panel manager instance.
+	     *
+	     * @since 1.4.1
+	     * @access private
+	     * @var Tailor_Panels
+	     */
+	    private static $instance;
 
+	    /**
+	     * Returns a singleton instance.
+	     *
+	     * @since 1.4.1
+	     *
+	     * @return Tailor_Panels
+	     */
+	    public static function get_instance() {
+		    if ( is_null( self::$instance ) ) {
+			    self::$instance = new self();
+		    }
+		    return self::$instance;
+	    }
+	    
         /**
          * Constructor.
          *
@@ -42,7 +65,7 @@ if ( ! class_exists( 'Tailor_Panels' ) ) {
             add_action( 'tailor_register_panels', array( $this, 'prepare_controls' ), 99 );
             add_action( 'tailor_enqueue_sidebar_scripts', array( $this, 'print_panel_data' ) );
 
-	        add_action( 'tailor_save', array( $this, 'save_settings' ) );
+	        add_action( 'tailor_save_post_content', array( $this, 'save_settings' ) );
 	        add_action( 'tailor_save_settings', array( $this, 'update_post_title' ) );
         }
 
@@ -108,40 +131,37 @@ if ( ! class_exists( 'Tailor_Panels' ) ) {
 		        'default'               =>  get_the_title(),
 		        'sanitize_callback'     =>  'tailor_sanitize_text',
 	        ) );
-	        $this->add_control( 'title', array(
+	        $this->add_control( '_post_title', array(
 		        'label'                 =>  __( 'Page title', 'tailor' ),
 		        'type'                  =>  'text',
 		        'priority'              =>  10,
 		        'section'               =>  'general',
-		        'setting'               =>  '_post_title',
 	        ) );
 
 	        $this->add_setting( '_tailor_page_css', array(
 		        'default'               =>  "/**\n * Custom CSS\n */\n",
 		        'sanitize_callback'     =>  'tailor_sanitize_text',
 	        ) );
-	        $this->add_control( 'custom_css', array(
+	        $this->add_control( '_tailor_page_css', array(
 		        'label'                 =>  __( 'Custom CSS', 'tailor' ),
 		        'description'           =>  __( 'Enter custom declarations and rules in the editor below to see them applied to the page in real-time.', 'tailor' ),
 		        'type'                  =>  'code',
 		        'mode'                  =>  'css',
 		        'priority'              =>  20,
 		        'section'               =>  'general',
-		        'setting'               =>  '_tailor_page_css',
 	        ) );
 
 	        $this->add_setting( '_tailor_page_js', array(
 		        'default'               =>  "// Custom JavaScript\n",
 		        'sanitize_callback'     =>  'tailor_sanitize_text',
 	        ) );
-	        $this->add_control( 'custom_js', array(
+	        $this->add_control( '_tailor_page_js', array(
 		        'label'                 =>  __( 'Custom JavaScript', 'tailor' ),
 		        'description'           =>  __( 'Enter custom JavaScript in the editor below.  Saved code will be run when the page is reloaded.', 'tailor' ),
 		        'type'                  =>  'code',
 		        'mode'                  =>  'javascript',
 		        'priority'              =>  30,
 		        'section'               =>  'general',
-		        'setting'               =>  '_tailor_page_js',
 	        ) );
 
 	        $this->add_section( 'layout', array(
@@ -154,37 +174,34 @@ if ( ! class_exists( 'Tailor_Panels' ) ) {
 	        $this->add_setting( '_tailor_section_width', array(
 		        'sanitize_callback'     =>  'tailor_sanitize_text',
 	        ) );
-	        $this->add_control( 'section-width', array(
+	        $this->add_control( '_tailor_section_width', array(
 		        'label'                 =>  __( 'Section width', 'tailor' ),
 		        'description'           =>  __( 'The maximum width for sections.', 'tailor' ),
 		        'type'                  =>  'text',
 		        'priority'              =>  10,
 		        'section'               =>  'layout',
-		        'setting'               =>  '_tailor_section_width',
 	        ) );
 
 	        $this->add_setting( '_tailor_column_spacing', array(
 		        'sanitize_callback'     =>  'tailor_sanitize_text',
 	        ) );
-	        $this->add_control( 'column-spacing', array(
+	        $this->add_control( '_tailor_column_spacing', array(
 		        'label'                 =>  __( 'Column spacing', 'tailor' ),
 		        'description'           =>  __( 'The amount of horizontal space to display between columns.', 'tailor' ),
 		        'type'                  =>  'text',
 		        'priority'              =>  20,
 		        'section'               =>  'layout',
-		        'setting'               =>  '_tailor_column_spacing',
 	        ) );
 
             $this->add_setting( '_tailor_element_spacing', array(
                 'sanitize_callback'     =>  'tailor_sanitize_text',
             ) );
-            $this->add_control( 'vertical-spacing', array(
+            $this->add_control( '_tailor_element_spacing', array(
                 'label'                 =>  __( 'Element spacing', 'tailor' ),
                 'description'           =>  __( 'The amount of vertical space to display between elements.', 'tailor' ),
                 'type'                  =>  'text',
                 'priority'              =>  30,
                 'section'               =>  'layout',
-                'setting'               =>  '_tailor_element_spacing',
             ) );
 
 	        /**
@@ -346,7 +363,6 @@ if ( ! class_exists( 'Tailor_Panels' ) ) {
 		    $this->register_panels();
 
 		    $settings = $this->settings();
-
 		    foreach ( $settings as $setting ) { /* @var $setting Tailor_Setting */
 			    $setting->save();
 		    }
@@ -383,4 +399,19 @@ if ( ! class_exists( 'Tailor_Panels' ) ) {
     }
 }
 
-new Tailor_Panels;
+
+if ( ! function_exists( 'tailor_panels' ) ) {
+
+	/**
+	 * Returns a singleton instance of the panel manager.
+	 *
+	 * @since 1.4.1
+	 *
+	 * @return Tailor_Panels
+	 */
+	function tailor_panels() {
+		return Tailor_Panels::get_instance();
+	}
+}
+
+tailor_panels();
