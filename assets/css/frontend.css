@@ -1071,6 +1071,8 @@ html {
       margin-top: 0.25rem; }
     .tailor-ui .tailor-posts .entry:last-child {
       margin-bottom: 0; }
+  .tailor-ui .tailor-posts .entry-pagination {
+    margin-top: 1rem; }
   .tailor-ui .tailor-posts--boxed .entry {
     border: 1px solid #efefef;
     background-color: #fff;

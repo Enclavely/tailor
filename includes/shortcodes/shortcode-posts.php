@@ -61,14 +61,15 @@ if ( ! function_exists( 'tailor_shortcode_posts' ) ) {
 		    ),
 		    'data-'
 	    );
-
-	    $posts_per_page = intval( $atts['posts_per_page'] );
+	    
 	    $offset = intval( $atts['offset'] );
-	    $paged = ( get_query_var( 'paged' ) ) ? get_query_var( 'paged' ) : 1;
+	    $paged = get_query_var( 'paged' ) ? absint( get_query_var( 'paged' ) ) : absint( get_query_var( 'page' ) );
+	    $posts_per_page = intval( $atts['posts_per_page'] );
+
 	    if ( $paged > 1 ) {
 		    $offset = ( ( $paged - 1 ) * $posts_per_page ) + $offset;
 	    }
-
+	    
 	    $query_args = array(
 		    'post_type'             =>  'post',
 		    'orderby'               =>  $atts['order_by'],

@@ -1572,7 +1572,7 @@ ul {
   position: absolute;
   z-index: 997;
   display: none;
-  width: 375px;
+  width: 300px;
   height: 650px; }
   .tailor-ui .modal-container.is-visible {
     display: block; }

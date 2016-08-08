@@ -6545,19 +6545,19 @@ module.exports = Backbone.Marionette.Region.extend( {
         this.el.style.width = width + 'px';
 
         if ( ! this.el.style.height ) {
-            this.el.style.height = ( window.innerHeight - 80 ) + 'px';
+            this.el.style.height = ( window.innerHeight - 40 ) + 'px';
         }
 
         if ( ! this.el.style.top  ) {
-            this.el.style.top = '40px';
+            this.el.style.top = '20px';
         }
 
         if ( ! this.el.style.left ) {
             if ( document.documentElement.dir && 'rtl' == document.documentElement.dir ) {
-                this.el.style.left = 40 + 'px';
+                this.el.style.left = 20 + 'px';
             }
             else {
-                this.el.style.left = window.innerWidth - ( rect.width + 40 ) + 'px';
+                this.el.style.left = window.innerWidth - ( rect.width + 20 ) + 'px';
             }
         }
 

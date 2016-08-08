@@ -91,6 +91,10 @@ $posts-entry-background-color: $global-white-color !default;
 			}
 		}
 
+		.entry-pagination {
+			margin-top: $posts-spacing-vertical;
+		}
+
 		// Variations
 		&--boxed {
 
