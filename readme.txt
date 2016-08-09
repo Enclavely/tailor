@@ -123,6 +123,7 @@ Yes, however, users should be directed to the WordPress plugin repository to ins
 * Improved: spacing above Posts pagination.
 * Improved: initial position of Edit modal window.
 * Fixed: Posts pagination not working on Front page.
+* Fixed: Issue with custom element registration.
 
 = 1.4.1 =
 * Improved: style control (used for margin and padding settings by default).
