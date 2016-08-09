@@ -147,7 +147,6 @@ if ( ! class_exists( 'Tailor' ) ) {
 
             add_action( 'plugins_loaded', array( $this, 'init' ) );
 	        add_action( 'admin_init', array( $this, 'admin_init' ) );
-	        add_action( 'wp_loaded', array( $this, 'customizer_init' ) );
 
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_styles' ) );
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_scripts' ), 99 );
@@ -185,7 +184,7 @@ if ( ! class_exists( 'Tailor' ) ) {
 	        add_filter( 'body_class', array( $this, 'body_class' ) );
 
 	        $this->load_directory( 'shortcodes' );
-
+	        $this->load_directory( 'helpers' );
 	        $this->load_files( array(
 		        'class-compatibility',
 		        'class-custom-css',
@@ -203,21 +202,24 @@ if ( ! class_exists( 'Tailor' ) ) {
 		        ) );
 	        }
 
+	        if ( is_customize_preview() ) {
+		        $this->load_directory( 'customizer' );
+	        }
+
 	        if ( $this->is_tailoring() && ! is_user_logged_in() ) {
 		        auth_redirect();
 	        }
 
-	        $this->load_directory( 'helpers' );
 	        $this->load_directory( 'controls' );
 
 	        $this->load_files( array(
 		        'abstract-manager',
+		        'class-panels',
 		        'class-models',
 		        'class-elements',
 		        'class-templates',
 		        'class-sidebar',
 		        'class-canvas',
-		        'class-panels',
 		        'class-tinymce',
 	        ) );
 	        
@@ -241,17 +243,6 @@ if ( ! class_exists( 'Tailor' ) ) {
         public function admin_init() {
 	        $this->apply_editor_styles();
         }
-
-	    /**
-	     * Loads the Tailor Customizer settings and controls if this is a Customizer page load.
-	     *
-	     * @since 1.4.0
-	     */
-	    public function customizer_init() {
-		    if ( is_customize_preview() ) {
-			    $this->load_directory( 'customizer' );
-		    }
-	    }
 
 	    /**
 	     * Applies custom Tailor styles to the editor.

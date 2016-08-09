@@ -57,11 +57,7 @@ if ( ! class_exists( 'Tailor_Panels' ) ) {
          * @since 1.0.0
          */
         public function add_actions() {
-
-            add_action( 'tailor_init', array( $this, 'load_panels' ) );
-
-	        // Register panels after WordPress is loaded to ensure that post attributes are accessible
-            add_action( 'wp', array( $this, 'register_panels' ) );
+            add_action( 'after_setup_theme', array( $this, 'load_panels' ) );
             add_action( 'tailor_register_panels', array( $this, 'prepare_controls' ), 99 );
             add_action( 'tailor_enqueue_sidebar_scripts', array( $this, 'print_panel_data' ) );
 
@@ -77,7 +73,7 @@ if ( ! class_exists( 'Tailor_Panels' ) ) {
         public function load_panels() {
 
             tailor()->load_directory( 'settings' );
-
+	        
 	        /**
 	         * Fires after panels, sections, settings and controls have been loaded.
 	         *
@@ -86,6 +82,8 @@ if ( ! class_exists( 'Tailor_Panels' ) ) {
 	         * @param Tailor_Panels $this
 	         */
 	        do_action( 'tailor_load_panels', $this );
+
+	        $this->register_panels();
         }
 
         /**
@@ -94,10 +92,6 @@ if ( ! class_exists( 'Tailor_Panels' ) ) {
          * @since 1.0.0
          */
         public function register_panels() {
-
-	        if ( did_action( 'tailor_register_panels' ) ) {
-		        return;
-	        }
 
 	        $this->add_panel( new Tailor_Elements_Panel( 'library', array(
 		        'title'                 =>  __( 'Elements', 'tailor' ),
@@ -203,7 +197,7 @@ if ( ! class_exists( 'Tailor_Panels' ) ) {
                 'priority'              =>  30,
                 'section'               =>  'layout',
             ) );
-
+	        
 	        /**
 	         * Fires after panels, sections, settings and controls have been registered.
 	         *

@@ -109,23 +109,10 @@ if ( class_exists( 'Tailor_Setting_Manager' ) && ! class_exists( 'Tailor_Element
 
 	        $this->tag = $this->id = $tag;
 
-	        $this->add_actions();
+	        if ( $this->active() ) {
+		        $this->register_element_controls();
+	        }
         }
-
-	    /**
-	     * Adds required action hooks.
-	     *
-	     * @since 1.0.0
-	     * @access protected
-	     */
-	    public function add_actions() {
-
-		    if ( ! $this->active() ) {
-			    return;
-		    }
-
-		    add_action( 'after_setup_theme', array( $this, 'register_element_controls' ) );
-	    }
 
 	    /**
 	     * Checks whether the element is active.

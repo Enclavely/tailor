@@ -67,9 +67,7 @@ if ( ! class_exists( 'Tailor_Elements' ) ) {
 	     * @access protected
 	     */
 	    protected function add_actions() {
-		    add_action( 'tailor_init', array( $this, 'load_elements' ) );
-		    add_action( 'tailor_load_elements', array( $this, 'register_elements' ) );
-
+		    add_action( 'wp_loaded', array( $this, 'load_elements' ) );
 		    add_action( 'tailor_sidebar_footer', array( $this, 'print_element_data' ) );
 		    add_action( 'tailor_canvas_footer', array( $this, 'print_element_html' ) );
 		    add_action( 'tailor_canvas_footer', array( $this, 'print_default_element_html' ) );
@@ -85,12 +83,8 @@ if ( ! class_exists( 'Tailor_Elements' ) ) {
          */
 	    public function load_elements() {
 
-		    if ( did_action( 'tailor_register_elements' ) ) {
-			    return;
-		    }
-
 		    tailor()->load_directory( 'elements' );
-
+		    
 		    /**
 		     * Fires after default elements have been loaded.
 		     *
@@ -99,6 +93,8 @@ if ( ! class_exists( 'Tailor_Elements' ) ) {
 		     * @param Tailor_Elements $this
 		     */
 		    do_action( 'tailor_load_elements', $this );
+
+		    $this->register_elements();
         }
 
         /**
@@ -273,7 +269,7 @@ if ( ! class_exists( 'Tailor_Elements' ) ) {
 		        'active_callback'   =>  'is_jetpack_testimonials_active',
 		        'dynamic'           =>  true,
 	        ) );
-
+	        
 	        /**
 	         * Fires after default elements have been registered.
 	         *
