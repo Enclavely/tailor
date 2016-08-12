@@ -301,5 +301,5 @@ if ( ! function_exists( 'tailor_responsive_wrap_oembed_dataparse' ) ) {
 		return "<div class=\"{$class_name}\">{$html}</div>";
 	}
 
-	add_filter( 'oembed_dataparse','responsive_wrap_oembed_dataparse', 10, 2 );
+	add_filter( 'oembed_dataparse','tailor_responsive_wrap_oembed_dataparse', 10, 2 );
 }
