@@ -119,6 +119,9 @@ Yes, however, users should be directed to the WordPress plugin repository to ins
 
 == Changelog ==
 
+= 1.4.3 =
+* Fixed: responsive oEmbeds.
+
 = 1.4.2 =
 * Improved: spacing above Posts pagination.
 * Improved: initial position of Edit modal window.
