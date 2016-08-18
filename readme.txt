@@ -14,7 +14,7 @@ Build beautiful layouts for your content faster and easier than ever before usin
 
 [Tailor](http://gettailor.com/) is a free frontend page builder for WordPress that features a simple and intuitive drag and drop interface.
 
-https://youtu.be/tfMyLMuaXjI
+[youtube https://www.youtube.com/watch?v=tfMyLMuaXjI]
 
 To get started:
 
