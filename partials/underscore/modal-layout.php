@@ -27,9 +27,7 @@ defined( 'ABSPATH' ) or die(); ?>
         <div class="modal__footer" id="tailor-modal-footer">
 
             <?php printf(
-	            '<button class="button button-large js-preview" disabled>%s</button>
- 				<button class="button button-large button-primary js-apply" disabled>%s</button>',
-                __( 'Preview', 'tailor' ),
+ 				'<button class="button button-large button-primary js-apply" disabled>%s</button>',
                 __( 'Apply', 'tailor' )
             ); ?>
 

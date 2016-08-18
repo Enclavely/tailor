@@ -93,6 +93,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Box_Element' ) 
 	        $color_control_types = array(
 		        'color',
 		        'link_color',
+		        'link_color_hover',
 		        'heading_color',
 		        'background_color',
 		        'border_color',
@@ -191,7 +192,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Box_Element' ) 
 
 			    if ( ! empty( $atts['graphic_color_hover'] ) ) {
 				    $css_rules[] = array(
-					    'selectors'         =>  array( ':hover .tailor-box__graphic' ),
+					    'selectors'         =>  array( '.tailor-box__graphic:hover ' ),
 					    'declarations'      =>  array(
 						    'color'             =>  esc_attr( $atts['graphic_color_hover'] ),
 					    ),
@@ -209,7 +210,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Box_Element' ) 
 
 			    if ( ! empty( $atts['graphic_background_color_hover'] ) ) {
 				    $css_rules[] = array(
-					    'selectors'         =>  array( ':hover .tailor-box__graphic' ),
+					    'selectors'         =>  array( '.tailor-box__graphic:hover' ),
 					    'declarations'      =>  array(
 						    'background-color'  =>  esc_attr( $atts['graphic_background_color_hover'] ),
 					    ),

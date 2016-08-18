@@ -46,6 +46,9 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Row_Element' ) 
 
 	        $this->add_setting( 'column_spacing', array(
 		        'sanitize_callback'     =>  'tailor_sanitize_text',
+		        'refresh'               =>  array(
+			        'method'                =>  'js',
+		        ),
 	        ) );
 	        $this->add_control( 'column_spacing', array(
 		        'label'                 =>  __( 'Column spacing', 'tailor' ),
@@ -56,6 +59,9 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Row_Element' ) 
 
 	        $this->add_setting( 'min_column_height', array(
 		        'sanitize_callback'     =>  'tailor_sanitize_text',
+		        'refresh'               =>  array(
+			        'method'                =>  'js',
+		        ),
 	        ) );
 	        $this->add_control( 'min_column_height', array(
 		        'label'                 =>  __( 'Minimum height', 'tailor' ),
@@ -87,6 +93,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Row_Element' ) 
 	        $color_control_types = array(
 		        'color',
 		        'link_color',
+		        'link_color_hover',
 		        'heading_color',
 		        'background_color',
 		        'border_color',

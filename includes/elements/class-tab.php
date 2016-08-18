@@ -54,9 +54,9 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Tab_Element' ) 
 	        $color_control_types = array(
 		        'color',
 		        'link_color',
+		        'link_color_hover',
 		        'heading_color',
 		        'background_color',
-		        //'border_color',
 	        );
 	        $color_control_arguments = array();
 	        tailor_control_presets( $this, $color_control_types, $color_control_arguments, $priority );

@@ -136,6 +136,91 @@ $.fn.tailorCarousel = function( options, callbacks ) {
     } );
 };
 },{}],2:[function(require,module,exports){
+
+var $ = window.jQuery;
+
+// Include polyfills
+require( '../shared/utility/polyfills/classlist' );
+require( '../shared/utility/polyfills/raf' );
+require( '../shared/utility/polyfills/transitions' );
+
+// Include shared components
+require( '../shared/components/tabs' );
+require( '../shared/components/toggles' );
+require( '../shared/components/map' );
+require( '../shared/components/lightbox' );
+require( '../shared/components/slideshow' );
+require( '../shared/components/parallax' );
+
+// Include frontend-only components
+require( './components/carousel' );
+
+$( document ).ready( function() {
+
+	// Parallax sections
+	$( '.tailor-section[data-ratio]' ).each( function() {
+		var $el = $( this );
+		$el.tailorParallax( { ratio: $el.data( 'ratio' ) } );
+	} );
+
+	// Tabs
+	$( '.tailor-tabs' ).tailorTabs();
+
+	// Toggles
+	$( '.tailor-toggles' ).tailorToggles();
+
+	// Google Maps
+	$( '.tailor-map' ).tailorGoogleMap();
+
+	// Carousels
+	$( '.tailor-carousel' ).each( function() {
+		var $el = $( this );
+		var $data = $el.data();
+
+		$el.tailorCarousel( {
+			slidesToShow : $data.slides || 1,
+			fade : ( $data.fade && 1 == $data.slides ),
+			infinite : this.classList.contains( 'tailor-posts' ) || this.classList.contains( 'tailor-gallery' )
+		} );
+	} );
+
+	// Masonry layouts
+	$( '.tailor-grid--masonry' ).each( function() {
+		var $el = $( this );
+
+		$el.imagesLoaded( function() {
+			$el.shuffle( {
+				itemSelector: '.tailor-grid__item'
+			} );
+		} );
+	} );
+
+	// Slideshows
+	$( '.tailor-slideshow--gallery' ).each( function() {
+		var $el = $( this );
+		var $data = $el.data() || {};
+		var options = {
+			autoplay : $data.autoplay || false,
+			arrows : $data.arrows || false,
+			draggable : true
+		};
+
+		if ( '1' == $data.thumbnails ) {
+			options.customPaging = function( slider, i ) {
+				var thumb = $( slider.$slides[ i ] ).data( 'thumb' );
+				return '<img class="slick-thumbnail" src="' + thumb + '">';
+			};
+			options.dots = true;
+		}
+
+		$el.tailorSlideshow( options );
+	} );
+
+	// Lightboxes
+	$( '.is-lightbox-gallery' ).tailorLightbox();
+
+} );
+},{"../shared/components/lightbox":3,"../shared/components/map":4,"../shared/components/parallax":5,"../shared/components/slideshow":6,"../shared/components/tabs":7,"../shared/components/toggles":8,"../shared/utility/polyfills/classlist":9,"../shared/utility/polyfills/raf":10,"../shared/utility/polyfills/transitions":11,"./components/carousel":1}],3:[function(require,module,exports){
 /**
  * Tailor.Objects.Lightbox
  *
@@ -272,7 +357,7 @@ $.fn.tailorLightbox = function( options, callbacks ) {
         }
     } );
 };
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 /**
  * Tailor.Objects.Map
  *
@@ -596,7 +681,7 @@ $.fn.tailorGoogleMap = function( options, callbacks ) {
 };
 
 module.exports = Map;
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 /**
  * Tailor.Objects.Parallax
  *
@@ -864,7 +949,7 @@ $.fn.tailorParallax = function( options, callbacks ) {
 };
 
 module.exports = Parallax;
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 /**
  * Tailor.Objects.Slideshow
  *
@@ -1089,7 +1174,7 @@ $.fn.tailorSlideshow = function( options, callbacks ) {
         }
     } );
 };
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 /**
  * Tailor.Objects.Tabs
  *
@@ -1380,7 +1465,7 @@ $.fn.tailorTabs = function( options, callbacks ) {
 };
 
 module.exports = Tabs;
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 /**
  * Tailor.Objects.Toggles
  *
@@ -1626,99 +1711,181 @@ $.fn.tailorToggles = function( options, callbacks ) {
 };
 
 module.exports = Toggles;
-},{}],8:[function(require,module,exports){
-( function( $ ) {
+},{}],9:[function(require,module,exports){
+/**
+ * classList Polyfill
+ *
+ * https://developer.mozilla.org/en-US/docs/Web/API/Element/classList
+ */
+( function() {
+
+	if ( 'undefined' === typeof window.Element || 'classList' in document.documentElement ) {
+		return;
+	}
+
+	var prototype = Array.prototype,
+		push = prototype.push,
+		splice = prototype.splice,
+		join = prototype.join;
+
+	function DOMTokenList( el ) {
+		this.el = el;
+		var classes = el.className.replace( /^\s+|\s+$/g, '' ).split( /\s+/ );
+		for ( var i = 0; i < classes.length; i++ ) {
+			push.call( this, classes[ i ] );
+		}
+	}
+
+	DOMTokenList.prototype = {
+
+		add: function( token ) {
+			if ( this.contains( token ) ) {
+				return;
+			}
+			push.call( this, token );
+			this.el.className = this.toString();
+		},
+
+		contains: function( token ) {
+			return this.el.className.indexOf( token ) != -1;
+		},
+
+		item: function( index ) {
+			return this[ index ] || null;
+		},
+
+		remove: function( token ) {
+			if ( ! this.contains( token ) ) {
+				return;
+			}
+			for ( var i = 0; i < this.length; i++ ) {
+				if ( this[ i ] == token ) {
+					break;
+				}
+			}
+			splice.call( this, i, 1 );
+			this.el.className = this.toString();
+		},
+
+		toString: function() {
+			return join.call( this, ' ' );
+		},
+
+		toggle: function( token ) {
+			if ( ! this.contains( token ) ) {
+				this.add( token );
+			}
+			else {
+				this.remove( token );
+			}
+			return this.contains( token );
+		}
+	};
+
+	window.DOMTokenList = DOMTokenList;
+
+	function defineElementGetter( obj, prop, getter ) {
+		if ( Object.defineProperty ) {
+			Object.defineProperty( obj, prop, {
+				get : getter
+			} );
+		}
+		else {
+			obj.__defineGetter__( prop, getter );
+		}
+	}
+
+	defineElementGetter( Element.prototype, 'classList', function() {
+		return new DOMTokenList( this );
+	} );
+
+} )();
+},{}],10:[function(require,module,exports){
+/**
+ * requestAnimationFrame polyfill.
+ *
+ * https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
+ */
+( function( window ) {
+
+	'use strict';
+
+	var lastTime = 0,
+		vendors = [ 'ms', 'moz', 'webkit', 'o' ];
+
+	for ( var x = 0; x < vendors.length && ! window.requestAnimationFrame; ++x ) {
+		window.requestAnimationFrame = window[ vendors[ x ] + 'RequestAnimationFrame' ];
+		window.cancelAnimationFrame = window[ vendors[ x ] + 'CancelAnimationFrame' ] || window[ vendors[ x ] + 'CancelRequestAnimationFrame' ];
+	}
+
+	if ( ! window.requestAnimationFrame ) {
+		window.requestAnimationFrame = function( callback, el ) {
+			var currTime = new Date().getTime();
+			var timeToCall = Math.max( 0, 16 - ( currTime - lastTime ) );
+			var id = window.setTimeout( function() {
+					callback( currTime + timeToCall );
+				},
+				timeToCall );
+			lastTime = currTime + timeToCall;
+			return id;
+		};
+	}
+
+	if ( ! window.cancelAnimationFrame ) {
+		window.cancelAnimationFrame = function( id ) {
+			clearTimeout( id );
+		};
+	}
+
+} ) ( window );
+},{}],11:[function(require,module,exports){
+/**
+ * Makes animation and transition support status and end names available as global variables.
+ */
+( function( window ) {
 
     'use strict';
 
-    require( './components/tabs' );
-    require( './components/toggles' );
-    require( './components/map' );
-    require( './components/lightbox' );
-    require( './components/slideshow' );
-    require( './components/parallax' );
-    require( './components/frontend/carousel' );
+    var el = document.createElement( 'fakeelement' );
 
-    $( document ).ready( function() {
+    function getAnimationEvent(){
+        var t,
+            animations = {
+                'animation' : 'animationend',
+                'OAnimation' : 'oAnimationEnd',
+                'MozAnimation' : 'animationend',
+                'WebkitAnimation' : 'webkitAnimationEnd'
+            };
 
-	    /**
-	     * Parallax sections.
-	     */
-	    $( '.tailor-section[data-ratio]' ).each( function() {
-		    var $el = $( this );
-		    $el.tailorParallax( { ratio: $el.data( 'ratio' ) } );
-	    } );
+        for ( t in animations ) {
+            if ( animations.hasOwnProperty( t ) && 'undefined' !== typeof el.style[ t ] ) {
+                return animations[ t ];
+            }
+        }
 
-	    /**
-	     * Tabs.
-	     */
-	    $( '.tailor-tabs' ).tailorTabs();
+        return false;
+    }
 
-	    /**
-	     * Toggles.
-	     */
-	    $( '.tailor-toggles' ).tailorToggles();
+    function getTransitionEvent(){
+        var t,
+            transitions = {
+                'transition' : 'transitionend',
+                'OTransition' : 'oTransitionEnd',
+                'MozTransition' : 'transitionend',
+                'WebkitTransition' : 'webkitTransitionEnd'
+            };
 
-	    /**
-	     * Maps.
-	     */
-	    $( '.tailor-map' ).tailorGoogleMap();
+        for ( t in transitions ) {
+            if ( transitions.hasOwnProperty( t ) && 'undefined' !== typeof el.style[ t ] ) {
+                return transitions[ t ];
+            }
+        }
 
-	    /**
-	     * Carousels.
-	     */
-	    $( '.tailor-carousel' ).each( function() {
-		    var $el = $( this );
-		    var $data = $el.data();
+        return false;
+    }
 
-		    $el.tailorCarousel( {
-			    slidesToShow : $data.slides || 1,
-			    fade : ( $data.fade && 1 == $data.slides ),
-			    infinite : this.classList.contains( 'tailor-posts' ) || this.classList.contains( 'tailor-gallery' )
-		    } );
-	    } );
+    window.animationEndName = getAnimationEvent();
+    window.transitionEndName = getTransitionEvent();
 
-	    /**
-	     * Masonry layouts.
-	     */
-	    $( '.tailor-grid--masonry' ).each( function() {
-		    var $el = $( this );
-
-		    $el.imagesLoaded( function() {
-			    $el.shuffle( {
-				    itemSelector: '.tailor-grid__item'
-			    } );
-		    } );
-	    } );
-
-	    /**
-	     * Slideshow galleries.
-	     */
-	    $( '.tailor-slideshow--gallery' ).each( function() {
-		    var $el = $( this );
-		    var $data = $el.data() || {};
-		    var options = {
-			    autoplay : $data.autoplay || false,
-			    arrows : $data.arrows || false,
-			    draggable : true
-		    };
-
-		    if ( '1' == $data.thumbnails ) {
-			    options.customPaging = function( slider, i ) {
-				    var thumb = $( slider.$slides[ i ] ).data( 'thumb' );
-				    return '<img class="slick-thumbnail" src="' + thumb + '">';
-			    };
-			    options.dots = true;
-		    }
-
-		    $el.tailorSlideshow( options );
-	    } );
-
-	    /**
-	     * Lightbox galleries.
-	     */
-	    $( '.is-lightbox-gallery' ).tailorLightbox();
-
-    } );
-} ) ( jQuery );
-},{"./components/frontend/carousel":1,"./components/lightbox":2,"./components/map":3,"./components/parallax":4,"./components/slideshow":5,"./components/tabs":6,"./components/toggles":7}]},{},[8]);
+} ) ( window );
+},{}]},{},[2]);

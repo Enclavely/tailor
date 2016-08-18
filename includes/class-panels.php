@@ -58,6 +58,7 @@ if ( ! class_exists( 'Tailor_Panels' ) ) {
          */
         public function add_actions() {
             add_action( 'after_setup_theme', array( $this, 'load_panels' ) );
+            add_action( 'wp', array( $this, 'register_panels' ) );
             add_action( 'tailor_register_panels', array( $this, 'prepare_controls' ), 99 );
             add_action( 'tailor_enqueue_sidebar_scripts', array( $this, 'print_panel_data' ) );
 
@@ -82,8 +83,6 @@ if ( ! class_exists( 'Tailor_Panels' ) ) {
 	         * @param Tailor_Panels $this
 	         */
 	        do_action( 'tailor_load_panels', $this );
-
-	        $this->register_panels();
         }
 
         /**

@@ -118,10 +118,6 @@ $slick-border-color: $border-color !default;
 
 		@include transition( all 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94) );
 
-		&:hover {
-			opacity: 1;
-		}
-
 		&::before {
 			position: relative;
 			top: -2px;
@@ -154,6 +150,13 @@ $slick-border-color: $border-color !default;
 
 		&.slick-disabled {
 			color: rgba(0, 0, 0, 0.1);
+		}
+	}
+
+	.slick-slider:hover {
+
+		.slick-arrow {
+			opacity: 1;
 		}
 	}
 

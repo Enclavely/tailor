@@ -62,6 +62,15 @@ if ( ! class_exists( 'Tailor_Setting' ) ) {
          */
         protected $capability = '';
 
+	    /**
+	     * Method to use to update the DOM when the setting is updated.
+	     *
+	     * @since 1.5.0
+	     * @access protected
+	     * @var array
+	     */
+	    protected $refresh = array();
+
         /**
          * Theme feature support required to edit this setting.
          *
@@ -148,7 +157,8 @@ if ( ! class_exists( 'Tailor_Setting' ) ) {
 		    $setting['id'] = $this->id;
 		    $setting['value'] =  $this->js_value();
 		    $setting['default'] = $this->default;
-
+		    $setting['refresh'] = $this->refresh;
+		    
 		    return $setting;
 	    }
 

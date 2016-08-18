@@ -158,40 +158,45 @@ if ( ! class_exists( 'Tailor_Custom_CSS' ) ) {
 			    foreach ( (array) $sanitized_models as $sanitized_model ) {
 				    $element = tailor_elements()->get_element( $sanitized_model['tag'] );
 
-				    if ( method_exists( $element, 'generate_css' ) ) {
-					    $css_rule_sets = $element->generate_css( $sanitized_model['atts'] );
+				    if ( ! method_exists( $element, 'generate_css' ) ) {
+					    continue;
+				    }
 
-					    /**
-					     * Filter the element CSS rule sets.
-					     *
-					     * @since 1.3.6
-					     */
-					    $css_rule_sets = apply_filters( 'tailor_element_css_rule_sets', $css_rule_sets, $sanitized_model['atts'], $element );
+				    $css_rule_sets = $element->generate_css( $sanitized_model['atts'] );
 
-					    /**
-					     * Filter the element CSS rule sets.
-					     *
-					     * @since 1.3.6
-					     */
-					    $css_rule_sets = apply_filters( 'tailor_element_css_rule_sets_' . $sanitized_model['tag'], $css_rule_sets, $sanitized_model['atts'], $element );
+				    /**
+				     * Filter the element CSS rule sets.
+				     *
+				     * @since 1.3.6
+				     */
+				    $css_rule_sets = apply_filters( 'tailor_element_css_rule_sets', $css_rule_sets, $sanitized_model['atts'], $element );
 
-					    // Organize into media queries
-					    foreach ( $css_rule_sets as $css_rule_set ) {
-						    $media = empty( $css_rule_set['media'] ) ? 'all' : $css_rule_set['media'];
+				    /**
+				     * Filter the element CSS rule sets.
+				     *
+				     * @since 1.3.6
+				     */
+				    $css_rule_sets = apply_filters( 'tailor_element_css_rule_sets_' . $sanitized_model['tag'], $css_rule_sets, $sanitized_model['atts'], $element );
 
-						    if ( ! array_key_exists( $media, $collection_css_rules ) ) {
-							    $collection_css_rules[ $media ] = array();
-						    }
+				    // Organize into media queries
+				    foreach ( $css_rule_sets as $css_rule_set ) {
+					    $media = empty( $css_rule_set['media'] ) ? 'all' : $css_rule_set['media'];
 
-						    if ( ! array_key_exists( $sanitized_model['id'], $collection_css_rules[ $media ] ) ) {
-							    $collection_css_rules[ $media ][ $sanitized_model['id'] ] = array();
-						    }
-
-						    $collection_css_rules[ $media ][ $sanitized_model['id'] ][] = array(
-							    'selectors'         =>  $css_rule_set['selectors'],
-							    'declarations'      =>  $css_rule_set['declarations'],
-						    );
+					    if ( ! array_key_exists( $media, $collection_css_rules ) ) {
+						    $collection_css_rules[ $media ] = array();
 					    }
+
+					    if ( ! array_key_exists( $sanitized_model['id'], $collection_css_rules[ $media ] ) ) {
+						    $collection_css_rules[ $media ][ $sanitized_model['id'] ] = array();
+					    }
+
+					    $setting_id = empty( $css_rule_set['setting'] ) ? '' : $css_rule_set['setting'];
+
+					    $collection_css_rules[ $media ][ $sanitized_model['id'] ][] = array(
+						    'setting'           =>  $setting_id,
+						    'selectors'         =>  $css_rule_set['selectors'],
+						    'declarations'      =>  $css_rule_set['declarations'],
+					    );
 				    }
 			    }
 		    }
@@ -639,8 +644,7 @@ if ( ! class_exists( 'Tailor_Custom_CSS' ) ) {
 			    }
 		    }
 
-		    $output = trim( ",{$n}{$tab}{$element_class}" );
-		    $output = implode( $output, $selectors );
+		    $output = implode( trim( ",{$n}{$tab}{$element_class}" ), $selectors );
 
 		    return $tab . $element_class . $output;
 	    }
@@ -697,7 +701,7 @@ if ( ! function_exists( 'tailor_css' ) ) {
 	/**
 	 * Returns a singleton instance of the custom CSS manager.
 	 *
-	 * @since 1.0.0.
+	 * @since 1.0.0
 	 *
 	 * @return Tailor_Custom_CSS
 	 */

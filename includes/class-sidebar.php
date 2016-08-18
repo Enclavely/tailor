@@ -64,6 +64,8 @@ if ( ! class_exists( 'Tailor_Sidebar' ) ) {
 	        add_action( 'tailor_sidebar_footer', array( $this, 'print_js_templates' ) );
             add_action( 'tailor_sidebar_footer', 'wp_print_footer_scripts' );
             add_action( 'tailor_sidebar_footer', 'wp_auth_check_html' );
+	        add_action( 'tailor_sidebar_footer', 'wp_print_media_templates' );
+	        add_action( 'tailor_sidebar_footer', 'wp_underscore_playlist_templates' );
 
             add_action( 'wp_ajax_tailor_refresh_nonces', array( $this, 'refresh_nonces' ) );
         }
@@ -279,13 +281,11 @@ if ( ! class_exists( 'Tailor_Sidebar' ) ) {
 	        wp_localize_script( $handle, '_l10n', array(
 		        'tailoring'         =>  __( 'Tailoring: ', 'tailor' ),
 		        'select'            =>  __( 'Select', 'tailor' ),
-		        'save'              =>  __( 'Save', 'tailor' ),
 		        'saveTemplate'      =>  __( 'Save template', 'tailor' ),
 		        'saved'             =>  __( 'Saved', 'tailor' ),
 		        'publish'           =>  'publish' == get_post_status( $post_id ) ? __( 'Save & Publish', 'tailor' ) : __( 'Save', 'tailor' ),
 		        'import'            =>  __( 'Import', 'tailor' ),
 		        'importTemplate'    =>  __( 'Import template', 'tailor' ),
-		        'delete'            =>  __( 'Delete', 'tailor' ),
 		        'close'             =>  __( 'Close', 'tailor' ),
 		        'error'             =>  __( 'An error occurred, please try again', 'tailor' ),
 		        'expired'           =>  __( 'The session has expired', 'tailor' ),
@@ -301,6 +301,20 @@ if ( ! class_exists( 'Tailor_Sidebar' ) ) {
 		        'dragTemplate'      =>  __( 'To add a template, drag it into the desired position on the page', 'tailor' ),
 		        'confirmPage'       =>  __( 'The changes you made will be lost if you navigate away from this page', 'tailor' ),
 		        'confirmElement'    =>  __( 'You have made changes to this element.  Would you like to save them?', 'tailor' ),
+
+		        'edit'              =>  __( 'Edit', 'tailor' ),
+		        'delete'            =>  __( 'Delete', 'tailor' ),
+		        'preview'           =>  __( 'Preview', 'tailor' ),
+		        'save'              =>  __( 'Save', 'tailor' ),
+		        'initialized'       =>  __( 'Initialized', 'tailor' ),
+		        'added'             =>  __( 'Added', 'tailor' ),
+		        'deleted'           =>  __( 'Deleted', 'tailor' ),
+		        'edited'            =>  __( 'Edited', 'tailor' ),
+		        'copied'            =>  __( 'Copied', 'tailor' ),
+		        'moved'             =>  __( 'Moved', 'tailor' ),
+		        'resized'           =>  __( 'Resized', 'tailor' ),
+		        'reordered'         =>  __( 'Reordered', 'tailor' ),
+		        'template'          =>  __( 'Template', 'tailor' ),
 	        ) );
 
 	        wp_localize_script( $handle, '_nonces', $this->create_nonces() );

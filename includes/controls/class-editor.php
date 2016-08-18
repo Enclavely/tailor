@@ -36,9 +36,7 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Editor_Control'
 	    protected function add_actions() {
 
 		    parent::add_actions();
-
-		    add_action( 'tailor_sidebar_footer', 'wp_print_media_templates' );
-		    add_action( 'tailor_sidebar_footer', 'wp_underscore_playlist_templates' );
+		    
 		    add_filter( 'tailor_editor_styles', array( $this, 'add_editor_styles' ) );
 	    }
 

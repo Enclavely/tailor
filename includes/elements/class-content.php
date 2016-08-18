@@ -52,9 +52,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Content_Element
 			    'section'               =>  'general',
 		    ) );
 
-		    $general_control_types = array(
-			    //'background_image'
-		    );
+		    $general_control_types = array();
 		    $general_control_arguments = array();
 		    tailor_control_presets( $this, $general_control_types, $general_control_arguments, $priority );
 
@@ -62,6 +60,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Content_Element
 		    $color_control_types = array(
 			    'color',
 			    'link_color',
+			    'link_color_hover',
 			    'heading_color',
 			    'background_color',
 			    'border_color',
@@ -93,8 +92,8 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Content_Element
 	     */
 	    public function generate_css( $atts = array() ) {
 		    $css_rules = array();
-		    $excluded_control_types = array();
-		    $css_rules = tailor_css_presets( $css_rules, $atts, $excluded_control_types );
+		    $excluded_settings = array();
+		    $css_rules = tailor_css_presets( $css_rules, $atts, $excluded_settings );
 
 		    return $css_rules;
 	    }

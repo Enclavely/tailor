@@ -52,7 +52,7 @@ if ( ! class_exists( 'Tailor_Canvas' ) ) {
 	        do_action( 'tailor_canvas_init' );
 	        
             add_action( 'wp_head', array( $this, 'canvas_head' ) );
-	        add_filter( 'the_content', array( $this, 'canvas_content' ) );
+	        add_filter( 'the_content', array( $this, 'canvas_content' ), -1 );
 	        add_action( 'wp_footer', array( $this, 'canvas_footer' ) );
 	        
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_styles' ) );
@@ -192,22 +192,6 @@ if ( ! class_exists( 'Tailor_Canvas' ) ) {
 		        'view'              =>  esc_url_raw( get_permalink() ),
 		        'allowed'           =>  array_map( 'esc_url_raw', $allowed_urls ),
 		        'isCrossDomain'     =>  $is_cross_domain,
-	        ) );
-
-	        wp_localize_script( $handle, '_l10n', array(
-		        'edit'              =>  __( 'Edit', 'tailor' ),
-		        'delete'            =>  __( 'Delete', 'tailor' ),
-		        'preview'           =>  __( 'Preview', 'tailor' ),
-		        'save'              =>  __( 'Save', 'tailor' ),
-		        'initialized'       =>  __( 'Initialized', 'tailor' ),
-		        'added'             =>  __( 'Added', 'tailor' ),
-		        'deleted'           =>  __( 'Deleted', 'tailor' ),
-		        'edited'            =>  __( 'Edited', 'tailor' ),
-		        'copied'            =>  __( 'Copied', 'tailor' ),
-		        'moved'             =>  __( 'Moved', 'tailor' ),
-		        'resized'           =>  __( 'Resized', 'tailor' ),
-		        'reordered'         =>  __( 'Reordered', 'tailor' ),
-		        'template'          =>  __( 'Template', 'tailor' ),
 	        ) );
 
 	        wp_localize_script( $handle, '_nonces', $this->create_nonces() );

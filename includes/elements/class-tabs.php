@@ -67,34 +67,14 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Tabs_Element' )
 	        $color_control_types = array(
 		        'color',
 		        'link_color',
+		        'link_color_hover',
 		        'heading_color',
 		        'background_color',
 		        'border_color',
 	        );
 	        $color_control_arguments = array();
 	        $priority = tailor_control_presets( $this, $color_control_types, $color_control_arguments, $priority );
-
-	        /*
-	        $this->add_setting( 'inactive_color', array(
-		        'sanitize_callback'     =>  'tailor_sanitize_color',
-	        ) );
-	        $this->add_control( 'inactive_color', array(
-		        'label'                 =>  __( 'Inactive color', 'tailor' ),
-		        'type'                  =>  'colorpicker',
-		        'priority'              =>  $priority += 10,
-		        'section'               =>  'colors',
-	        ) );
-
-	        $this->add_setting( 'inactive_background_color', array(
-		        'sanitize_callback'     =>  'tailor_sanitize_color',
-	        ) );
-	        $this->add_control( 'inactive_background_color', array(
-		        'label'                 =>  __( 'Inactive background color', 'tailor' ),
-		        'type'                  =>  'colorpicker',
-		        'priority'              =>  $priority += 10,
-		        'section'               =>  'colors',
-	        ) ); */
-
+	        
 	        $priority = 0;
 	        $attribute_control_types = array(
 		        'class',
@@ -102,7 +82,6 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Tabs_Element' )
 		        'margin',
 		        'border_style',
 		        'border_width',
-		        //'border_radius',
 		        'shadow',
 		        'background_image',
 		        'background_repeat',

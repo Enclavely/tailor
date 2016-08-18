@@ -97,6 +97,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Carousel_Elemen
 	        $color_control_types = array(
 		        'color',
 		        'link_color',
+		        'link_color_hover',
 		        'heading_color',
 		        'background_color',
 		        'border_color',
@@ -119,7 +120,6 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Carousel_Elemen
 	        $priority = 0;
 	        $attribute_control_types = array(
 		        'class',
-		        //'padding',
 		        'margin',
 		        'border_style',
 		        'border_width',

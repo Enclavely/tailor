@@ -37,7 +37,6 @@ $section-max-width: 75rem !default;
 		border: $section-border-width $section-border-style $section-border-color;
 		border-radius: $section-border-radius;
 		box-shadow: $section-box-shadow;
-		overflow: hidden;
 
 		&__content {
 			position: relative;
@@ -66,6 +65,10 @@ $section-max-width: 75rem !default;
 		}
 
 		// Variations
+		&.is-parallax {
+			overflow: hidden;
+		}
+
 		&.is-skewed {
 			transform: skew( 0deg, -3deg );
 

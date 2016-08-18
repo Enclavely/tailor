@@ -27,12 +27,18 @@ if ( ! function_exists( 'tailor_shortcode_column' ) ) {
             'class'                     =>  '',
             'width'                     =>  6,
             'horizontal_alignment'      =>  '',
+            'vertical_alignment'        =>  '',
         ), $atts, $tag );
 
 	    $id = ( '' !== $atts['id'] ) ? 'id="' . esc_attr( $atts['id'] ) . '"' : '';
 	    $class = trim( esc_attr( "tailor-column columns-{$atts['width']} {$atts['class']}" ) );
+	    
 	    if ( ! empty( $atts['horizontal_alignment'] ) ) {
 		    $class .= esc_attr( " u-text-{$atts['horizontal_alignment']}" );
+	    }
+
+	    if ( ! empty( $atts['vertical_alignment'] ) ) {
+		    $class .= esc_attr( " u-align-{$atts['vertical_alignment']}" );
 	    }
 
         return '<div ' . trim( "{$id} class=\"{$class}\"" ) . '>' . do_shortcode( $content ) . '</div>';

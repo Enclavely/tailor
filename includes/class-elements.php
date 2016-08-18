@@ -71,7 +71,6 @@ if ( ! class_exists( 'Tailor_Elements' ) ) {
 		    add_action( 'tailor_sidebar_footer', array( $this, 'print_element_data' ) );
 		    add_action( 'tailor_canvas_footer', array( $this, 'print_element_html' ) );
 		    add_action( 'tailor_canvas_footer', array( $this, 'print_default_element_html' ) );
-
 		    add_action( 'wp_ajax_tailor_render', array( $this, 'render_element' ) );
 		    add_action( 'wp_ajax_tailor_reset', array( $this, 'render_elements' ) );
 	    }

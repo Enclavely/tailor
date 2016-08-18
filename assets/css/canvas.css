@@ -188,19 +188,6 @@ html {
   clip: rect(0 0 0 0);
   border: 0;
   word-wrap: normal !important; }
-.tailor-ui :not(.media-frame) .spinner {
-  display: inline-block;
-  background: url(../img/spinner.gif) no-repeat;
-  -webkit-background-size: 20px 20px;
-  background-size: 20px 20px;
-  vertical-align: middle;
-  opacity: .7;
-  filter: alpha(opacity=70);
-  width: 20px;
-  height: 20px;
-  visibility: hidden; }
-.tailor-ui.is-saving :not(.media-frame) .spinner {
-  visibility: visible; }
 .tailor-ui .not-a-button {
   background: 0 0;
   border: none;

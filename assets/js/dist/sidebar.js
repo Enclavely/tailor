@@ -1,347 +1,145 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-/**
- * The Sidebar Marionette application.
- */
-var $ = Backbone.$,
-    SidebarApplication;
 
-SidebarApplication = Marionette.Application.extend( {
-
-	el : document.querySelector( '#tailor' ),
-
-    /**
-     * Initializes the application.
-     *
-     * @since 1.0.0
-     */
-	initialize : function() {
-        this._collapsed = false;
-        this._unsavedChanges = false;
-        this.saveButton = document.querySelector( '#tailor-save' );
-        this.allowableEvents = [
-            
-            // Element actions
-	        'element:add', 'element:move', 'element:resize', 'element:change:order', 'element:copy', 'element:delete',
-            
-            // Collection actions
-	        'elements:restore', 'elements:reset',
-            
-            // Template actions
-            'template:add',
-            
-            // Modal actions
-            'modal:open', 'modal:destroy',
-            
-            // Setting actions
-            'sidebar:settings'
-        ];
-
-        this.addEventListeners();
-    },
-
-    /**
-     * Returns true if there are unsaved changes.
-     *
-     * @since 1.0.0
-     *
-     * @returns {boolean}
-     */
-    hasUnsavedChanges : function() {
-        return this._unsavedChanges;
-    },
-
-    /**
-     * Adds the required event listeners.
-     *
-     * @since 1.0.0
-     */
-    addEventListeners : function() {
-        var sidebarApp = this;
-
-        /**
-         * Updates the Save button and adds a confirmation prompt to the window when a change occurs.
-         *
-         * @since 1.0.0
-         */
-        sidebarApp.onSettingChange = function() {
-            sidebarApp.saveButton.disabled = false;
-            sidebarApp.saveButton.innerHTML = window._l10n.publish;
-            sidebarApp._unsavedChanges = true;
-        };
-
-        sidebarApp.listenTo( sidebarApp.channel, 'sidebar:setting:change', sidebarApp.onSettingChange );
-        sidebarApp.listenTo( sidebarApp.channel, _.without( sidebarApp.allowableEvents, 'modal:open', 'modal:destroy' ).join( ' ' ), sidebarApp.onSettingChange );
-        sidebarApp.listenTo( sidebarApp.channel, [ 'modal:apply' ].join( ' ' ), sidebarApp.onSettingChange );
-
-        /**
-         * Collapses the Sidebar when the Collapse button is selected.
-         *
-         * @since 1.0.0
-         */
-        $( '#tailor-collapse' ).on( 'click', function() {
-            sidebarApp._collapsed = ! sidebarApp._collapsed;
-            sidebarApp.el.classList.toggle( 'is-collapsed', sidebarApp._collapsed );
-            sidebarApp.saveButton.setAttribute( 'aria-expanded', ! sidebarApp._collapsed );
-
-            /**
-             * Fires before the application closes.
-             *
-             * @since 1.0.0
-             */
-            sidebarApp.triggerMethod( 'collapse:sidebar' );
-        } );
-
-        /**
-         * Saves settings and models when the Save button is clicked.
-         *
-         * @since 1.0.0
-         */
-        $( sidebarApp.saveButton ).on( 'click', function() {
-            sidebarApp.el.classList.add( 'is-saving' );
-            sidebarApp.saveButton.setAttribute( 'disabled', true );
-
-            var models = sidebarApp.channel.request( 'canvas:elements' );
-            var settings = sidebarApp.channel.request( 'sidebar:settings' );
-            var options = {
-                data : {
-                    post_id : window.post.id,
-                    models : JSON.stringify( models.toJSON() ),
-                    settings : JSON.stringify( settings.toJSON() ),
-                    nonce : window._nonces.save
-                },
-
-                /**
-                 * Updates the sidebar after a save action is completed successfully.
-                 *
-                 * @since 1.0.0
-                 */
-                success : function() {
-                    sidebarApp.saveButton.disabled = true;
-                    sidebarApp.saveButton.innerHTML = window._l10n.saved;
-                    sidebarApp._unsavedChanges = false;
-
-                    /**
-                     * Fires when changes are successfully saved.
-                     *
-                     * @since 1.0.0
-                     */
-                    sidebarApp.channel.trigger( 'sidebar:save' );
-                },
-
-                error: function( response ) {
-
-                    sidebarApp.saveButton.disabled = false;
-
-                    if ( response && response.hasOwnProperty( 'message' ) ) {
-
-                        // Display the error from the server
-                        Tailor.Notify( response.message );
-                    }
-                    else if ( '0' == response ) {
-
-                        // Session expired
-                        Tailor.Notify( window._l10n.expired );
-                    }
-                    else if ( '-1' == response ) {
-
-                        // Invalid nonce
-                        Tailor.Notify( window._l10n.invalid );
-                    }
-                    else {
-
-                        // General error condition
-                        Tailor.Notify( window._l10n.error );
-                    }
-                },
-
-                /**
-                 * Updates the sidebar after a save action is completed.
-                 *
-                 * @since 1.0.0
-                 */
-                complete : function( response ) {
-                    sidebarApp.el.classList.remove( 'is-saving' );
-                }
-            };
-
-            window.ajax.send( 'tailor_save', options );
-        } );
-
-        sidebarApp.listenToOnce( sidebarApp.channel, 'canvas:initialize', sidebarApp.registerRemoteChannel );
-
-        /**
-         * Restores the next history snapshot, if available.
-         *
-         * @since 1.0.0
-         */
-        $( document ).on( 'keydown', function( e ) {
-            if ( e.ctrlKey && 89 == e.keyCode ) {
-                if ( ! _.contains( [ 'INPUT', 'SELECT', 'TEXTAREA' ], e.target.tagName ) ) {
-
-                    /**
-                     * Fires when a "CTRL-Y" is pressed.
-                     *
-                     * @since 1.0.0
-                     */
-                    sidebarApp.channel.trigger( 'history:redo' );
-                }
-            }
-        } );
-
-	    /**
-         * Restores the previous history snapshot, if available.
-         *
-         * @since 1.0.0
-         */
-        $( document ).on( 'keydown', function( e ) {
-            if ( e.ctrlKey && 90 == e.keyCode ) {
-                if ( ! _.contains( [ 'INPUT', 'SELECT', 'TEXTAREA' ], e.target.tagName ) ) {
-
-                    /**
-                     * Fires when a "CTRL-Z" is pressed.
-                     *
-                     * @since 1.0.0
-                     */
-                    sidebarApp.channel.trigger( 'history:undo' );
-                }
-            }
-        } );
-    },
-
-    /**
-     * Registers the remote window Radio channel.
-     *
-     * @since 1.0.0
-     */
-    registerRemoteChannel : function() {
-        var sidebarApp = this;
-        var iFrame = this.el.querySelector( '#tailor-sidebar-preview' );
-
-        if ( window.location.origin === iFrame.contentWindow.location.origin ) {
-            var remoteChannel = iFrame.contentWindow.app.channel;
-
-            /**
-             * Returns the element collection from the remote window.
-             *
-             * @since 1.0.0
-             */
-            app.channel.reply( 'canvas:elements', function( id ) {
-                return remoteChannel.request( 'canvas:elements', id );
-            } );
-
-            /**
-             * Returns the history entry collection from the remote window.
-             *
-             * @since 1.0.0
-             */
-            app.channel.reply( 'sidebar:history', function( id ) {
-                return remoteChannel.request( 'sidebar:history', id );
-            } );
-
-            /**
-             * Returns the selected element (if any) from the remote window.
-             *
-             * @since 1.0.0
-             */
-            app.channel.reply( 'canvas:element:selected', function() {
-                return remoteChannel.request( 'canvas:element:selected' );
-            } );
-
-            // Forward allowable events from the canvas
-            app.listenTo( remoteChannel, 'all', sidebarApp.forwardRemoteEvent );
-
-            app.el.classList.add( 'is-initialized' );
-            app.el.querySelector( '.tailor-preview__viewport' ).classList.add( 'is-loaded' );
-
-            /**
-             * Fires when the sidebar is initialized.
-             *
-             * @since 1.0.0
-             */
-            remoteChannel.trigger( 'sidebar:initialize' );
-        }
-    },
-
-    /**
-     * Forwards specific events from the remote communication channel.
-     *
-     * @since 1.0.0
-     */
-    forwardRemoteEvent : function( eventName ) {
-        if ( _.contains( this.allowableEvents, eventName ) ) {
-            this.channel.trigger.apply( this.channel, arguments );
-        }
-    },
-
-    /**
-     * Triggers the collapse method if the Collapse button is selected using the Enter key.
-     *
-     * @since 1.0.0
-     */
-    maybeCollapse : function( e ) {
-        if ( 13 === e.keyCode ) {
-            this.onCollapse();
-        }
-    },
-
-    /**
-     * Triggers the save method if the Save button is selected using the Enter key.
-     *
-     * @since 1.0.0
-     */
-    maybeSave : function( e ) {
-        if ( 13 === e.keyCode ) {
-            this.onSave();
-        }
-    }
-
-} );
-
-module.exports = SidebarApplication;
-},{}],2:[function(require,module,exports){
-var callbacks = {};
+var app = window.app,
+    cssModule,
+    callbacks = {
+        'sidebar' : [],
+        'element' : []
+    };
 
 /**
- * Triggers registered callback functions when a setting value changes.
+ * Ensures that the query name provided is valid.
  *
- * @since 1.0.0
+ * @since 1.5.0
+ *
+ * @param query
+ * @returns {*}
+ */
+function checkQuery( query ) {
+    if ( ! query || ! _.contains( _.keys( cssModule.stylesheets ), query ) ) {
+        query = 'all';
+    }
+    return query;
+}
+
+/**
+ * Triggers registered callback functions when a sidebar setting is changed.
+ *
+ * @since 1.5.0
  *
  * @param setting
  */
-var onChange = function( setting ) {
+var onSidebarChange = function( setting ) {
     var settingId = setting.get( 'id' );
-    if ( callbacks[ settingId ] ) {
-        _.each( callbacks[ settingId ], function( callback ) {
-            callback.apply( app, [ setting.get( 'value' ), setting.previous( 'value' ) ] );
-        } );
+
+    // Do nothing if there are no registered callbacks for this setting
+    if ( _.isEmpty( callbacks['sidebar'][ settingId ] ) ) {
+        return;
     }
+
+    _.each( callbacks['sidebar'][ settingId ], function( callback ) {
+        callback.apply( window, [ setting.get( 'value' ), setting.previous( 'value' ) ] );
+    } );
 };
 
-app.listenTo( app.channel, 'sidebar:setting:change', onChange );
-
 /**
- * A simple API for registering a callback function to be applied when a given setting changes.
+ * Triggers registered callback functions when an element setting is changed.
  *
- * @since 1.0.0
+ * @since 1.5.0
  *
- * @param id
- * @param callback
+ * @param setting
+ * @param view
  */
-module.exports = function( id, callback ) {
+var onElementChange = function( setting, view ) {
+    var elementId = view.model.get( 'id' );
+    var settingId = setting.get( 'id' );
+
+    // Do nothing if there are no registered callbacks for this setting
+    if ( ! callbacks['element'].hasOwnProperty( settingId ) || 0 == callbacks['element'][ settingId ].length ) {
+        return;
+    }
+
+    if ( 1 == callbacks['element'][ settingId ].length ) {
+        cssModule.deleteRules( elementId, settingId );
+    }
+
+    var ruleSets = {};
+    var rules;
+    
+    _.each( callbacks['element'][ settingId ], function( callback ) {
+        if ( 'function' == typeof callback ) {
+            
+            // Get the collection of rules from the callback function
+            rules = callback.apply( view, [ setting.get( 'value' ), setting.previous( 'value' ), view.model ] );
+            
+            if ( _.isArray( rules ) && rules.length > 0 ) {
+
+                // Process the rules
+                for ( var rule in rules ) {
+                    if ( rules.hasOwnProperty( rule ) ) {
+                        
+                        if (
+                            ! rules[ rule ].hasOwnProperty( 'selectors' ) ||
+                            ! rules[ rule ].hasOwnProperty( 'declarations' )
+                        ) {
+                            continue;
+                        }
+                        
+                        var query = checkQuery( rules[ rule ].media );
+                        ruleSets[ query ] = ruleSets[ query ] || {};
+                        ruleSets[ query ][ elementId ] = ruleSets[ query ][ elementId ] || [];
+
+                        if ( _.keys( rules[ rule ].declarations ).length > 0 ) {
+                            ruleSets[ query ][ elementId ].push( {
+                                selectors: rules[ rule ].selectors,
+                                declarations: rules[ rule ].declarations,
+                                setting: settingId
+                            } );
+                        }
+                    }
+                }
+
+                // Update the rules for the element/setting
+                cssModule.addRules( ruleSets );
+            }
+        }
+    } );
+};
+
+app.listenTo( app.channel, 'sidebar:setting:change', onSidebarChange );
+app.listenTo( app.channel, 'element:setting:change', onElementChange );
+app.channel.on( 'module:css:stylesheets:ready', function( module ) {
+    cssModule = module;
+} );
+
+function registerCallback( type, id, callback ) {
     if ( 'function' === typeof callback ) {
-        callbacks[ id ] = callbacks[ id ] || [];
-        callbacks[ id ].push( callback );
+        callbacks[ type ][ id ] = callbacks[ type ][ id ] || [];
+        callbacks[ type ][ id ].push( callback );
+    }
+}
+
+module.exports = {
+
+    /**
+     * API for updating the canvas when a sidebar or element setting is changed.
+     * 
+     * Accepts an event in the form "setting_type:setting_id".
+     *
+     * @since 1.5.0
+     *
+     * @param id
+     * @param callback
+     */
+    onChange : function( id, callback ) {
+        var parts = id.split( ':' );
+        if ( parts.length >= 2 && _.contains( [ 'sidebar', 'element' ], parts[0] ) ) {
+            registerCallback( parts[0], parts[1], callback );
+        }
     }
 };
-},{}],3:[function(require,module,exports){
-/**
- * Tailor.Behaviors.Draggable
- *
- * Draggable element behaviors.
- *
- * @augments Marionette.Behavior
- */
-module.exports = Marionette.Behavior.extend( {
+},{}],2:[function(require,module,exports){
+var DraggableBehaviors = Marionette.Behavior.extend( {
 
 	events : {
 		'dragstart' : 'onDragStart',
@@ -383,15 +181,723 @@ module.exports = Marionette.Behavior.extend( {
 	}
 
 } );
+
+module.exports = DraggableBehaviors;
+},{}],3:[function(require,module,exports){
+/**
+ * window.ajax
+ *
+ * Simple AJAX utility module.
+ *
+ * @class
+ */
+var $ = jQuery,
+    Ajax;
+
+Ajax = {
+
+    url : window.ajaxurl,
+
+    /**
+     * Sends a POST request to WordPress.
+     *
+     * @param  {string} action The slug of the action to fire in WordPress.
+     * @param  {object} data   The data to populate $_POST with.
+     * @return {$.promise}     A jQuery promise that represents the request.
+     */
+    post : function( action, data ) {
+        return ajax.send( {
+            data: _.isObject( action ) ? action : _.extend( data || {}, { action: action } )
+        } );
+    },
+
+    /**
+     * Sends a POST request to WordPress.
+     *
+     * Use with wp_send_json_success() and wp_send_json_error().
+     *
+     * @param  {string} action  The slug of the action to fire in WordPress.
+     * @param  {object} options The options passed to jQuery.ajax.
+     * @return {$.promise}      A jQuery promise that represents the request.
+     */
+    send : function( action, options ) {
+
+        if ( _.isObject( action ) ) {
+            options = action;
+        }
+        else {
+            options = options || {};
+            options.data = _.extend( options.data || {}, {
+                action : action,
+                tailor : 1
+            } );
+        }
+
+        options = _.defaults( options || {}, {
+            type : 'POST',
+            url : ajax.url,
+            context : this
+        } );
+
+        return $.Deferred( function( deferred ) {
+
+            if ( options.success ) {
+                deferred.done( options.success );
+            }
+
+            var onError = options.error ? options.error : ajax.onError;
+            deferred.fail( onError );
+
+            delete options.success;
+            delete options.error;
+
+            $.ajax( options )
+                .done( function( response ) {
+
+                    // Treat a response of `1` as successful for backwards compatibility with existing handlers.
+                    if ( response === '1' || response === 1 ) {
+                        response = { success: true };
+                    }
+                    if ( _.isObject( response ) && ! _.isUndefined( response.success ) ) {
+                        deferred[ response.success ? 'resolveWith' : 'rejectWith' ]( this, [ response.data ] );
+                    }
+                    else {
+                        deferred.rejectWith( this, [ response ] );
+                    }
+                } )
+                .fail( function() {
+                    deferred.rejectWith( this, arguments );
+                } );
+
+        } ).promise();
+    },
+
+    /**
+     * General error handler for AJAX requests.
+     *
+     * @since 1.0.0
+     *
+     * @param response
+     */
+    onError : function( response ) {
+
+        // Print the error to the console if the Notify feature is unavailable
+        if ( ! Tailor.Notify ) {
+            console.error( response );
+            return;
+        }
+
+        if ( response && response.hasOwnProperty( 'message' ) ) {  // Display the error from the server
+            Tailor.Notify( response.message );
+        }
+        else if ( '0' == response ) {  // Session expired
+            Tailor.Notify( window._l10n.expired );
+        }
+        else if ( '-1' == response ) {  // Invalid nonce
+            Tailor.Notify( window._l10n.invalid );
+        }
+        else {  // General error condition
+            Tailor.Notify( window._l10n.error );
+        }
+    }
+};
+
+window.ajax = Ajax;
+
+module.exports = Ajax;
 },{}],4:[function(require,module,exports){
 /**
- * Tailor.Behaviors.Panel
+ * Tailor.Notify
  *
- * Panel behaviors.
+ * Notification class for presenting simple messages to the end user.
  *
- * @augments Marionette.Behavior
+ * @class
  */
-module.exports = Marionette.Behavior.extend( {
+var Notification;
+
+require( './polyfills/transitions' );
+
+Notification = function( options ) {
+    this.options = _.extend( {}, this.defaults, options );
+    this.el = document.createElement( 'div' );
+    this.el.className = 'notification notification--' + this.options.type;
+    this.container = document.getElementById( 'tailor-notification-container' ) || document.body;
+
+    this.initialize();
+};
+
+Notification.prototype = {
+
+    defaults : {
+        message : '',
+        type : '',
+        ttl : 3000,
+
+        onShow: function () {},
+        onHide: function () {}
+    },
+
+	/**
+	 * Initializes the notification.
+	 *
+	 * @since 1.0.0
+	 */
+	initialize : function() {
+        this.el.innerHTML = this.options.message;
+        this.container.insertBefore( this.el, this.container.firstChild );
+    },
+
+	/**
+	 * Shows the notification.
+	 *
+	 * @since 1.0.0
+	 */
+    show : function() {
+        var notification = this;
+        notification.el.classList.add( 'is-visible' );
+
+        if ( 'function' == typeof notification.options.onShow ) {
+            notification.options.onShow.call( notification );
+        }
+
+        notification.session = setTimeout( function() {
+            notification.hide();
+        }, notification.options.ttl );
+    },
+
+    /**
+     * Hides the notification.
+     *
+     * @since 1.0.0
+     */
+    hide : function() {
+
+        var obj = this;
+
+        var onTransitionEnd = function( e ) {
+
+            if ( Modernizr.cssanimations ) {
+                if ( e.target !== obj.el ) {
+                    return false;
+                }
+                obj.el.removeEventListener( window.transitionEndName, onTransitionEnd );
+            }
+
+            obj.container.removeChild( obj.el );
+
+            if ( 'function' == typeof obj.options.onShow ) {
+                obj.options.onShow.call( obj );
+            }
+        };
+
+        clearTimeout( obj.session );
+
+        if ( Modernizr.csstransitions ) {
+            obj.el.addEventListener( window.transitionEndName, onTransitionEnd );
+            obj.el.classList.remove( 'is-visible' );
+        }
+        else {
+            onTransitionEnd();
+        }
+    }
+};
+
+/**
+ * Creates a new notification.
+ *
+ * @since 1.0.0
+ *
+ * @param msg
+ * @param type
+ */
+var notify = function( msg, type ) {
+
+    var notification = new Notification( {
+        message : msg,
+        type : type || 'error'
+    } );
+
+    notification.show();
+};
+
+module.exports = notify;
+
+},{"./polyfills/transitions":7}],5:[function(require,module,exports){
+/**
+ * classList Polyfill
+ *
+ * https://developer.mozilla.org/en-US/docs/Web/API/Element/classList
+ */
+( function() {
+
+	if ( 'undefined' === typeof window.Element || 'classList' in document.documentElement ) {
+		return;
+	}
+
+	var prototype = Array.prototype,
+		push = prototype.push,
+		splice = prototype.splice,
+		join = prototype.join;
+
+	function DOMTokenList( el ) {
+		this.el = el;
+		var classes = el.className.replace( /^\s+|\s+$/g, '' ).split( /\s+/ );
+		for ( var i = 0; i < classes.length; i++ ) {
+			push.call( this, classes[ i ] );
+		}
+	}
+
+	DOMTokenList.prototype = {
+
+		add: function( token ) {
+			if ( this.contains( token ) ) {
+				return;
+			}
+			push.call( this, token );
+			this.el.className = this.toString();
+		},
+
+		contains: function( token ) {
+			return this.el.className.indexOf( token ) != -1;
+		},
+
+		item: function( index ) {
+			return this[ index ] || null;
+		},
+
+		remove: function( token ) {
+			if ( ! this.contains( token ) ) {
+				return;
+			}
+			for ( var i = 0; i < this.length; i++ ) {
+				if ( this[ i ] == token ) {
+					break;
+				}
+			}
+			splice.call( this, i, 1 );
+			this.el.className = this.toString();
+		},
+
+		toString: function() {
+			return join.call( this, ' ' );
+		},
+
+		toggle: function( token ) {
+			if ( ! this.contains( token ) ) {
+				this.add( token );
+			}
+			else {
+				this.remove( token );
+			}
+			return this.contains( token );
+		}
+	};
+
+	window.DOMTokenList = DOMTokenList;
+
+	function defineElementGetter( obj, prop, getter ) {
+		if ( Object.defineProperty ) {
+			Object.defineProperty( obj, prop, {
+				get : getter
+			} );
+		}
+		else {
+			obj.__defineGetter__( prop, getter );
+		}
+	}
+
+	defineElementGetter( Element.prototype, 'classList', function() {
+		return new DOMTokenList( this );
+	} );
+
+} )();
+
+},{}],6:[function(require,module,exports){
+/**
+ * requestAnimationFrame polyfill.
+ *
+ * https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
+ */
+( function( window ) {
+
+	'use strict';
+
+	var lastTime = 0,
+		vendors = [ 'ms', 'moz', 'webkit', 'o' ];
+
+	for ( var x = 0; x < vendors.length && ! window.requestAnimationFrame; ++x ) {
+		window.requestAnimationFrame = window[ vendors[ x ] + 'RequestAnimationFrame' ];
+		window.cancelAnimationFrame = window[ vendors[ x ] + 'CancelAnimationFrame' ] || window[ vendors[ x ] + 'CancelRequestAnimationFrame' ];
+	}
+
+	if ( ! window.requestAnimationFrame ) {
+		window.requestAnimationFrame = function( callback, el ) {
+			var currTime = new Date().getTime();
+			var timeToCall = Math.max( 0, 16 - ( currTime - lastTime ) );
+			var id = window.setTimeout( function() {
+					callback( currTime + timeToCall );
+				},
+				timeToCall );
+			lastTime = currTime + timeToCall;
+			return id;
+		};
+	}
+
+	if ( ! window.cancelAnimationFrame ) {
+		window.cancelAnimationFrame = function( id ) {
+			clearTimeout( id );
+		};
+	}
+
+} ) ( window );
+
+},{}],7:[function(require,module,exports){
+/**
+ * Makes animation and transition support status and end names available as global variables.
+ */
+( function( window ) {
+
+    'use strict';
+
+    var el = document.createElement( 'fakeelement' );
+
+    function getAnimationEvent(){
+        var t,
+            animations = {
+                'animation' : 'animationend',
+                'OAnimation' : 'oAnimationEnd',
+                'MozAnimation' : 'animationend',
+                'WebkitAnimation' : 'webkitAnimationEnd'
+            };
+
+        for ( t in animations ) {
+            if ( animations.hasOwnProperty( t ) && 'undefined' !== typeof el.style[ t ] ) {
+                return animations[ t ];
+            }
+        }
+
+        return false;
+    }
+
+    function getTransitionEvent(){
+        var t,
+            transitions = {
+                'transition' : 'transitionend',
+                'OTransition' : 'oTransitionEnd',
+                'MozTransition' : 'transitionend',
+                'WebkitTransition' : 'webkitTransitionEnd'
+            };
+
+        for ( t in transitions ) {
+            if ( transitions.hasOwnProperty( t ) && 'undefined' !== typeof el.style[ t ] ) {
+                return transitions[ t ];
+            }
+        }
+
+        return false;
+    }
+
+    window.animationEndName = getAnimationEvent();
+    window.transitionEndName = getTransitionEvent();
+
+} ) ( window );
+
+},{}],8:[function(require,module,exports){
+/**
+ * The Sidebar Marionette application.
+ */
+var $ = Backbone.$,
+    SidebarApplication;
+
+SidebarApplication = Marionette.Application.extend( {
+
+	el : document.querySelector( '#tailor' ),
+
+    /**
+     * Initializes the application.
+     *
+     * @since 1.0.0
+     */
+	initialize : function() {
+        this._collapsed = false;
+        this._unsavedChanges = false;
+        this.saveButton = document.querySelector( '#tailor-save' );
+        this.allowableEvents = [
+
+            // Triggered when the canvas is initialized
+            'canvas:initialize',
+
+            // Triggered by element actions
+	        'element:add',
+            'element:move',
+            'element:resize',
+            'element:change:order',
+            'element:copy',
+            'element:delete',
+            
+            // Triggered when the element collection is restored from a snapshot
+	        'elements:restore',
+
+            // Triggered when a set of template models are added to the element collection
+            'template:add',
+            
+            // Triggered when an element is edited
+            'modal:open',
+            'modal:destroy'
+        ];
+
+        this.addEventListeners();
+    },
+
+    /**
+     * Returns true if there are unsaved changes.
+     *
+     * @since 1.0.0
+     *
+     * @returns {boolean}
+     */
+    hasUnsavedChanges : function() {
+        return this._unsavedChanges;
+    },
+
+    /**
+     * Adds the required event listeners.
+     *
+     * @since 1.0.0
+     */
+    addEventListeners : function() {
+        var sidebar = this;
+        var events = [
+            'element:add',              // When an element is added
+            'element:move',             // When an element is moved
+            'element:resize',           // When an element (e.g., column) is resized
+            'element:change:order',     // When an element (e.g., tab) is reordered
+            'element:copy',             // When an element is copied
+            'element:delete',           // When an element is deleted
+            'modal:apply',              // When changes to an element are applied
+            'template:add',             // When a template is added
+            'sidebar:setting:change'    // When a sidebar setting is changed
+        ];
+
+        /**
+         * Updates the Save button and adds a confirmation prompt to the window when a change occurs.
+         *
+         * @since 1.0.0
+         */
+        sidebar.listenTo( sidebar.channel, events.join( ' ' ), function() {
+            sidebar.saveButton.disabled = false;
+            sidebar.saveButton.innerHTML = window._l10n.publish;
+            sidebar._unsavedChanges = true;
+        } );
+
+        /**
+         * Collapses the Sidebar when the Collapse button is selected.
+         *
+         * @since 1.0.0
+         */
+        $( '#tailor-collapse' ).on( 'click', function() {
+            sidebar._collapsed = ! sidebar._collapsed;
+            sidebar.el.classList.toggle( 'is-collapsed', sidebar._collapsed );
+            sidebar.saveButton.setAttribute( 'aria-expanded', ! sidebar._collapsed );
+
+            /**
+             * Fires before the application closes.
+             *
+             * @since 1.0.0
+             */
+            sidebar.triggerMethod( 'collapse:sidebar' );
+        } );
+
+        /**
+         * Saves settings and models when the Save button is clicked.
+         *
+         * @since 1.0.0
+         */
+        $( sidebar.saveButton ).on( 'click', function() {
+            sidebar.el.classList.add( 'is-saving' );
+            sidebar.saveButton.setAttribute( 'disabled', true );
+
+            var models = sidebar.channel.request( 'canvas:elements' );
+            var settings = sidebar.channel.request( 'sidebar:settings' );
+
+            window.ajax.send( 'tailor_save', {
+                data : {
+                    post_id : window.post.id,
+                    models : JSON.stringify( models.toJSON() ),
+                    settings : JSON.stringify( settings.toJSON() ),
+                    nonce : window._nonces.save
+                },
+
+                /**
+                 * Updates the sidebar after a save action is completed successfully.
+                 *
+                 * @since 1.0.0
+                 */
+                success : function() {
+                    sidebar.saveButton.disabled = true;
+                    sidebar.saveButton.innerHTML = window._l10n.saved;
+                    sidebar._unsavedChanges = false;
+
+                    /**
+                     * Fires when changes are successfully saved.
+                     *
+                     * @since 1.0.0
+                     */
+                    sidebar.channel.trigger( 'sidebar:save' );
+                },
+
+                /**
+                 * Displays an error notification on request failure.
+                 *
+                 * @since 1.0.0
+                 *
+                 * @param response
+                 */
+                error: function( response ) {
+                    sidebar.saveButton.disabled = false;
+
+                    if ( response && response.hasOwnProperty( 'message' ) ) { // Display the error from the server
+                        Tailor.Notify( response.message );
+                    }
+                    else if ( '0' == response ) {  // Session expired
+                        Tailor.Notify( window._l10n.expired );
+                    }
+                    else if ( '-1' == response ) {  // Invalid nonce
+                        Tailor.Notify( window._l10n.invalid );
+                    }
+                    else {  // General error condition
+                        Tailor.Notify( window._l10n.error );
+                    }
+                },
+
+                /**
+                 * Updates the sidebar upon request completion.
+                 *
+                 * @since 1.0.0
+                 */
+                complete : function() {
+                    sidebar.el.classList.remove( 'is-saving' );
+                }
+            } );
+        } );
+
+        sidebar.listenToOnce( sidebar.channel, 'canvas:handshake', sidebar.registerRemoteChannel );
+
+        /**
+         * Restores the next history snapshot, if available.
+         *
+         * @since 1.0.0
+         */
+        $( document ).on( 'keydown', function( e ) {
+            if ( e.ctrlKey && 89 == e.keyCode ) {
+                if ( ! _.contains( [ 'INPUT', 'SELECT', 'TEXTAREA' ], e.target.tagName ) ) {
+
+                    /**
+                     * Fires when a "CTRL-Y" is pressed.
+                     *
+                     * @since 1.0.0
+                     */
+                    sidebar.channel.trigger( 'history:redo' );
+                }
+            }
+        } );
+
+	    /**
+         * Restores the previous history snapshot, if available.
+         *
+         * @since 1.0.0
+         */
+        $( document ).on( 'keydown', function( e ) {
+            if ( e.ctrlKey && 90 == e.keyCode ) {
+                if ( ! _.contains( [ 'INPUT', 'SELECT', 'TEXTAREA' ], e.target.tagName ) ) {
+
+                    /**
+                     * Fires when a "CTRL-Z" is pressed.
+                     *
+                     * @since 1.0.0
+                     */
+                    sidebar.channel.trigger( 'history:undo' );
+                }
+            }
+        } );
+    },
+
+    /**
+     * Registers the remote window Radio channel.
+     *
+     * @since 1.0.0
+     */
+    registerRemoteChannel : function() {
+        var sidebarApp = this;
+        var iFrame = this.el.querySelector( '#tailor-sidebar-preview' );
+
+        if ( window.location.origin === iFrame.contentWindow.location.origin ) {
+            var remoteChannel = iFrame.contentWindow.app.channel;
+            
+            /**
+             * Returns the element collection from the remote window.
+             *
+             * @since 1.0.0
+             */
+            app.channel.reply( 'canvas:elements', function( id ) {
+                return remoteChannel.request( 'canvas:elements', id );
+            } );
+
+            /**
+             * Returns the selected element (if any) from the remote window.
+             *
+             * @since 1.0.0
+             */
+            app.channel.reply( 'canvas:element:selected', function() {
+                return remoteChannel.request( 'canvas:element:selected' );
+            } );
+
+            // Forward allowable events from the canvas
+            app.listenTo( remoteChannel, 'all', sidebarApp.forwardRemoteEvent );
+
+            app.el.classList.add( 'is-initialized' );
+            app.el.querySelector( '.tailor-preview__viewport' ).classList.add( 'is-loaded' );
+        }
+    },
+
+    /**
+     * Forwards specific events from the remote communication channel.
+     *
+     * @since 1.0.0
+     */
+    forwardRemoteEvent : function( eventName ) {
+        if ( _.contains( this.allowableEvents, eventName ) ) {
+            this.channel.trigger.apply( this.channel, arguments );
+        }
+    },
+
+    /**
+     * Triggers the collapse method if the Collapse button is selected using the Enter key.
+     *
+     * @since 1.0.0
+     */
+    maybeCollapse : function( e ) {
+        if ( 13 === e.keyCode ) {
+            this.onCollapse();
+        }
+    },
+
+    /**
+     * Triggers the save method if the Save button is selected using the Enter key.
+     *
+     * @since 1.0.0
+     */
+    maybeSave : function( e ) {
+        if ( 13 === e.keyCode ) {
+            this.onSave();
+        }
+    }
+
+} );
+
+module.exports = SidebarApplication;
+},{}],9:[function(require,module,exports){
+var PanelBehavior = Marionette.Behavior.extend( {
 
     ui: {
         backButton : '.back-button',
@@ -434,15 +940,10 @@ module.exports = Marionette.Behavior.extend( {
     }
 
 } );
-},{}],5:[function(require,module,exports){
-/**
- * Tailor.Behaviors.Resizable
- *
- * Resizable element behaviors.
- *
- * @augments Marionette.Behavior
- */
-module.exports = Marionette.Behavior.extend( {
+
+module.exports = PanelBehavior;
+},{}],10:[function(require,module,exports){
+var ResizableBehavior = Marionette.Behavior.extend( {
 
     ui : {
         handle : '.modal__title'
@@ -553,7 +1054,11 @@ module.exports = Marionette.Behavior.extend( {
         }
 
         var edges = this.detectEdges( e );
-        if ( edges.length && ! this.$container.hasClass( 'is-full-screen' ) && ! document.body.classList.contains( 'mce-fullscreen' ) ) {
+        if (
+            edges.length &&
+            ! this.$container.hasClass( 'is-full-screen' ) &&
+            ! document.body.classList.contains( 'mce-fullscreen' )
+        ) {
             this.resize( e, edges );
         }
         else if ( e.target === this.ui.handle.get(0) ) {
@@ -934,13 +1439,10 @@ module.exports = Marionette.Behavior.extend( {
     }
 
 } );
-},{}],6:[function(require,module,exports){
-/**
- * An abstract control.
- *
- * @augments Marionette.ItemView
- */
-module.exports = Marionette.ItemView.extend( {
+
+module.exports = ResizableBehavior;
+},{}],11:[function(require,module,exports){
+var AbstractControl = Marionette.ItemView.extend( {
 
     tagName : 'li',
 
@@ -1018,7 +1520,7 @@ module.exports = Marionette.ItemView.extend( {
                 var actual = target.get( 'value' );
                 var required = dependencies[ id ].value;
 
-                if ( ! this.checkCondition( condition, actual, required ) ) {
+                if ( ! Tailor.Helpers.checkCondition( condition, actual, required ) ) {
                     visible = false;
                     break;
                 }
@@ -1029,55 +1531,15 @@ module.exports = Marionette.ItemView.extend( {
     },
 
     /**
-     * Evaluates whether the given condition is true, given two values.
-     *
-     * @since 1.0.0
-     *
-     * @param actual
-     * @param condition
-     * @param required
-     * @returns {*}
-     */
-    checkCondition : function( condition, actual, required ) {
-        switch ( condition ) {
-
-            case 'equals' :
-                return actual === required;
-
-            case 'not':
-                if ( _.isArray( required ) ) {
-                    return -1 === required.indexOf( actual );
-                }
-                return actual !== required;
-
-            case 'lessThan':
-                return ( actual < parseInt( required, 10 ) );
-
-            case 'greaterThan':
-                return ( actual > parseInt( required, 10 ) );
-
-            case 'contains' :
-                if ( _.isString( actual ) ) {
-                    actual = actual.split( ',' );
-                }
-                if ( _.isArray( required ) ) {
-                    var intersection = _.intersection( required, actual );
-                    return 0 !== intersection.length;
-                }
-                return -1 !== _.indexOf( actual, required );
-        }
-    },
-
-    /**
      * Responds to a control change.
      *
      * @since 1.0.0
      */
-    onControlChange : _.debounce( function( e ) {
+    onControlChange : function( e ) {
         if ( 'function' == typeof this.ui.input.val ) {
             this.setSettingValue( this.ui.input.val() );
         }
-    }, 250 ),
+    },
 
     /**
      * Toggles the default button based on the setting value.
@@ -1133,7 +1595,9 @@ module.exports = Marionette.ItemView.extend( {
     }
 
 } );
-},{}],7:[function(require,module,exports){
+
+module.exports = AbstractControl;
+},{}],12:[function(require,module,exports){
 /**
  * Tailor.Controls.ButtonGroup
  *
@@ -1141,8 +1605,7 @@ module.exports = Marionette.ItemView.extend( {
  *
  * @augments Marionette.ItemView
  */
-var $ = Backbone.$,
-	AbstractControl = require( './abstract-control' ),
+var AbstractControl = require( './abstract-control' ),
 	ButtonGroupControl;
 
 ButtonGroupControl = AbstractControl.extend( {
@@ -1199,7 +1662,8 @@ ButtonGroupControl = AbstractControl.extend( {
 } );
 
 module.exports = ButtonGroupControl;
-},{"./abstract-control":6}],8:[function(require,module,exports){
+
+},{"./abstract-control":11}],13:[function(require,module,exports){
 /**
  * Tailor.Controls.Checkbox
  *
@@ -1207,8 +1671,7 @@ module.exports = ButtonGroupControl;
  *
  * @augments Marionette.ItemView
  */
-var $ = Backbone.$,
-    AbstractControl = require( './abstract-control' ),
+var AbstractControl = require( './abstract-control' ),
 	CheckboxControl;
 
 CheckboxControl = AbstractControl.extend( {
@@ -1265,7 +1728,8 @@ CheckboxControl = AbstractControl.extend( {
 } );
 
 module.exports = CheckboxControl;
-},{"./abstract-control":6}],9:[function(require,module,exports){
+
+},{"./abstract-control":11}],14:[function(require,module,exports){
 /**
  * Tailor.Controls.Code
  *
@@ -1273,8 +1737,7 @@ module.exports = CheckboxControl;
  *
  * @augments Marionette.ItemView
  */
-var $ = Backbone.$,
-	AbstractControl = require( './abstract-control' ),
+var AbstractControl = require( './abstract-control' ),
 	CodeControl;
 
 CodeControl = AbstractControl.extend( {
@@ -1368,7 +1831,8 @@ CodeControl = AbstractControl.extend( {
 } );
 
 module.exports = CodeControl;
-},{"./abstract-control":6}],10:[function(require,module,exports){
+
+},{"./abstract-control":11}],15:[function(require,module,exports){
 /**
  * Tailor.Controls.ColorPicker
  *
@@ -1376,8 +1840,7 @@ module.exports = CodeControl;
  *
  * @augments Marionette.ItemView
  */
-var $ = Backbone.$,
-    AbstractControl = require( './abstract-control' ),
+var AbstractControl = require( './abstract-control' ),
     ColorPickerControl;
 
 /**
@@ -1751,9 +2214,7 @@ ColorPickerControl = AbstractControl.extend( {
      * @since 1.0.0
      */
     onRender : function() {
-
         var control = this;
-
         this.ui.input.wpColorPicker( {
             palettes : this.model.get( 'palettes' ),
             defaultColor : control.getDefaultValue(),
@@ -1765,7 +2226,6 @@ ColorPickerControl = AbstractControl.extend( {
             clear : function() {
                 control.setSettingValue( '' );
             }
-
         } );
     },
 
@@ -1781,7 +2241,8 @@ ColorPickerControl = AbstractControl.extend( {
 } );
 
 module.exports = ColorPickerControl;
-},{"./abstract-control":6}],11:[function(require,module,exports){
+
+},{"./abstract-control":11}],16:[function(require,module,exports){
 /**
  * Tailor.Controls.Editor
  *
@@ -1789,8 +2250,7 @@ module.exports = ColorPickerControl;
  *
  * @augments Marionette.ItemView
  */
-var $ = Backbone.$,
-	AbstractControl = require( './abstract-control' ),
+var AbstractControl = require( './abstract-control' ),
 	EditorControl;
 
 EditorControl = AbstractControl.extend( {
@@ -1891,7 +2351,8 @@ EditorControl = AbstractControl.extend( {
 } );
 
 module.exports = EditorControl;
-},{"./abstract-control":6}],12:[function(require,module,exports){
+
+},{"./abstract-control":11}],17:[function(require,module,exports){
 /**
  * Tailor.Controls.Gallery
  *
@@ -1899,8 +2360,7 @@ module.exports = EditorControl;
  *
  * @augments Marionette.ItemView
  */
-var $ = Backbone.$,
-    AbstractControl = require( './abstract-control' ),
+var AbstractControl = require( './abstract-control' ),
     GalleryControl;
 
 GalleryControl = AbstractControl.extend( {
@@ -2121,7 +2581,8 @@ GalleryControl = AbstractControl.extend( {
 } );
 
 module.exports = GalleryControl;
-},{"./abstract-control":6}],13:[function(require,module,exports){
+
+},{"./abstract-control":11}],18:[function(require,module,exports){
 /**
  * Tailor.Controls.Icon
  *
@@ -2270,7 +2731,8 @@ IconControl = AbstractControl.extend( {
 } );
 
 module.exports = IconControl;
-},{"./abstract-control":6}],14:[function(require,module,exports){
+
+},{"./abstract-control":11}],19:[function(require,module,exports){
 /**
  * Tailor.Controls.Image
  *
@@ -2278,8 +2740,7 @@ module.exports = IconControl;
  *
  * @augments Marionette.ItemView
  */
-var $ = Backbone.$,
-    AbstractControl = require( './abstract-control' ),
+var AbstractControl = require( './abstract-control' ),
     ImageControl;
 
 ImageControl = AbstractControl.extend( {
@@ -2437,7 +2898,8 @@ ImageControl = AbstractControl.extend( {
 } );
 
 module.exports = ImageControl;
-},{"./abstract-control":6}],15:[function(require,module,exports){
+
+},{"./abstract-control":11}],20:[function(require,module,exports){
 /**
  * Tailor.Controls.Link
  *
@@ -2635,28 +3097,27 @@ LinkControl = AbstractControl.extend( {
 } );
 
 module.exports = LinkControl;
-},{"./abstract-control":6}],16:[function(require,module,exports){
+
+},{"./abstract-control":11}],21:[function(require,module,exports){
 /**
  * The empty-list view.
  *
  * @since 1.0.0
  */
-
-module.exports = Marionette.ItemView.extend( {
+var EmptyListView = Marionette.ItemView.extend( {
 
     template : '#tmpl-tailor-control-list-empty'
 
 } );
-},{}],17:[function(require,module,exports){
+
+module.exports = EmptyListView;
+},{}],22:[function(require,module,exports){
 /**
  * Individual list item view.
  *
  * @augments Marionette.CompositeView
  */
-var $ = Backbone.$,
-	ListItemControl;
-
-ListItemControl = Marionette.CompositeView.extend( {
+var ListItemControl = Marionette.CompositeView.extend( {
 
     tagName : 'li',
 
@@ -2688,7 +3149,7 @@ ListItemControl = Marionette.CompositeView.extend( {
      * @returns {*|exports|module.exports}
      */
     getChildView: function( child ) {
-        return window.Tailor.Controls.lookup( child.get( 'type' ) );
+        return Tailor.lookup( child.get( 'type' ), false, 'Controls' );
     },
 
     childViewContainer : '#controls',
@@ -2849,7 +3310,8 @@ ListItemControl = Marionette.CompositeView.extend( {
 } );
 
 module.exports = ListItemControl;
-},{}],18:[function(require,module,exports){
+
+},{}],23:[function(require,module,exports){
 /**
  * Tailor.Controls.List
  *
@@ -2857,10 +3319,7 @@ module.exports = ListItemControl;
  *
  * @augments Marionette.CompositeView
  */
-var $ = Backbone.$,
-    ListControl;
-
-ListControl = Marionette.CompositeView.extend( {
+var ListControl = Marionette.CompositeView.extend( {
 
     childView : require( './list-item' ),
 
@@ -2939,8 +3398,8 @@ ListControl = Marionette.CompositeView.extend( {
         this._added = [];
         this._deleted = [];
 
-        var listLibraryItem = app.channel.request( 'sidebar:library', this.element.get( 'tag' ) );
-        this.child = app.channel.request( 'sidebar:library', listLibraryItem.get( 'child' ) );
+        var listItemDefinition = app.channel.request( 'sidebar:library', this.element.get( 'tag' ) );
+        this.child = app.channel.request( 'sidebar:library', listItemDefinition.get( 'child' ) );
 
         this.addEventListeners();
     },
@@ -3159,7 +3618,8 @@ ListControl = Marionette.CompositeView.extend( {
 } );
 
 module.exports = ListControl;
-},{"./list-empty":16,"./list-item":17}],19:[function(require,module,exports){
+
+},{"./list-empty":21,"./list-item":22}],24:[function(require,module,exports){
 /**
  * Tailor.Controls.Radio
  *
@@ -3167,8 +3627,7 @@ module.exports = ListControl;
  *
  * @augments Marionette.ItemView
  */
-var $ = Backbone.$,
-    AbstractControl = require( './abstract-control' ),
+var AbstractControl = require( './abstract-control' ),
     RadioControl;
 
 RadioControl = AbstractControl.extend( {
@@ -3215,7 +3674,8 @@ RadioControl = AbstractControl.extend( {
 } );
 
 module.exports = RadioControl;
-},{"./abstract-control":6}],20:[function(require,module,exports){
+
+},{"./abstract-control":11}],25:[function(require,module,exports){
 /**
  * Tailor.Controls.Range
  *
@@ -3223,8 +3683,7 @@ module.exports = RadioControl;
  *
  * @augments Marionette.ItemView
  */
-var $ = Backbone.$,
-    AbstractControl = require( './abstract-control' ),
+var AbstractControl = require( './abstract-control' ),
     RangeControl;
 
 RangeControl = AbstractControl.extend( {
@@ -3269,16 +3728,16 @@ RangeControl = AbstractControl.extend( {
 } );
 
 module.exports = RangeControl;
-},{"./abstract-control":6}],21:[function(require,module,exports){
+
+},{"./abstract-control":11}],26:[function(require,module,exports){
 /**
  * Tailor.Controls.SelectMulti
  *
- * A select control.
+ * A select multi control.
  *
  * @augments Marionette.ItemView
  */
-var $ = Backbone.$,
-    AbstractControl = require( './abstract-control' ),
+var AbstractControl = require( './abstract-control' ),
     SelectMultiControl;
 
 SelectMultiControl = AbstractControl.extend( {
@@ -3356,7 +3815,8 @@ SelectMultiControl = AbstractControl.extend( {
 } );
 
 module.exports = SelectMultiControl;
-},{"./abstract-control":6}],22:[function(require,module,exports){
+
+},{"./abstract-control":11}],27:[function(require,module,exports){
 /**
  * Tailor.Controls.Select
  *
@@ -3364,8 +3824,7 @@ module.exports = SelectMultiControl;
  *
  * @augments Marionette.ItemView
  */
-var $ = Backbone.$,
-    AbstractControl = require( './abstract-control' ),
+var AbstractControl = require( './abstract-control' ),
     SelectControl;
 
 SelectControl = AbstractControl.extend( {
@@ -3389,7 +3848,7 @@ SelectControl = AbstractControl.extend( {
 
 module.exports = SelectControl;
 
-},{"./abstract-control":6}],23:[function(require,module,exports){
+},{"./abstract-control":11}],28:[function(require,module,exports){
 /**
  * Tailor.Controls.Style
  *
@@ -3397,8 +3856,7 @@ module.exports = SelectControl;
  *
  * @augments Marionette.ItemView
  */
-var $ = Backbone.$,
-    AbstractControl = require( './abstract-control' ),
+var AbstractControl = require( './abstract-control' ),
     StyleControl;
 
 StyleControl = AbstractControl.extend( {
@@ -3424,11 +3882,14 @@ StyleControl = AbstractControl.extend( {
      * @param options
      */
     initialize : function( options ) {
-
-        this.linked = false;
+        this.linked = true;
 
         this.addEventListeners();
         this.checkDependencies( this.model.setting );
+    },
+
+    onRender : function() {
+        this.ui.link.toggleClass( 'is-active', this.linked );
     },
     
     onLinkChange: function() {
@@ -3507,7 +3968,8 @@ StyleControl = AbstractControl.extend( {
 } );
 
 module.exports = StyleControl;
-},{"./abstract-control":6}],24:[function(require,module,exports){
+
+},{"./abstract-control":11}],29:[function(require,module,exports){
 /**
  * Tailor.Controls.Switch
  *
@@ -3515,8 +3977,7 @@ module.exports = StyleControl;
  *
  * @augments Marionette.ItemView
  */
-var $ = Backbone.$,
-    AbstractControl = require( './abstract-control' ),
+var AbstractControl = require( './abstract-control' ),
     SwitchControl;
 
 SwitchControl = AbstractControl.extend( {
@@ -3564,7 +4025,8 @@ SwitchControl = AbstractControl.extend( {
 } );
 
 module.exports = SwitchControl;
-},{"./abstract-control":6}],25:[function(require,module,exports){
+
+},{"./abstract-control":11}],30:[function(require,module,exports){
 /**
  * Tailor.Controls.Text
  *
@@ -3572,8 +4034,7 @@ module.exports = SwitchControl;
  *
  * @augments Marionette.ItemView
  */
-var $ = Backbone.$,
-    AbstractControl = require( './abstract-control' ),
+var AbstractControl = require( './abstract-control' ),
     TextControl;
 
 TextControl = AbstractControl.extend( {
@@ -3627,7 +4088,8 @@ TextControl = AbstractControl.extend( {
 } );
 
 module.exports = TextControl;
-},{"./abstract-control":6}],26:[function(require,module,exports){
+
+},{"./abstract-control":11}],31:[function(require,module,exports){
 /**
  * Tailor.Controls.Textarea
  *
@@ -3635,8 +4097,7 @@ module.exports = TextControl;
  *
  * @augments Marionette.ItemView
  */
-var $ = Backbone.$,
-    AbstractControl = require( './abstract-control' ),
+var AbstractControl = require( './abstract-control' ),
     TextareaControl;
 
 TextareaControl = AbstractControl.extend( {
@@ -3653,7 +4114,8 @@ TextareaControl = AbstractControl.extend( {
 } );
 
 module.exports = TextareaControl;
-},{"./abstract-control":6}],27:[function(require,module,exports){
+
+},{"./abstract-control":11}],32:[function(require,module,exports){
 /**
  * Tailor.Controls.Video
  *
@@ -3661,8 +4123,7 @@ module.exports = TextareaControl;
  *
  * @augments Marionette.ItemView
  */
-var $ = Backbone.$,
-    AbstractControl = require( './abstract-control' ),
+var AbstractControl = require( './abstract-control' ),
     VideoControl;
 
 VideoControl = AbstractControl.extend( {
@@ -3690,7 +4151,6 @@ VideoControl = AbstractControl.extend( {
      * @param options
      */
     initialize : function( options ) {
-
         this.frame = wp.media( {
             states: [
                 new wp.media.controller.Library({
@@ -3821,576 +4281,9 @@ VideoControl = AbstractControl.extend( {
 } );
 
 module.exports = VideoControl;
-},{"./abstract-control":6}],28:[function(require,module,exports){
-/**
- * Tailor.Items.Default
- *
- * A default list item.
- *
- * @augments Marionette.ItemView
- */
-var $ = Backbone.$,
-    DefaultItem;
 
-DefaultItem = Marionette.ItemView.extend( {
-
-    events : {
-        click : 'onClick',
-        keypress : 'onKeyPress'
-    },
-
-    modelEvents : {
-        'focus' : 'onFocus'
-    },
-
-    /**
-     * Returns the appropriate template based on the panel type.
-     *
-     * @since 1.0.0
-     * @returns {string}
-     */
-    template : '#tmpl-tailor-panel-default-item',
-
-    /**
-     * Uses the rendered template HTML as the $el.
-     *
-     * @since 1.0.0
-     * @param html
-     * @returns {exports}
-     */
-    attachElContent : function( html ) {
-        var $el = $( html );
-        this.$el.replaceWith( $el );
-        this.setElement( $el );
-        this.el.setAttribute( 'tabindex', 0 );
-
-        return this;
-    },
-
-	/**
-	 * Displays the associated section when the item is clicked.
-	 *
-	 * @since 1.0.0
-	 */
-    onClick : function() {
-        this.triggerMethod( 'show:section' );
-    },
-
-	/**
-	 * Displays the associated section when the item is selected using the keyboard.
-	 *
-	 * @since 1.0.0
-	 */
-    onKeyPress : function( e ) {
-        if ( 13 === e.which ) {
-            this.triggerMethod( 'show:section' );
-        }
-    },
-
-	/**
-	 * Sets focus on the list item.
-	 *
-	 * @since 1.0.0
-	 */
-	onFocus : function() {
-		this.el.focus();
-	}
-
-} );
-
-module.exports = DefaultItem;
-},{}],29:[function(require,module,exports){
-/**
- * Tailor.Items.History
- *
- * A list item for the History panel.
- *
- * @augments Marionette.ItemView
- */
-var $ = Backbone.$,
-    HistoryItem;
-
-HistoryItem = Marionette.ItemView.extend( {
-
-    events : {
-        click : 'restore',
-        keypress : 'onKeyPress'
-    },
-
-    /**
-     * Returns the appropriate template based on the panel type.
-     *
-     * @since 1.0.0
-     *
-     * @returns {string}
-     */
-    template : '#tmpl-tailor-panel-history-item',
-
-    /**
-     * Initializes the item.
-     *
-     * @since 1.0.0
-     */
-    initialize : function() {
-        this.addEventListeners();
-    },
-
-    /**
-     * Adds the required event listeners.
-     *
-     * @since 1.0.0
-     */
-    addEventListeners : function() {
-        this.listenTo( this.model.collection, 'change:active', this.toggleClass );
-    },
-
-	/**
-	 * Assigns the appropriate class name to the item based on whether it is active.
-	 *
-	 * @since 1.0.0
-	 */
-    onRender : function() {
-        this.toggleClass();
-    },
-
-    /**
-     * Uses the rendered template HTML as the $el.
-     *
-     * @since 1.0.0
-     *
-     * @param html
-     * @returns {exports}
-     */
-    attachElContent : function( html ) {
-        var $el = $( html );
-
-        this.$el.replaceWith( $el );
-        this.setElement( $el );
-        this.el.setAttribute( 'tabindex', 0 );
-
-        return this;
-    },
-
-	/**
-	 * Restores the associated history entry when the item is selected using the keyboard.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param e
-	 */
-    onKeyPress : function( e ) {
-        if ( 13 === e.which ) {
-            this.restore();
-        }
-    },
-
-    /**
-     * Restores the history entry.
-     *
-     * @since 1.0.0
-     */
-    restore : function() {
-        var timestamp = this.model.get( 'timestamp' );
-
-	    /**
-	     * Fires before a request is made to restore a given history entry.
-	     *
-	     * @since 1.0.0
-	     *
-	     * @param id
-	     */
-	    app.channel.trigger( 'before:history:restore', timestamp );
-
-        /**
-         * Fires after a request is made to restore a given history entry.
-         *
-         * @since 1.0.0
-         *
-         * @param id
-         */
-        app.channel.trigger( 'history:restore', timestamp );
-    },
-
-    /**
-     * Toggles the state of the entry element based on its status.
-     *
-     * @since 1.0.0
-     *
-     * @param model
-     */
-    toggleClass : function( model ) {
-        model = model || this.model.collection.getActive();
-        this.$el.toggleClass( 'is-active', model === this.model );
-    }
-
-} );
-
-module.exports = HistoryItem;
-},{}],30:[function(require,module,exports){
-/**
- * Tailor.Items.Library
- *
- * A list item for the Library panel.
- *
- * @augments Marionette.ItemView
- */
-var $ = Backbone.$,
-    LibraryItem;
-
-LibraryItem = Marionette.ItemView.extend( {
-
-    events : {
-        click : 'onClick',
-        keypress : 'onKeyPress'
-    },
-
-    modelEvents : {
-        'change:match' : 'onSearch'
-    },
-
-    behaviors : {
-        Draggable : {}
-    },
-
-    onClick : function() {
-        var el = this.el;
-
-        if ( el.classList.contains( 'is-inactive') ) {
-            return;
-        }
-
-        var onAnimationEnd = function( e ) {
-            el.removeEventListener( window.animationEndName, onAnimationEnd );
-            el.classList.remove( 'shake' );
-        };
-
-        if ( Modernizr.cssanimations ) {
-            el.addEventListener( window.animationEndName, onAnimationEnd );
-            el.classList.add( 'shake' );
-        }
-
-        Tailor.Notify( window._l10n.dragElement, 'warning' );
-    },
-
-    /**
-     * Returns the appropriate template based on the panel type.
-     *
-     * @since 1.0.0
-     * @returns {string}
-     */
-    getTemplate : function() {
-        return '#tmpl-tailor-panel-library-item';
-    },
-
-    /**
-     * Uses the rendered template HTML as the $el.
-     *
-     * @since 1.0.0
-     * @param html
-     * @returns {exports}
-     */
-    attachElContent : function( html ) {
-        var $el = $( html );
-
-        this.$el.replaceWith( $el );
-        this.setElement( $el );
-
-        return this;
-    },
-
-	/**
-     * Shows or hides the item based on whether it matches search criteria.
-     *
-     * @since 1.0.0
-     *
-     * @param model
-     */
-    onSearch : function( model ) {
-        this.el.style.display = ! model.get( 'match' ) ? 'none' : 'block';
-    }
-
-} );
-
-module.exports = LibraryItem;
-},{}],31:[function(require,module,exports){
-/**
- * Tailor.Items.Panels
- *
- * A list item for the list of panels (Home).
- *
- * @augments Marionette.ItemView
- */
-var $ = Backbone.$,
-	PanelItem;
-
-PanelItem = Marionette.ItemView.extend( {
-
-    events : {
-        click : 'onClick',
-        keypress : 'onKeyPress'
-    },
-
-    modelEvents : {
-        focus : 'onFocus'
-    },
-
-    template : '#tmpl-tailor-panel-default-item',
-
-    /**
-     * Uses the rendered template HTML as the $el.
-     *
-     * @since 1.0.0
-     * @param html
-     * @returns {exports}
-     */
-    attachElContent : function( html ) {
-        var $el = $( html );
-
-        this.$el.replaceWith( $el );
-        this.setElement( $el );
-        this.el.setAttribute( 'tabindex', 0 );
-
-        return this;
-    },
-
-	/**
-	 * Displays the associated panel when the item is clicked.
-	 *
-	 * @since 1.0.0
-	 */
-    onClick : function() {
-        this.triggerMethod( 'show:panel' );
-    },
-
-	/**
-	 * Displays the associated panel when the item is selected using the keyboard.
-	 *
-	 * @since 1.0.0
-	 */
-    onKeyPress : function( e ) {
-        if ( 13 === e.which ) {
-            this.triggerMethod( 'show:panel' );
-        }
-    },
-
-	/**
-	 * Sets focus on the list item.
-	 *
-	 * @since 1.0.0
-	 */
-    onFocus : function() {
-        this.el.focus();
-    }
-
-} );
-
-module.exports = PanelItem;
-},{}],32:[function(require,module,exports){
-/**
- * Tailor.Items.Templates
- *
- * A list item for the Templates panel.
- *
- * @augments Marionette.ItemView
- */
-var $ = Backbone.$,
-    TemplateItem;
-
-TemplateItem = Marionette.ItemView.extend( {
-
-    ui : {
-        'delete' : '.js-delete-template',
-        'download' : '.js-download-template',
-        'preview' : '.js-preview-template'
-    },
-
-    events : {
-        'click' : 'onClick'
-    },
-
-    modelEvents : {
-        'change:match' : 'onSearch'
-    },
-
-    behaviors : {
-        Draggable : {}
-    },
-
-    onClick : function( e ) {
-
-        switch ( e.target ) {
-
-            case this.ui.download.get( 0 ):
-                this.download();
-                break;
-
-            case this.ui.delete.get( 0 ):
-                this.delete();
-                break;
-
-            case this.ui.preview.get( 0 ):
-                this.preview();
-                break;
-
-            default:
-                var el = this.el;
-                var onAnimationEnd = function( e ) {
-                    el.removeEventListener( window.animationEndName, onAnimationEnd );
-                    el.classList.remove( 'shake' );
-                };
-
-                if ( Modernizr.cssanimations ) {
-                    el.addEventListener( window.animationEndName, onAnimationEnd );
-                    el.classList.add( 'shake' );
-                }
-
-                Tailor.Notify( window._l10n.dragTemplate, 'warning' );
-        }
-    },
-
-    /**
-     * Returns the appropriate template based on the panel type.
-     *
-     * @since 1.0.0
-     * @returns {string}
-     */
-    getTemplate : function() {
-        return '#tmpl-tailor-panel-templates-item';
-    },
-
-    /**
-     * Uses the rendered template HTML as the $el.
-     *
-     * @since 1.0.0
-     * @param html
-     * @returns {exports}
-     */
-    attachElContent : function( html ) {
-        var $el = $( html );
-
-        this.$el.replaceWith( $el );
-        this.setElement( $el );
-        this.el.setAttribute( 'tabindex', 0 );
-
-        return this;
-    },
-
-    /**
-     * Downloads the template to a JSON file.
-     *
-     * @since 1.0.0
-     */
-    download : function() {
-        var item = this;
-        var id = item.model.get( 'id' );
-
-        var options = {
-
-            data : {
-                template_id : id,
-                nonce : window._nonces.loadTemplate
-            },
-
-            success : function( response ) {
-                var model = item.model;
-                var models = response.models;
-                var label = model.get( 'label' );
-
-                id = label.replace( ' ', '-' ).toLowerCase();
-
-                var json = {
-                    id : id,
-                    label : label,
-                    tag : model.get( 'tag' ),
-                    type : model.get( 'type' ),
-                    models : models
-                };
-
-                json = "data:text/json;charset=utf-8," + encodeURIComponent( JSON.stringify( json ) );
-
-                var a = document.getElementById( 'download-template' );
-                a.setAttribute( 'href', json );
-                a.setAttribute( 'download', 'tailor-template-' + id + '-' + Date.now() + '.json' );
-                a.click();
-            }
-        };
-
-        window.ajax.send( 'tailor_load_template', options );
-    },
-
-    /**
-     * Deletes the template.
-     *
-     * @since 1.0.0
-     */
-    delete : function() {
-        var that = this;
-        var options = {
-            data : {
-                id : that.model.get( 'id' ),
-                nonce : window._nonces.deleteTemplate
-            },
-
-	        /**
-             * Destroys the template list item when the template is successfully deleted.
-             *
-             * @since 1.0.0
-             *
-             * @param response
-             */
-            success : function( response ) {
-                that.$el.slideUp( function() {
-                    that.model.trigger( 'destroy', that.model );
-                } );
-
-                /**
-                 * Fires when a template is deleted.
-                 *
-                 * @since 1.0.0
-                 */
-                app.channel.trigger( 'template:delete' );
-            }
-        };
-
-        window.ajax.send( 'tailor_delete_template', options );
-    },
-
-    /**
-     * Previews the template.
-     *
-     * @since 1.0.0
-     */
-    preview : function() {
-        window.open( window._urls.view + '?template_preview=1&template_id=' + this.model.get( 'id' ), '_blank' );
-    },
-
-
-    /**
-     * Determines whether the template should be visible based on search terms entered in the template search bar.
-     *
-     * @since 1.0.0
-     *
-     * @param model
-     */
-    onSearch : function( model ) {
-        this.el.style.display = ! model.get( 'match' ) ? 'none' : 'block';
-    }
-
-} );
-
-module.exports = TemplateItem;
-},{}],33:[function(require,module,exports){
-/**
- * Tailor.Panels.Default
- *
- * A default panel.
- *
- * @augments Marionette.CompositeView
- */
-var $ = Backbone.$,
-	DefaultPanel;
-
-DefaultPanel = Marionette.CompositeView.extend( {
+},{"./abstract-control":11}],33:[function(require,module,exports){
+var DefaultPanel = Marionette.CompositeView.extend( {
 
     ui : {
         backButton : '.back-button'
@@ -4404,7 +4297,7 @@ DefaultPanel = Marionette.CompositeView.extend( {
         Panel : {}
     },
 
-    emptyView : require( './panel-empty' ),
+    emptyView : Tailor.Panels.Empty,
 
     emptyViewOptions : function() {
         return {
@@ -4419,11 +4312,10 @@ DefaultPanel = Marionette.CompositeView.extend( {
      *
      * @since 1.0.0
      *
-     * @param child
      * @returns {*|exports|module.exports}
      */
-    getChildView : function( child ) {
-        return window.Tailor.Items.lookup( this.model.get( 'type' ) );
+    getChildView : function() {
+        return Tailor.lookup( this.model.get( 'type' ), false, 'Items' );
     },
 
     /**
@@ -4439,10 +4331,12 @@ DefaultPanel = Marionette.CompositeView.extend( {
     filter : function( child, index, collection ) {
         switch ( this.model.get( 'type' ) ) {
 
+            // Do not display child elements in the library
             case 'library':
-                return ! _.contains( [ 'tailor_row' ], child.get( 'tag' ) ) && ! _.contains( [ 'child', 'inline' ], child.get( 'type' ) );
+                return ! _.contains( [ 'tailor_row' ], child.get( 'tag' ) ) && 'child' != child.get( 'type' );
                 break;
 
+            // Do not show sections from other panels
             case 'default':
                 return child.get( 'panel' ) === this.model.get( 'id' );
                 break;
@@ -4490,8 +4384,9 @@ DefaultPanel = Marionette.CompositeView.extend( {
 } );
 
 module.exports = DefaultPanel;
-},{"./panel-empty":34}],34:[function(require,module,exports){
-module.exports = Marionette.ItemView.extend( {
+
+},{}],34:[function(require,module,exports){
+var EmptyPanelView = Marionette.ItemView.extend( {
 
     className : 'empty',
 
@@ -4511,319 +4406,10 @@ module.exports = Marionette.ItemView.extend( {
     }
 
 } );
+
+module.exports = EmptyPanelView;
 },{}],35:[function(require,module,exports){
-/**
- * Tailor.Panels.Templates
- *
- * The templates panel.
- *
- * @augments Marionette.CompositeView
- */
-var $ = Backbone.$,
-    TemplatesPanel;
-
-TemplatesPanel = Marionette.CompositeView.extend( {
-
-    ui : {
-        backButton : '.back-button',
-        save : '.js-save-template',
-        import : '.js-import-template',
-        searchForm : '.search-form'
-    },
-
-    events : {
-        'click @ui.save' : 'save',
-        'click @ui.import' : 'import'
-    },
-
-    triggers : {
-        'click @ui.backButton': 'back:home'
-    },
-
-    behaviors : {
-        Panel : {}
-    },
-
-    emptyView : require( './panel-empty' ),
-
-    emptyViewOptions : function() {
-        return {
-            type : this.model.get( 'type' )
-        };
-    },
-
-    template : '#tmpl-tailor-panel-templates',
-
-    childViewContainer : '#items',
-
-    /**
-     * Returns the appropriate child view based on the panel type.
-     *
-     * @since 1.0.0
-     * @param child
-     * @returns {*|exports|module.exports}
-     */
-    getChildView : function( child ) {
-        return window.Tailor.Items.lookup( this.model.get( 'type' ) );
-    },
-
-    /**
-     * Provides the required information to the template rendering function.
-     *
-     * @since 1.0.0
-     *
-     * @returns {*}
-     */
-    serializeData : function() {
-        var data = Marionette.ItemView.prototype.serializeData.apply( this, arguments );
-        data.items = this.collection;
-        return data;
-    },
-
-	/**
-	 * Sets focus on the back button when the panel is displayed.
-	 *
-	 * @since 1.0.0
-	 */
-    onShow : function() {
-        this.ui.backButton.get(0).focus();
-        if ( 0 === this.collection.length ) {
-            this.ui.searchForm.hide();
-        }
-    },
-
-	/**
-	 * Shows the search form after a child is added.
-	 *
-	 * @since 1.0.0
-	 */
-    onAddChild : function() {
-        //if ( 1 === this.collection.length ) {
-		this.ui.searchForm.show();
-        //}
-    },
-
-	/**
-	 * Hides the search form if there are no saved templates after a template is removed.
-	 *
-	 * @since 1.0.0
-	 */
-    onRemoveChild : function() {
-        if ( 0 === this.collection.length ) {
-            this.ui.searchForm.hide();
-        }
-    },
-
-	/**
-	 * Opens the Import Template dialog.
-	 *
-	 * @since 1.0.0
-	 */
-    import : function( e ) {
-
-        var that = this;
-        var options = {
-            title : window._l10n.importTemplate,
-            content : document.querySelector( '#tmpl-tailor-dialog-import-template').innerHTML,
-            button : window._l10n.import,
-
-            onOpen : function() {
-                this.el.querySelector( '#import-template' ).focus();
-            },
-
-            onValidate : function() {
-
-                var input = this.el.querySelector( '#import-template' );
-                var re = /(?:\.([^.]+))?$/;
-
-                return input.value && ( 'json' === re.exec( input.value )[1] );
-            },
-
-            onSave : function() {
-                var input = this.el.querySelector( '#import-template' );
-                var file = input.files[0];
-
-                if ( ! file || file.name.match( /.+\.json/ ) ) {
-
-                    var reader = new FileReader();
-
-                    reader.onload = function( e ) {
-
-                        var defaults = {
-                            label : '',
-                            tag : '',
-                            models : [],
-                            nonce : window._nonces.saveTemplate
-                        };
-
-                        var data = _.extend( defaults, JSON.parse( reader.result ) );
-
-                        data.models = JSON.stringify( data.models );
-
-                        that.createTemplate( data, 'import' );
-                    };
-
-                    try {
-                        reader.readAsText( file );
-                    }
-                    catch( e ) {}
-                }
-            },
-
-            onClose : function() {
-                that.ui.import.focus();
-            }
-        };
-
-		/**
-         * Fires when the dialog window is opened.
-         *
-         * @since 1.0.0
-         */
-        app.channel.trigger( 'dialog:open', options );
-    },
-
-	/**
-	 * Opens the Save Template dialog.
-	 *
-	 * @since 1.0.0
-	 */
-    save : function(  ) {
-        var selected = app.channel.request( 'canvas:element:selected' );
-        var elements = app.channel.request( 'canvas:elements' );
-        var models = [];
-        var tag;
-
-        if ( selected && 'function' == typeof selected.get ) {
-
-            var getChildren = function( id ) {
-                _.each( elements.where( { parent : id } ), function( model ) {
-                    models.push( model.toJSON() );
-                    getChildren( model.get( 'id' ) );
-                } );
-            };
-
-            if ( 'child' == selected.get( 'type' ) ) {
-                selected = selected.collection.get( selected.get( 'parent' ) );
-            }
-
-            getChildren( selected.get( 'id' ) );
-
-            selected = selected.toJSON();
-            selected.parent = '';
-            models.push( selected ) ;
-            tag = selected.tag;
-
-        }
-        else {
-
-            models = elements.models;
-            tag = 'tailor_section';
-        }
-
-        var that = this;
-
-        var options = {
-            title : window._l10n.saveTemplate,
-            content : document.querySelector( '#tmpl-tailor-dialog-save-template').innerHTML,
-            button : window._l10n.save,
-
-            onOpen : function() {
-                this.el.querySelector( '#save-template' ).focus();
-            },
-
-            onValidate : function() {
-                var input = this.el.querySelector( '#save-template' );
-                return input.value;
-            },
-
-            onSave : function() {
-                var input = this.el.querySelector( '#save-template' );
-
-                var data = {
-                    label : input.value,
-                    tag : tag,
-                    models : JSON.stringify( models ),
-                    nonce : window._nonces.saveTemplate
-                };
-
-                that.createTemplate( data, 'save' );
-            },
-
-            onClose : function() {
-                that.ui.save.focus();
-            }
-        };
-
-        /**
-         * Fires when the dialog window is opened.
-         *
-         * @since 1.0.0
-         */
-        app.channel.trigger( 'dialog:open', options );
-    },
-
-    /**
-     * Sends a request to the server to register a new template.
-     *
-     * @since 1.0.0
-     *
-     * @param data
-     * @param action
-     */
-    createTemplate : function( data, action ) {
-
-        action = action || 'save';
-
-        var that = this;
-        var collection = that.collection;
-
-        that.ui.save.prop( 'disabled', true );
-        that.ui.import.prop( 'disabled', true );
-
-        var options = {
-            data : data,
-
-            success : function( response ) {
-                collection.add( {
-                    id : response.id,
-                    label : response.label,
-                    tag : response.tag,
-                    type : response.type
-                } );
-
-                /**
-                 * Fires when a template is created.
-                 *
-                 * @since 1.0.0
-                 */
-                app.channel.trigger( 'template:' + action );
-            },
-
-            complete : function() {
-                that.ui.save.prop( 'disabled', false );
-                that.ui.import.prop( 'disabled', false );
-            }
-        };
-
-        window.ajax.send( 'tailor_save_template', options );
-    }
-
-} );
-
-module.exports = TemplatesPanel;
-},{"./panel-empty":34}],36:[function(require,module,exports){
-/**
- * Tailor.Sections.Default
- *
- * A default section.
- *
- * @augments Marionette.CompositeView
- */
-var $ = Backbone.$,
-    DefaultSection;
-
-DefaultSection = Marionette.CompositeView.extend( {
+var DefaultSection = Marionette.CompositeView.extend( {
 
     ui: {
         backButton : '.back-button'
@@ -4859,7 +4445,7 @@ DefaultSection = Marionette.CompositeView.extend( {
      * @returns {*|exports|module.exports}
      */
     getChildView : function( child ) {
-        return window.Tailor.Controls.lookup( child.get( 'type' ) );
+        return Tailor.lookup( child.get( 'type' ), false, 'Controls' );
     },
 
     /**
@@ -4919,8 +4505,9 @@ DefaultSection = Marionette.CompositeView.extend( {
 } );
 
 module.exports = DefaultSection;
-},{"./section-empty":37}],37:[function(require,module,exports){
-module.exports = Marionette.ItemView.extend( {
+
+},{"./section-empty":36}],36:[function(require,module,exports){
+var EmptySectionView = Marionette.ItemView.extend( {
 
     className : 'empty',
 
@@ -4936,18 +4523,10 @@ module.exports = Marionette.ItemView.extend( {
     }
 
 } );
-},{}],38:[function(require,module,exports){
-/**
- * Tailor.Collections.Control
- *
- * The control collection.
- *
- * @augments Backbone.Collection
- */
-var $ = Backbone.$,
-    ControlCollection;
 
-ControlCollection = Backbone.Collection.extend( {
+module.exports = EmptySectionView;
+},{}],37:[function(require,module,exports){
+var ControlCollection = Backbone.Collection.extend( {
 
 	model : require( '../models/control' ),
 
@@ -4960,7 +4539,6 @@ ControlCollection = Backbone.Collection.extend( {
         if ( options && options.settings ) {
             this.settings = options.settings;
         }
-
         this.addEventListeners();
     },
 
@@ -4992,16 +4570,9 @@ ControlCollection = Backbone.Collection.extend( {
 } );
 
 module.exports = ControlCollection;
-},{"../models/control":45}],39:[function(require,module,exports){
-/**
- * Tailor.Collections.Library
- *
- * The library collection.
- *
- * @augments Tailor.Collections.Searchable
- */
-var $ = Backbone.$,
-	SearchableCollection = require( './searchable' ),
+
+},{"../models/control":45}],38:[function(require,module,exports){
+var SearchableCollection = require( './searchable' ),
 	LibraryCollection;
 
 LibraryCollection= SearchableCollection.extend( {
@@ -5016,7 +4587,7 @@ LibraryCollection= SearchableCollection.extend( {
      * @returns {*|exports|module.exports}
      */
     model : function( attrs, options ) {
-        var Model = window.Tailor.Models.lookup( attrs.tag, attrs.type );
+        var Model = Tailor.lookup( attrs.tag, attrs.type, 'Models' );
         return new Model( attrs, options );
     },
 
@@ -5043,30 +4614,14 @@ LibraryCollection= SearchableCollection.extend( {
 } );
 
 module.exports = LibraryCollection;
-},{"./searchable":41}],40:[function(require,module,exports){
-/**
- * Tailor.Collections.Panel
- *
- * The panel collection.
- *
- * @augments Backbone.Collection
- */
-var $ = Backbone.$,
-	PanelCollection;
-
-PanelCollection = Backbone.Collection.extend( {
+},{"./searchable":40}],39:[function(require,module,exports){
+var PanelCollection = Backbone.Collection.extend( {
 	model : require( '../models/panel' )
 } );
 
 module.exports = PanelCollection;
-},{"../models/panel":49}],41:[function(require,module,exports){
-/**
- * Tailor.Collections.Searchable
- *
- * A searchable collection.
- *
- * @augments Backbone.Collection
- */
+
+},{"../models/panel":49}],40:[function(require,module,exports){
 var $ = Backbone.$,
 	SearchableCollection;
 
@@ -5126,34 +4681,16 @@ SearchableCollection = Backbone.Collection.extend( {
 } );
 
 module.exports = SearchableCollection;
-},{}],42:[function(require,module,exports){
-/**
- * Tailor.Collections.Section
- *
- * The section collection.
- *
- * @augments Backbone.Collection
- */
-var $ = Backbone.$,
-	SectionCollection;
 
-SectionCollection = Backbone.Collection.extend( {
+},{}],41:[function(require,module,exports){
+var SectionCollection = Backbone.Collection.extend( {
 	model : require( '../models/section' )
 } );
 
 module.exports = SectionCollection;
-},{"../models/section":50}],43:[function(require,module,exports){
-/**
- * Tailor.Collections.Setting
- *
- * The setting collection.
- *
- * @augments Backbone.Collection
- */
-var $ = Backbone.$,
-	SettingCollection;
 
-SettingCollection = Backbone.Collection.extend( {
+},{"../models/section":50}],42:[function(require,module,exports){
+var SettingCollection = Backbone.Collection.extend( {
 
 	model : require( '../models/setting' ),
 
@@ -5194,16 +4731,211 @@ SettingCollection = Backbone.Collection.extend( {
 } );
 
 module.exports = SettingCollection;
-},{"../models/setting":51}],44:[function(require,module,exports){
-/**
- * Tailor.Collections.Template
- *
- * The template collection.
- *
- * @augments Tailor.Collections.Searchable
- */
-var $ = Backbone.$,
-	SearchableCollection = require( './searchable' ),
+
+},{"../models/setting":51}],43:[function(require,module,exports){
+var SnapshotCollection = Backbone.Collection.extend( {
+
+    /**
+     * The maximum number of history entries to store.
+     *
+     * @since 1.0.0
+     */
+	maxSize : 50,
+
+    /**
+     * The active history entry.
+     *
+     * @since 1.0.0
+     */
+    active : null,
+
+    /**
+     * The attribute by which entries in the collection are sorted.
+     *
+     * @since 1.0.0
+     */
+    comparator : function( model ) {
+        return - model.get( 'timestamp' );
+    },
+
+    /**
+     * Initializes the history entry collection.
+     *
+     * @since 1.0.0
+     */
+	initialize: function() {
+        this.addEventListeners();
+
+	},
+
+    /**
+     * Adds the required event listeners.
+     *
+     * @since 1.0.0
+     */
+    addEventListeners : function() {
+        this.listenTo( this, 'add', this.checkLength );
+        this.listenToOnce( app.channel, 'canvas:initialize', function() {
+            this.elements = app.channel.request( 'canvas:elements' );
+            this.save( window._l10n.initialized );
+        } );
+    },
+
+    /**
+     * Saves the current element collection as a history entry.
+     *
+     * @since 1.0.0
+     *
+     * @param label
+     */
+    save : function( label ) {
+
+        // If the active entry exists and is not the latest one, remove subsequent entries
+        if ( this.active ) {
+            var activePosition = this.indexOf( this.active );
+            if ( activePosition > 0 ) {
+                this.remove( this.slice( 0, activePosition ) );
+            }
+        }
+
+        // Add the new entry to the collection
+        var entry = this.add( {
+            label : label || '',
+            elements : this.elements ? this.elements.toJSON() : [],
+            time : this.getTime(),
+            timestamp : _.now()
+        } );
+
+	    this.setActive( entry );
+    },
+
+    /**
+     * Returns the current time as a formatted string.
+     *
+     * @since 1.0.0
+     *
+     * @returns {string}
+     */
+    getTime : function() {
+        var date = new Date();
+        var hours = date.getHours();
+        var separator = ':';
+        var suffix;
+
+        if ( hours > 12 ) {
+            hours -= 12;
+            suffix = ' PM';
+        }
+        else {
+            suffix = ' AM';
+        }
+
+        return (
+            hours + separator +
+            ( '0' + date.getMinutes() ).slice( -2 ) + separator +
+            ( '0' + date.getSeconds() ).slice( -2 ) + suffix
+        );
+    },
+
+    /**
+     * Restores a given history entry.
+     *
+     * @since 1.0.0
+     *
+     * @param timestamp
+     */
+    restore : function( timestamp ) {
+        var entry = this.findWhere( { timestamp : timestamp } );
+        if ( ! entry || entry === this.getActive() ) {
+            return;
+        }
+
+        this.setActive( entry );
+        var elements = entry.get( 'elements' );
+
+        /**
+         * Fires when the element collection is reset.
+         *
+         * @since 1.0.0
+         *
+         * @param elements
+         */
+        app.channel.trigger( 'elements:reset', elements );
+    },
+
+    /**
+     * Restores the previous history entry.
+     *
+     * @since 1.0.0
+     */
+    undo : function() {
+        if ( ! this.length ) {
+            return;
+        }
+
+        var entry = this.at( this.indexOf( this.getActive() ) + 1 );
+        if ( entry ) {
+            this.restore( entry.get( 'timestamp' ) );
+        }
+    },
+
+    /**
+     * Restores the next history entry.
+     *
+     * @since 1.0.0
+     */
+    redo : function() {
+        if ( ! this.length ) {
+            return;
+        }
+
+        var entry = this.at( this.indexOf( this.getActive() ) - 1 );
+
+        if ( entry ) {
+            this.restore( entry.get( 'timestamp' ) );
+        }
+    },
+
+    /**
+     * Removes the oldest entry from the collection if it reaches it's maximum length.
+     *
+     * @since 1.0.0
+     */
+    checkLength : function() {
+        if ( this.length > this.maxSize ) {
+            this.pop();
+        }
+	},
+
+    /**
+     * Sets the given entry as active.
+     *
+     * @since 1.0.0
+     *
+     * @param model
+     */
+    setActive : function( model ) {
+        this.active = model;
+        this.trigger( 'change:active', model );
+    },
+
+    /**
+     * Returns the active entry.
+     *
+     * @since 1.0.0
+     *
+     * @returns {null}
+     */
+    getActive : function() {
+        return this.active;
+    }
+
+} );
+
+module.exports = SnapshotCollection;
+
+},{}],44:[function(require,module,exports){
+var SearchableCollection = require( './searchable' ),
 	TemplateCollection;
 
 TemplateCollection = SearchableCollection.extend( {
@@ -5230,17 +4962,9 @@ TemplateCollection = SearchableCollection.extend( {
 } );
 
 module.exports = TemplateCollection;
-},{"../models/template":52,"./searchable":41}],45:[function(require,module,exports){
-/**
- * Tailor.Models.Control
- *
- * The control model.
- *
- * @augments Backbone.Model
- */
-var ControlModel;
 
-ControlModel = Backbone.Model.extend( {
+},{"../models/template":52,"./searchable":40}],45:[function(require,module,exports){
+var ControlModel = Backbone.Model.extend( {
 
     /**
      * The default parameters for a control.
@@ -5263,18 +4987,344 @@ ControlModel = Backbone.Model.extend( {
 } );
 
 module.exports = ControlModel;
-},{}],46:[function(require,module,exports){
-/**
- * Tailor.Models.Element
- *
- * The element model.
- *
- * @augments Backbone.Model
- */
-var $ = Backbone.$,
-	ElementModel;
 
-ElementModel = Backbone.Model.extend( {
+},{}],46:[function(require,module,exports){
+var ContainerModel = Backbone.Model.extend( {
+
+    /**
+     * The default model parameters.
+     *
+     * @since 1.0.0
+     *
+     * @returns object
+     */
+    defaults : function() {
+
+        return {
+            label : '',
+            description : '',
+            tag : '',
+            icon : '',
+            sections : [],
+            controls : [],
+            type : 'default',
+            child : '',
+            collection : 'library'
+        };
+    },
+
+    /**
+     * Initializes the model.
+     *
+     * @since 1.0.0
+     */
+    initialize : function() {
+        this.addEventListeners();
+    },
+
+    /**
+     * Adds the required event listeners.
+     *
+     * @since 1.0.0
+     */
+    addEventListeners : function() {
+        this.listenTo( this, 'element:add:top', this.insertBefore );
+        this.listenTo( this, 'element:add:bottom', this.insertAfter );
+        this.listenTo( this, 'element:add:left', this.columnBefore );
+        this.listenTo( this, 'element:add:right', this.columnAfter );
+    },
+
+    /**
+     * Creates and inserts an element before the target view.
+     *
+     * @since 1.0.0
+     *
+     * @param view
+     */
+    insertBefore : function( view ) {
+        this.insertAtIndex( view.model, view.model.get( 'order' ) );
+    },
+
+    /**
+     * Creates and inserts an element after the target view.
+     *
+     * @since 1.0.0
+     *
+     * @param view
+     */
+    insertAfter : function( view ) {
+        this.insertAtIndex( view.model, view.model.get( 'order' ) + 1 );
+    },
+
+    /**
+     * Creates a new wrapper element at the given position.
+     *
+     * @since 1.0.0
+     *
+     * @param model
+     * @param index
+     */
+    insertAtIndex : function( model, index ) {
+        var tag = 'tailor_content';
+        var children = model.collection.create( [ {
+            tag : tag,
+            atts : {}
+        }, {
+            tag : tag,
+            atts : {}
+        } ], {
+            silent : true
+        } );
+
+        model.collection.createContainer( this, model.get( 'parent' ), index, children );
+    },
+
+    /**
+     * Creates and inserts an element before the target view in a row/column layout.
+     *
+     * @since 1.0.0
+     *
+     * @param view
+     */
+    columnBefore : function( view ) {
+        var parentId = view.model.get( 'parent' );
+        var tag = 'tailor_content';
+        var children;
+
+        if ( 'tailor_column' == view.model.get( 'tag' ) ) {
+            var column = view.model.collection.createColumn( parentId, view.model.get( 'order' ) - 1 );
+
+            children = view.model.collection.create( [ {
+                tag : tag,
+                atts : {}
+            }, {
+                tag : tag,
+                atts : {}
+            } ], {
+                silent : true
+            } );
+
+            view.model.collection.createContainer( this, column.get( 'id' ), 0, children );
+        }
+        else {
+            var columns = view.model.collection.createRow( parentId, view.model.get( 'order' ) );
+
+            view.model.collection.insertChild( view.model, _.last( columns ) );
+
+            children = view.model.collection.create( [ {
+                tag : tag,
+                atts : {}
+            }, {
+                tag : tag,
+                atts : {}
+            } ], {
+                silent : true
+            } );
+
+            view.model.collection.createContainer( this, _.first( columns ).get( 'id' ), 0, children );
+        }
+    },
+
+    /**
+     * Creates and inserts an element after the target view in a row/column layout.
+     *
+     * @since 1.0.0
+     *
+     * @param view
+     */
+    columnAfter : function( view ) {
+        var parentId = view.model.get( 'parent' );
+        var tag = 'tailor_content';
+        var children;
+
+        if ( 'tailor_column' == view.model.get( 'tag' ) ) {
+            var column = view.model.collection.createColumn( parentId, view.model.get( 'order' ) );
+
+            children = view.model.collection.create( [ {
+                tag : tag,
+                atts : {}
+            }, {
+                tag : tag,
+                atts : {}
+            } ], {
+                silent : true
+            } );
+
+            view.model.collection.createContainer( this, column.get( 'id' ), 0, children );
+        }
+        else {
+            var columns = view.model.collection.createRow( parentId, view.model.get( 'order' ) );
+
+            view.model.collection.insertChild( view.model, _.first( columns ) );
+
+            children = view.model.collection.create( [ {
+                tag : tag,
+                atts : {}
+            }, {
+                tag : tag,
+                atts : {}
+            } ], {
+                silent : true
+            } );
+
+            view.model.collection.createContainer( this, _.last( columns ).get( 'id' ), 0, children );
+        }
+    }
+
+} );
+
+module.exports = ContainerModel;
+},{}],47:[function(require,module,exports){
+var WrapperModel = Backbone.Model.extend( {
+
+    /**
+     * The default model parameters.
+     *
+     * @since 1.0.0
+     *
+     * @returns object
+     */
+    defaults : function() {
+
+        return {
+            label : '',
+            description : '',
+            tag : '',
+            icon : '',
+            sections : [],
+            controls : [],
+            type : 'default',
+            child : '',
+            collection : 'library'
+        };
+    },
+
+    /**
+     * Initializes the model.
+     *
+     * @since 1.0.0
+     */
+    initialize : function() {
+        this.addEventListeners();
+    },
+
+    /**
+     * Adds the required event listeners.
+     *
+     * @since 1.0.0
+     */
+    addEventListeners : function() {
+        this.listenTo( this, 'element:add:top', this.insertBefore );
+        this.listenTo( this, 'element:add:bottom', this.insertAfter );
+        this.listenTo( this, 'element:add:left', this.columnBefore );
+        this.listenTo( this, 'element:add:right', this.columnAfter );
+        this.listenTo( this, 'element:add:center', this.createChild );
+    },
+
+    /**
+     * Creates and inserts an element before the target view.
+     *
+     * @since 1.0.0
+     *
+     * @param view
+     */
+    insertBefore : function( view ) {
+        this.insertAtIndex( view.model, view.model.get( 'order' ) - 1 );
+    },
+
+    /**
+     * Creates and inserts an element after the target view.
+     *
+     * @since 1.0.0
+     *
+     * @param view
+     */
+    insertAfter : function( view ) {
+        this.insertAtIndex( view.model, view.model.get( 'order' ) );
+    },
+
+    /**
+     * Creates a new wrapper element at the given position.
+     *
+     * @since 1.0.0
+     *
+     * @param model
+     * @param index
+     */
+    insertAtIndex : function( model, index ) {
+        model.collection.createWrapper( this.get( 'tag' ), model.get( 'parent' ), index );
+    },
+
+    /**
+     * Creates and inserts an element before the target view in a row/column layout.
+     *
+     * @since 1.0.0
+     *
+     * @param view
+     */
+    columnBefore : function( view ) {
+        var parentId = view.model.get( 'parent' );
+        var index = view.model.get( 'order' ) - 1;
+        var tag = 'tailor_content';
+
+        if ( 'tailor_column' == view.model.get( 'tag' ) ) {
+            var column = view.model.collection.createColumn( parentId, index );
+            view.model.collection.createWrapper( this.get( 'tag' ), column.get( 'id' ), 0 );
+        }
+        else {
+
+            var columns = view.model.collection.createRow( parentId, index );
+            view.model.collection.insertChild( view.model, _.last( columns ) );
+            view.model.collection.createWrapper( this.get( 'tag' ), _.first( columns ).get( 'id' ), 0 );
+        }
+    },
+
+    /**
+     * Creates and inserts an element after the target view in a row/column layout.
+     *
+     * @since 1.0.0
+     *
+     * @param view
+     */
+    columnAfter : function( view ) {
+        var parentId = view.model.get( 'parent' );
+        var index = view.model.get( 'order' );
+        var tag = 'tailor_content';
+
+        if ( 'tailor_column' == view.model.get( 'tag' ) ) {
+            var column = view.model.collection.createColumn( parentId, index );
+            view.model.collection.createWrapper( this.get( 'tag' ), column.get( 'id' ), 0 );
+        }
+        else {
+
+            var columns = view.model.collection.createRow( parentId, index );
+            view.model.collection.insertChild( view.model, _.first( columns ) );
+            view.model.collection.createWrapper( this.get( 'tag' ), _.last( columns ).get( 'id' ), 0 );
+
+        }
+    },
+
+    /**
+     * Inserts the element inside a new child element in the target view.
+     *
+     * @since 1.0.0
+     *
+     * @param view
+     */
+    createChild : function( view ) {
+        var parentId = view.model.get( 'id' );
+        var childTag = view.model.get( 'child' );
+        var numberChildren = view.model.collection.where( { parent : parentId, tag : childTag } ).length;
+        var wrapper = view.model.collection.createWrapper( childTag, parentId, numberChildren, false );
+
+        view.model.collection.createWrapper( this.get( 'tag' ), wrapper.get( 'id' ), 0 );
+    }
+
+} );
+
+module.exports = WrapperModel;
+},{}],48:[function(require,module,exports){
+var ElementModel = Backbone.Model.extend( {
 
     /**
      * The default model parameters.
@@ -5469,372 +5519,8 @@ ElementModel = Backbone.Model.extend( {
 } );
 
 module.exports = ElementModel;
-},{}],47:[function(require,module,exports){
-/**
- * Tailor.Models.Container
- *
- * The container model.
- *
- * @augments Backbone.Model
- */
-var $ = Backbone.$,
-    ContainerModel;
-
-ContainerModel = Backbone.Model.extend( {
-
-    /**
-     * The default model parameters.
-     *
-     * @since 1.0.0
-     *
-     * @returns object
-     */
-    defaults : function() {
-
-        return {
-            label : '',
-            description : '',
-            tag : '',
-            icon : '',
-            sections : [],
-            controls : [],
-            type : 'default',
-            child : '',
-            collection : 'library'
-        };
-    },
-
-    /**
-     * Initializes the model.
-     *
-     * @since 1.0.0
-     */
-    initialize : function() {
-        this.addEventListeners();
-    },
-
-    /**
-     * Adds the required event listeners.
-     *
-     * @since 1.0.0
-     */
-    addEventListeners : function() {
-        this.listenTo( this, 'element:add:top', this.insertBefore );
-        this.listenTo( this, 'element:add:bottom', this.insertAfter );
-        this.listenTo( this, 'element:add:left', this.columnBefore );
-        this.listenTo( this, 'element:add:right', this.columnAfter );
-    },
-
-    /**
-     * Creates and inserts an element before the target view.
-     *
-     * @since 1.0.0
-     *
-     * @param view
-     */
-    insertBefore : function( view ) {
-        this.insertAtIndex( view.model, view.model.get( 'order' ) );
-    },
-
-    /**
-     * Creates and inserts an element after the target view.
-     *
-     * @since 1.0.0
-     *
-     * @param view
-     */
-    insertAfter : function( view ) {
-        this.insertAtIndex( view.model, view.model.get( 'order' ) + 1 );
-    },
-
-    /**
-     * Creates a new wrapper element at the given position.
-     *
-     * @since 1.0.0
-     *
-     * @param model
-     * @param index
-     */
-    insertAtIndex : function( model, index ) {
-        var tag = 'tailor_content';
-        var children = model.collection.create( [ {
-            tag : tag,
-            atts : {}
-        }, {
-            tag : tag,
-            atts : {}
-        } ], {
-            silent : true
-        } );
-
-        model.collection.createContainer( this, model.get( 'parent' ), index, children );
-    },
-
-    /**
-     * Creates and inserts an element before the target view in a row/column layout.
-     *
-     * @since 1.0.0
-     *
-     * @param view
-     */
-    columnBefore : function( view ) {
-        var parentId = view.model.get( 'parent' );
-        var tag = 'tailor_content';
-        var children;
-
-        if ( 'tailor_column' == view.model.get( 'tag' ) ) {
-            var column = view.model.collection.createColumn( parentId, view.model.get( 'order' ) - 1 );
-
-            children = view.model.collection.create( [ {
-                tag : tag,
-                atts : {}
-            }, {
-                tag : tag,
-                atts : {}
-            } ], {
-                silent : true
-            } );
-
-            view.model.collection.createContainer( this, column.get( 'id' ), 0, children );
-        }
-        else {
-            var columns = view.model.collection.createRow( parentId, view.model.get( 'order' ) );
-
-            view.model.collection.insertChild( view.model, _.last( columns ) );
-
-            children = view.model.collection.create( [ {
-                tag : tag,
-                atts : {}
-            }, {
-                tag : tag,
-                atts : {}
-            } ], {
-                silent : true
-            } );
-
-            view.model.collection.createContainer( this, _.first( columns ).get( 'id' ), 0, children );
-        }
-    },
-
-    /**
-     * Creates and inserts an element after the target view in a row/column layout.
-     *
-     * @since 1.0.0
-     *
-     * @param view
-     */
-    columnAfter : function( view ) {
-        var parentId = view.model.get( 'parent' );
-        var tag = 'tailor_content';
-        var children;
-
-        if ( 'tailor_column' == view.model.get( 'tag' ) ) {
-            var column = view.model.collection.createColumn( parentId, view.model.get( 'order' ) );
-
-            children = view.model.collection.create( [ {
-                tag : tag,
-                atts : {}
-            }, {
-                tag : tag,
-                atts : {}
-            } ], {
-                silent : true
-            } );
-
-            view.model.collection.createContainer( this, column.get( 'id' ), 0, children );
-        }
-        else {
-            var columns = view.model.collection.createRow( parentId, view.model.get( 'order' ) );
-
-            view.model.collection.insertChild( view.model, _.first( columns ) );
-
-            children = view.model.collection.create( [ {
-                tag : tag,
-                atts : {}
-            }, {
-                tag : tag,
-                atts : {}
-            } ], {
-                silent : true
-            } );
-
-            view.model.collection.createContainer( this, _.last( columns ).get( 'id' ), 0, children );
-        }
-    }
-
-} );
-
-module.exports = ContainerModel;
-},{}],48:[function(require,module,exports){
-/**
- * Tailor.Models.Wrapper
- *
- * The wrapper model.
- *
- * @augments Backbone.Model
- */
-var $ = Backbone.$,
-    WrapperModel;
-
-WrapperModel = Backbone.Model.extend( {
-
-    /**
-     * The default model parameters.
-     *
-     * @since 1.0.0
-     *
-     * @returns object
-     */
-    defaults : function() {
-
-        return {
-            label : '',
-            description : '',
-            tag : '',
-            icon : '',
-            sections : [],
-            controls : [],
-            type : 'default',
-            child : '',
-            collection : 'library'
-        };
-    },
-
-    /**
-     * Initializes the model.
-     *
-     * @since 1.0.0
-     */
-    initialize : function() {
-        this.addEventListeners();
-    },
-
-    /**
-     * Adds the required event listeners.
-     *
-     * @since 1.0.0
-     */
-    addEventListeners : function() {
-        this.listenTo( this, 'element:add:top', this.insertBefore );
-        this.listenTo( this, 'element:add:bottom', this.insertAfter );
-        this.listenTo( this, 'element:add:left', this.columnBefore );
-        this.listenTo( this, 'element:add:right', this.columnAfter );
-        this.listenTo( this, 'element:add:center', this.createChild );
-    },
-
-    /**
-     * Creates and inserts an element before the target view.
-     *
-     * @since 1.0.0
-     *
-     * @param view
-     */
-    insertBefore : function( view ) {
-        this.insertAtIndex( view.model, view.model.get( 'order' ) - 1 );
-    },
-
-    /**
-     * Creates and inserts an element after the target view.
-     *
-     * @since 1.0.0
-     *
-     * @param view
-     */
-    insertAfter : function( view ) {
-        this.insertAtIndex( view.model, view.model.get( 'order' ) );
-    },
-
-    /**
-     * Creates a new wrapper element at the given position.
-     *
-     * @since 1.0.0
-     *
-     * @param model
-     * @param index
-     */
-    insertAtIndex : function( model, index ) {
-        model.collection.createWrapper( this.get( 'tag' ), model.get( 'parent' ), index );
-    },
-
-    /**
-     * Creates and inserts an element before the target view in a row/column layout.
-     *
-     * @since 1.0.0
-     *
-     * @param view
-     */
-    columnBefore : function( view ) {
-        var parentId = view.model.get( 'parent' );
-        var index = view.model.get( 'order' ) - 1;
-        var tag = 'tailor_content';
-
-        if ( 'tailor_column' == view.model.get( 'tag' ) ) {
-            var column = view.model.collection.createColumn( parentId, index );
-            view.model.collection.createWrapper( this.get( 'tag' ), column.get( 'id' ), 0 );
-        }
-        else {
-
-            var columns = view.model.collection.createRow( parentId, index );
-            view.model.collection.insertChild( view.model, _.last( columns ) );
-            view.model.collection.createWrapper( this.get( 'tag' ), _.first( columns ).get( 'id' ), 0 );
-        }
-    },
-
-    /**
-     * Creates and inserts an element after the target view in a row/column layout.
-     *
-     * @since 1.0.0
-     *
-     * @param view
-     */
-    columnAfter : function( view ) {
-        var parentId = view.model.get( 'parent' );
-        var index = view.model.get( 'order' );
-        var tag = 'tailor_content';
-
-        if ( 'tailor_column' == view.model.get( 'tag' ) ) {
-            var column = view.model.collection.createColumn( parentId, index );
-            view.model.collection.createWrapper( this.get( 'tag' ), column.get( 'id' ), 0 );
-        }
-        else {
-
-            var columns = view.model.collection.createRow( parentId, index );
-            view.model.collection.insertChild( view.model, _.first( columns ) );
-            view.model.collection.createWrapper( this.get( 'tag' ), _.last( columns ).get( 'id' ), 0 );
-
-        }
-    },
-
-    /**
-     * Inserts the element inside a new child element in the target view.
-     *
-     * @since 1.0.0
-     *
-     * @param view
-     */
-    createChild : function( view ) {
-        var parentId = view.model.get( 'id' );
-        var childTag = view.model.get( 'child' );
-        var numberChildren = view.model.collection.where( { parent : parentId, tag : childTag } ).length;
-        var wrapper = view.model.collection.createWrapper( childTag, parentId, numberChildren, false );
-
-        view.model.collection.createWrapper( this.get( 'tag' ), wrapper.get( 'id' ), 0 );
-    }
-
-} );
-
-module.exports = WrapperModel;
 },{}],49:[function(require,module,exports){
-/**
- * Tailor.Models.Panel
- *
- * The panel model.
- *
- * @augments Backbone.Model
- */
-var PanelModel;
-
-PanelModel = Backbone.Model.extend( {
+var PanelModel = Backbone.Model.extend( {
 
     /**
      * The default parameters for a panel.
@@ -5853,17 +5539,9 @@ PanelModel = Backbone.Model.extend( {
 } );
 
 module.exports = PanelModel;
-},{}],50:[function(require,module,exports){
-/**
- * Tailor.Models.Section
- *
- * The section model.
- *
- * @augments Backbone.Model
- */
-var SectionModel;
 
-SectionModel = Backbone.Model.extend( {
+},{}],50:[function(require,module,exports){
+var SectionModel = Backbone.Model.extend( {
 
     /**
      * The default parameters for a section.
@@ -5882,17 +5560,9 @@ SectionModel = Backbone.Model.extend( {
 } );
 
 module.exports = SectionModel;
-},{}],51:[function(require,module,exports){
-/**
- * Tailor.Models.Setting
- *
- * The setting model.
- *
- * @augments Backbone.Model
- */
-var SettingModel;
 
-SettingModel = Backbone.Model.extend( {
+},{}],51:[function(require,module,exports){
+var SettingModel = Backbone.Model.extend( {
 
     /**
      * The default parameters for a setting.
@@ -5910,17 +5580,9 @@ SettingModel = Backbone.Model.extend( {
 } );
 
 module.exports = SettingModel;
-},{}],52:[function(require,module,exports){
-/**
- * Tailor.Models.Template
- *
- * The template model.
- *
- * @augments Backbone.Model
- */
-var TemplateModel;
 
-TemplateModel = Backbone.Model.extend( {
+},{}],52:[function(require,module,exports){
+var TemplateModel = Backbone.Model.extend( {
 
     /**
      * Returns an object containing the default parameters for a template.
@@ -6069,229 +5731,9 @@ TemplateModel = Backbone.Model.extend( {
 } );
 
 module.exports = TemplateModel;
+
 },{}],53:[function(require,module,exports){
-Tailor.Collections = Tailor.Collections || {};
-
-Tailor.Collections.Library = require( './collections/library' );
-Tailor.Collections.Template = require( './collections/templates' );
-Tailor.Collections.Panel = require( './collections/panels' );
-Tailor.Collections.Section = require( './collections/sections' );
-Tailor.Collections.Setting = require( './collections/settings' );
-Tailor.Collections.Control = require( './collections/controls' );
-
-module.exports = Marionette.Module.extend( {
-
-	onBeforeStart : function( options ) {
-        var module = this;
-        var library = new Tailor.Collections.Library( options.library );
-        var templates = new Tailor.Collections.Template( options.templates );
-
-        module.panels = new Tailor.Collections.Panel( options.panels );
-        module.sections = { sidebar : new Tailor.Collections.Section( options.sections ) };
-        module.settings = { sidebar : new Tailor.Collections.Setting( options.settings ) };
-        module.controls = {
-            sidebar : new Tailor.Collections.Control( options.controls, {
-                silent : false,
-                settings : module.settings['sidebar']
-            } )
-        };
-
-		var api = {
-
-            /**
-             * Returns a given library item if a tag is provided, otherwise the library.
-             *
-             * @since 1.0.0
-             *
-             * @param tag
-             * @returns {*}
-             */
-            getLibraryItems : function( tag ) {
-                return tag ? library.findWhere( { tag : tag } ) : library;
-            },
-
-            /**
-             * Returns the template item collection.
-             *
-             * @since 1.0.0
-             *
-             * @returns {*}
-             */
-            getTemplates : function() {
-                return templates;
-            },
-
-            /**
-             * Returns a given panel if an ID is provided, otherwise the panel collection.
-             *
-             * @since 1.0.0
-             *
-             * @param id
-             * @returns {*}
-             */
-            getPanels : function( id ) {
-                return id ? module.panels.findWhere( { id : id } ) : module.panels;
-            },
-
-            /**
-             * Returns the collection of sections for a given element.
-             *
-             * If no element model is is provided, the sidebar sections collection is returned.
-             *
-             * @since 1.0.0
-             *
-             * @param model
-             * @returns {*}
-             */
-            getSections : function( model ) {
-
-                // Return the sidebar section collection if no element is provided
-                if ( ! model ) {
-                    return module.sections['sidebar'];
-                }
-
-                var cid = model.cid;
-
-                // Create the element control collection if it doesn't already exist
-                if ( ! module.sections.hasOwnProperty( cid ) ) {
-                    var libraryItem = app.channel.request( 'sidebar:library', model.get( 'tag' ) );
-                    var sections = libraryItem.get( 'sections' ) || [];
-
-                    module.sections[ cid ] = new Tailor.Collections.Section( sections );
-                }
-
-                // Return the element control collection
-                return module.sections[ cid ];
-            },
-
-            /**
-             * Returns the collection of controls for a given element.
-             *
-             * If no element model is is provided, the sidebar control collection is returned.
-             *
-             * @since 1.0.0
-             *
-             * @param model
-             * @returns {*}
-             */
-            getControls : function( model ) {
-
-                // Return the sidebar control collection if no element is provided
-                if ( ! model ) {
-                    return module.controls['sidebar'];
-                }
-
-                var cid = model.cid;
-
-                // Create the element control collection if it doesn't already exist
-                if ( ! module.controls.hasOwnProperty( cid ) ) {
-                    var libraryItem = app.channel.request( 'sidebar:library', model.get( 'tag' ) );
-                    var controls = libraryItem.get( 'controls' ) || [];
-                    var settings = api.getSettings( model );
-                    var options = {
-                        silent : false,
-                        settings : settings
-                    };
-
-                    module.controls[ cid ] = new Tailor.Collections.Control( controls, options );
-                }
-
-                // Return the element control collection
-                return module.controls[ cid ];
-            },
-
-            /**
-             * Returns the collection of settings for a given element.
-             *
-             * If no element model is is provided, the sidebar settings collection is returned.
-             *
-             * @since 1.0.0
-             *
-             * @param model
-             * @returns {*}
-             */
-            getSettings : function( model ) {
-                
-                // Return the sidebar control collection if no element is provided
-                if ( ! model ) {
-                    return module.settings['sidebar'];
-                }
-
-                var cid = model.cid;
-
-                // Create the element control collection if it doesn't already exist
-                if ( ! module.settings.hasOwnProperty( cid ) ) {
-                    var libraryItem = app.channel.request( 'sidebar:library', model.get( 'tag' ) );
-                    var settings = libraryItem.get( 'settings' ) || [];
-
-                    module.settings[ cid ] = new Tailor.Collections.Setting( settings, { element : model } );
-                }
-
-                module.settings[ cid ].load();
-
-                // Return the element control collection
-                return module.settings[ cid ];
-            }
-		};
-
-        app.channel.reply( 'sidebar:library', api.getLibraryItems );
-        app.channel.reply( 'sidebar:templates', api.getTemplates );
-        app.channel.reply( 'sidebar:panels', api.getPanels );
-        app.channel.reply( 'sidebar:sections sidebar:default', api.getSections );
-        app.channel.reply( 'sidebar:controls', api.getControls );
-        app.channel.reply( 'sidebar:settings', api.getSettings );
-
-        this.listenTo( module.settings['sidebar'], 'change', this.onChangeSetting );
-	},
-
-    /**
-     * Triggers an event on the applcation communication channel when a sidebar setting changes.
-     *
-     * @since 1.0.0
-     *
-     * @param setting
-     */
-    onChangeSetting : function( setting ) {
-
-        /**
-         * Fires when a sidebar setting changes.
-         *
-         * @since 1.0.0
-         */
-        app.channel.trigger( 'sidebar:setting:change', setting );
-    }
-
-} );
-},{"./collections/controls":38,"./collections/library":39,"./collections/panels":40,"./collections/sections":42,"./collections/settings":43,"./collections/templates":44}],54:[function(require,module,exports){
-module.exports = Marionette.Module.extend( {
-
-    /**
-     * Initializes the module.
-     *
-     * @since 1.0.0
-     */
-	onStart : function() {
-        var DialogView = require( './dialog/show/dialog' );
-		var api = {
-
-            /**
-             * Opens the dialog window.
-             *
-             * @since 1.0.0
-             *
-             * @param options
-             */
-			showDialog : function( options ) {
-                app.dialog.show( new DialogView( options ) );
-			}
-		};
-
-		this.listenTo( app.channel, 'dialog:open', api.showDialog );
-    }
-
-} );
-},{"./dialog/show/dialog":56}],55:[function(require,module,exports){
-module.exports = Backbone.Marionette.Region.extend( {
+var DialogRegion = Backbone.Marionette.Region.extend( {
 
     /**
      * Initializes the dialog region.
@@ -6327,7 +5769,51 @@ module.exports = Backbone.Marionette.Region.extend( {
     }
 
 } );
-},{}],56:[function(require,module,exports){
+
+module.exports = DialogRegion;
+
+},{}],54:[function(require,module,exports){
+var DialogView = require( './show/dialog' ),
+	DialogModule;
+
+DialogModule = Marionette.Module.extend( {
+
+    /**
+     * Initializes the module.
+     *
+     * @since 1.0.0
+     */
+	onStart : function() {
+		var api = {
+
+            /**
+             * Opens the dialog window.
+             *
+             * @since 1.0.0
+             *
+             * @param options
+             */
+			showDialog : function( options ) {
+                app.dialog.show( new DialogView( options ) );
+			}
+		};
+
+		this.listenTo( app.channel, 'dialog:open', api.showDialog );
+
+	    /**
+	     * Fires when the module is initialized.
+	     *
+	     * @since 1.5.0
+	     *
+	     * @param this
+	     */
+	    app.channel.trigger( 'module:dialog:ready', this );
+    }
+
+} );
+
+module.exports = DialogModule;
+},{"./show/dialog":55}],55:[function(require,module,exports){
 /**
  * Dialog view for present growl-style notifications to the user.
  *
@@ -6474,58 +5960,475 @@ DialogView = Backbone.Marionette.ItemView.extend( {
 } );
 
 module.exports = DialogView;
-},{}],57:[function(require,module,exports){
-module.exports = Marionette.Module.extend( {
+
+},{}],56:[function(require,module,exports){
+var SnapshotsCollection = require( '../../entities/collections/snapshots' ),
+    SnapshotMenuItem = require( './show/snapshot-menu-item' ),
+    HistoryModule;
+
+Tailor.Items.History = SnapshotMenuItem;
+
+HistoryModule = Marionette.Module.extend( {
+
+    /**
+     * Initializes the module.
+     */
+	onBeforeStart : function() {
+        var module = this;
+
+        module.collection = new SnapshotsCollection();
+        
+        var api = {
+
+            /**
+             * Returns a given history snapsho if an ID is provided, otherwise the snapshot collection.
+             *
+             * @since 1.5.0
+             *
+             * @param id
+             * @returns {*}
+             */
+            getSnapshot : function( id ) {
+                if ( id ) {
+                    return module.collection.findWhere( { id : id } );
+                }
+                return module.collection;
+            }
+        };
+        
+        app.channel.reply( 'sidebar:history', api.getSnapshot );
+    },
+
+    /**
+     * Initializes the module.
+     *
+     * @param options
+     */
+    onStart : function( options ) {
+        this.l10n = options.l10n;
+        this.addEventListeners();
+
+        /**
+         * Fires when the module is initialized.
+         *
+         * @since 1.5.0
+         *
+         * @param this
+         */
+        app.channel.trigger( 'module:history:ready', this );
+    },
+
+    /**
+     * Adds the required event listeners.
+     *
+     * @since 1.0.0
+     */
+    addEventListeners : function() {
+        this.listenTo( app.channel, 'element:add', this.onAddElement );
+	    this.listenTo( app.channel, 'element:copy', this.onCopyElement );
+	    this.listenTo( app.channel, 'element:move', this.onMoveElement );
+        this.listenTo( app.channel, 'modal:apply', this.onEditElement );
+        this.listenTo( app.channel, 'element:delete', this.onDeleteElement );
+        this.listenTo( app.channel, 'element:resize', this.onResizeElement );
+        this.listenTo( app.channel, 'element:change:order', this.onReorderElement );
+        this.listenTo( app.channel, 'template:add', this.onAddTemplate );
+        this.listenTo( app.channel, 'history:restore', this.restoreSnapshot );
+        this.listenTo( app.channel, 'history:undo', this.undoStep );
+        this.listenTo( app.channel, 'history:redo', this.redoStep );
+    },
+
+    /**
+     * Creates a new history entry after a new element is added.
+     * 
+     * Only show elements in the list of snapshots, templates are added separately
+     *
+     * @since 1.0.0
+     *
+     * @param model
+     */
+    onAddElement : function( model ) {
+        if ( 'library' == model.get( 'collection' ) ) {
+            this.saveSnapshot( this.l10n.added + ' ' + model.get( 'label' ) );
+        }
+    },
+
+    /**
+     * Creates a new history entry after an element is edited.
+     *
+     * @since 1.0.0
+     *
+     * @param modal
+     * @param model
+     */
+    onEditElement : function( modal, model ) {
+        this.saveSnapshot( this.l10n.edited + ' ' + model.get( 'label' ) );
+    },
+
+    /**
+     * Creates a new history entry after an element is copied.
+     *
+     * @since 1.0.0
+     *
+     * @param model
+     */
+    onCopyElement : function( model ) {
+        this.saveSnapshot( this.l10n.copied + ' ' + model.get( 'label' ) );
+    },
+
+    /**
+     * Creates a new history entry after an element is moved.
+     *
+     * @since 1.0.0
+     *
+     * @param model
+     */
+    onMoveElement : function( model ) {
+        this.saveSnapshot( this.l10n.moved + ' ' + model.get( 'label' ) );
+    },
+
+    /**
+     * Creates a new history entry after an element is deleted.
+     *
+     * @since 1.0.0
+     *
+     * @param model
+     */
+    onDeleteElement : function( model ) {
+        this.saveSnapshot( this.l10n.deleted + ' ' + model.get( 'label' ) );
+    },
+
+    /**
+     * Creates a new history entry after an element is resized.
+     *
+     * @since 1.0.0
+     *
+     * @param model
+     */
+    onResizeElement : function( model ) {
+        this.saveSnapshot( this.l10n.resized + ' ' + model.get( 'label' ) );
+    },
+
+    /**
+     * Creates a new history entry after the children of a container are reordered.
+     *
+     * @since 1.0.0
+     *
+     * @param model
+     */
+    onReorderElement : function( model ) {
+        this.saveSnapshot( this.l10n.reordered + ' ' + model.get( 'label' ) );
+    },
+
+    /**
+     * Creates a new history entry after a template is added.
+     *
+     * @since 1.0.0
+     *
+     * @param model
+     */
+    onAddTemplate : function( model ) {
+        this.saveSnapshot( this.l10n.added + ' ' + this.l10n.template + ' - ' + model.get( 'label' ) );
+    },
+
+    /**
+     * Creates a snapshot of the element collection.
+     *
+     * @since 1.0.0
+     *
+     * @param label
+     */
+    saveSnapshot : function( label ) {
+        this.collection.save( label );
+    },
+
+    /**
+     * Restores a snapshot of the element collection.
+     *
+     * @since 1.0.0
+     *
+     * @param timestamp
+     */
+    restoreSnapshot : function( timestamp ) {
+        this.collection.restore( timestamp );
+    },
+
+    /**
+     * Restores the previous history snapshot.
+     *
+     * @since 1.0.0
+     */
+    undoStep : function() {
+        this.collection.undo();
+    },
+
+    /**
+     * Restores the next history snapshot.
+     *
+     * @since 1.0.0
+     */
+    redoStep : function() {
+        this.collection.redo();
+    }
+
+} );
+
+module.exports = HistoryModule;
+},{"../../entities/collections/snapshots":43,"./show/snapshot-menu-item":57}],57:[function(require,module,exports){
+var $ = Backbone.$,
+    HistoryItem;
+
+HistoryItem = Marionette.ItemView.extend( {
+
+    events : {
+        click : 'restore',
+        keypress : 'onKeyPress'
+    },
+
+    /**
+     * Returns the appropriate template based on the panel type.
+     *
+     * @since 1.0.0
+     *
+     * @returns {string}
+     */
+    template : '#tmpl-tailor-panel-history-item',
+
+    /**
+     * Initializes the item.
+     *
+     * @since 1.0.0
+     */
+    initialize : function() {
+        this.addEventListeners();
+    },
+
+    /**
+     * Adds the required event listeners.
+     *
+     * @since 1.0.0
+     */
+    addEventListeners : function() {
+        this.listenTo( this.model.collection, 'change:active', this.toggleClass );
+    },
+
+	/**
+	 * Assigns the appropriate class name to the item based on whether it is active.
+	 *
+	 * @since 1.0.0
+	 */
+    onRender : function() {
+        this.toggleClass();
+    },
+
+    /**
+     * Uses the rendered template HTML as the $el.
+     *
+     * @since 1.0.0
+     *
+     * @param html
+     * @returns {exports}
+     */
+    attachElContent : function( html ) {
+        var $el = $( html );
+
+        this.$el.replaceWith( $el );
+        this.setElement( $el );
+        this.el.setAttribute( 'tabindex', 0 );
+
+        return this;
+    },
+
+	/**
+	 * Restores the associated history entry when the item is selected using the keyboard.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param e
+	 */
+    onKeyPress : function( e ) {
+        if ( 13 === e.which ) {
+            this.restore();
+        }
+    },
+
+    /**
+     * Restores the history entry.
+     *
+     * @since 1.0.0
+     */
+    restore : function() {
+        var timestamp = this.model.get( 'timestamp' );
+
+	    /**
+	     * Fires before a request is made to restore a given history entry.
+	     *
+	     * @since 1.0.0
+	     *
+	     * @param id
+	     */
+	    app.channel.trigger( 'before:history:restore', timestamp );
+
+        /**
+         * Fires after a request is made to restore a given history entry.
+         *
+         * @since 1.0.0
+         *
+         * @param id
+         */
+        app.channel.trigger( 'history:restore', timestamp );
+    },
+
+    /**
+     * Toggles the state of the entry element based on its status.
+     *
+     * @since 1.0.0
+     *
+     * @param model
+     */
+    toggleClass : function( model ) {
+        model = model || this.model.collection.getActive();
+        this.$el.toggleClass( 'is-active', model === this.model );
+    }
+
+} );
+
+module.exports = HistoryItem;
+
+},{}],58:[function(require,module,exports){
+
+var LibraryCollection = require( '../../entities/collections/library' ),
+    LibraryMenuItem = require( './show/library-menu-item' ),
+    LibraryModule;
+
+Tailor.Items.Library = LibraryMenuItem;
+
+LibraryModule = Marionette.Module.extend( {
+
+	onBeforeStart : function( options ) {
+        var collection = new LibraryCollection( options.library );
+        var api = {
+
+            /**
+             * Returns a given library item if a tag is provided, otherwise the library.
+             *
+             * @since 1.0.0
+             *
+             * @param tag
+             * @returns {*}
+             */
+            getLibraryItem : function ( tag ) {
+                if ( tag ) {
+                    return collection.findWhere( { tag : tag } );
+                }
+                return collection;
+            }
+        };
+
+        app.channel.reply( 'sidebar:library', api.getLibraryItem );
+    },
 
     /**
      * Initializes the module.
      *
      * @since 1.0.0
      */
-	onStart : function() {
-        var ModalView = require( './modal/show/modal' );
-		var api = {
+    onStart : function() {
 
-            /**
-             * Opens a modal window to edit the given element.
-             *
-             * @since 1.0.0
-             *
-             * @param model
-             */
-			openModal : function( model ) {
+        /**
+         * Fires when the module is initialized.
+         *
+         * @since 1.5.0
+         *
+         * @param this
+         */
+        app.channel.trigger( 'module:library:ready', this );
+    }
+    
+} );
 
-                // Closes the current modal window and prompts the user to save any unsaved changes
-                if ( app.modal.hasView() ) {
-                    if ( model === app.modal.currentView.model ) {
-                        return;
-                    }
+module.exports = LibraryModule;
+},{"../../entities/collections/library":38,"./show/library-menu-item":59}],59:[function(require,module,exports){
+var $ = Backbone.$,
+    ElementMenuItem;
 
-                    app.modal.currentView.triggerMethod( 'close' );
-                }
+ElementMenuItem = Marionette.ItemView.extend( {
 
-                app.modal.show( new ModalView( {
-                    model : model
-                } ) );
-			},
+    events : {
+        click : 'onClick',
+        keypress : 'onKeyPress'
+    },
 
-            /**
-             * Closes the current modal window.
-             *
-             * @since 1.0.0
-             */
-            closeModal : function() {
-                app.modal.empty();
-            }
-		};
+    modelEvents : {
+        'change:match' : 'onSearch'
+    },
 
-		this.listenTo( app.channel, 'modal:open', api.openModal );
-		this.listenTo( app.channel, 'elements:reset', api.closeModal );
+    behaviors : {
+        Draggable : {}
+    },
+
+    onClick : function() {
+        var el = this.el;
+
+        if ( el.classList.contains( 'is-inactive') ) {
+            return;
+        }
+
+        var onAnimationEnd = function( e ) {
+            el.removeEventListener( window.animationEndName, onAnimationEnd );
+            el.classList.remove( 'shake' );
+        };
+
+        if ( Modernizr.cssanimations ) {
+            el.addEventListener( window.animationEndName, onAnimationEnd );
+            el.classList.add( 'shake' );
+        }
+
+        Tailor.Notify( window._l10n.dragElement, 'warning' );
+    },
+
+    /**
+     * Returns the appropriate template based on the panel type.
+     *
+     * @since 1.0.0
+     * @returns {string}
+     */
+    getTemplate : function() {
+        return '#tmpl-tailor-panel-library-item';
+    },
+
+    /**
+     * Uses the rendered template HTML as the $el.
+     *
+     * @since 1.0.0
+     * @param html
+     * @returns {exports}
+     */
+    attachElContent : function( html ) {
+        var $el = $( html );
+
+        this.$el.replaceWith( $el );
+        this.setElement( $el );
+
+        return this;
+    },
+
+	/**
+     * Shows or hides the item based on whether it matches search criteria.
+     *
+     * @since 1.0.0
+     *
+     * @param model
+     */
+    onSearch : function( model ) {
+        this.el.style.display = ! model.get( 'match' ) ? 'none' : 'block';
     }
 
 } );
-},{"./modal/show/modal":61}],58:[function(require,module,exports){
-module.exports = Backbone.Marionette.Region.extend( {
+
+module.exports = ElementMenuItem;
+
+},{}],60:[function(require,module,exports){
+var ModalRegion = Backbone.Marionette.Region.extend( {
 
     /**
      * Displays the modal container and sets the initial modal window position.
@@ -6541,7 +6444,6 @@ module.exports = Backbone.Marionette.Region.extend( {
 
         var rect = this.el.getBoundingClientRect();
         var width = this.el.style.width ? this.el.style.width : rect.width;
-
         this.el.style.width = width + 'px';
 
         if ( ! this.el.style.height ) {
@@ -6567,7 +6469,6 @@ module.exports = Backbone.Marionette.Region.extend( {
         // Listen to resize events on the modal view
         this.listenTo( view, 'modal:resize', this.onResize );
     },
-
 
     /**
      * Responds to changes in the modal width and/or height.
@@ -6612,30 +6513,94 @@ module.exports = Backbone.Marionette.Region.extend( {
     }
 
 } );
-},{}],59:[function(require,module,exports){
-module.exports = Marionette.ItemView.extend( {
 
-    className : 'tailor-empty',
+module.exports = ModalRegion;
+},{}],61:[function(require,module,exports){
+var ModalView = require( './show/modal' ),
+	ModalModule;
+
+ModalModule = Marionette.Module.extend( {
+
+    /**
+     * Initializes the module.
+     *
+     * @since 1.0.0
+     */
+	onStart : function() {
+		var api = {
+
+            /**
+             * Opens a modal window to edit the given element.
+             *
+             * @since 1.0.0
+             *
+             * @param model
+             */
+			openModal : function( model ) {
+
+                // Closes the current modal window and prompts the user to save any unsaved changes
+                if ( app.modal.hasView() ) {
+                    if ( model === app.modal.currentView.model ) {
+                        return;
+                    }
+                    app.modal.currentView.triggerMethod( 'close' );
+                }
+
+                app.modal.show( new ModalView( {
+                    model : model
+                } ) );
+			},
+
+            /**
+             * Closes the current modal window.
+             *
+             * @since 1.0.0
+             */
+            closeModal : function() {
+                app.modal.empty();
+            }
+		};
+
+		this.listenTo( app.channel, 'modal:open', api.openModal );
+		this.listenTo( app.channel, 'elements:reset', api.closeModal );
+
+	    /**
+	     * Fires when the module is initialized.
+	     *
+	     * @since 1.5.0
+	     *
+	     * @param this
+	     */
+	    app.channel.trigger( 'module:modal:ready', this );
+    }
+
+} );
+
+module.exports = ModalModule;
+},{"./show/modal":64}],62:[function(require,module,exports){
+var EmptyModalView = Marionette.ItemView.extend( {
+
+    className : 'empty',
 
     template : '#tmpl-tailor-modal-empty'
 
 } );
-},{}],60:[function(require,module,exports){
-module.exports = Marionette.ItemView.extend( {
 
-    className : 'tailor-empty',
+module.exports = EmptyModalView;
+},{}],63:[function(require,module,exports){
+var EmptySectionView = Marionette.ItemView.extend( {
+
+    className : 'empty',
 
     template : '#tmpl-tailor-section-default-empty'
 
 } );
-},{}],61:[function(require,module,exports){
-/**
- * Modal view for editing element settings.
- *
- * @class
- */
-var $ = window.jQuery,
-	ModalView;
+
+module.exports = EmptySectionView;
+},{}],64:[function(require,module,exports){
+var SectionCollectionView = require( './sections' ),
+    NavigationView = require( './tabs' ),
+    ModalView;
 
 ModalView = Marionette.LayoutView.extend( {
 
@@ -6643,7 +6608,6 @@ ModalView = Marionette.LayoutView.extend( {
 
 	ui : {
 		close : '.js-close',
-        preview : '.js-preview',
 		apply : '.js-apply'
 	},
 
@@ -6657,7 +6621,6 @@ ModalView = Marionette.LayoutView.extend( {
 
     triggers : {
         'click @ui.close' : 'close',
-        'click @ui.preview' : 'preview',
         'click @ui.apply' : 'apply'
     },
 
@@ -6676,10 +6639,8 @@ ModalView = Marionette.LayoutView.extend( {
      * Initializes the modal window.
      *
      * @since 1.0.0
-     *
-     * @param options
      */
-	initialize : function( options ) {
+	initialize : function() {
         this.isModified = false;
         this.settings = app.channel.request( 'sidebar:settings', this.model );
         this.addEventListeners();
@@ -6690,7 +6651,7 @@ ModalView = Marionette.LayoutView.extend( {
          * @since 1.0.0
          */
         app.channel.trigger( 'modal:initialize', this, this.model );
-	},
+    },
 
     /**
      * Adds the required event listeners.
@@ -6707,25 +6668,24 @@ ModalView = Marionette.LayoutView.extend( {
      * @since 1.0.0
      */
     onRender : function() {
-        var sections = app.channel.request( 'sidebar:sections', this.model );
-        var controls = app.channel.request( 'sidebar:controls', this.model );
-        var SectionsView = require( './sections' );
-        this.showChildView( 'sections', new SectionsView( {
-            element : this.model,
+        var model = this.model;
+        var sections = app.channel.request( 'sidebar:sections', model );
+        var controls = app.channel.request( 'sidebar:controls', model );
+
+        this.showChildView( 'sections', new SectionCollectionView( {
+            element : model,
             collection : sections,
             controls : controls
         } ) );
 
         if ( sections.length > 1 ) {
-            var TabsView = require( './tabs' );
-            this.showChildView( 'tabs', new TabsView( {
+            this.showChildView( 'tabs', new NavigationView( {
                 collection : sections
             } ) );
-
             this.el.classList.add( 'has-sections' );
         }
 
-        this.model.collection.trigger( 'edit', this.model, true );
+        model.collection.trigger( 'edit', model, true );
     },
 
     /**
@@ -6742,31 +6702,58 @@ ModalView = Marionette.LayoutView.extend( {
      *
      * @since 1.0.0
      */
-    onChange : function() {
+    onChange : function( setting ) {
         this.isModified = true;
-        this.ui.preview.attr( 'disabled', false );
         this.ui.apply.attr( 'disabled', false );
-    },
 
-    /**
-     * Previews current changes without applying them.
-     *
-     * @since 1.0.0
-     */
-    onPreview : function() {
-        if ( ! this.model.isTracking() ) {
-            this.model.startTracking();
+        var model = this.model;
+        if ( ! model.isTracking() ) {
+            model.startTracking();
         }
 
-	    this.model.set( 'atts', this._getAttributes() );
-        this.ui.preview.attr( 'disabled', true );
+        var update = setting.get( 'refresh' );
+        var jsRefresh = update.hasOwnProperty( 'method' ) && 'js' == update['method'];
+
+        // Check dependencies, if they exist
+        if ( jsRefresh && update.hasOwnProperty( 'dependencies' ) ) {
+            for ( var settingId in update['dependencies'] ) {
+                if (
+                    update['dependencies'].hasOwnProperty( settingId ) &&
+                    _.has( update['dependencies'][ settingId ], 'condition' ) &&
+                    _.has( update['dependencies'][ settingId ], 'value' )
+                ) {
+                    var targetSetting = setting.collection.get( settingId );
+                    if ( targetSetting && ! Tailor.Helpers.checkCondition(
+                            update['dependencies'][ settingId ]['condition'],
+                            targetSetting.get( 'value' ),
+                            update['dependencies'][ settingId ]['value']
+                        )
+                    ) {
+                        jsRefresh = false;
+                        break;
+                    }
+                }
+            }
+        }
+
+        model.set( 'atts', this.atts(), { silent : jsRefresh } );
+        
+        if ( jsRefresh ) {
+
+	        /**
+	         * Triggers an event on the element model to inform it of a change to the setting.
+             *
+             * @since 1.5.0
+             */
+            model.trigger( 'change:setting', setting, model );
+        }
 
         /**
-         * Fires when element settings are previewed.
+         * Resets the canvas when previewing an element.
          *
-         * @since 1.0.0
+         * @since 1.4.1
          */
-        app.channel.trigger( 'modal:preview', this, this.model );
+        app.channel.trigger( 'canvas:reset' );
     },
 
     /**
@@ -6776,7 +6763,7 @@ ModalView = Marionette.LayoutView.extend( {
      */
     onApply : function() {
         this.model.stopTracking();
-	    this.model.set( 'atts', this._getAttributes() );
+	    this.model.set( 'atts', this.atts() );
 
         /**
          * Fires when element settings are applied.
@@ -6839,23 +6826,20 @@ ModalView = Marionette.LayoutView.extend( {
      * @since 1.0.0
      *
      * @returns {{}}
-     * @private
      */
-    _getAttributes : function() {
+    atts : function() {
         var atts = {};
-
         this.settings.each( function( setting ) {
             atts[ setting.get( 'id' ) ] = setting.get( 'value' );
         }, this );
-
         return atts;
     }
 
 } );
 
 module.exports = ModalView;
-},{"./sections":63,"./tabs":65}],62:[function(require,module,exports){
-module.exports = Marionette.CollectionView.extend( {
+},{"./sections":66,"./tabs":68}],65:[function(require,module,exports){
+var ControlCollectionView = Marionette.CollectionView.extend( {
 
 	tagName : 'ul',
 
@@ -6872,7 +6856,7 @@ module.exports = Marionette.CollectionView.extend( {
      * @returns {*|exports|module.exports}
      */
     getChildView : function( child ) {
-        return window.Tailor.Controls.lookup( child.get( 'type' ) );
+        return Tailor.lookup( child.get( 'type' ), false, 'Controls' );
     },
 
     /**
@@ -6944,8 +6928,10 @@ module.exports = Marionette.CollectionView.extend( {
     }
 
 } );
-},{"./empty-section":60}],63:[function(require,module,exports){
-module.exports = Marionette.CollectionView.extend( {
+
+module.exports = ControlCollectionView;
+},{"./empty-section":63}],66:[function(require,module,exports){
+var SectionCollectionView = Marionette.CollectionView.extend( {
 
     childView : require( './section' ),
 
@@ -6975,8 +6961,10 @@ module.exports = Marionette.CollectionView.extend( {
     }
 
 } );
-},{"./empty-modal":59,"./section":62}],64:[function(require,module,exports){
-module.exports = Marionette.ItemView.extend( {
+
+module.exports = SectionCollectionView;
+},{"./empty-modal":62,"./section":65}],67:[function(require,module,exports){
+var NavigationItemView = Marionette.ItemView.extend( {
 
     tagName : 'li',
 
@@ -7026,14 +7014,19 @@ module.exports = Marionette.ItemView.extend( {
     }
 
 } );
-},{}],65:[function(require,module,exports){
-module.exports = Marionette.CollectionView.extend( {
+
+module.exports = NavigationItemView;
+},{}],68:[function(require,module,exports){
+var NavigationItemView = require( './tab' ),
+    NavigationView;
+
+NavigationView = Marionette.CollectionView.extend( {
 
     tagName : 'ul',
 
     className : 'tabs',
 
-    childView : require( './tab' ),
+    childView : NavigationItemView,
 
     childEvents : {
         select : 'onSelect'
@@ -7064,8 +7057,13 @@ module.exports = Marionette.CollectionView.extend( {
     }
 
 } );
-},{"./tab":64}],66:[function(require,module,exports){
-module.exports = Marionette.Module.extend( {
+
+module.exports = NavigationView;
+},{"./tab":67}],69:[function(require,module,exports){
+var Notify = window.Tailor.Notify,
+    NotificationsModule;
+
+NotificationsModule = Marionette.Module.extend( {
 
     /**
      * Initializes the module.
@@ -7074,6 +7072,15 @@ module.exports = Marionette.Module.extend( {
      */
 	onStart : function() {
         this.addEventListeners();
+
+        /**
+         * Fires when the module is initialized.
+         *
+         * @since 1.5.0
+         *
+         * @param this
+         */
+        app.channel.trigger( 'module:notifications:ready', this );
     },
 
     /**
@@ -7082,104 +7089,117 @@ module.exports = Marionette.Module.extend( {
      * @since 1.0.0
      */
     addEventListeners : function() {
-        this.listenTo( app.channel, 'sidebar:save', this.onSave );
-
-        this.listenTo( app.channel, 'elements:restore', this.onRestoreElements );
-
-        this.listenTo( app.channel, 'element:delete', this.onDeleteElement );
-
-        this.listenTo( app.channel, 'template:save', this.onSaveTemplate );
-        this.listenTo( app.channel, 'template:import', this.onImportTemplate );
-        this.listenTo( app.channel, 'template:add', this.onAddTemplate );
-        this.listenTo( app.channel, 'template:delete', this.onDeleteTemplate );
-    },
-
-    /**
-     * Triggers a notification when the page is saved.
-     *
-     * @since 1.0.0
-     */
-    onSave : function() {
-        Tailor.Notify( window._l10n.savedPage, 'success' );
-    },
-
-    /**
-     * Triggers a notification when the canvas is restored (e.g., from a history entry).
-     *
-     * @since 1.0.0
-     */
-    onRestoreElements : function() {
-        Tailor.Notify( window._l10n.restoreElements, 'success' );
-    },
-
-    /**
-     * Triggers a notification when an element is deleted.
-     *
-     * @since 1.0.0
-     */
-    onDeleteElement : function() {
-        Tailor.Notify( window._l10n.deletedElement, 'success' );
-    },
-
-    /**
-     * Triggers a notification when a new template is saved.
-     *
-     * @since 1.0.0
-     */
-    onSaveTemplate : function() {
-        Tailor.Notify( window._l10n.savedTemplate, 'success' );
-    },
-
-    /**
-     * Triggers a notification when a template is imported from a JSON file.
-     *
-     * @since 1.0.0
-     */
-    onImportTemplate : function() {
-        Tailor.Notify( window._l10n.importedTemplate, 'success' );
-    },
-
-    /**
-     * Triggers a notification when a template is added to the page.
-     *
-     * @since 1.0.0
-     */
-    onAddTemplate : function() {
-        Tailor.Notify( window._l10n.addedTemplate, 'success' );
-    },
-
-    /**
-     * Triggers a notification when a template is deleted.
-     *
-     * @since 1.0.0
-     */
-    onDeleteTemplate : function() {
-        Tailor.Notify( window._l10n.deletedTemplate, 'success' );
+        var l10n = window._l10n;
+        
+        // Trigger a notification when the page is saved
+        this.listenTo( app.channel, 'sidebar:save', function() {
+            Notify( l10n.savedPage, 'success' );
+        } );
+        
+        // Trigger a notification when the canvas is restored
+        this.listenTo( app.channel, 'elements:restore', function() {
+            Notify( l10n.restoreElements, 'success' );
+        } );
+        
+        // Trigger a notification when an element is deleted
+        this.listenTo( app.channel, 'element:delete', function() {
+            Notify( l10n.deletedElement, 'success' );
+        } );
+        
+        // Trigger a notification when a template is saved
+        this.listenTo( app.channel, 'template:save', function() {
+            Notify( l10n.savedTemplate, 'success' );
+        } );
+        
+        // Trigger a notification when a template is imported
+        this.listenTo( app.channel, 'template:import', function() {
+            Notify( l10n.importedTemplate, 'success' );
+        } );
+        
+        // Trigger a notification when a template is added to the page
+        this.listenTo( app.channel, 'template:add', function() {
+            Notify( l10n.addedTemplate, 'success' );
+        } );
+        
+        // Trigger a notification when a template is deleted
+        this.listenTo( app.channel, 'template:delete', function() {
+            Notify( l10n.deletedTemplate, 'success' );
+        } );
     }
 
 } );
-},{}],67:[function(require,module,exports){
-module.exports = Marionette.Module.extend( {
+
+module.exports = NotificationsModule;
+
+},{}],70:[function(require,module,exports){
+var PanelCollection = require( '../../entities/collections/panels' ),
+    PanelLayoutView = require( './show/layout' ),
+    PanelMenuItem = require( './show/panel-menu-item' ),
+    PanelsModule;
+
+Tailor.Items.Panels = PanelMenuItem;
+
+PanelsModule = Marionette.Module.extend( {
+
+    onBeforeStart : function( options ) {
+        var module = this;
+
+        module.collection = new PanelCollection( options.panels );
+
+        var api = {
+
+            /**
+             * Returns a given panel if an ID is provided, otherwise the panel collection.
+             *
+             * @since 1.0.0
+             *
+             * @param id
+             * @returns {*}
+             */
+            getPanels : function( id ) {
+                if ( id ) {
+                    return module.collection.findWhere( { id : id } )
+                }
+                return module.collection;
+            }
+        };
+
+        app.channel.reply( 'sidebar:panels', api.getPanels );
+    },
 
     /**
      * Initializes the module.
      *
      * @since 1.0.0
      */
-    onStart : function( options ) {
-        var LayoutView = require( './panels/show/layout' );
-
-        app.content.show( new LayoutView( {
-            panels : app.channel.request( 'sidebar:panels' ),
-            sections : app.channel.request( 'sidebar:sections' ),
-            controls : app.channel.request( 'sidebar:controls' ),
-            settings : app.channel.request( 'sidebar:settings' )
+    onStart : function() {
+        
+        app.content.show( new PanelLayoutView( {
+            panels :    app.channel.request( 'sidebar:panels' ),
+            sections :  app.channel.request( 'sidebar:sections' ),
+            controls :  app.channel.request( 'sidebar:controls' ),
+            settings :  app.channel.request( 'sidebar:settings' )
         } ) );
+
+        /**
+         * Fires when the module is initialized.
+         *
+         * @since 1.5.0
+         *
+         * @param this
+         */
+        app.channel.trigger( 'module:panels:ready', this );
     }
 
 } );
-},{"./panels/show/layout":68}],68:[function(require,module,exports){
-module.exports = Marionette.LayoutView.extend( {
+
+module.exports = PanelsModule;
+
+},{"../../entities/collections/panels":39,"./show/layout":71,"./show/panel-menu-item":72}],71:[function(require,module,exports){
+var PanelsView = require( './panels' ),
+    PanelLayoutView;
+
+PanelLayoutView = Marionette.LayoutView.extend( {
 
     ui: {
         pageTitle : '.back-button'
@@ -7222,8 +7242,6 @@ module.exports = Marionette.LayoutView.extend( {
      * @since 1.0.0
      */
     onRender : function() {
-        var PanelsView = require( './panels' );
-
         this.showChildView( 'panels', new PanelsView( {
             collection : this.panels
         } ) );
@@ -7240,12 +7258,8 @@ module.exports = Marionette.LayoutView.extend( {
         this.displayPanel();
 
         var collection = app.channel.request( 'sidebar:' + view.model.get( 'type' ) );
-        //if ( ! collection ) {
-        //    collection = this.sections;
-        //}
-
-        var PanelView = window.Tailor.Panels.lookup( view.model.get( 'type' ) );
-
+        var PanelView = Tailor.lookup( view.model.get( 'type' ), false, 'Panels' );
+        
         this.showChildView( 'panel', new PanelView( {
             model : view.model,
             collection : collection
@@ -7263,7 +7277,7 @@ module.exports = Marionette.LayoutView.extend( {
         this.el.classList.add( 'section-visible' );
         this.el.classList.remove( 'panel-visible' );
 
-        var SectionView = window.Tailor.Sections.lookup( view.model.get( 'type' ) );
+        var SectionView = Tailor.lookup( view.model.get( 'type' ), false, 'Sections' );
         this.showChildView( 'section', new SectionView( {
             model : view.model,
             collection : this.controls,
@@ -7304,19 +7318,91 @@ module.exports = Marionette.LayoutView.extend( {
     }
 
 } );
-},{"./panels":70}],69:[function(require,module,exports){
-module.exports = Marionette.ItemView.extend( {
 
-    className : 'tailor-empty',
+module.exports = PanelLayoutView;
+
+},{"./panels":74}],72:[function(require,module,exports){
+var $ = Backbone.$,
+	PanelItem;
+
+PanelItem = Marionette.ItemView.extend( {
+
+    events : {
+        click : 'onClick',
+        keypress : 'onKeyPress'
+    },
+
+    modelEvents : {
+        focus : 'onFocus'
+    },
+
+    template : '#tmpl-tailor-panel-default-item',
+
+    /**
+     * Uses the rendered template HTML as the $el.
+     *
+     * @since 1.0.0
+     * @param html
+     * @returns {exports}
+     */
+    attachElContent : function( html ) {
+        var $el = $( html );
+
+        this.$el.replaceWith( $el );
+        this.setElement( $el );
+        this.el.setAttribute( 'tabindex', 0 );
+
+        return this;
+    },
+
+	/**
+	 * Displays the associated panel when the item is clicked.
+	 *
+	 * @since 1.0.0
+	 */
+    onClick : function() {
+        this.triggerMethod( 'show:panel' );
+    },
+
+	/**
+	 * Displays the associated panel when the item is selected using the keyboard.
+	 *
+	 * @since 1.0.0
+	 */
+    onKeyPress : function( e ) {
+        if ( 13 === e.which ) {
+            this.triggerMethod( 'show:panel' );
+        }
+    },
+
+	/**
+	 * Sets focus on the list item.
+	 *
+	 * @since 1.0.0
+	 */
+    onFocus : function() {
+        this.el.focus();
+    }
+
+} );
+
+module.exports = PanelItem;
+
+},{}],73:[function(require,module,exports){
+var EmptyPanelView = Marionette.ItemView.extend( {
+
+    className : 'empty',
 
     template : '#tmpl-tailor-home-empty'
 
 } );
-},{}],70:[function(require,module,exports){
-module.exports = Marionette.CompositeView.extend( {
+
+module.exports = EmptyPanelView;
+},{}],74:[function(require,module,exports){
+var PanelsView = Marionette.CompositeView.extend( {
 
     getChildView : function() {
-        return window.Tailor.Items.lookup( 'panels' );
+        return Tailor.lookup( 'panels', false, 'Items' );
     },
 
     childViewContainer : '#items',
@@ -7336,183 +7422,877 @@ module.exports = Marionette.CompositeView.extend( {
     template : '#tmpl-tailor-home'
 
 } );
-},{"./panels-empty":69}],71:[function(require,module,exports){
 
-( function( Behaviors ) {
+module.exports = PanelsView;
+},{"./panels-empty":73}],75:[function(require,module,exports){
 
-    'use strict';
+var SectionCollection = require( '../../entities/collections/sections' ),
+    DefaultMenuItem = require( './show/default-menu-item' ),
+    SectionsModule;
 
-    Behaviors.Resizable = require( './components/behaviors/resizable' );
-    Behaviors.Draggable = require( './components/behaviors/draggable' );
-    Behaviors.Panel = require( './components/behaviors/panel' );
+Tailor.Items.Default = DefaultMenuItem;
 
-    Marionette.Behaviors.behaviorsLookup = function() {
-        return Behaviors;
-    };
+SectionsModule = Marionette.Module.extend( {
 
-    window.Tailor.Behaviors = Behaviors;
+	onBeforeStart : function( options ) {
+        var module = this;
 
-} ) ( window.Tailor.Behaviors || {} );
-},{"./components/behaviors/draggable":3,"./components/behaviors/panel":4,"./components/behaviors/resizable":5}],72:[function(require,module,exports){
+        module.collection = {
+            sidebar : new SectionCollection( options.sections )
+        };
 
-( function( Panels, Sections, Items, Controls ) {
+		var api = {
 
-    'use strict';
+            /**
+             * Returns the collection of sections for a given element.
+             *
+             * If no element model is is provided, the sidebar sections collection is returned.
+             *
+             * @since 1.0.0
+             *
+             * @param model
+             * @returns {*}
+             */
+            getSections : function( model ) {
 
-    Panels.Default = require( './components/panels/panel-default' );
-    Panels.Templates = require( './components/panels/panel-templates' );
-
-    Panels.lookup = function( type ) {
-
-        type = type.replace( /-/g, ' ' ).replace( /(?: |\b)(\w)/g, function( key ) {
-            return key.toUpperCase().replace( /\s+/g, '' );
-        } );
-
-        if ( window.Tailor.Panels.hasOwnProperty( type ) ) {
-            return window.Tailor.Panels[ type ];
-        }
-
-        return window.Tailor.Panels.Default;
-    };
-
-    Sections.Default = require( './components/sections/section-default' );
-
-    Sections.lookup = function( type ) {
-
-        type = type.replace( /-/g, ' ' ).replace( /(?: |\b)(\w)/g, function( key ) {
-            return key.toUpperCase().replace( /\s+/g, '' );
-        } );
-
-        if ( Sections.hasOwnProperty( type ) ) {
-            return Sections[ type ];
-        }
-
-        return Sections.Default;
-    };
-
-    Items = window.Tailor.Items || {};
-    Items.Default = require( './components/items/item-default' );
-    Items.Panels = require( './components/items/item-panels' );
-    Items.History = require( './components/items/item-history' );
-    Items.Library = require( './components/items/item-library' );
-    Items.Templates = require( './components/items/item-templates' );
-
-    Items.lookup = function( type ) {
-
-        type = type.replace( /-/g, ' ' ).replace( /(?: |\b)(\w)/g, function( key ) {
-            return key.toUpperCase().replace( /\s+/g, '' );
-        } );
-
-        if ( Items.hasOwnProperty( type ) ) {
-            return Items[ type ];
-        }
-
-        return Items.Default;
-    };
-
-    Controls = window.Tailor.Controls || {};
-    Controls.ButtonGroup = require( './components/controls/button-group' );
-    Controls.Checkbox = require( './components/controls/checkbox' );
-    Controls.Code = require( './components/controls/code' );
-    Controls.Colorpicker = require( './components/controls/colorpicker' );
-    Controls.Editor = require( './components/controls/editor' );
-    Controls.Gallery = require( './components/controls/gallery' );
-    Controls.Icon = require( './components/controls/icon' );
-    Controls.Image = require( './components/controls/image' );
-    Controls.Link = require( './components/controls/link' );
-    Controls.List = require( './components/controls/list' );
-    Controls.Radio = require( './components/controls/radio' );
-    Controls.Range = require( './components/controls/range' );
-    Controls.Select = require( './components/controls/select' );
-    Controls.SelectMulti = require( './components/controls/select-multi' );
-    Controls.Style = require( './components/controls/style' );
-    Controls.Switch = require( './components/controls/switch' );
-    Controls.Text = require( './components/controls/text' );
-    Controls.Textarea = require( './components/controls/textarea' );
-    Controls.Video = require( './components/controls/video' );
-
-    Controls.lookup = function( type ) {
-
-        type = type.replace( /-/g, ' ' ).replace( /(?: |\b)(\w)/g, function( key ) {
-            return key.toUpperCase().replace( /\s+/g, '' );
-        } );
-
-        if ( Controls.hasOwnProperty( type ) ) {
-            return Controls[ type ];
-        }
-
-        return Controls.Text;
-    };
-
-    window.Tailor.Panels = Panels;
-    window.Tailor.Sections = Sections;
-    window.Tailor.Items = Items;
-    window.Tailor.Controls = Controls;
-
-} ) ( window.Tailor.Panels || {}, window.Tailor.Sections || {}, window.Tailor.Items || {}, window.Tailor.Controls || {} );
-},{"./components/controls/button-group":7,"./components/controls/checkbox":8,"./components/controls/code":9,"./components/controls/colorpicker":10,"./components/controls/editor":11,"./components/controls/gallery":12,"./components/controls/icon":13,"./components/controls/image":14,"./components/controls/link":15,"./components/controls/list":18,"./components/controls/radio":19,"./components/controls/range":20,"./components/controls/select":22,"./components/controls/select-multi":21,"./components/controls/style":23,"./components/controls/switch":24,"./components/controls/text":25,"./components/controls/textarea":26,"./components/controls/video":27,"./components/items/item-default":28,"./components/items/item-history":29,"./components/items/item-library":30,"./components/items/item-panels":31,"./components/items/item-templates":32,"./components/panels/panel-default":33,"./components/panels/panel-templates":35,"./components/sections/section-default":36}],73:[function(require,module,exports){
-
-( function( Models ) {
-
-    'use strict';
-
-    Models.Section = require( './entities/models/library/model-wrapper' ); // Sections are just special wrappers
-    Models.Element = require( './entities/models/library/element' );
-    Models.Container = require( './entities/models/library/model-container' );
-    Models.Wrapper = require( './entities/models/library/model-wrapper' );
-
-    Models.lookup = function( tag, type ) {
-
-        tag = tag.replace( /tailor_/g, ' ' ).replace( /(?: |\b)(\w)/g, function( key ) {
-            return key.toUpperCase().replace( /\s+/g, '' );
-        } );
-
-        if ( Models.hasOwnProperty( tag ) ) {
-            return Models[ tag ];
-        }
-
-        type = type.replace( /_/g, ' ' ).replace( /(?: |\b)(\w)/g, function( key ) {
-            return key.toUpperCase().replace( /\s+/g, '' );
-        } );
-
-        if ( Models.hasOwnProperty( type ) ) {
-            return Models[ type ];
-        }
-
-        return Models.Element;
-    };
-
-    window.Tailor.Models = Models;
-
-} ) ( window.Tailor.Models || {} );
-},{"./entities/models/library/element":46,"./entities/models/library/model-container":47,"./entities/models/library/model-wrapper":48}],74:[function(require,module,exports){
-( function( Api, $ ) {
-
-    var title = document.querySelector( '.tailor__home .title' );
-
-    // Update the post title when the post title setting is changed
-    Api( '_post_title', function( to, from ) {
-        if ( title.hasChildNodes() ) {
-            var children = title.childNodes;
-            for ( var i = 1; i < children.length; i++ ) {
-                if ( 3 == children[ i ].nodeType && -1 !== children[ i ].nodeValue.indexOf( from ) ) {
-                    children[ i ].nodeValue = to;
+                // Return the sidebar section collection if no element is provided
+                if ( ! model ) {
+                    return module.collection['sidebar'];
                 }
+
+                var cid = model.cid;
+
+                // Create the element control collection if it doesn't already exist
+                if ( ! module.collection.hasOwnProperty( cid ) ) {
+                    var itemDefinition = app.channel.request( 'sidebar:library', model.get( 'tag' ) );
+                    var sections = itemDefinition.get( 'sections' ) || [];
+                    module.collection[ cid ] = new SectionCollection( sections );
+                }
+
+                // Return the element control collection
+                return module.collection[ cid ];
+            }
+		};
+
+        app.channel.reply( 'sidebar:sections sidebar:default', api.getSections );
+    },
+
+    /**
+     * Initializes the module.
+     *
+     * @since 1.5.0
+     */
+    onStart: function() {
+
+        /**
+         * Fires when the module is initialized.
+         *
+         * @since 1.5.0
+         *
+         * @param this
+         */
+        app.channel.trigger( 'module:sections:ready', this );
+    }
+
+} );
+
+module.exports = SectionsModule;
+},{"../../entities/collections/sections":41,"./show/default-menu-item":76}],76:[function(require,module,exports){
+var $ = Backbone.$,
+    DefaultItem;
+
+DefaultItem = Marionette.ItemView.extend( {
+
+    events : {
+        click : 'onClick',
+        keypress : 'onKeyPress'
+    },
+
+    modelEvents : {
+        'focus' : 'onFocus'
+    },
+
+    /**
+     * Returns the appropriate template based on the panel type.
+     *
+     * @since 1.0.0
+     * @returns {string}
+     */
+    template : '#tmpl-tailor-panel-default-item',
+
+    /**
+     * Uses the rendered template HTML as the $el.
+     *
+     * @since 1.0.0
+     * @param html
+     * @returns {exports}
+     */
+    attachElContent : function( html ) {
+        var $el = $( html );
+        this.$el.replaceWith( $el );
+        this.setElement( $el );
+        this.el.setAttribute( 'tabindex', 0 );
+
+        return this;
+    },
+
+	/**
+	 * Displays the associated section when the item is clicked.
+	 *
+	 * @since 1.0.0
+	 */
+    onClick : function() {
+        this.triggerMethod( 'show:section' );
+    },
+
+	/**
+	 * Displays the associated section when the item is selected using the keyboard.
+	 *
+	 * @since 1.0.0
+	 */
+    onKeyPress : function( e ) {
+        if ( 13 === e.which ) {
+            this.triggerMethod( 'show:section' );
+        }
+    },
+
+	/**
+	 * Sets focus on the list item.
+	 *
+	 * @since 1.0.0
+	 */
+	onFocus : function() {
+		this.el.focus();
+	}
+
+} );
+
+module.exports = DefaultItem;
+
+},{}],77:[function(require,module,exports){
+
+var SettingCollection = require( '../../entities/collections/settings' ),
+    ControlCollection = require( '../../entities/collections/controls' ),
+    SettingsModule;
+
+SettingsModule = Marionette.Module.extend( {
+
+    onBeforeStart : function( options ) {
+        var module = this;
+
+        module.settings = {
+            sidebar : new SettingCollection( options.settings )
+        };
+        
+        module.controls = {
+            sidebar : new ControlCollection( options.controls, {
+                silent : false,
+                settings : module.settings['sidebar']
+            } )
+        };
+        
+        var api = {
+
+            /**
+             * Returns the collection of controls for a given element.
+             *
+             * If no element model is is provided, the sidebar control collection is returned.
+             *
+             * @since 1.0.0
+             *
+             * @param model
+             * @returns {*}
+             */
+            getControls : function( model ) {
+
+                // Return the sidebar control collection if no element is provided
+                if ( ! model ) {
+                    return module.controls['sidebar'];
+                }
+
+                var cid = model.cid;
+
+                // Create the element control collection if it doesn't already exist
+                if ( ! module.controls.hasOwnProperty( cid ) ) {
+                    var itemDefinition = app.channel.request( 'sidebar:library', model.get( 'tag' ) );
+                    var controls = itemDefinition.get( 'controls' ) || [];
+                    var settings = api.getSettings( model );
+
+                    module.controls[ cid ] = new ControlCollection( controls, {
+                        silent : false,
+                        settings : settings
+                    } );
+                }
+
+                // Return the element control collection
+                return module.controls[ cid ];
+            },
+
+            /**
+             * Returns the collection of settings for a given element.
+             *
+             * If no element model is is provided, the sidebar settings collection is returned.
+             *
+             * @since 1.0.0
+             *
+             * @param model
+             * @returns {*}
+             */
+            getSettings : function( model ) {
+
+                // Return the sidebar control collection if no element is provided
+                if ( ! model ) {
+                    return module.settings['sidebar'];
+                }
+
+                var cid = model.cid;
+
+                // Create the element control collection if it doesn't already exist
+                if ( ! module.settings.hasOwnProperty( cid ) ) {
+                    var itemDefinition = app.channel.request( 'sidebar:library', model.get( 'tag' ) );
+                    var settings = itemDefinition.get( 'settings' ) || [];
+
+                    module.settings[ cid ] = new SettingCollection( settings, { element : model } );
+                }
+
+                module.settings[ cid ].load();
+
+                // Return the element control collection
+                return module.settings[ cid ];
+            }
+        };
+
+        app.channel.reply( 'sidebar:controls', api.getControls );
+        app.channel.reply( 'sidebar:settings', api.getSettings );
+
+        this.listenTo( module.settings['sidebar'], 'change', this.onChangeSetting );
+    },
+
+    /**
+     * Initializes the module.
+     */
+    onStart : function() {
+
+        /**
+         * Fires when the module is initialized.
+         *
+         * @since 1.5.0
+         *
+         * @param this
+         */
+        app.channel.trigger( 'module:settings:ready', this );
+    },
+
+    /**
+     * Triggers an event on the app communication channel when a sidebar setting changes.
+     *
+     * @since 1.0.0
+     *
+     * @param setting
+     */
+    onChangeSetting : function( setting ) {
+
+        /**
+         * Fires when a sidebar setting changes.
+         *
+         * @since 1.0.0
+         */
+        app.channel.trigger( 'sidebar:setting:change', setting );
+    }
+
+} );
+
+module.exports = SettingsModule;
+},{"../../entities/collections/controls":37,"../../entities/collections/settings":42}],78:[function(require,module,exports){
+var $ = Backbone.$,
+    l10n = window._l10n,
+    TemplateMenuItem;
+
+TemplateMenuItem = Marionette.ItemView.extend( {
+
+    ui : {
+        'delete' : '.js-delete-template',
+        'download' : '.js-download-template',
+        'preview' : '.js-preview-template'
+    },
+
+    events : {
+        'click' : 'onClick'
+    },
+
+    modelEvents : {
+        'change:match' : 'onSearch'
+    },
+
+    behaviors : {
+        Draggable : {}
+    },
+
+    onClick : function( e ) {
+        switch ( e.target ) {
+            case this.ui.download.get( 0 ):
+                this.download();
+                break;
+
+            case this.ui.delete.get( 0 ):
+                this.delete();
+                break;
+
+            case this.ui.preview.get( 0 ):
+                this.preview();
+                break;
+
+            default:
+                var el = this.el;
+                var onAnimationEnd = function( e ) {
+                    el.removeEventListener( window.animationEndName, onAnimationEnd );
+                    el.classList.remove( 'shake' );
+                };
+                if ( Modernizr.cssanimations ) {
+                    el.addEventListener( window.animationEndName, onAnimationEnd );
+                    el.classList.add( 'shake' );
+                }
+                Tailor.Notify( l10n.dragTemplate, 'warning' );
+        }
+    },
+
+    /**
+     * Returns the appropriate template based on the panel type.
+     *
+     * @since 1.0.0
+     * @returns {string}
+     */
+    getTemplate : function() {
+        return '#tmpl-tailor-panel-templates-item';
+    },
+
+    /**
+     * Uses the rendered template HTML as the $el.
+     *
+     * @since 1.0.0
+     * @param html
+     * @returns {exports}
+     */
+    attachElContent : function( html ) {
+        var $el = $( html );
+
+        this.$el.replaceWith( $el );
+        this.setElement( $el );
+        this.el.setAttribute( 'tabindex', 0 );
+
+        return this;
+    },
+
+    /**
+     * Downloads the template to a JSON file.
+     *
+     * @since 1.0.0
+     */
+    download : function() {
+        var item = this;
+        var id = item.model.get( 'id' );
+
+        window.ajax.send( 'tailor_load_template', {
+            data : {
+                template_id : id,
+                nonce : window._nonces.loadTemplate
+            },
+
+	        /**
+             * Downloads the template to a JSON file.
+             *
+             * @since 1.0.0
+             *
+             * @param response
+             */
+            success : function( response ) {
+                var model = item.model;
+                var models = response.models;
+                var label = model.get( 'label' );
+
+                id = label.replace( ' ', '-' ).toLowerCase();
+
+                var json = {
+                    id : id,
+                    label : label,
+                    tag : model.get( 'tag' ),
+                    type : model.get( 'type' ),
+                    models : models
+                };
+
+                json = "data:text/json;charset=utf-8," + encodeURIComponent( JSON.stringify( json ) );
+
+                var a = document.getElementById( 'download-template' );
+                a.setAttribute( 'href', json );
+                a.setAttribute( 'download', 'tailor-template-' + id + '-' + Date.now() + '.json' );
+                a.click();
+
+                /**
+                 * Fires when a template is downloaded.
+                 *
+                 * @since 1.5.0
+                 */
+                app.channel.trigger( 'template:download' );
+            }
+        } );
+    },
+
+    /**
+     * Deletes the template.
+     *
+     * @since 1.0.0
+     */
+    delete : function() {
+        var that = this;
+
+        window.ajax.send( 'tailor_delete_template', {
+            data : {
+                id : that.model.get( 'id' ),
+                nonce : window._nonces.deleteTemplate
+            },
+
+            /**
+             * Destroys the template list item when the template is successfully deleted.
+             *
+             * @since 1.0.0
+             */
+            success : function() {
+                that.$el.slideUp( function() {
+                    that.model.trigger( 'destroy', that.model );
+                } );
+
+                /**
+                 * Fires when a template is deleted.
+                 *
+                 * @since 1.0.0
+                 */
+                app.channel.trigger( 'template:delete' );
+            }
+        } );
+    },
+
+    /**
+     * Previews the template.
+     *
+     * @since 1.0.0
+     */
+    preview : function() {
+        window.open( window._urls.view + '?template_preview=1&template_id=' + this.model.get( 'id' ), '_blank' );
+
+        /**
+         * Fires when a template is previewed.
+         *
+         * @since 1.5.0
+         */
+        app.channel.trigger( 'template:preview' );
+    },
+
+
+    /**
+     * Determines whether the template should be visible based on search terms entered in the template search bar.
+     *
+     * @since 1.0.0
+     *
+     * @param model
+     */
+    onSearch : function( model ) {
+        this.el.style.display = ! model.get( 'match' ) ? 'none' : 'block';
+    }
+
+} );
+
+module.exports = TemplateMenuItem;
+},{}],79:[function(require,module,exports){
+var l10n = window._l10n,
+    TemplatesPanel;
+
+TemplatesPanel = Marionette.CompositeView.extend( {
+
+    ui : {
+        backButton : '.back-button',
+        save : '.js-save-template',
+        import : '.js-import-template',
+        searchForm : '.search-form'
+    },
+
+    events : {
+        'click @ui.save' : 'save',
+        'click @ui.import' : 'import'
+    },
+
+    triggers : {
+        'click @ui.backButton': 'back:home'
+    },
+
+    behaviors : {
+        Panel : {}
+    },
+
+    emptyView : Tailor.Panels.Empty,
+
+    emptyViewOptions : function() {
+        return {
+            type : this.model.get( 'type' )
+        };
+    },
+
+    template : '#tmpl-tailor-panel-templates',
+
+    childViewContainer : '#items',
+
+    /**
+     * Returns the appropriate child view based on the panel type.
+     *
+     * @since 1.0.0
+     *
+     * @returns {*|exports|module.exports}
+     */
+    getChildView : function() {
+        return Tailor.lookup( this.model.get( 'type' ), false, 'Items' );
+    },
+
+    /**
+     * Provides the required information to the template rendering function.
+     *
+     * @since 1.0.0
+     *
+     * @returns {*}
+     */
+    serializeData : function() {
+        var data = Marionette.ItemView.prototype.serializeData.apply( this, arguments );
+        data.items = this.collection;
+        return data;
+    },
+
+	/**
+	 * Sets focus on the back button when the panel is displayed.
+	 *
+	 * @since 1.0.0
+	 */
+    onShow : function() {
+        this.ui.backButton.get(0).focus();
+        if ( 0 === this.collection.length ) {
+            this.ui.searchForm.hide();
+        }
+    },
+
+	/**
+	 * Shows the search form after a child is added.
+	 *
+	 * @since 1.0.0
+	 */
+    onAddChild : function() {
+		this.ui.searchForm.show();
+    },
+
+	/**
+	 * Hides the search form if there are no saved templates after a template is removed.
+	 *
+	 * @since 1.0.0
+	 */
+    onRemoveChild : function() {
+        if ( 0 === this.collection.length ) {
+            this.ui.searchForm.hide();
+        }
+    },
+
+	/**
+	 * Opens the Import Template dialog.
+	 *
+	 * @since 1.0.0
+	 */
+    import : function( e ) {
+        var panel = this;
+        var options = {
+            title : l10n.importTemplate,
+            content : document.querySelector( '#tmpl-tailor-dialog-import-template').innerHTML,
+            button : l10n.import,
+
+	        /**
+	         * Sets focus on the template selection field.
+             */
+            onOpen : function() {
+                this.el.querySelector( '#import-template' ).focus();
+            },
+
+	        /**
+             * Returns true if the selected file is a JSON file.
+             *
+             * @returns {*|boolean}
+             */
+            onValidate : function() {
+                var input = this.el.querySelector( '#import-template' );
+                var re = /(?:\.([^.]+))?$/;
+                return input.value && ( 'json' === re.exec( input.value )[1] );
+            },
+
+	        /**
+             * Saves the selected JSON file as a template.
+             */
+            onSave : function() {
+                var input = this.el.querySelector( '#import-template' );
+                var file = input.files[0];
+                if ( ! file || file.name.match( /.+\.json/ ) ) {
+                    var reader = new FileReader();
+                    reader.onload = function( e ) {
+                        var defaults = {
+                            label : '',
+                            tag : '',
+                            models : [],
+                            nonce : window._nonces.saveTemplate
+                        };
+                        var data = _.extend( defaults, JSON.parse( reader.result ) );
+                        data.models = JSON.stringify( data.models );
+                        panel.createTemplate( data, 'import' );
+                    };
+                    try {
+                        reader.readAsText( file );
+                    }
+                    catch( e ) {}
+                }
+            },
+
+	        /**
+	         * Sets focus back to the Import Template button.
+             */
+            onClose : function() {
+                panel.ui.import.focus();
+            }
+        };
+
+		/**
+         * Fires when the dialog window is opened.
+         *
+         * @since 1.0.0
+         */
+        app.channel.trigger( 'dialog:open', options );
+    },
+
+	/**
+	 * Opens the Save Template dialog.
+	 *
+	 * @since 1.0.0
+	 */
+    save : function() {
+        var selected = app.channel.request( 'canvas:element:selected' );
+        var elements = app.channel.request( 'canvas:elements' );
+        var models = [];
+        var tag;
+
+        if ( selected && 'function' == typeof selected.get ) {
+            var getChildren = function( id ) {
+                _.each( elements.where( { parent : id } ), function( model ) {
+                    models.push( model.toJSON() );
+                    getChildren( model.get( 'id' ) );
+                } );
+            };
+
+            if ( 'child' == selected.get( 'type' ) ) {
+                selected = selected.collection.get( selected.get( 'parent' ) );
+            }
+
+            getChildren( selected.get( 'id' ) );
+
+            selected = selected.toJSON();
+            selected.parent = '';
+            models.push( selected ) ;
+            tag = selected.tag;
+        }
+        else {
+            models = elements.models;
+            tag = 'tailor_section';
+        }
+
+        var panel = this;
+
+        /**
+         * Fires when the dialog window is opened.
+         *
+         * @since 1.0.0
+         */
+        app.channel.trigger( 'dialog:open', {
+            title : l10n.saveTemplate,
+            content : document.querySelector( '#tmpl-tailor-dialog-save-template').innerHTML,
+            button : l10n.save,
+
+	        /**
+             * Sets focus on the template name field.
+             */
+            onOpen : function() {
+                this.el.querySelector( '#save-template' ).focus();
+            },
+
+	        /**
+             * Returns true if the template name is not empty.
+             *
+             * @returns {*}
+             */
+            onValidate : function() {
+                var input = this.el.querySelector( '#save-template' );
+                return input.value.trim();
+            },
+
+	        /**
+             * Saves the current selection as a new template.
+             */
+            onSave : function() {
+                var input = this.el.querySelector( '#save-template' );
+                var data = {
+                    label : input.value,
+                    tag : tag,
+                    models : JSON.stringify( models ),
+                    nonce : window._nonces.saveTemplate
+                };
+                panel.createTemplate( data, 'save' );
+            },
+
+	        /**
+             * Sets focus back to the Save Template button.
+             */
+            onClose : function() {
+                panel.ui.save.focus();
+            }
+        } );
+    },
+
+    /**
+     * Sends a request to the server to register a new template.
+     *
+     * Occurs after a template is saved or imported.
+     *
+     * @since 1.0.0
+     *
+     * @param data
+     * @param action
+     */
+    createTemplate : function( data, action ) {
+
+        action = action || 'save';
+
+        var panel = this;
+        var collection = panel.collection;
+
+        panel.ui.save.prop( 'disabled', true );
+        panel.ui.import.prop( 'disabled', true );
+
+        window.ajax.send( 'tailor_save_template', {
+            data : data,
+
+	        /**
+             * Adds the new template to the collection.
+             *
+             * @param response
+             */
+            success : function( response ) {
+                collection.add( {
+                    id : response.id,
+                    label : response.label,
+                    tag : response.tag,
+                    type : response.type
+                } );
+
+                /**
+                 * Fires when a template is saved or imported.
+                 *
+                 * @since 1.0.0
+                 */
+                app.channel.trigger( 'template:' + action );
+            },
+
+	        /**
+             * Update the UI upon completion.
+             */
+            complete : function() {
+                panel.ui.save.prop( 'disabled', false );
+                panel.ui.import.prop( 'disabled', false );
+            }
+        } );
+    }
+
+} );
+
+module.exports = TemplatesPanel;
+},{}],80:[function(require,module,exports){
+
+var TemplateCollection = require( '../../entities/collections/templates' ),
+	TemplatesPanel = require( './show/templates-panel' ),
+	TemplateItem = require( './show/template-menu-item' ),
+	TemplatesModule;
+
+Tailor.Panels.Templates = TemplatesPanel;
+Tailor.Items.Templates = TemplateItem;
+
+TemplatesModule = Marionette.Module.extend( {
+
+	onBeforeStart : function( options ) {
+        var module = this;
+		
+        this.collection = new TemplateCollection( options.templates );
+		
+		var api = {
+
+            /**
+             * Returns the template item collection.
+             *
+             * @since 1.0.0
+             *
+             * @returns {*}
+             */
+            getTemplates : function() {
+                return module.collection;
+            }
+		};
+
+        app.channel.reply( 'sidebar:templates', api.getTemplates );
+    },
+
+	/**
+	 * Initializes the module.
+	 */
+	onStart : function() {
+
+		/**
+		 * Fires when the module is initialized.
+		 *
+		 * @since 1.5.0
+		 *
+		 * @param this
+		 */
+		app.channel.trigger( 'module:templates:ready', this );
+	}
+	
+} );
+
+module.exports = TemplatesModule;
+},{"../../entities/collections/templates":44,"./show/template-menu-item":78,"./show/templates-panel":79}],81:[function(require,module,exports){
+/* window._l10n, window._mediaQueries */
+
+var $ = jQuery;
+var title = document.querySelector( '.tailor__home .title' );
+
+Tailor.Api.Setting.onChange( 'sidebar:_post_title', function( to, from ) {
+    if ( title.hasChildNodes() ) {
+        var children = title.childNodes;
+        for ( var i = 1; i < children.length; i++ ) {
+            if ( 3 == children[ i ].nodeType && -1 !== children[ i ].nodeValue.indexOf( from ) ) {
+                children[ i ].nodeValue = to;
             }
         }
+    }
 
-        document.title = window._l10n.tailoring + to;
-    } );
+    document.title = window._l10n.tailoring + to;
+} );
 
-    var $buttons = $( '.devices button' );
-    var preview = document.querySelector( '.tailor-preview' );
-    var viewport = document.querySelector( '.tailor-preview__viewport' );
-    var mediaQueries = window._media_queries;
+var $buttons = $( '.devices button' );
+var preview = document.querySelector( '.tailor-preview' );
+var viewport = document.querySelector( '.tailor-preview__viewport' );
+var mediaQueries = window._media_queries;
 
-    // Change the viewport size based on which device preview size is selected
-    $buttons.on( 'click', function( e ) {
+// Change the viewport size based on which device preview size is selected
+$buttons
+    .on( 'click', function( e ) {
         var button = e.target;
-        
+
         $buttons.each( function() {
             if ( this == button ) {
                 var device = button.getAttribute( 'data-device' );
@@ -7533,87 +8313,220 @@ module.exports = Marionette.CompositeView.extend( {
             }
         } );
 
-    } );
+    } )
+    .first().click();
+},{}],82:[function(require,module,exports){
 
-    $buttons.first().click();
-
-} ) ( Tailor.Api, jQuery );
-},{}],75:[function(require,module,exports){
-require( './utility/polyfills/classlist' );
-require( './utility/polyfills/raf' );
-
-var Application = require( './apps/sidebar' );
-window.app = new Application();
-
-window.Tailor = {
-    Api : require( './components/api/setting' ),
-    Notify : require( './utility/notify' )
-};
-
-window.ajax = require( './utility/ajax' );
-
-wp.media.view.settings.post.id = window.post.id;
-
-( function( app, $ ) {
-
+( function( window, $ ) {
+    
     'use strict';
+    
+    var $doc = $( document );
+    var $win = $( window );
+    
+    // Include utilities
+    require( '../shared/utility/polyfills/classlist' );
+    require( '../shared/utility/polyfills/raf' );
+    require( '../shared/utility/polyfills/transitions' );
+    require( '../shared/utility/ajax' );
 
-    require( './sidebar-behaviors' );
-    require( './sidebar-components' );
-    require( './sidebar-entities' );
+    // Include components
+    Marionette.Behaviors.behaviorsLookup = function() {
+        return {
+            Resizable:          require( './components/behaviors/resizable' ),
+            Panel:              require( './components/behaviors/panel' ),
+            Draggable:          require( '../shared/components/behaviors/draggable' )
+        };
+    };
+    
+    // Create the app
+    var App = require( './app' );
+    window.app = new App();
+
+    // Create the Tailor object
+    window.Tailor = {
+        Api : {
+            Setting :   require( '../shared/components/api/setting' )
+        },
+        Notify :    require( '../shared/utility/notify' ),
+        Models :    {},
+        Panels :    {},
+        Sections :  {},
+        Controls :  {},
+        Items :     {},
+        Helpers :   {
+            
+            /**
+             * Evaluates whether the given condition is true, given two values.
+             *
+             * @since 1.5.0
+             *
+             * @param actual
+             * @param condition
+             * @param required
+             * 
+             * @returns {*}
+             */
+            checkCondition : function( condition, actual, required ) {
+                switch ( condition ) {
+                    case 'equals' : return actual === required;
+
+                    case 'not':
+                        if ( _.isArray( required ) ) {
+                            return -1 === required.indexOf( actual );
+                        }
+                        return actual !== required;
+
+                    case 'lessThan': return ( actual < parseInt( required, 10 ) );
+
+                    case 'greaterThan': return ( actual > parseInt( required, 10 ) );
+
+                    case 'contains' :
+                        if ( _.isString( actual ) ) {
+                            actual = actual.split( ',' );
+                        }
+                        if ( _.isArray( required ) ) {
+                            var intersection = _.intersection( required, actual );
+                            return 0 !== intersection.length;
+                        }
+                        return -1 !== _.indexOf( actual, required );
+                }
+            }
+        }
+    };
+
+    wp.media.view.settings.post.id = window.post.id;
 
     app.addRegions( {
-
         content : '#tailor-sidebar-content',
-
         dialog : {
             selector : "#tailor-dialog-container",
             regionClass : require( './modules/dialog/dialog-region' )
         },
-
         modal : {
             selector : "#tailor-modal-container",
             regionClass : require( './modules/modal/modal-region' )
         }
     } );
 
-    app.on( 'before:start', function( options ) {
-        app.module( 'entities:settings', require( './entities/sidebar' ) );
-    } );
+    // Load models
+    Tailor.Models.Container =           require( './entities/models/element-container' );
+    Tailor.Models.Wrapper =             require( './entities/models/element-wrapper' );
+    Tailor.Models.Section =             require( './entities/models/element-wrapper' ); // Sections are just special wrappers
+    Tailor.Models.Default =             require( './entities/models/element' );
+
+    // Load views
+    Tailor.Panels.Default =             require( './components/panels/panel-default' );
+    Tailor.Panels.Empty =               require( './components/panels/panel-empty' );
+    Tailor.Sections.Default =           require( './components/sections/section-default' );
+    Tailor.Controls.ButtonGroup =       require( './components/controls/button-group' );
+    Tailor.Controls.Checkbox =          require( './components/controls/checkbox' );
+    Tailor.Controls.Code =              require( './components/controls/code' );
+    Tailor.Controls.Colorpicker =       require( './components/controls/colorpicker' );
+    Tailor.Controls.Editor =            require( './components/controls/editor' );
+    Tailor.Controls.Gallery =           require( './components/controls/gallery' );
+    Tailor.Controls.Icon =              require( './components/controls/icon' );
+    Tailor.Controls.Image =             require( './components/controls/image' );
+    Tailor.Controls.Link =              require( './components/controls/link' );
+    Tailor.Controls.List =              require( './components/controls/list' );
+    Tailor.Controls.Radio =             require( './components/controls/radio' );
+    Tailor.Controls.Range =             require( './components/controls/range' );
+    Tailor.Controls.Select =            require( './components/controls/select' );
+    Tailor.Controls.SelectMulti =       require( './components/controls/select-multi' );
+    Tailor.Controls.Style =             require( './components/controls/style' );
+    Tailor.Controls.Switch =            require( './components/controls/switch' );
+    Tailor.Controls.Text =              require( './components/controls/text' );
+    Tailor.Controls.Textarea =          require( './components/controls/textarea' );
+    Tailor.Controls.Video =             require( './components/controls/video' );
+
+    /**
+     * Returns the element name (in title case) based on the tag or type.
+     *
+     * @since 1.5.0
+     *
+     * @param string
+     */
+    function getName( string ) {
+        string = string || '';
+        return string
+            .replace( /_|-|tailor_/gi, ' ' )
+            .replace( /(?: |\b)(\w)/g, function( key ) {
+                return key.toUpperCase().replace( /\s+/g, '' );
+            } );
+    }
+
+    /**
+     * Returns the appropriate object based on tag or type.
+     *
+     * @since 1.5.0
+     *
+     * @param tag
+     * @param type
+     * @param object
+     * @returns {*}
+     */
+    Tailor.lookup = function( tag, type, object ) {
+
+        if ( ! Tailor.hasOwnProperty( object ) ) {
+            console.error( 'Object type ' + object + ' does not exist' );
+            return;
+        }
+
+        var name = getName( tag );
+        if ( Tailor[ object ].hasOwnProperty( name ) ) {
+            return Tailor[ object ][ name ];
+        }
+
+        if ( type ) {
+            name = getName( type );
+            if ( Tailor[ object ].hasOwnProperty( name ) ) {
+                return Tailor[ object ][ name ];
+            }
+        }
+        return Tailor[ object ].Default;
+    };
 
     app.on( 'start', function( options ) {
-        app.module( 'module:panels', require( './modules/panels' ) );
-        app.module( 'module:modal', require( './modules/modal' ) );
-        app.module( 'module:dialog', require( './modules/dialog' ) );
-        app.module( 'module:notification', require( './modules/notification' ) );
 
-        require( './sidebar-preview' );
-
-        $( document ).on( 'heartbeat-send', function( e, data ) {
+        // Load modules
+        app.module( 'module:library', require( './modules/library/library' ) );
+        app.module( 'module:templates', require( './modules/templates/templates' ) );
+        app.module( 'module:settings', require( './modules/settings/settings' ) );
+        app.module( 'module:history', require( './modules/history/history' ) );
+        app.module( 'module:sections', require( './modules/sections/sections' ) );
+        app.module( 'module:panels', require( './modules/panels/panels' ) );
+        app.module( 'module:modal', require( './modules/modal/modal' ) );
+        app.module( 'module:dialog', require( './modules/dialog/dialog' ) );
+        app.module( 'module:notification', require( './modules/notifications/notifications' ) );
+        
+        // Initialize preview
+        require( './preview' );
+        
+        $doc.on( 'heartbeat-send', function( e, data ) {
             data['tailor_post_id'] = window.post.id;
         } );
 
         wp.heartbeat.interval( 60 );
         wp.heartbeat.connectNow();
 
-        $( window )
+        $win
 
-        /**
-         * Warns the user if they attempt to navigate away from the page without saving changes.
-         *
-         * @since 1.0.0
-         */
+            /**
+             * Warns the user if they attempt to navigate away from the page without saving changes.
+             *
+             * @since 1.0.0
+             */
             .on( 'beforeunload.tailor', function( e ) {
                 if ( app.hasUnsavedChanges() ) {
                     return window._l10n.confirmPage;
                 }
             } )
 
-        /**
-         * Unlocks the post when the user navigates away from the page.
-         *
-         * @since 1.0.0
-         */
+            /**
+             * Unlocks the post when the user navigates away from the page.
+             *
+             * @since 1.0.0
+             */
             .on( 'unload.tailor', function( e ) {
                 window.ajax.send( 'tailor_unlock_post', {
                     data : {
@@ -7624,10 +8537,13 @@ wp.media.view.settings.post.id = window.post.id;
             } );
     } );
 
-    $( document ).ready( function() {
+    $doc.ready( function() {
+        
+        // Start the app
         app.start( {
             postId : window.post.id,
             nonces : window._nonces,
+            l10n : window._l10n || [],
             library : window._library || [],
             templates : window._templates || [],
             panels : window._panels || [],
@@ -7635,426 +8551,16 @@ wp.media.view.settings.post.id = window.post.id;
             settings : window._settings || [],
             controls : window._controls || []
         } );
+
+        /**
+         * Fires when the sidebar is initialized.
+         *
+         * @since 1.0.0
+         *
+         * @param app
+         */
+        app.channel.trigger( 'sidebar:initialize', app );
     } );
-
-} ) ( window.app, jQuery );
-},{"./apps/sidebar":1,"./components/api/setting":2,"./entities/sidebar":53,"./modules/dialog":54,"./modules/dialog/dialog-region":55,"./modules/modal":57,"./modules/modal/modal-region":58,"./modules/notification":66,"./modules/panels":67,"./sidebar-behaviors":71,"./sidebar-components":72,"./sidebar-entities":73,"./sidebar-preview":74,"./utility/ajax":76,"./utility/notify":77,"./utility/polyfills/classlist":78,"./utility/polyfills/raf":79}],76:[function(require,module,exports){
-/**
- * window.ajax
- *
- * Simple AJAX utility module.
- *
- * @class
- */
-var $ = jQuery,
-    Ajax,
-    Tailor = window.Tailor;
-
-var Ajax = {
-
-    url : window.ajaxurl,
-
-    /**
-     * Sends a POST request to WordPress.
-     *
-     * @param  {string} action The slug of the action to fire in WordPress.
-     * @param  {object} data   The data to populate $_POST with.
-     * @return {$.promise}     A jQuery promise that represents the request.
-     */
-    post : function( action, data ) {
-        return ajax.send( {
-            data: _.isObject( action ) ? action : _.extend( data || {}, { action: action } )
-        } );
-    },
-
-    /**
-     * Sends a POST request to WordPress.
-     *
-     * Use with wp_send_json_success() and wp_send_json_error().
-     *
-     * @param  {string} action  The slug of the action to fire in WordPress.
-     * @param  {object} options The options passed to jQuery.ajax.
-     * @return {$.promise}      A jQuery promise that represents the request.
-     */
-    send : function( action, options ) {
-
-        if ( _.isObject( action ) ) {
-            options = action;
-        }
-        else {
-            options = options || {};
-            options.data = _.extend( options.data || {}, {
-                action : action,
-                tailor : 1
-            } );
-        }
-
-        options = _.defaults( options || {}, {
-            type : 'POST',
-            url : ajax.url,
-            context : this
-        } );
-
-        return $.Deferred( function( deferred ) {
-
-            if ( options.success ) {
-                deferred.done( options.success );
-            }
-
-            var onError = options.error ? options.error : ajax.onError;
-            deferred.fail( onError );
-
-            delete options.success;
-            delete options.error;
-
-            $.ajax( options )
-                .done( function( response ) {
-
-                    // Treat a response of `1` as successful for backwards compatibility with existing handlers.
-                    if ( response === '1' || response === 1 ) {
-                        response = { success: true };
-                    }
-                    if ( _.isObject( response ) && ! _.isUndefined( response.success ) ) {
-                        deferred[ response.success ? 'resolveWith' : 'rejectWith' ]( this, [ response.data ] );
-                    }
-                    else {
-                        deferred.rejectWith( this, [ response ] );
-                    }
-                } )
-                .fail( function() {
-                    deferred.rejectWith( this, arguments );
-                } );
-
-        } ).promise();
-    },
-
-    /**
-     * General error handler for AJAX requests.
-     *
-     * @since 1.0.0
-     *
-     * @param response
-     */
-    onError : function( response ) {
-
-        if ( ! Tailor.Notify ) {
-            console.error( response );
-        }
-        else if ( response && response.hasOwnProperty( 'message' ) ) {
-
-            // Display the error from the server
-            Tailor.Notify( response.message );
-        }
-        else if ( '0' == response ) {
-
-            // Session expired
-            Tailor.Notify( window._l10n.expired );
-        }
-        else if ( '-1' == response ) {
-
-            // Invalid nonce
-            Tailor.Notify( window._l10n.invalid );
-        }
-        else {
-
-            // General error condition
-            Tailor.Notify( window._l10n.error );
-        }
-    }
-};
-
-module.exports = Ajax;
-},{}],77:[function(require,module,exports){
-/**
- * Tailor.Notify
- *
- * Notification class for presenting simple messages to the end user.
- *
- * @class
- */
-var Notification;
-
-require( './polyfills/transitions' );
-
-Notification = function( options ) {
-    this.options = _.extend( {}, this.defaults, options );
-    this.el = document.createElement( 'div' );
-    this.el.className = 'notification notification--' + this.options.type;
-    this.container = document.getElementById( 'tailor-notification-container' ) || document.body;
-
-    this.initialize();
-};
-
-Notification.prototype = {
-
-    defaults : {
-        message : '',
-        type : '',
-        ttl : 3000,
-
-        onShow: function () {},
-        onHide: function () {}
-    },
-
-	/**
-	 * Initializes the notification.
-	 *
-	 * @since 1.0.0
-	 */
-	initialize : function() {
-        this.el.innerHTML = this.options.message;
-        this.container.insertBefore( this.el, this.container.firstChild );
-    },
-
-	/**
-	 * Shows the notification.
-	 *
-	 * @since 1.0.0
-	 */
-    show : function() {
-        var notification = this;
-        notification.el.classList.add( 'is-visible' );
-
-        if ( 'function' == typeof notification.options.onShow ) {
-            notification.options.onShow.call( notification );
-        }
-
-        notification.session = setTimeout( function() {
-            notification.hide();
-        }, notification.options.ttl );
-    },
-
-    /**
-     * Hides the notification.
-     *
-     * @since 1.0.0
-     */
-    hide : function() {
-
-        var obj = this;
-
-        var onTransitionEnd = function( e ) {
-
-            if ( Modernizr.cssanimations ) {
-                if ( e.target !== obj.el ) {
-                    return false;
-                }
-                obj.el.removeEventListener( window.transitionEndName, onTransitionEnd );
-            }
-
-            obj.container.removeChild( obj.el );
-
-            if ( 'function' == typeof obj.options.onShow ) {
-                obj.options.onShow.call( obj );
-            }
-        };
-
-        clearTimeout( obj.session );
-
-        if ( Modernizr.csstransitions ) {
-            obj.el.addEventListener( window.transitionEndName, onTransitionEnd );
-            obj.el.classList.remove( 'is-visible' );
-        }
-        else {
-            onTransitionEnd();
-        }
-    }
-};
-
-/**
- * Creates a new notification.
- *
- * @since 1.0.0
- *
- * @param msg
- * @param type
- */
-var notify = function( msg, type ) {
-
-    var notification = new Notification( {
-        message : msg,
-        type : type || 'error'
-    } );
-
-    notification.show();
-};
-
-module.exports = notify;
-},{"./polyfills/transitions":80}],78:[function(require,module,exports){
-/**
- * classList Polyfill
- *
- * https://developer.mozilla.org/en-US/docs/Web/API/Element/classList
- */
-( function() {
-
-	if ( 'undefined' === typeof window.Element || 'classList' in document.documentElement ) {
-		return;
-	}
-
-	var prototype = Array.prototype,
-		push = prototype.push,
-		splice = prototype.splice,
-		join = prototype.join;
-
-	function DOMTokenList( el ) {
-		this.el = el;
-		var classes = el.className.replace( /^\s+|\s+$/g, '' ).split( /\s+/ );
-		for ( var i = 0; i < classes.length; i++ ) {
-			push.call( this, classes[ i ] );
-		}
-	}
-
-	DOMTokenList.prototype = {
-
-		add: function( token ) {
-			if ( this.contains( token ) ) {
-				return;
-			}
-			push.call( this, token );
-			this.el.className = this.toString();
-		},
-
-		contains: function( token ) {
-			return this.el.className.indexOf( token ) != -1;
-		},
-
-		item: function( index ) {
-			return this[ index ] || null;
-		},
-
-		remove: function( token ) {
-			if ( ! this.contains( token ) ) {
-				return;
-			}
-			for ( var i = 0; i < this.length; i++ ) {
-				if ( this[ i ] == token ) {
-					break;
-				}
-			}
-			splice.call( this, i, 1 );
-			this.el.className = this.toString();
-		},
-
-		toString: function() {
-			return join.call( this, ' ' );
-		},
-
-		toggle: function( token ) {
-			if ( ! this.contains( token ) ) {
-				this.add( token );
-			}
-			else {
-				this.remove( token );
-			}
-			return this.contains( token );
-		}
-	};
-
-	window.DOMTokenList = DOMTokenList;
-
-	function defineElementGetter( obj, prop, getter ) {
-		if ( Object.defineProperty ) {
-			Object.defineProperty( obj, prop, {
-				get : getter
-			} );
-		}
-		else {
-			obj.__defineGetter__( prop, getter );
-		}
-	}
-
-	defineElementGetter( Element.prototype, 'classList', function() {
-		return new DOMTokenList( this );
-	} );
-
-} )();
-},{}],79:[function(require,module,exports){
-/**
- * requestAnimationFrame polyfill.
- *
- * https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
- */
-( function( window ) {
-
-	'use strict';
-
-	var lastTime = 0,
-		vendors = [ 'ms', 'moz', 'webkit', 'o' ];
-
-	for ( var x = 0; x < vendors.length && ! window.requestAnimationFrame; ++x ) {
-		window.requestAnimationFrame = window[ vendors[ x ] + 'RequestAnimationFrame' ];
-		window.cancelAnimationFrame = window[ vendors[ x ] + 'CancelAnimationFrame' ] || window[ vendors[ x ] + 'CancelRequestAnimationFrame' ];
-	}
-
-	if ( ! window.requestAnimationFrame ) {
-		window.requestAnimationFrame = function( callback, el ) {
-			var currTime = new Date().getTime();
-			var timeToCall = Math.max( 0, 16 - ( currTime - lastTime ) );
-			var id = window.setTimeout( function() {
-					callback( currTime + timeToCall );
-				},
-				timeToCall );
-			lastTime = currTime + timeToCall;
-			return id;
-		};
-	}
-
-	if ( ! window.cancelAnimationFrame ) {
-		window.cancelAnimationFrame = function( id ) {
-			clearTimeout( id );
-		};
-	}
-
-} ) ( window );
-},{}],80:[function(require,module,exports){
-/**
- * Makes animation and transition support status and end names available as global variables.
- */
-( function( window ) {
-
-    'use strict';
-
-    var el = document.createElement( 'fakeelement' );
-
-    function getAnimationEvent(){
-        var t,
-            animations = {
-                'animation' : 'animationend',
-                'OAnimation' : 'oAnimationEnd',
-                'MozAnimation' : 'animationend',
-                'WebkitAnimation' : 'webkitAnimationEnd'
-            };
-
-        for ( t in animations ) {
-            if ( animations.hasOwnProperty( t ) && 'undefined' !== typeof el.style[ t ] ) {
-                return animations[ t ];
-            }
-        }
-
-        return false;
-    }
-
-    function getTransitionEvent(){
-        var t,
-            transitions = {
-                'transition' : 'transitionend',
-                'OTransition' : 'oTransitionEnd',
-                'MozTransition' : 'transitionend',
-                'WebkitTransition' : 'webkitTransitionEnd'
-            };
-
-        for ( t in transitions ) {
-            if ( transitions.hasOwnProperty( t ) && 'undefined' !== typeof el.style[ t ] ) {
-                return transitions[ t ];
-            }
-        }
-
-        return false;
-    }
-
-    window.animationEndName = getAnimationEvent();
-    window.transitionEndName = getTransitionEvent();
-
-} ) ( window );
-},{}]},{},[75]);
+    
+} ( window, Backbone.$ ) );
+},{"../shared/components/api/setting":1,"../shared/components/behaviors/draggable":2,"../shared/utility/ajax":3,"../shared/utility/notify":4,"../shared/utility/polyfills/classlist":5,"../shared/utility/polyfills/raf":6,"../shared/utility/polyfills/transitions":7,"./app":8,"./components/behaviors/panel":9,"./components/behaviors/resizable":10,"./components/controls/button-group":12,"./components/controls/checkbox":13,"./components/controls/code":14,"./components/controls/colorpicker":15,"./components/controls/editor":16,"./components/controls/gallery":17,"./components/controls/icon":18,"./components/controls/image":19,"./components/controls/link":20,"./components/controls/list":23,"./components/controls/radio":24,"./components/controls/range":25,"./components/controls/select":27,"./components/controls/select-multi":26,"./components/controls/style":28,"./components/controls/switch":29,"./components/controls/text":30,"./components/controls/textarea":31,"./components/controls/video":32,"./components/panels/panel-default":33,"./components/panels/panel-empty":34,"./components/sections/section-default":35,"./entities/models/element":48,"./entities/models/element-container":46,"./entities/models/element-wrapper":47,"./modules/dialog/dialog":54,"./modules/dialog/dialog-region":53,"./modules/history/history":56,"./modules/library/library":58,"./modules/modal/modal":61,"./modules/modal/modal-region":60,"./modules/notifications/notifications":69,"./modules/panels/panels":70,"./modules/sections/sections":75,"./modules/settings/settings":77,"./modules/templates/templates":80,"./preview":81}]},{},[82]);

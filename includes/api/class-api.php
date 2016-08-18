@@ -31,6 +31,7 @@ if ( ! class_exists( 'Tailor_API' ) ) {
 		 * Includes the required plugin files.
 		 * 
 		 * @since 1.4.0
+		 * @access private
 		 */	
 		private static function includes() {
 			require_once dirname( __FILE__ ) . '/endpoints/class-api-controller.php';
@@ -50,6 +51,7 @@ if ( ! class_exists( 'Tailor_API' ) ) {
 		 * Adds the required action hooks.
 		 * 
 		 * @since 1.4.0
+		 * @access private
 		 */
 		private static function hooks() {
 			add_action( 'rest_api_init', array( __CLASS__, 'create_rest_routes' ), 10 );
@@ -59,6 +61,7 @@ if ( ! class_exists( 'Tailor_API' ) ) {
 		 * Creates the Tailor API endpoints.
 		 * 
 		 * @since 1.4.0
+		 * @access private
 		 */
 		public static function create_rest_routes() {
 

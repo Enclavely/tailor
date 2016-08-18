@@ -178,7 +178,8 @@ if ( ! class_exists( 'Tailor_TinyMCE' ) )  {
 		}
 
 		function add_mce_script( $plugin_array ) {
-			$plugin_array[ $this->id ] = tailor()->plugin_url() . 'assets/js/dist/tinymce.js';
+			$extension = SCRIPT_DEBUG ? '.js' : '.min.js';
+			$plugin_array[ $this->id ] = tailor()->plugin_url() . "assets/js/dist/tinymce{$extension}";
 			$plugin_array['noneditable'] = tailor()->plugin_url() . 'assets/js/dist/vendor/noneditable.min.js';
 			return $plugin_array;
 		}

@@ -1,5 +1,5 @@
 /**
- * MarionetteJS (Backbone.Marionette) 2.4.3
+ * MarionetteJS (Backbone.Marionette) 2.4.7
  *
  * Copyright (c)2015 Derick Bailey, Muted Solutions, LLC.
  * Distributed under MIT license
@@ -25,103 +25,81 @@
     'use strict';
 
     /**
-     * Backbone.BabySitter 0.1.10
+     * Backbone.BabySitter 0.1.11
      */
     (function(Backbone, _) {
-
         "use strict";
-
         var previousChildViewContainer = Backbone.ChildViewContainer;
-
         // BabySitter.ChildViewContainer
         // -----------------------------
         //
         // Provide a container to store, retrieve and
         // shut down child views.
-
-        Backbone.ChildViewContainer = (function (Backbone, _) {
-
+        Backbone.ChildViewContainer = function(Backbone, _) {
             // Container Constructor
             // ---------------------
-
-            var Container = function(views){
+            var Container = function(views) {
                 this._views = {};
                 this._indexByModel = {};
                 this._indexByCustom = {};
                 this._updateLength();
-
                 _.each(views, this.add, this);
             };
-
             // Container Methods
             // -----------------
-
             _.extend(Container.prototype, {
-
                 // Add a view to this container. Stores the view
                 // by `cid` and makes it searchable by the model
                 // cid (and model itself). Optionally specify
                 // a custom key to store an retrieve the view.
-                add: function(view, customIndex){
+                add: function(view, customIndex) {
                     var viewCid = view.cid;
-
                     // store the view
                     this._views[viewCid] = view;
-
                     // index it by model
-                    if (view.model){
+                    if (view.model) {
                         this._indexByModel[view.model.cid] = viewCid;
                     }
-
                     // index by custom
-                    if (customIndex){
+                    if (customIndex) {
                         this._indexByCustom[customIndex] = viewCid;
                     }
-
                     this._updateLength();
                     return this;
                 },
-
                 // Find a view by the model that was attached to
                 // it. Uses the model's `cid` to find it.
-                findByModel: function(model){
+                findByModel: function(model) {
                     return this.findByModelCid(model.cid);
                 },
-
                 // Find a view by the `cid` of the model that was attached to
                 // it. Uses the model's `cid` to find the view `cid` and
                 // retrieve the view using it.
-                findByModelCid: function(modelCid){
+                findByModelCid: function(modelCid) {
                     var viewCid = this._indexByModel[modelCid];
                     return this.findByCid(viewCid);
                 },
-
                 // Find a view by a custom indexer.
-                findByCustom: function(index){
+                findByCustom: function(index) {
                     var viewCid = this._indexByCustom[index];
                     return this.findByCid(viewCid);
                 },
-
                 // Find by index. This is not guaranteed to be a
                 // stable index.
-                findByIndex: function(index){
+                findByIndex: function(index) {
                     return _.values(this._views)[index];
                 },
-
                 // retrieve a view by its `cid` directly
-                findByCid: function(cid){
+                findByCid: function(cid) {
                     return this._views[cid];
                 },
-
                 // Remove a view
-                remove: function(view){
+                remove: function(view) {
                     var viewCid = view.cid;
-
                     // delete model index
-                    if (view.model){
+                    if (view.model) {
                         delete this._indexByModel[view.model.cid];
                     }
-
                     // delete custom index
                     _.any(this._indexByCustom, function(cid, key) {
                         if (cid === viewCid) {
@@ -129,85 +107,77 @@
                             return true;
                         }
                     }, this);
-
                     // remove the view from the container
                     delete this._views[viewCid];
-
                     // update the length
                     this._updateLength();
                     return this;
                 },
-
                 // Call a method on every view in the container,
                 // passing parameters to the call method one at a
                 // time, like `function.call`.
-                call: function(method){
+                call: function(method) {
                     this.apply(method, _.tail(arguments));
                 },
-
                 // Apply a method on every view in the container,
                 // passing parameters to the call method one at a
                 // time, like `function.apply`.
-                apply: function(method, args){
-                    _.each(this._views, function(view){
-                        if (_.isFunction(view[method])){
+                apply: function(method, args) {
+                    _.each(this._views, function(view) {
+                        if (_.isFunction(view[method])) {
                             view[method].apply(view, args || []);
                         }
                     });
                 },
-
                 // Update the `.length` attribute on this container
-                _updateLength: function(){
+                _updateLength: function() {
                     this.length = _.size(this._views);
                 }
             });
-
             // Borrowing this code from Backbone.Collection:
             // http://backbonejs.org/docs/backbone.html#section-106
             //
             // Mix in methods from Underscore, for iteration, and other
             // collection related features.
-            var methods = ['forEach', 'each', 'map', 'find', 'detect', 'filter',
-                'select', 'reject', 'every', 'all', 'some', 'any', 'include',
-                'contains', 'invoke', 'toArray', 'first', 'initial', 'rest',
-                'last', 'without', 'isEmpty', 'pluck', 'reduce'];
-
+            var methods = [ "forEach", "each", "map", "find", "detect", "filter", "select", "reject", "every", "all", "some", "any", "include", "contains", "invoke", "toArray", "first", "initial", "rest", "last", "without", "isEmpty", "pluck", "reduce" ];
             _.each(methods, function(method) {
                 Container.prototype[method] = function() {
                     var views = _.values(this._views);
-                    var args = [views].concat(_.toArray(arguments));
+                    var args = [ views ].concat(_.toArray(arguments));
                     return _[method].apply(_, args);
                 };
             });
-
             // return the public API
             return Container;
-        })(Backbone, _);
-
-
-        Backbone.ChildViewContainer.VERSION = '0.1.10';
-
-        Backbone.ChildViewContainer.noConflict = function () {
+        }(Backbone, _);
+        Backbone.ChildViewContainer.VERSION = "0.1.11";
+        Backbone.ChildViewContainer.noConflict = function() {
             Backbone.ChildViewContainer = previousChildViewContainer;
             return this;
         };
-
         return Backbone.ChildViewContainer;
-
     })(Backbone, _);
 
     /**
-     * Backbone.Radio 1.0.2
+     * Backbone.Radio 1.0.5
      */
     ( function(Backbone, _) {
+        _ = 'default' in _ ? _['default'] : _;
+        Backbone = 'default' in Backbone ? Backbone['default'] : Backbone;
 
-        "use strict";
+        var babelHelpers = {};
+        babelHelpers.typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+            return typeof obj;
+        } : function (obj) {
+            return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
+        };
+        babelHelpers;
 
         var previousRadio = Backbone.Radio;
 
         var Radio = Backbone.Radio = {};
 
-        Radio.VERSION = "1.0.2";
+        Radio.VERSION = '1.0.5';
 
         // This allows you to run multiple instances of Radio on the same
         // webapp. After loading the new version, call `noConflict()` to
@@ -224,7 +194,7 @@
 
         // Format debug text.
         Radio._debugText = function (warning, eventName, channelName) {
-            return warning + (channelName ? " on the " + channelName + " channel" : "") + ": \"" + eventName + "\"";
+            return warning + (channelName ? ' on the ' + channelName + ' channel' : '') + ': "' + eventName + '"';
         };
 
         // This is the method that's called when an unregistered event was called.
@@ -251,7 +221,7 @@
             var results = {};
 
             // Handle event maps.
-            if (typeof name === "object") {
+            if ((typeof name === 'undefined' ? 'undefined' : babelHelpers.typeof(name)) === 'object') {
                 for (var key in name) {
                     var result = obj[action].apply(obj, [key, name[key]].concat(rest));
                     eventSplitter.test(key) ? _.extend(results, result) : results[key] = result;
@@ -293,7 +263,7 @@
         // A helper used by `off` methods to the handler from the store
         function removeHandler(store, name, callback, context) {
             var event = store[name];
-            if ((!callback || (callback === event.callback || callback === event.callback._callback)) && (!context || context === event.context)) {
+            if ((!callback || callback === event.callback || callback === event.callback._callback) && (!context || context === event.context)) {
                 delete store[name];
                 return true;
             }
@@ -333,15 +303,18 @@
         // This is to produce an identical function in both tuneIn and tuneOut,
         // so that Backbone.Events unregisters it.
         function _partial(channelName) {
-            return _logs[channelName] || (_logs[channelName] = _.partial(Radio.log, channelName));
+            return _logs[channelName] || (_logs[channelName] = _.bind(Radio.log, Radio, channelName));
         }
 
         _.extend(Radio, {
 
             // Log information about the channel and event
             log: function log(channelName, eventName) {
-                var args = _.rest(arguments, 2);
-                console.log("[" + channelName + "] \"" + eventName + "\"", args);
+                if (typeof console === 'undefined') {
+                    return;
+                }
+                var args = _.toArray(arguments).slice(2);
+                console.log('[' + channelName + '] "' + eventName + '"', args);
             },
 
             // Logs all events on this channel to the console. It sets an
@@ -350,7 +323,7 @@
             tuneIn: function tuneIn(channelName) {
                 var channel = Radio.channel(channelName);
                 channel._tunedIn = true;
-                channel.on("all", _partial(channelName));
+                channel.on('all', _partial(channelName));
                 return this;
             },
 
@@ -358,7 +331,7 @@
             tuneOut: function tuneOut(channelName) {
                 var channel = Radio.channel(channelName);
                 channel._tunedIn = false;
-                channel.off("all", _partial(channelName));
+                channel.off('all', _partial(channelName));
                 delete _logs[channelName];
                 return this;
             }
@@ -381,8 +354,8 @@
 
             // Make a request
             request: function request(name) {
-                var args = _.rest(arguments);
-                var results = Radio._eventsApi(this, "request", name, args);
+                var args = _.toArray(arguments).slice(1);
+                var results = Radio._eventsApi(this, 'request', name, args);
                 if (results) {
                     return results;
                 }
@@ -395,25 +368,25 @@
                 }
 
                 // If the request isn't handled, log it in DEBUG mode and exit
-                if (requests && (requests[name] || requests["default"])) {
-                    var handler = requests[name] || requests["default"];
+                if (requests && (requests[name] || requests['default'])) {
+                    var handler = requests[name] || requests['default'];
                     args = requests[name] ? args : arguments;
                     return Radio._callHandler(handler.callback, handler.context, args);
                 } else {
-                    Radio.debugLog("An unhandled request was fired", name, channelName);
+                    Radio.debugLog('An unhandled request was fired', name, channelName);
                 }
             },
 
             // Set up a handler for a request
             reply: function reply(name, callback, context) {
-                if (Radio._eventsApi(this, "reply", name, [callback, context])) {
+                if (Radio._eventsApi(this, 'reply', name, [callback, context])) {
                     return this;
                 }
 
                 this._requests || (this._requests = {});
 
                 if (this._requests[name]) {
-                    Radio.debugLog("A request was overwritten", name, this.channelName);
+                    Radio.debugLog('A request was overwritten', name, this.channelName);
                 }
 
                 this._requests[name] = {
@@ -426,7 +399,7 @@
 
             // Set up a handler that can only be requested once
             replyOnce: function replyOnce(name, callback, context) {
-                if (Radio._eventsApi(this, "replyOnce", name, [callback, context])) {
+                if (Radio._eventsApi(this, 'replyOnce', name, [callback, context])) {
                     return this;
                 }
 
@@ -442,7 +415,7 @@
 
             // Remove handler(s)
             stopReplying: function stopReplying(name, callback, context) {
-                if (Radio._eventsApi(this, "stopReplying", name)) {
+                if (Radio._eventsApi(this, 'stopReplying', name)) {
                     return this;
                 }
 
@@ -450,7 +423,7 @@
                 if (!name && !callback && !context) {
                     delete this._requests;
                 } else if (!removeHandlers(this._requests, name, callback, context)) {
-                    Radio.debugLog("Attempted to remove the unregistered request", name, this.channelName);
+                    Radio.debugLog('Attempted to remove the unregistered request', name, this.channelName);
                 }
 
                 return this;
@@ -468,7 +441,7 @@
 
         Radio.channel = function (channelName) {
             if (!channelName) {
-                throw new Error("You must provide a name for the channel.");
+                throw new Error('You must provide a name for the channel.');
             }
 
             if (Radio._channels[channelName]) {
@@ -509,14 +482,13 @@
          *
          */
 
-        var channel,
-            args,
-            systems = [Backbone.Events, Radio.Commands, Radio.Requests];
-
+        var channel;
+        var args;
+        var systems = [Backbone.Events, Radio.Requests];
         _.each(systems, function (system) {
             _.each(system, function (method, methodName) {
                 Radio[methodName] = function (channelName) {
-                    args = _.rest(arguments);
+                    args = _.toArray(arguments).slice(1);
                     channel = this.channel(channelName);
                     return channel[methodName].apply(channel, args);
                 };
@@ -525,13 +497,12 @@
 
         Radio.reset = function (channelName) {
             var channels = !channelName ? this._channels : [this._channels[channelName]];
-            _.invoke(channels, "reset");
+            _.each(channels, function (channel) {
+                channel.reset();
+            });
         };
 
-        var backbone_radio = Radio;
-
-        return backbone_radio;
-
+        return Radio;
     } )(Backbone, _);
 
     var previousMarionette = root.Marionette;
@@ -539,7 +510,7 @@
 
     var Marionette = Backbone.Marionette = {};
 
-    Marionette.VERSION = '2.4.3';
+    Marionette.VERSION = '2.4.7';
 
     Marionette.noConflict = function() {
         root.Marionette = previousMarionette;
@@ -627,7 +598,7 @@
     // utility method for parsing @ui. syntax strings
     // into associated selector
     Marionette.normalizeUIString = function(uiString, ui) {
-        return uiString.replace(/@ui\.[a-zA-Z_$0-9]*/g, function(r) {
+        return uiString.replace(/@ui\.[a-zA-Z-_$0-9]*/g, function(r) {
             return ui[r.slice(4)];
         });
     };
@@ -699,7 +670,11 @@
         }
     };
 
-    deprecate._warn = typeof console !== 'undefined' && (console.warn || console.log) || function() {};
+    deprecate._console = typeof console !== 'undefined' ? console : {};
+    deprecate._warn = function() {
+        var warn = deprecate._console.warn || deprecate._console.log || function() {};
+        return warn.apply(deprecate._console, arguments);
+    };
     deprecate._cache = {};
 
     /* jshint maxstatements: 14, maxcomplexity: 7 */
@@ -838,7 +813,7 @@
                 var method = target[methodName];
                 if (!method) {
                     throw new Marionette.Error('Method "' + methodName +
-                        '" was configured as an event handler, but does not exist.');
+                                               '" was configured as an event handler, but does not exist.');
                 }
 
                 target.listenTo(entity, evt, method);
@@ -1069,9 +1044,11 @@
         //this is a noop method intended to be overridden by classes that extend from this base
         initialize: function() {},
 
-        destroy: function() {
-            this.triggerMethod('before:destroy');
-            this.triggerMethod('destroy');
+        destroy: function(options) {
+            options = options || {};
+
+            this.triggerMethod('before:destroy', options);
+            this.triggerMethod('destroy', options);
             this.stopListening();
 
             return this;
@@ -1162,7 +1139,7 @@
                     this.triggerMethod('before:swapOut', this.currentView, this, options);
                 }
 
-                if (this.currentView) {
+                if (this.currentView && isDifferentView) {
                     delete this.currentView._parent;
                 }
 
@@ -1185,9 +1162,12 @@
                     // we can not reuse it.
                     view.once('destroy', this.empty, this);
 
-                    this._renderView(view);
-
+                    // make this region the view's parent,
+                    // It's important that this parent binding happens before rendering
+                    // so that any events the child may trigger during render can also be
+                    // triggered on the child's ancestor views
                     view._parent = this;
+                    this._renderView(view);
 
                     if (isChangingView) {
                         this.triggerMethod('before:swap', view, this, options);
@@ -1319,7 +1299,7 @@
                 var preventDestroy  = !!emptyOptions.preventDestroy;
                 // If there is no view in the region
                 // we should not remove anything
-                if (!view) { return; }
+                if (!view) { return this; }
 
                 view.off('destroy', this.empty, this);
                 this.triggerMethod('before:empty', view);
@@ -2013,6 +1993,10 @@
 
             // call the parent view's childEvents handler
             var childEvents = Marionette.getOption(layoutView, 'childEvents');
+
+            // since childEvents can be an object or a function use Marionette._getValue
+            // to handle the abstaction for us.
+            childEvents = Marionette._getValue(childEvents, layoutView);
             var normalizedChildEvents = layoutView.normalizeMethods(childEvents);
 
             if (normalizedChildEvents && _.isFunction(normalizedChildEvents[eventName])) {
@@ -2038,26 +2022,17 @@
             }, children);
         },
 
-        // Internal utility for building an ancestor
-        // view tree list.
-        _getAncestors: function() {
-            var ancestors = [];
+        // Walk the _parent tree until we find a layout view (if one exists).
+        // Returns the parent layout view hierarchically closest to this view.
+        _parentLayoutView: function() {
             var parent  = this._parent;
 
             while (parent) {
-                ancestors.push(parent);
+                if (parent instanceof Marionette.LayoutView) {
+                    return parent;
+                }
                 parent = parent._parent;
             }
-
-            return ancestors;
-        },
-
-        // Returns the containing parent view.
-        _parentLayoutView: function() {
-            var ancestors = this._getAncestors();
-            return _.find(ancestors, function(parent) {
-                return parent instanceof Marionette.LayoutView;
-            });
         },
 
         // Imports the "normalizeMethods" to transform hashes of
@@ -2356,27 +2331,41 @@
         reorder: function() {
             var children = this.children;
             var models = this._filteredSortedModels();
-            var modelsChanged = _.find(models, function(model) {
+
+            if (!models.length && this._showingEmptyView) { return this; }
+
+            var anyModelsAdded = _.some(models, function(model) {
                 return !children.findByModel(model);
             });
 
-            // If the models we're displaying have changed due to filtering
-            // We need to add and/or remove child views
+            // If there are any new models added due to filtering
+            // We need to add child views
             // So render as normal
-            if (modelsChanged) {
+            if (anyModelsAdded) {
                 this.render();
             } else {
                 // get the DOM nodes in the same order as the models
-                var els = _.map(models, function(model, index) {
+                var elsToReorder = _.map(models, function(model, index) {
                     var view = children.findByModel(model);
                     view._index = index;
                     return view.el;
                 });
 
+                // find the views that were children before but arent in this new ordering
+                var filteredOutViews = children.filter(function(view) {
+                    return !_.contains(elsToReorder, view.el);
+                });
+
+                this.triggerMethod('before:reorder');
+
                 // since append moves elements that are already in the DOM,
                 // appending the elements will effectively reorder them
-                this.triggerMethod('before:reorder');
-                this._appendReorderedChildren(els);
+                this._appendReorderedChildren(elsToReorder);
+
+                // remove any views that have been filtered out
+                _.each(filteredOutViews, this.removeChildView, this);
+                this.checkEmpty();
+
                 this.triggerMethod('reorder');
             }
         },
@@ -2540,7 +2529,7 @@
 
             // get the emptyViewOptions, falling back to childViewOptions
             var emptyViewOptions = this.getOption('emptyViewOptions') ||
-                this.getOption('childViewOptions');
+                                   this.getOption('childViewOptions');
 
             if (_.isFunction(emptyViewOptions)) {
                 emptyViewOptions = emptyViewOptions.call(this, child, this._emptyViewIndex);
@@ -3143,8 +3132,9 @@
             return Marionette.ItemView.prototype.destroy.apply(this, arguments);
         },
 
-        showChildView: function(regionName, view) {
-            return this.getRegion(regionName).show(view);
+        showChildView: function(regionName, view, options) {
+            var region = this.getRegion(regionName);
+            return region.show.apply(region, _.rest(arguments));
         },
 
         getChildView: function(regionName) {
@@ -3371,7 +3361,7 @@
 
                         var eventKey  = eventName + selector;
                         var handler   = _.isFunction(behaviour) ? behaviour : b[behaviour];
-
+                        if (!handler) { return; }
                         _events[eventKey] = _.bind(handler, b);
                     }, this);
 
@@ -3716,10 +3706,6 @@
         _initChannel: function() {
             this.channelName = _.result(this, 'channelName') || 'global';
             this.channel = _.result( this, 'channel' ) || Backbone.Radio.channel( this.channelName );
-            //this.channel = _.result(this, 'channel') || Backbone.Wreqr.radio.channel(this.channelName);
-            //this.vent = _.result(this, 'vent') || this.channel.vent;
-            //this.commands = _.result(this, 'commands') || this.channel.commands;
-            //this.reqres = _.result(this, 'reqres') || this.channel.reqres;
         }
     });
 

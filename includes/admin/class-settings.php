@@ -435,17 +435,25 @@ class Tailor_Settings {
 			return;
 		}
 
-		$extension = SCRIPT_DEBUG ? '.js' : '.min.js';
-
 		wp_enqueue_media();
+
+		$handle = 'tailor-admin';
+
 		wp_enqueue_script(
-			'tailor-admin',
-			tailor()->plugin_url() . 'assets/js/dist/admin' . $extension,
+			$handle,
+			tailor()->plugin_url() . 'assets/js/dist/admin' . ( SCRIPT_DEBUG ? '.js' : '.min.js' ),
 			array(),
 			tailor()->version()
 		);
 
-		wp_localize_script( 'tailor-admin', 'iconKitNonce', wp_create_nonce( 'tailor-modify-icon-kits' ) );
+		wp_localize_script( $handle, '_l10n', array(
+			'selectKit'         =>  __( 'Select kit', 'tailor' ),
+		) );
+
+		wp_localize_script( $handle, '_nonces', array(
+			'saveKit'           =>  wp_create_nonce( 'tailor-save-icon-kit' ),
+			'deleteKit'         =>  wp_create_nonce( 'tailor-delete-icon-kit' ),
+		) );
 	}
 
 	/**
@@ -454,7 +462,7 @@ class Tailor_Settings {
 	 * @since 1.0.0
 	 */
 	public function print_js_partials() {
-		tailor_partial( 'underscore/admin', 'notice' );
+		tailor_partial( 'admin/html/notice' );
 	}
 }
 

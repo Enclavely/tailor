@@ -64,6 +64,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Form_CF7_Elemen
 	        $color_control_types = array(
 		        'color',
 		        'link_color',
+		        'link_color_hover',
 		        'heading_color',
 		        'background_color',
 		        'border_color',

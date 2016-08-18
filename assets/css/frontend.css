@@ -1092,8 +1092,7 @@ html {
   background-color: transparent;
   border: 0 solid #efefef;
   border-radius: 0;
-  box-shadow: none;
-  overflow: hidden; }
+  box-shadow: none; }
   .tailor-ui .tailor-section__content {
     position: relative;
     z-index: 2;
@@ -1115,6 +1114,8 @@ html {
     -ms-transform: translatez(0);
     -o-transform: translatez(0);
     transform: translatez(0); }
+  .tailor-ui .tailor-section.is-parallax {
+    overflow: hidden; }
   .tailor-ui .tailor-section.is-skewed {
     transform: skew(0deg, -3deg); }
     .tailor-ui .tailor-section.is-skewed .tailor-section__content {
@@ -1165,11 +1166,15 @@ html {
     margin: 0 4px;
     list-style: none; }
   .tailor-ui .tailor-slideshow .slick-dots {
+    bottom: 0;
     text-align: center;
-    border-top: none; }
+    border-top: none;
+    margin: 1rem 0; }
   .tailor-ui .tailor-slideshow .slick-dots li {
+    margin: 0;
     display: inline-block;
     width: 80px;
+    height: auto;
     max-width: calc( 25% - 4px );
     cursor: pointer; }
     .tailor-ui .tailor-slideshow .slick-dots li:not(.slick-active) {
@@ -1454,8 +1459,6 @@ html {
   -webkit-transition: all 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
   -moz-transition: all 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
   transition: all 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94); }
-  .tailor-ui .slick-arrow:hover {
-    opacity: 1; }
   .tailor-ui .slick-arrow::before {
     position: relative;
     top: -2px;
@@ -1478,6 +1481,8 @@ html {
       content: '\203A'; }
   .tailor-ui .slick-arrow.slick-disabled {
     color: rgba(0, 0, 0, 0.1); }
+.tailor-ui .slick-slider:hover .slick-arrow {
+  opacity: 1; }
 .tailor-ui .slick-dots {
   position: relative;
   display: block;
@@ -1921,6 +1926,15 @@ html {
   text-align: center !important; }
 .tailor-ui .u-text-right {
   text-align: right !important; }
+.tailor-ui .u-align-top {
+  align-items: flex-start;
+  justify-content: flex-start; }
+.tailor-ui .u-align-middle {
+  align-items: center;
+  justify-content: center; }
+.tailor-ui .u-align-bottom {
+  align-items: flex-end;
+  justify-content: flex-end; }
 
 .tailor-ui .error {
   padding: 0.5em 1em;
@@ -1977,19 +1991,6 @@ html {
   clip: rect(0 0 0 0);
   border: 0;
   word-wrap: normal !important; }
-.tailor-ui :not(.media-frame) .spinner {
-  display: inline-block;
-  background: url(../img/spinner.gif) no-repeat;
-  -webkit-background-size: 20px 20px;
-  background-size: 20px 20px;
-  vertical-align: middle;
-  opacity: .7;
-  filter: alpha(opacity=70);
-  width: 20px;
-  height: 20px;
-  visibility: hidden; }
-.tailor-ui.is-saving :not(.media-frame) .spinner {
-  visibility: visible; }
 .tailor-ui .not-a-button {
   background: 0 0;
   border: none;

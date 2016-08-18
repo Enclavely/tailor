@@ -31,7 +31,7 @@ if ( ! function_exists( 'tailor_shortcode_grid' ) ) {
 
 	    $id = ( '' !== $atts['id'] ) ? 'id="' . esc_attr( $atts['id'] ) . '"' : '';
 	    $class = trim( esc_attr( "tailor-element tailor-grid tailor-grid--{$atts['collapse']} tailor-grid--{$atts['items_per_row']} tailor-grid--bordered {$atts['class']}" ) );
-
+	    
 	    return '<div ' . trim( "{$id} class=\"{$class}\"" ) . '>' . do_shortcode( $content ) . '</div>';
     }
 
@@ -56,6 +56,7 @@ if ( ! function_exists( 'tailor_shortcode_grid_item' ) ) {
             'id'                        =>  '',
             'class'                     =>  '',
             'horizontal_alignment'      =>  '',
+            'vertical_alignment'        =>  '',
         ), $atts, $tag );
 
 		$id = ( '' !== $atts['id'] ) ? 'id="' . esc_attr( $atts['id'] ) . '"' : '';
@@ -64,7 +65,11 @@ if ( ! function_exists( 'tailor_shortcode_grid_item' ) ) {
 		if ( ! empty( $atts['horizontal_alignment'] ) ) {
 			$class .= esc_attr( " u-text-{$atts['horizontal_alignment']}" );
 		}
-
+		
+		if ( ! empty( $atts['vertical_alignment'] ) ) {
+			$class .= esc_attr( " u-align-{$atts['vertical_alignment']}" );
+		}
+		
 		return  '<div ' . trim( "{$id} class=\"{$class}\"" ) . '>' . do_shortcode( $content ) . '</div>';
 
 	}

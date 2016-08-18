@@ -120,7 +120,7 @@ if ( ! class_exists( 'Tailor_Icons' ) ) {
          */
         public function add_icon_kit() {
 
-	        check_ajax_referer( 'tailor-modify-icon-kits', 'nonce' );
+	        check_ajax_referer( 'tailor-save-icon-kit', 'nonce' );
 
 	        if ( ! isset( $_POST['id'] ) || ! isset( $_POST['name'] ) ) {
 		        wp_send_json_error();
@@ -282,7 +282,7 @@ if ( ! class_exists( 'Tailor_Icons' ) ) {
          */
         public function delete_icon_kit() {
 
-	        check_ajax_referer( 'tailor-modify-icon-kits', 'nonce' );
+	        check_ajax_referer( 'tailor-delete-icon-kit', 'nonce' );
 
 	        if ( ! isset( $_POST['id'] ) || ! isset( $_POST['name'] ) ) {
 		        wp_send_json_error();

@@ -43,13 +43,17 @@ $slideshow-thumbnail-spacing: 4px !default;
 		}
 
 		.slick-dots {
+			bottom: 0;
 			text-align: center;
 			border-top: none;
+			margin: $global-spacing-vertical 0;
 		}
 
 		.slick-dots li {
+			margin: 0;
 			display: inline-block;
 			width: 80px;
+			height: auto;
 			max-width: calc( 25% - #{$slideshow-thumbnail-spacing} );
 			cursor: pointer;
 

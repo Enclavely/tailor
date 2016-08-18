@@ -11,4 +11,19 @@
 	.u-text-right {
 		text-align: right!important;
 	}
+
+	.u-align-top {
+		align-items: flex-start;
+		justify-content: flex-start;
+	}
+
+	.u-align-middle {
+		align-items: center;
+		justify-content: center;
+	}
+
+	.u-align-bottom {
+		align-items: flex-end;
+		justify-content: flex-end;
+	}
 }

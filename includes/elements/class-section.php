@@ -69,6 +69,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Section_Element
 	        $color_control_types = array(
 		        'color',
 		        'link_color',
+		        'link_color_hover',
 		        'heading_color',
 		        'background_color',
 		        'border_color',
@@ -99,6 +100,62 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Section_Element
                             'bottom'                =>  __( 'Bottom', 'tailor' ),
                         ),
                     ),
+		        ),
+		        'background_repeat'     =>  array(
+			        'control'               =>  array(
+				        'dependencies'          =>  array(
+					        'background_image'      => array(
+						        'condition'             =>  'not',
+						        'value'                 =>  '',
+					        ),
+					        'parallax'              => array(
+						        'condition'             =>  'not',
+						        'value'                 =>  1,
+					        ),
+				        ),
+			        ),
+		        ),
+		        'background_position'   =>  array(
+			        'control'               =>  array(
+				        'dependencies'          =>  array(
+					        'background_image'      => array(
+						        'condition'             =>  'not',
+						        'value'                 =>  '',
+					        ),
+					        'parallax'              => array(
+						        'condition'             =>  'not',
+						        'value'                 =>  1,
+					        ),
+				        ),
+			        ),
+		        ),
+		        'background_size'       =>  array(
+			        'control'               =>  array(
+				        'dependencies'          =>  array(
+					        'background_image'      => array(
+						        'condition'             =>  'not',
+						        'value'                 =>  '',
+					        ),
+					        'parallax'              => array(
+						        'condition'             =>  'not',
+						        'value'                 =>  1,
+					        ),
+				        ),
+			        ),
+		        ),
+		        'background_attachment' =>  array(
+			        'control'               =>  array(
+				        'dependencies'          =>  array(
+					        'background_image'      => array(
+						        'condition'             =>  'not',
+						        'value'                 =>  '',
+					        ),
+					        'parallax'              => array(
+						        'condition'             =>  'not',
+						        'value'                 =>  1,
+					        ),
+				        ),
+			        ),
 		        ),
 	        );
 	        $priority = tailor_control_presets( $this, $attribute_control_types, $attribute_control_arguments, $priority );
@@ -138,6 +195,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Section_Element
 				    'declarations'      =>  array(
 					    'max-width'         =>  esc_attr( $atts['max_width'] ),
 				    ),
+				    'setting'           =>  'max_width',
 			    );
 		    }
 
@@ -147,6 +205,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Section_Element
 				    'declarations'      =>  array(
 					    'min-height'        =>  esc_attr( $atts['min_height'] ),
 				    ),
+				    'setting'           =>  'min_height',
 			    );
 		    }
 

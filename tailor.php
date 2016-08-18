@@ -4,7 +4,7 @@
  * Plugin Name: Tailor
  * Plugin URI: http://www.gettailor.com
  * Description: Build beautiful page layouts quickly and easily using your favourite theme.
- * Version: 1.4.3
+ * Version: 1.5.0
  * Author: Andrew Worsfold
  * Author URI:  http://www.andrewworsfold.com
  * Text Domain: tailor
@@ -202,10 +202,6 @@ if ( ! class_exists( 'Tailor' ) ) {
 		        ) );
 	        }
 
-	        if ( is_customize_preview() ) {
-		        $this->load_directory( 'customizer' );
-	        }
-
 	        if ( $this->is_tailoring() && ! is_user_logged_in() ) {
 		        auth_redirect();
 	        }
@@ -221,6 +217,7 @@ if ( ! class_exists( 'Tailor' ) ) {
 		        'class-sidebar',
 		        'class-canvas',
 		        'class-tinymce',
+		        'class-customizer',
 	        ) );
 	        
 	        /**
@@ -284,7 +281,7 @@ if ( ! class_exists( 'Tailor' ) ) {
 			    true
 		    );
 		    wp_register_script(
-			    'images-loaded',
+			    'imagesloaded',
 			    $this->plugin_url() . 'assets/js/dist/vendor/imagesloaded.min.js',
 			    array(),
 			    $this->version(),
@@ -307,7 +304,7 @@ if ( ! class_exists( 'Tailor' ) ) {
 		    wp_register_script(
 			    'shuffle',
 			    $this->plugin_url() . 'assets/js/dist/vendor/shuffle.min.js',
-			    array( 'jquery', 'modernizr', 'images-loaded' ),
+			    array( 'jquery', 'modernizr', 'imagesloaded' ),
 			    $this->version(),
 			    true
 		    );
@@ -390,7 +387,7 @@ if ( ! class_exists( 'Tailor' ) ) {
 			    wp_enqueue_script(
 				    'tailor-frontend',
 				    $this->plugin_url() . 'assets/js/dist/frontend' . ( SCRIPT_DEBUG ? '.js' : '.min.js' ),
-				    array( 'jquery', 'underscore' ),
+				    array( 'jquery', 'underscore', 'imagesloaded' ),
 				    $this->version()
 			    );
 		    }
@@ -406,7 +403,7 @@ if ( ! class_exists( 'Tailor' ) ) {
 	     * @return array $response
 	     */
 	    public function lock_post( $response, $data ) {
-		    if ( $data['tailor_post_id'] && $post = get_post( $data['tailor_post_id'] ) ) {
+		    if ( isset( $data['tailor_post_id'] ) && $post = get_post( $data['tailor_post_id'] ) ) {
 			    $response['current_lock'] = wp_set_post_lock( $post->ID );
 		    }
 		    return $response;

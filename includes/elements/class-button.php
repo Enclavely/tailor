@@ -158,7 +158,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Button_Element'
 
 		    if ( ! empty( $atts['color_hover'] ) ) {
 			    $css_rules[] = array(
-				    'selectors'         =>  array( ':hover .tailor-button__inner' ),
+				    'selectors'         =>  array( '.tailor-button__inner:hover' ),
 				    'declarations'      =>  array(
 					    'color'             =>  esc_attr( $atts['color_hover'] ),
 				    ),
@@ -166,7 +166,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Button_Element'
 		    }
 		    else if ( ! empty( $atts['color'] ) ) {
 			    $css_rules[] = array(
-				    'selectors'         =>  array( ':hover .tailor-button__inner' ),
+				    'selectors'         =>  array( '.tailor-button__inner:hover' ),
 				    'declarations'      =>  array(
 					    'color'             =>  esc_attr( tailor_adjust_color_brightness( $atts['color'], -0.05 ) ),
 				    ),
@@ -261,11 +261,8 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Button_Element'
 			    );
 
 			    if ( 'none' !== $atts['border_style'] ) {
-
 				    if ( ! empty( $atts['border_width'] )  ) {
-
 					    $borders = array_combine( array( 'top', 'right', 'bottom', 'left' ), explode( '-', $atts['border_width'] ) );
-
 					    if ( count( array_unique( $borders ) ) === 1 && end( $borders ) == '0' ) {
 						    $css_rules[] = array(
 							    'selectors'                 =>  array( '.tailor-button__inner' ),
@@ -274,7 +271,6 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Button_Element'
 								    'box-shadow'                =>  'none',
 							    ),
 						    );
-
 					    }
 					    else {
 						    foreach ( $borders as $position => $border_width ) {

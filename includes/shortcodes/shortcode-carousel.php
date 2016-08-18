@@ -87,7 +87,7 @@ if ( ! function_exists( 'tailor_shortcode_carousel_item' ) ) {
 		}
 		
 		if ( ! empty( $atts['vertical_alignment'] ) ) {
-			$class .= ' has-custom-height';
+			$class .= " has-custom-height u-align-{$atts['vertical_alignment']}";
 		}
 
 		return  '<div ' . trim( "{$id} class=\"{$class}\"" ) . '>' .

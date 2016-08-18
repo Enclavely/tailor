@@ -3,6 +3,7 @@
  * The Canvas Marionette application.
  */
 var $ = Backbone.$,
+    $doc = $( document ),
     CanvasApplication;
 
 CanvasApplication = Marionette.Application.extend( {
@@ -32,29 +33,35 @@ CanvasApplication = Marionette.Application.extend( {
      * @since 1.0.0
      */
 	onStart : function() {
+
+        // White listed events from the remote channel
         this.allowableEvents = [
 
-            // Canvas actions
+            // Used when dragging library items and templates from the sidebar
 	        'canvas:dragstart', 'canvas:drag', 'canvas:dragend',
 
-            // Template actions
+            // Used when loading a template
             'template:load',
 
             // History actions
-	        'history:restore', 'history:undo', 'history:redo',
+	        //'history:restore', 'history:undo', 'history:redo',
 
             // Modal actions
             'modal:apply',
 
             // CSS actions
-	        'css:add', 'css:delete', 'css:update', 'css:clear',
+	        //'css:add', 'css:delete', 'css:update', 'css:clear',
 
-            // Settings actions
+            // Used by the setting API to respond to sidebar setting changes
             'sidebar:setting:change',
 
-            // Canvas actions
-            'canvas:reset'
+            // Used to allow the sidebar to reset the canvas
+            'canvas:reset',
+
+            // Used by the History module to reset the element collection
+            'elements:reset'
         ];
+        
         this.addEventListeners();
 	},
 
@@ -64,26 +71,12 @@ CanvasApplication = Marionette.Application.extend( {
      * @since 1.0.0
      */
     addEventListeners : function() {
-        var canvasApp = this;
-        var resetCanvas = function() {
-
-            /**
-             * Fires when the canvas is reset.
-             *
-             * @since 1.0.0
-             */
-            canvasApp.channel.trigger( 'canvas:reset' );
-        };
-
-        document.addEventListener( 'click', resetCanvas, false );
-        document.addEventListener( 'dragover', resetCanvas, false );
-        window.addEventListener( 'resize', resetCanvas, false );
+        var canvas = this;
 
         $( 'a' ).attr( { draggable : false, target : '_blank' } );
-
         $( 'img' ).attr( { draggable : false } );
 
-        $( document ).on( 'keydown', function( e ) {
+        $doc.on( 'keydown', function( e ) {
             if ( e.ctrlKey && 89 == e.keyCode ) {
                 if ( ! _.contains( [ 'INPUT', 'SELECT', 'TEXTAREA' ], e.target.tagName ) ) {
 
@@ -92,12 +85,12 @@ CanvasApplication = Marionette.Application.extend( {
                      *
                      * @since 1.0.0
                      */
-                    canvasApp.channel.trigger( 'history:redo' );
+                    canvas.channel.trigger( 'history:redo' );
                 }
             }
         } );
 
-        $( document ).on( 'keydown', function( e ) {
+        $doc.on( 'keydown', function( e ) {
             if ( e.ctrlKey && 90 == e.keyCode ) {
                 if ( ! _.contains( [ 'INPUT', 'SELECT', 'TEXTAREA' ], e.target.tagName ) ) {
 
@@ -106,7 +99,7 @@ CanvasApplication = Marionette.Application.extend( {
                      *
                      * @since 1.0.0
                      */
-                    canvasApp.channel.trigger( 'history:undo' );
+                    canvas.channel.trigger( 'history:undo' );
                 }
             }
         } );
@@ -140,18 +133,20 @@ CanvasApplication = Marionette.Application.extend( {
          * @returns {*|{}}
          */
         this.channel.reply( 'sidebar:settings', function() {
-            return remoteChannel.request( 'sidebar:settings');
+            return remoteChannel.request( 'sidebar:settings' );
         } );
 
-        // Forward allowable events to the remote channel
+        // Forward allowable events from the remote channel
 	    this.listenTo( remoteChannel, 'all', this.forwardRemoteEvent );
 
         /**
-         * Fires when the canvas is initialized.
+         * Fires when the remote channel is registered.
          *
-         * @since 1.0.0
+         * @since 1.5.0
+         *
+         * @param this
          */
-        remoteChannel.trigger( 'canvas:initialize' );
+        remoteChannel.trigger( 'canvas:handshake', this );
     },
 
     /**
@@ -169,453 +164,183 @@ CanvasApplication = Marionette.Application.extend( {
 
 module.exports = CanvasApplication;
 },{}],2:[function(require,module,exports){
-( function( Behaviors ) {
+( function( window, $ ) {
 
-	'use strict';
+    // Do nothing if the canvas does not exist in the page
+    if ( null == document.getElementById( "canvas" ) ) {
+        console.error( 'The canvas does not exist in the page.  This could be caused by a plugin or theme conflict.' );
+        return;
+    }
 
-	Behaviors.Container = require( './components/behaviors/container' );
-	Behaviors.Draggable = require( './components/behaviors/draggable' );
-	Behaviors.Droppable = require( './components/behaviors/droppable' );
-	Behaviors.Editable = require( './components/behaviors/editable' );
-	Behaviors.Movable = require( './components/behaviors/movable' );
+    // Include utilities
+    require( '../shared/utility/polyfills/classlist' );
+    require( '../shared/utility/polyfills/raf' );
+    require( '../shared/utility/polyfills/transitions' );
+    require( '../shared/utility/ajax' );
 
-	Marionette.Behaviors.behaviorsLookup = function() {
-		return Behaviors;
-	};
-
-	window.Tailor.Behaviors = Behaviors;
-
-} ) ( window.Tailor.Behaviors || {} );
-},{"./components/behaviors/container":9,"./components/behaviors/draggable":10,"./components/behaviors/droppable":11,"./components/behaviors/editable":12,"./components/behaviors/movable":13}],3:[function(require,module,exports){
-( function( Views ) {
-
-    'use strict';
+    // Include components
+    require( '../shared/components/ui/tabs' );
+    require( '../shared/components/ui/toggles' );
+    require( '../shared/components/ui/map' );
+    require( '../shared/components/ui/masonry' );
+    require( '../shared/components/ui/slideshow' );
+    require( '../shared/components/ui/lightbox' );
+    require( '../shared/components/ui/parallax' );
+    require( './components/ui/carousel' );
+    require( './components/ui/carousel-simple' );
+    Marionette.Behaviors.behaviorsLookup = function() {
+        return {
+            Container:          require( './components/behaviors/container' ),
+            Droppable:          require( './components/behaviors/droppable' ),
+            Editable:           require( './components/behaviors/editable' ),
+            Movable:            require( './components/behaviors/movable' ),
+            Draggable:          require( '../shared/components/behaviors/draggable' )
+        };
+    };
     
-    Views.TailorSection = require( './components/elements/wrappers/view-section' );
-	Views.TailorBox = require( './components/elements/wrappers/view-box' );
-	Views.TailorCard = require( './components/elements/wrappers/view-card' );
-	Views.TailorHero = require( './components/elements/wrappers/view-hero' );
+    // Create the app
+    var App = require( './app' );
+    window.app = new App();
 
-    Views.TailorColumn = require( './components/elements/children/view-column' );
-	Views.TailorTab = require( './components/elements/children/view-tab' );
-	Views.TailorToggle = require( './components/elements/children/view-toggle' );
-	Views.TailorListItem = require( './components/elements/children/view-list-item' );
-	Views.TailorCarouselItem = require( './components/elements/children/view-carousel-item' );
-
-	Views.TailorTabs = require( './components/elements/containers/view-tabs' );
-    Views.TailorCarousel = require( './components/elements/containers/view-carousel' );
-	
-    Views.Element = require( './components/elements/view-element' );
-    Views.Container = require( './components/elements/view-container' );
-    Views.Wrapper = require( './components/elements/view-container' );
-    Views.Child = require( './components/elements/view-container' );
-
-    Views.lookup = function( tag, type ) {
-        tag = tag.replace( /_/g, ' ' ).replace( /(?: |\b)(\w)/g, function( key ) {
-            return key.toUpperCase().replace( /\s+/g, '' );
-        } );
-
-        if ( Views.hasOwnProperty( tag ) ) {
-            return Views[ tag ];
-        }
-
-        if ( type ) {
-            type = type.replace( /_/g, ' ' ).replace( /(?: |\b)(\w)/g, function( key ) {
-                return key.toUpperCase().replace( /\s+/g, '' );
-            } );
-
-            if ( Views.hasOwnProperty( type ) ) {
-                return Views[ type ];
-            }
-        }
-
-        return Views.Element;
+    // Create the Tailor object
+    window.Tailor = {
+        Api : {
+            Setting :   require( '../shared/components/api/setting' ),
+            Element :   require( './components/api/element' )
+        },
+        CSS :       require( '../shared/utility/css' ),
+        Models :    {},
+        Views :     {}
     };
 
-    window.Tailor.Views = Views;
+    app.addRegions( {
+        canvasRegion : {
+            selector : "#canvas",
+            regionClass : require( './modules/canvas/canvas-region' )
+        },
+        selectRegion : {
+            selector : "#select",
+            regionClass : require( './modules/tools/select-region' )
+        }
+    } );
 
-} ) ( window.Tailor.Views || {} );
-},{"./components/elements/children/view-carousel-item":16,"./components/elements/children/view-column":17,"./components/elements/children/view-list-item":18,"./components/elements/children/view-tab":19,"./components/elements/children/view-toggle":20,"./components/elements/containers/view-carousel":25,"./components/elements/containers/view-tabs":26,"./components/elements/view-container":27,"./components/elements/view-element":28,"./components/elements/wrappers/view-box":29,"./components/elements/wrappers/view-card":30,"./components/elements/wrappers/view-hero":31,"./components/elements/wrappers/view-section":32}],4:[function(require,module,exports){
-( function( Models ) {
+    // Initialize preview
+    require( './preview' );
 
-    'use strict';
+    app.on( 'before:start', function() {
 
-    Models.Container = require( './entities/models/elements/model-container' );
-    Models.Wrapper = require( './entities/models/elements/model-wrapper' );
-    Models.Child = require( './entities/models/elements/model-child' );
-    Models.Element = require( './entities/models/elements/element' );
+        // Load element-specific models
+        Tailor.Models.Section =             require( './entities/models/wrappers/section' );
+        Tailor.Models.Row =                 require( './entities/models/containers/row' );
+        Tailor.Models.Column =              require( './entities/models/children/column' );
+        Tailor.Models.GridItem =            require( './entities/models/children/grid-item' );
+        Tailor.Models.Tabs =                require( './entities/models/containers/tabs' );
+        Tailor.Models.Carousel =            require( './entities/models/containers/carousel' );
+        Tailor.Models.Container =           require( './entities/models/element-container' );
+        Tailor.Models.Wrapper =             require( './entities/models/element-wrapper' );
+        Tailor.Models.Child =               require( './entities/models/element-child' );
+        Tailor.Models.Default =             require( './entities/models/element' );
 
-    Models.Section = require( './entities/models/elements/wrappers/section' );
-    Models.Row = require( './entities/models/elements/containers/row' );
-    Models.Column = require( './entities/models/elements/children/column' );
-    Models.GridItem = require( './entities/models/elements/children/grid-item' );
-    Models.Tabs = require( './entities/models/elements/containers/tabs' );
-    Models.Carousel = require( './entities/models/elements/containers/carousel' );
+        // Load views
+        Tailor.Views.Section =              require( './components/elements/wrappers/section' );
+        Tailor.Views.Box =                  require( './components/elements/wrappers/box' );
+        Tailor.Views.Card =                 require( './components/elements/wrappers/card' );
+        Tailor.Views.Hero =                 require( './components/elements/wrappers/hero' );
+        Tailor.Views.Column =               require( './components/elements/children/column' );
+        Tailor.Views.Tab =                  require( './components/elements/children/tab' );
+        Tailor.Views.Toggle =               require( './components/elements/children/toggle' );
+        Tailor.Views.ListItem =             require( './components/elements/children/list-item' );
+        Tailor.Views.CarouselItem =         require( './components/elements/children/carousel-item' );
+        Tailor.Views.Tabs =                 require( './components/elements/containers/tabs' );
+        Tailor.Views.Carousel =             require( './components/elements/containers/carousel' );
+        Tailor.Views.Container =            require( './components/elements/element-container' );
+        Tailor.Views.Wrapper =              require( './components/elements/element-container' );
+        Tailor.Views.Child =                require( './components/elements/element-container' );
+        Tailor.Views.Default =              require( './components/elements/element' );
 
-    Models.lookup = function( tag, type ) {
-
-        tag = tag.replace( /tailor_/g, ' ' ).replace( /_/g, ' ' ).replace( /(?: |\b)(\w)/g, function( key ) {
-            return key.toUpperCase().replace( /\s+/g, '' );
-        } );
-
-        if ( Models.hasOwnProperty( tag ) ) {
-            return Models[ tag ];
+        /**
+         * Returns the element name (in title case) based on the tag or type.
+         *
+         * @since 1.5.0
+         *
+         * @param string
+         */
+        function getName( string ) {
+            string = string || '';
+            return string
+                .replace( /_|-|tailor_/gi, ' ' )
+                .replace( /(?: |\b)(\w)/g, function( key ) {
+                    return key.toUpperCase().replace( /\s+/g, '' );
+                } );
         }
 
-        if ( type ) {
-            type = type.replace( /_/g, ' ' ).replace( /(?: |\b)(\w)/g, function( key ) {
-                return key.toUpperCase().replace( /\s+/g, '' );
-            } );
+        /**
+         * Returns the appropriate object based on tag or type.
+         *
+         * @since 1.5.0
+         *
+         * @param tag
+         * @param type
+         * @param object
+         * @returns {*}
+         */
+        Tailor.lookup = function( tag, type, object ) {
 
-            if ( Models.hasOwnProperty( type ) ) {
-                return Models[ type ];
+            if ( ! Tailor.hasOwnProperty( object ) ) {
+                console.error( 'Object type ' + object + ' does not exist' );
+                return;
             }
-        }
 
-        return Models.Element;
-    };
-
-    window.Tailor.Models = Models;
-
-} ) ( window.Tailor.Models || {} );
-},{"./entities/models/elements/children/column":43,"./entities/models/elements/children/grid-item":44,"./entities/models/elements/containers/carousel":45,"./entities/models/elements/containers/row":46,"./entities/models/elements/containers/tabs":47,"./entities/models/elements/element":48,"./entities/models/elements/model-child":50,"./entities/models/elements/model-container":52,"./entities/models/elements/model-wrapper":53,"./entities/models/elements/wrappers/section":54}],5:[function(require,module,exports){
-Tailor.Objects = Tailor.Objects || {};
-
-( function( Tailor, Api, $ ) {
-
-    'use strict';
-
-	var $win = $( window );
-
-	// Create a new stylesheet for managing custom and dynamic CSS
-	var stylesheet = document.createElement( 'style' );
-	stylesheet.appendChild( document.createTextNode( '' ) );
-	stylesheet.setAttribute( 'media', 'screen' );
-	stylesheet.setAttribute( 'id', 'tailor-canvas-css' );
-	document.head.appendChild( stylesheet );
-
-	// CSS rule sets associated with sidebar settings
-	var cssRules = window._pageRules || [];
-
-	// Setting IDs for which CSS should be generated
-	var dynamicSettingIds = [
-		'_tailor_section_width',
-		'_tailor_column_spacing',
-		'_tailor_element_spacing'
-	];
-
-	// Collection of CSS by setting ID
-	var cssCollection = {
-		'_tailor_section_width' : '',
-		'_tailor_column_spacing' : '',
-		'_tailor_element_spacing' : '',
-		'_tailor_page_css' : '' // Custom page CSS
-	};
-
-	// Generate CSS on app start
-	app.on( 'start', function() {
-
-		// Get the saved settings
-		var settings = app.channel.request( 'sidebar:settings' );
-		if ( settings && settings.length ) {
-			settings.each( function( setting ) {
-				var id = setting.get( 'id' );
-				var value = setting.get( 'value' );
-				value = _.isString( value ) ? value.trim() : value;
-
-				if ( ! _.isEmpty( value ) && cssCollection.hasOwnProperty( id ) ) {
-					if ( cssRules.hasOwnProperty( id ) ) {
-						generateCSS( id, setting.get( 'value' ) );
-					}
-					else {
-						cssCollection[ id ] = setting.get( 'value' )
-					}
-				}
-			} );
-		}
-
-		updateStylesheet();
-	} );
-
-	// Re-generate CSS when a setting value changes
-	_.each( dynamicSettingIds, function( settingId ) {
-		if ( cssRules.hasOwnProperty( settingId ) ) {
-			Api.Setting( settingId, function( to, from ) {
-				generateCSS( settingId, to );
-				updateStylesheet();
-			} );
-		}
-	} );
-
-	// Update custom page CSS
-	Api.Setting( '_tailor_page_css', function( to, from ) {
-		cssCollection[ '_tailor_page_css' ] = to;
-		updateStylesheet();
-	} );
-
-	// Update the post title
-	Api.Setting( '_post_title', function( to, from ) {
-		$( 'h1, h2, h1 a, h2 a'  ).each( function() {
-			if ( from == this.textContent ) {
-				this.textContent = to;
-			}
-		} );
-	} );
-
-	/**
-	 * Generates CSS for a given setting.
-	 * 
-	 * @since 1.4.0
-	 * 
-	 * @param settingId
-	 * @param value
-	 */
-	function generateCSS( settingId, value ) {
-		cssCollection[ settingId ] = '';
-		value = _.isString( value ) ? value.trim() : value;
-		
-		// Compile the CSS rules for non-empty setting values
-		if ( ! _.isEmpty( value ) ) {
-			_.each( cssRules[ settingId ], function( rule ) {
-				var selectors = Tailor.CSS.parseSelectors( rule.selectors );
-				var declarations = Tailor.CSS.parseDeclarations( rule.declarations ).replace( /\{\{(.*?)\}\}/g, value );
-				cssCollection[ settingId ] += "\n" + selectors + " {" + declarations + "}";
-			} );
-		}
-	}
-	
-	/**
-	 * Updates the stylesheet.
-	 *
-	 * @since 1.4.0
-	 */
-	function updateStylesheet() {
-		var value = '';
-		for ( var settingId in cssCollection ) {
-			if ( cssCollection.hasOwnProperty( settingId ) ) {
-				value += cssCollection[ settingId ];
-			}
-		}
-		stylesheet.innerHTML = value;
-		$win.trigger( 'resize' );
-	}
-
-	_.extend( Tailor.Objects, {
-		Carousel : require( './components/carousel' ),
-		PostsCarousel : require( './components/carousel-simple' ),
-		Tabs : require( './components/tabs' ),
-		Toggles : require( './components/toggles' ),
-		Map : require( './components/map' ),
-		Masonry : require( './components/masonry' ),
-		Slideshow : require( './components/slideshow' ),
-		Lightbox : require( './components/lightbox' ),
-		Parallax : require( './components/parallax' )
-	} );
-
-	Api.Element.onRender( 'tailor_carousel', function( atts, model ) {
-		var carousel = this;
-		var options = {
-			autoplay : '1' == atts.autoplay,
-			arrows : '1' == atts.arrows,
-			dots : false,
-			fade : '1' == atts.fade && '1' == atts.items_per_row,
-			slidesToShow : parseInt( atts.items_per_row, 10 ) || 1,
-			adaptiveHeight : true
-		};
-
-		carousel.$el.tailorCarousel( options );
-
-		Api.Setting( '_tailor_element_spacing', function( to, from ) {
-			carousel.triggerAll( 'element:parent:change', carousel );
-		} );
-	} );
-
-	Api.Element.onRender( 'tailor_column', function( atts, model ) {
-		var column = this;
-
-		// Refreshes all child elements when the column spacing setting changes
-		Api.Setting( '_tailor_column_spacing', function( to, from ) {
-			column.triggerAll( 'element:parent:change', column );
-		} );
-	} );
-
-	Api.Element.onRender( 'tailor_content', function( atts, model ) {
-		this.$el.tailorLightbox( {
-			disableOn : function() {
-				return $el.hasClass( 'is-selected' );
-			}
-		} );
-	} );
-
-	Api.Element.onRender( 'tailor_gallery', function( atts, model ) {
-		var $el = this.$el;
-		var options;
-
-		if ( 'carousel' == atts.layout ) {
-			options = {
-				autoplay : '1' == atts.autoplay,
-				arrows : '1' == atts.arrows,
-				dots : '1' == atts.dots,
-				fade : ( '1' == atts.fade && '1' == atts.items_per_row ),
-				infinite: false,
-				slidesToShow : parseInt( atts.items_per_row, 10 ) || 2
-			};
-
-			$el.tailorSimpleCarousel( options ) ;
-		}
-		else if ( 'slideshow' == atts.layout ) {
-			options = {
-				autoplay : '1' == atts.autoplay,
-				arrows : '1' == atts.arrows,
-				dots : false,
-				fade : true,
-				items : '.tailor-slideshow__slide',
-				adaptiveHeight : true,
-				draggable : false,
-				speed : 250
-			};
-
-			if ( '1' == atts.thumbnails ) {
-				options.customPaging = function( slider, i ) {
-					var thumb = $( slider.$slides[ i ] ).data( 'thumb' );
-					return '<img class="slick-thumbnail" src="' + thumb + '">';
-				};
-				options.dots = true;
-			}
-
-			$el.tailorSlideshow( options );
-		}
-		else if ( atts.masonry ) {
-			$el.tailorMasonry();
-		}
-
-		if ( this.el.classList.contains( 'is-lightbox-gallery' ) ) {
-			$el.tailorLightbox( {
-				disableOn : function() {
-					return $el.hasClass( 'is-selected' );
-				}
-			} );
-		}
-	} );
-
-	Api.Element.onRender( 'tailor_map', function( atts, model ) {
-		this.$el.tailorGoogleMap();
-	} );
-
-	Api.Element.onRender( 'tailor_posts', function( atts, model ) {
-        var $el = this.$el;
-        var options;
-
-	    if ( 'carousel' == atts.layout ) {
-		    options = {
-			    autoplay : '1' == atts.autoplay,
-			    arrows : '1' == atts.arrows,
-			    dots : '1' == atts.dots,
-			    fade : ( '1' == atts.fade && '1' == atts.items_per_row ),
-			    infinite: false,
-			    slidesToShow : parseInt( atts.items_per_row, 10 ) || 2
-		    };
-
-		    this.$el.tailorSimpleCarousel( options ) ;
-	    }
-	    else if ( atts.masonry ) {
-		    $el.tailorMasonry();
-	    }
-    } );
-
-	Api.Element.onRender( 'tailor_section', function( atts, model ) {
-		var section = this;
-
-		// Refreshes all child elements when the section width setting changes
-		Api.Setting( '_tailor_section_width', function( to, from ) {
-			section.triggerAll( 'element:parent:change', section );
-		} );
-
-		var ratio = this.el.getAttribute( 'data-ratio' );
-		if ( atts.parallax && ratio ) {
-			this.$el.tailorParallax( { ratio: ratio } );
-		}
-	} );
-
-    Api.Element.onRender( 'tailor_tabs', function( atts, model ) {
-        this.$el.tailorTabs();
-    } );
-
-    Api.Element.onRender( 'tailor_toggles', function( atts, model ) {
-        this.$el.tailorToggles();
-    } );
-
-} ) ( window.Tailor, window.Tailor.Api, jQuery );
-},{"./components/carousel":15,"./components/carousel-simple":14,"./components/lightbox":33,"./components/map":34,"./components/masonry":35,"./components/parallax":36,"./components/slideshow":37,"./components/tabs":38,"./components/toggles":39}],6:[function(require,module,exports){
-require( './utility/polyfills/classlist' );
-require( './utility/polyfills/raf' );
-
-var Application = require( './apps/canvas' );
-window.app = new Application();
-
-window.Tailor = {
-    Api : {
-        Setting : require( './components/api/setting' ),
-        Element : require( './components/api/element' )
-    },
-    CSS : require( './utility/css' )
-};
-
-window.ajax = require( './utility/ajax' );
-
-( function( app, $ ) {
-
-    'use strict';
-
-    require( './canvas-behaviors' );
-    require( './canvas-components' );
-    require( './canvas-entities' );
-    require( './canvas-preview' );
-    
-    if ( null == document.getElementById( "canvas" ) || null == document.getElementById( "select" ) ) {
-        console.error( 'The page canvas could not be initialized.  This could be caused by a plugin or theme conflict.' );
-    }
-    else {
-        app.addRegions( {
-
-            // Primary canvas region
-            canvasRegion : {
-                selector : "#canvas",
-                regionClass : require( './modules/canvas/canvas-region' )
-            },
-
-            // Tools region
-            selectRegion : {
-                selector : "#select",
-                regionClass : require( './modules/tools/select-region' )
+            var name = getName( tag );
+            if ( Tailor[ object ].hasOwnProperty( name ) ) {
+                return Tailor[ object ][ name ];
             }
-        } );
 
-        app.on( 'before:start', function() {
-            app.module( 'entities:canvas', require( './entities/canvas' ) );
-        } );
+            if ( type ) {
+                name = getName( type );
+                if ( Tailor[ object ].hasOwnProperty( name ) ) {
+                    return Tailor[ object ][ name ];
+                }
+            }
 
-        app.on( 'start', function() {
-            app.module( 'module:canvas', require( './modules/canvas' ) );
-            app.module( 'module:tools', require( './modules/tools' ) );
-            app.module( 'module:stylesheet', require( './modules/stylesheet' ) );
-        } );
-    }
+            return Tailor[ object ].Default;
+        };
+    } );
+
+    app.on( 'start', function() {
+
+        // Load modules
+        app.module( 'module:elements', require( './modules/elements/elements' ) );
+        app.module( 'module:templates', require( './modules/templates/templates' ) );
+        app.module( 'module:canvas', require( './modules/canvas/canvas' ) );
+        app.module( 'module:tools', require( './modules/tools/tools' ) );
+        app.module( 'module:css', require( './modules/css/css' ) );
+    } );
 
     $( document ).ready( function() {
+
+        // Start the app
         app.start( {
             elements : window._elements || [],
             nonces : window._nonces || [],
-            l10n : window._l10n || [],
             mediaQueries : window._media_queries || {},
             cssRules : window._css_rules || {}
         } );
+        
+        /**
+         * Fires when the canvas is initialized.
+         *
+         * @since 1.5.0
+         *
+         * @param app
+         */
+        app.channel.trigger( 'canvas:initialize', app );
     } );
 
-} ) ( window.app, jQuery );
+} ( window, Backbone.$ ) );
 
 //require( './utility/debug' );
-},{"./apps/canvas":1,"./canvas-behaviors":2,"./canvas-components":3,"./canvas-entities":4,"./canvas-preview":5,"./components/api/element":7,"./components/api/setting":8,"./entities/canvas":40,"./modules/canvas":55,"./modules/canvas/canvas-region":56,"./modules/stylesheet":58,"./modules/tools":60,"./modules/tools/select-region":61,"./utility/ajax":65,"./utility/css":66,"./utility/polyfills/classlist":67,"./utility/polyfills/raf":68}],7:[function(require,module,exports){
+},{"../shared/components/api/setting":53,"../shared/components/behaviors/draggable":54,"../shared/components/ui/lightbox":55,"../shared/components/ui/map":56,"../shared/components/ui/masonry":57,"../shared/components/ui/parallax":58,"../shared/components/ui/slideshow":59,"../shared/components/ui/tabs":60,"../shared/components/ui/toggles":61,"../shared/utility/ajax":62,"../shared/utility/css":63,"../shared/utility/polyfills/classlist":64,"../shared/utility/polyfills/raf":65,"../shared/utility/polyfills/transitions":66,"./app":1,"./components/api/element":3,"./components/behaviors/container":4,"./components/behaviors/droppable":5,"./components/behaviors/editable":6,"./components/behaviors/movable":7,"./components/elements/children/carousel-item":8,"./components/elements/children/column":9,"./components/elements/children/list-item":10,"./components/elements/children/tab":11,"./components/elements/children/toggle":12,"./components/elements/containers/carousel":13,"./components/elements/containers/tabs":18,"./components/elements/element":20,"./components/elements/element-container":19,"./components/elements/wrappers/box":21,"./components/elements/wrappers/card":22,"./components/elements/wrappers/hero":23,"./components/elements/wrappers/section":24,"./components/ui/carousel":26,"./components/ui/carousel-simple":25,"./entities/models/children/column":28,"./entities/models/children/grid-item":29,"./entities/models/containers/carousel":30,"./entities/models/containers/row":31,"./entities/models/containers/tabs":32,"./entities/models/element":38,"./entities/models/element-child":34,"./entities/models/element-container":36,"./entities/models/element-wrapper":37,"./entities/models/wrappers/section":39,"./modules/canvas/canvas":41,"./modules/canvas/canvas-region":40,"./modules/css/css":43,"./modules/elements/elements":45,"./modules/templates/templates":46,"./modules/tools/select-region":47,"./modules/tools/tools":51,"./preview":52}],3:[function(require,module,exports){
 var callbacks = {
     'render' : [],
     'destroy' : []
@@ -696,50 +421,9 @@ module.exports = {
         registerCallback( 'destroy', tag, callback );
     }
 };
-},{}],8:[function(require,module,exports){
-var callbacks = {};
 
-/**
- * Triggers registered callback functions when a setting value changes.
- *
- * @since 1.0.0
- *
- * @param setting
- */
-var onChange = function( setting ) {
-    var settingId = setting.get( 'id' );
-    if ( callbacks[ settingId ] ) {
-        _.each( callbacks[ settingId ], function( callback ) {
-            callback.apply( app, [ setting.get( 'value' ), setting.previous( 'value' ) ] );
-        } );
-    }
-};
-
-app.listenTo( app.channel, 'sidebar:setting:change', onChange );
-
-/**
- * A simple API for registering a callback function to be applied when a given setting changes.
- *
- * @since 1.0.0
- *
- * @param id
- * @param callback
- */
-module.exports = function( id, callback ) {
-    if ( 'function' === typeof callback ) {
-        callbacks[ id ] = callbacks[ id ] || [];
-        callbacks[ id ].push( callback );
-    }
-};
-},{}],9:[function(require,module,exports){
-/**
- * Tailor.Behaviors.Container
- *
- * Container behaviors.
- *
- * @augments Marionette.Behavior
- */
-module.exports = Marionette.Behavior.extend( {
+},{}],4:[function(require,module,exports){
+var ContainerBehaviors = Marionette.Behavior.extend( {
 
     events : {
 		'container:add' : 'addChildView',
@@ -866,65 +550,10 @@ module.exports = Marionette.Behavior.extend( {
 	}
 
 } );
-},{}],10:[function(require,module,exports){
-/**
- * Tailor.Behaviors.Draggable
- *
- * Draggable element behaviors.
- *
- * @augments Marionette.Behavior
- */
-module.exports = Marionette.Behavior.extend( {
 
-	events : {
-		'dragstart' : 'onDragStart',
-		'dragend' : 'onDragEnd',
-		'drag' : 'onDrag'
-	},
-
-    /**
-     * Triggers an event when dragging starts.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     */
-	onDragStart : function( e ) {
-        app.channel.trigger( 'canvas:dragstart', e.originalEvent, this.view );
-	},
-
-	/**
-	 * Triggers an event while dragging.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param e
-	 */
-	onDrag : function( e ) {
-		app.channel.trigger( 'canvas:drag', e.originalEvent, this.view );
-	},
-
-    /**
-     * Triggers an event when dragging ends.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     */
-	onDragEnd : function( e ) {
-        app.channel.trigger( 'canvas:dragend', e.originalEvent, this.view );
-	}
-
-} );
-},{}],11:[function(require,module,exports){
-/**
- * Tailor.Behaviors.Droppable
- *
- * Droppable element behaviors.
- *
- * @augments Marionette.Behavior
- */
-module.exports = Marionette.Behavior.extend( {
+module.exports = ContainerBehaviors;
+},{}],5:[function(require,module,exports){
+var DroppableBehaviors = Marionette.Behavior.extend( {
 
 	events : {
 		'dragover' : 'onDragOver',
@@ -954,15 +583,10 @@ module.exports = Marionette.Behavior.extend( {
 	}
 
 } );
-},{}],12:[function(require,module,exports){
-/**
- * Tailor.Behaviors.Editable
- *
- * Editable element behaviors.
- *
- * @augments Marionette.Behavior
- */
-module.exports = Marionette.Behavior.extend( {
+
+module.exports = DroppableBehaviors;
+},{}],6:[function(require,module,exports){
+var EditableBehaviors = Marionette.Behavior.extend( {
 
 	events : {
 		'mouseover' : 'onMouseOver',
@@ -1077,15 +701,10 @@ module.exports = Marionette.Behavior.extend( {
     }
 
 } );
-},{}],13:[function(require,module,exports){
-/**
- * Tailor.Behaviors.Movable
- *
- * Movable element behaviors.
- *
- * @augments Marionette.Behavior
- */
-module.exports = Marionette.Behavior.extend( {
+
+module.exports = EditableBehaviors;
+},{}],7:[function(require,module,exports){
+var MovableBehaviors = Marionette.Behavior.extend( {
 
 	modelEvents : {
 		'add:child' : 'addChild',
@@ -1177,14 +796,1818 @@ module.exports = Marionette.Behavior.extend( {
 	}
 
 } );
-},{}],14:[function(require,module,exports){
-/**
- * Tailor.Objects.SimpleCarousel
- *
- * A simple carousel module for managing Slick Slider elements; used by the Posts and Gallery elements.
- *
- * @class
- */
+
+module.exports = MovableBehaviors;
+},{}],8:[function(require,module,exports){
+var ContainerView = require( './../element-container' ),
+    CarouselItemView;
+
+CarouselItemView = ContainerView.extend( {
+
+    /**
+     * Sets the DOM element ID to the model ID.
+     *
+     * @since 1.0.0
+     */
+    onRenderTemplate : function() {
+        this.el.draggable = false;
+        this.el.id = this.model.cid;
+    }
+
+} );
+
+module.exports = CarouselItemView;
+},{"./../element-container":19}],9:[function(require,module,exports){
+var ContainerView = require( './../element-container' ),
+	ColumnView;
+
+ColumnView = ContainerView.extend( {
+
+    ui : {
+        'sizer' : '.tailor-column__sizer'
+    },
+
+    events : {
+        'mousedown @ui.sizer' : 'onResize'
+    },
+
+    modelEvents : {
+        'change:atts' : 'onChangeAttributes',
+        'change:width' : 'onChangeWidth',
+        'change:setting' : 'onChangeSetting'
+    },
+
+    /**
+     * Appends the column handle to the element after child elements have been rendered.
+     *
+     * @since 1.0.0
+     */
+    onRenderCollection : function() {
+        this.updateClassName( this.model.get( 'atts' ).width );
+        this.$el
+            .attr( 'draggable', true )
+            .prepend(
+	            '<div class="tailor-column__helper">' +
+	                '<div class="tailor-column__sizer"></div>' +
+	            '</div>'
+	        );
+    },
+
+    /**
+     * Handles resizing of the column when the resize handle is dragged.
+     *
+     * @since 1.0.0
+     *
+     * @param e
+     */
+	onResize : function( e ) {
+		var columnView = this;
+		var model = columnView.model;
+		var nextModel = model.collection.findWhere( {
+            parent : model.get( 'parent' ),
+            order : model.get( 'order' ) + 1 }
+        );
+
+        var originalWidth = model.get( 'atts' ).width;
+
+	    /**
+	     * Handles the resizing of columns.
+	     *
+	     * @since 1.0.0
+	     *
+	     * @param e
+	     */
+		function onResize( e ) {
+			document.body.classList.add( 'is-resizing' );
+			document.body.style.cursor = 'col-resize';
+
+			var rect = columnView.el.getBoundingClientRect();
+            var atts = _.clone( model.get( 'atts' ) );
+            var nextAtts = _.clone( nextModel.get( 'atts' ) );
+			var width = parseInt( atts.width );
+            var nextWidth = parseInt( nextAtts.width );
+			var newWidth = Math.round( ( e.clientX - rect.left ) / ( rect.width ) * width );
+			if ( newWidth < 1 || ( newWidth + 1 ) > ( width + nextWidth ) || newWidth == width ) {
+				return;
+			}
+
+            atts.width = newWidth;
+            nextAtts.width =  nextWidth - ( newWidth - width );
+
+            model.set( 'atts', atts, { silent : true } );
+            nextModel.set( 'atts', nextAtts, { silent : true } );
+
+            model.trigger( 'change:width', model, atts.width );
+		    nextModel.trigger( 'change:width', nextModel, nextAtts.width );
+        }
+
+	    /**
+	     * Maybe update the widths of affected columns after resizing ends.
+	     *
+	     * @since 1.0.0
+	     *
+	     * @param e
+	     */
+		function onResizeEnd( e ) {
+			document.removeEventListener( 'mousemove', onResize, false );
+			document.removeEventListener( 'mouseup', onResizeEnd, false );
+
+            document.body.classList.remove( 'is-resizing' );
+            document.body.style.cursor = 'default';
+
+            if ( originalWidth != model.get( 'atts' ).width ) {
+
+                /**
+                 * Fires after the column has been resized.
+                 *
+                 * @since 1.0.0
+                 */
+                app.channel.trigger( 'element:resize', model );
+            }
+        }
+
+        document.addEventListener( 'mousemove', onResize, false );
+        document.addEventListener( 'mouseup', onResizeEnd, false );
+
+	    /**
+	     * Resets the canvas when dragging of a column begins.
+	     *
+	     * @since 1.0.0
+	     */
+        app.channel.trigger( 'canvas:reset' );
+
+        return false;
+	},
+
+    /**
+     * Updates the column class name when the width changes.
+     *
+     * @since 1.0.0
+     *
+     * @param model
+     * @param width
+     */
+	onChangeWidth : function( model, width ) {
+        this.updateClassName( width );
+
+	    /**
+	     * Fires after the column width has changed.
+	     *
+	     * @since 1.0.0
+	     */
+	    this.triggerAll( 'element:parent:change', this );
+	},
+
+    /**
+     * Updates the class name following a change to the column width.
+     *
+     * @since 1.0.0
+     *
+     * @param width
+     */
+    updateClassName : function( width ) {
+        this.$el.removeClass( function( index, css ) {
+            return ( css.match( /(^|\s)columns-\S+/g) || [] ).join( ' ' );
+        } );
+
+        this.el.classList.add( 'columns-' + width );
+    }
+
+} );
+
+module.exports = ColumnView;
+},{"./../element-container":19}],10:[function(require,module,exports){
+var ContainerView = require( './../element-container' ),
+    ListItemView;
+
+ListItemView = ContainerView.extend( {
+    childViewContainer : '.tailor-list__content'
+} );
+
+module.exports = ListItemView;
+},{"./../element-container":19}],11:[function(require,module,exports){
+var ContainerView = require( './../element-container' ),
+    TabView;
+
+TabView = ContainerView.extend( {
+
+	/**
+	 * Sets the DOM element ID to the model ID.
+	 *
+	 * @since 1.0.0
+	 */
+	onRenderTemplate : function() {
+		this.el.draggable = false;
+		this.el.id = this.model.cid;
+	}
+
+} );
+
+module.exports = TabView;
+},{"./../element-container":19}],12:[function(require,module,exports){
+var ContainerView = require( './../element-container' ),
+    ToggleView;
+
+ToggleView = ContainerView.extend( {
+    childViewContainer : '.tailor-toggle__body'
+} );
+
+module.exports = ToggleView;
+},{"./../element-container":19}],13:[function(require,module,exports){
+var ContainerView = require( './../element-container' ),
+	CarouselNavigationView = require( './navigation/carousel-navigation' ),
+	CarouselView;
+
+CarouselView = ContainerView.extend( {
+
+    childViewContainer : '.tailor-carousel__wrap',
+
+    events : {
+        'element:change:order' : 'onReorderElement'
+    },
+
+	/**
+	 * Handles the reordering of carousel items.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param e
+	 * @param id
+	 * @param newIndex
+	 * @param oldIndex
+	 */
+    onReorderElement : function( e, id, newIndex, oldIndex ) {
+        if ( newIndex - oldIndex < 0 ) {
+            this.children.each( function( view ) {
+                if ( view._index >= newIndex && view._index <= oldIndex ) {
+                    if ( view._index == oldIndex ) {
+                        view._index = newIndex;
+                    }
+                    else {
+                        view._index++;
+                    }
+                    view.model.set( 'order', view._index );
+                }
+            }, this );
+        }
+        else {
+            this.children.each( function( view ) {
+                if ( view._index >= oldIndex && view._index <= newIndex ) {
+                    if ( view._index == oldIndex ) {
+                        view._index = newIndex;
+                    }
+                    else {
+                        view._index--;
+                    }
+                    view.model.set( 'order', view._index );
+                }
+            }, this );
+        }
+
+        this.model.collection.sort();
+    },
+
+	/**
+	 * Destroys the carousel navigation dots before the template is refreshed.
+	 *
+	 * @since 1.0.0
+	 */
+    onBeforeRenderTemplate : function() {
+        if ( this.navigation ) {
+            this.navigation.triggerMethod( 'destroy' );
+        }
+    },
+
+	/**
+	 * Inserts the carousel navigation dots into the DOM.
+	 *
+	 * @since 1.0.0
+	 */
+    onRenderTemplate : function() {
+        this.navigation = new CarouselNavigationView( {
+            model : this.model,
+            collection : this.collection,
+            sort : false
+        } );
+
+		this.$el.append( this.navigation.render().el );
+    },
+
+	/**
+	 * Destroys the carousel navigation dots before the carousel is destroyed.
+	 *
+	 * @since 1.0.0
+	 */
+    onBeforeDestroy : function() {
+		this.triggerAll( 'before:element:destroy', this );
+        this.navigation.triggerMethod( 'destroy' );
+    }
+
+} );
+
+module.exports = CarouselView;
+},{"./../element-container":19,"./navigation/carousel-navigation":15}],14:[function(require,module,exports){
+module.exports = Marionette.ItemView.extend( {
+
+    tagName : 'li',
+
+    attributes : function() {
+        return {
+            'data-id' : this.model.cid
+        };
+    },
+
+    /**
+     * Returns the element template.
+     *
+     * @since 1.0.0
+     *
+     * @returns {string}
+     */
+	getTemplate : function() {
+        return _.template( '<button data-role="none" role="button" aria-required="false" tabindex="0"></button>' );
+    }
+
+} );
+
+},{}],15:[function(require,module,exports){
+module.exports = Marionette.CollectionView.extend( {
+
+    tagName : 'ul',
+
+    className : 'slick-dots',
+
+	childView : require( './carousel-navigation-item' ),
+
+    events : {
+        'dragstart' : 'onDragStart'
+    },
+
+	/**
+     * Resets the canvas when dragging of a carousel item starts.
+     *
+     * @since 1.0.0
+     *
+     * @param e
+     */
+    onDragStart : function( e ) {
+
+		/**
+		 * Fires when dragging of a carousel navigation item begins.
+		 *
+		 * @since 1.0.0
+		 */
+		app.channel.trigger( 'canvas:reset' );
+        e.stopPropagation();
+    },
+
+	/**
+     * Initializes the SortableJS plugin when the elememt is rendered.
+     *
+     * SortableJS is used to allow reordering of carousel items.
+     *
+     * @since 1.0.0
+     */
+    onRender : function() {
+        var navigation = this;
+        this.sortable = new Sortable( navigation.el, {
+            draggable : 'li',
+            animation : 150,
+
+	        /**
+	         * Update the order of the carousel items when they are repositioned.
+	         *
+	         * @since 1.0.0
+	         */
+            onUpdate : function( e ) {
+                var $container = navigation.$el.parent();
+
+                /**
+                 * Fires before a carousel item is reordered.
+                 *
+                 * @since 1.0.0
+                 */
+                $container.trigger( 'before:element:change:order' );
+
+	            /**
+                 * Fires when a carousel item is reordered.
+                 *
+                 * @since 1.0.0
+                 */
+                $container.trigger( 'element:change:order', [ e.item.getAttribute( 'data-id' ), e.newIndex, e.oldIndex ] );
+
+                /**
+                 * Fires when a carousel item is reordered.
+                 *
+                 * @since 1.0.0
+                 */
+                app.channel.trigger( 'element:change:order', navigation.model );
+            }
+        } );
+    },
+
+    /**
+     * Provides the element collection to all child elements.
+     *
+     * @since 1.0.0
+     *
+     * @param child
+     * @param ChildViewClass
+     * @param childViewOptions
+     * @returns {*}
+     */
+    buildChildView : function( child, ChildViewClass, childViewOptions ) {
+        var options = _.extend({
+            model : child,
+            collection : this.collection
+        }, childViewOptions );
+
+        return new ChildViewClass( options );
+    },
+
+    /**
+     * Filters the element collection so that only children of this element are displayed.
+     *
+     * @since 1.0.0
+     *
+     * @param child
+     * @param index
+     * @param collection
+     * @returns {boolean}
+     */
+    filter : function( child, index, collection ) {
+        return child.get( 'parent' ) === this.model.get( 'id' );
+    },
+
+	/**
+	 * Cleans up the Sortable instance when the element is destroyed.
+	 *
+	 * @since 1.0.0
+	 */
+	onBeforeDestroy : function() {
+		this.sortable.destroy();
+	}
+
+} );
+},{"./carousel-navigation-item":14}],16:[function(require,module,exports){
+module.exports = Marionette.ItemView.extend( {
+
+    tagName : 'li',
+
+	className : function() {
+        return  'tailor-tabs__navigation-item tailor-' + this.model.get( 'id' );
+    },
+
+    modelEvents : {
+        'change:atts' : 'onChangeAttributes'
+    },
+
+    /**
+     * Adds the view ID to the element for use by the tab script.
+     *
+     * @since 1.0.0
+     *
+     * @returns {*}
+     */
+    attributes : function() {
+        return {
+            'data-id' : this.model.cid
+        };
+    },
+
+    /**
+     * Returns the element template.
+     *
+     * @since 1.0.0
+     *
+     * @returns {string}
+     */
+	getTemplate : function() {
+        return _.template( '<%= title || "Tab" %>' );
+    },
+
+    /**
+     * Provides the required information to the template rendering function.
+     *
+     * @since 1.0.0
+     *
+     * @returns {*}
+     */
+    serializeData : function() {
+        var data = Marionette.ItemView.prototype.serializeData.apply( this, arguments );
+        var atts = this.model.get( 'atts' );
+        data.title = atts.title;
+
+        return data;
+    },
+
+    /**
+     * Update the title when the attributes are updated.
+     *
+     * @since 1.0.0
+     *
+     * @param model
+     * @param atts
+     */
+    onChangeAttributes : function( model, atts ) {
+        this.el.innerHTML = atts.title || 'Tab';
+    }
+
+} );
+
+},{}],17:[function(require,module,exports){
+module.exports = Marionette.CollectionView.extend( {
+
+	childView : require( './tabs-navigation-item' ),
+
+    events : {
+        'dragstart' : 'onDragStart'
+    },
+
+    onDragStart : function( e ) {
+
+	    /**
+	     * Fires when the dragging of a tab navigation item begins.
+	     *
+	     * @since 1.0.0
+	     */
+        app.channel.trigger( 'canvas:reset' );
+        e.stopPropagation();
+    },
+
+    /**
+     * Provides the element collection to all child elements.
+     *
+     * @since 1.0.0
+     *
+     * @param child
+     * @param ChildViewClass
+     * @param childViewOptions
+     * @returns {*}
+     */
+    buildChildView : function( child, ChildViewClass, childViewOptions ) {
+        var options = _.extend({
+            model : child,
+            collection : this.collection
+        }, childViewOptions );
+
+        return new ChildViewClass( options );
+    },
+
+    /**
+     * Filters the element collection so that only children of this element are displayed.
+     *
+     * @since 1.0.0
+     *
+     * @param child
+     * @param index
+     * @param collection
+     * @returns {boolean}
+     */
+    filter : function( child, index, collection ) {
+        return child.get( 'parent' ) === this.model.get( 'id' );
+    },
+
+    /**
+     * Enable sorting behavior for the tabs.
+     *
+     * @since 1.0.0
+     */
+    onRender : function() {
+        var navigation = this;
+        this.sortable = new Sortable( navigation.el, {
+            draggable : '.tailor-tabs__navigation-item',
+            animation : 150,
+
+            /**
+             * Updates the order of the tabs when they are repositioned.
+             *
+             * @since 1.0.0
+             */
+            onUpdate : function( e ) {
+                var $container = navigation.$el.parent();
+
+                /**
+                 * Fires before a tab is reordered.
+                 *
+                 * @since 1.0.0
+                 */
+                $container.trigger( 'before:element:change:order' );
+
+                /**
+                 * Fires when a tab is reordered.
+                 *
+                 * @since 1.0.0
+                 */
+                $container.trigger( 'element:change:order', [ e.item.getAttribute( 'data-id' ), e.newIndex, e.oldIndex ] );
+
+	            /**
+	             * Fires when a tab is reordered.
+	             *
+	             * @since 1.0.0
+	             */
+	            app.channel.trigger( 'element:change:order', navigation.model );
+            }
+
+        } );
+    },
+
+	/**
+	 * Cleans up the Sortable instance when the element is destroyed.
+	 *
+	 * @since 1.0.0
+	 */
+    onBeforeDestroy : function() {
+        this.sortable.destroy();
+    }
+
+} );
+},{"./tabs-navigation-item":16}],18:[function(require,module,exports){
+var ContainerView = require( './../element-container' ), 
+	TabsNavigationView = require( './navigation/tabs-navigation' ),
+	TabsView;
+
+TabsView = ContainerView.extend( {
+
+    ui : {
+        navigation : '.tailor-tabs__navigation'
+    },
+
+    childViewContainer : '.tailor-tabs__content',
+
+    events : {
+        'element:change:order' : 'onReorderElement'
+    },
+
+	/**
+	 * Handles the reordering of tabs.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param e
+	 * @param id
+	 * @param newIndex
+	 * @param oldIndex
+	 */
+    onReorderElement : function( e, id, newIndex, oldIndex ) {
+        if ( newIndex - oldIndex < 0 ) {
+            this.children.each( function( view ) {
+                if ( view._index >= newIndex && view._index <= oldIndex ) {
+                    if ( view._index == oldIndex ) {
+                        view._index = newIndex;
+                    }
+                    else {
+                        view._index++;
+                    }
+                    view.model.set( 'order', view._index );
+                }
+            }, this );
+        }
+        else {
+            this.children.each( function( view ) {
+                if ( view._index >= oldIndex && view._index <= newIndex ) {
+                    if ( view._index == oldIndex ) {
+                        view._index = newIndex;
+                    }
+                    else {
+                        view._index--;
+                    }
+                    view.model.set( 'order', view._index );
+                }
+            }, this );
+        }
+
+        this.model.collection.sort();
+    },
+
+	/**
+	 * Destroys the tabs navigation before the template is refreshed.
+	 *
+	 * @since 1.0.0
+	 */
+    onBeforeRenderTemplate : function() {
+        if ( this.navigation ) {
+            this.navigation.triggerMethod( 'destroy' );
+        }
+    },
+
+	/**
+	 * Inserts the tabs navigation into the DOM.
+	 *
+	 * @since 1.0.0
+	 */
+    onRenderTemplate : function() {
+        this.navigation = new TabsNavigationView( {
+            el : this.ui.navigation,
+            model : this.model,
+            collection : this.collection,
+            sort : false
+        } );
+
+        this.navigation.render();
+    },
+
+	/**
+	 * Triggers events when a child element template is refreshed.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param childView
+	 */
+	childRefreshed : function( childView ) {
+		childView.el.id = childView.model.cid;
+		childView.el.classList.add( 'is-active' );
+
+		this.triggerAll( 'element:child:refresh', childView );
+	},
+
+    /**
+     * Destroys the tabs navigation before the tabs element is destroyed.
+     *
+     * @since 1.0.0
+     */
+    onBeforeDestroy : function() {
+	    this.triggerAll( 'before:element:destroy', this );
+        this.navigation.triggerMethod( 'destroy' );
+    }
+
+} );
+
+module.exports = TabsView;
+},{"./../element-container":19,"./navigation/tabs-navigation":17}],19:[function(require,module,exports){
+var CompositeView = Marionette.CompositeView.extend( {
+
+    behaviors : {
+        Container : {},
+        Draggable : {},
+        Droppable : {},
+        Editable : {},
+        Movable : {}
+    },
+
+	modelEvents : {
+		'change:atts' : 'onChangeAttributes',
+		'change:parent' : 'onChangeParent',
+		'change:setting' : 'onChangeSetting'
+	},
+
+	events : {
+		'element:parent:change' : 'stopEventPropagation',
+		'before:element:ready' : 'stopEventPropagation',
+		'element:ready' : 'stopEventPropagation',
+		'before:element:refresh' : 'stopEventPropagation',
+		'element:refresh' : 'stopEventPropagation',
+		'before:element:destroy' : 'stopEventPropagation',
+		'element:destroy' : 'stopEventPropagation',
+		'before:element:copy' : 'stopEventPropagation',
+		'element:copy' : 'stopEventPropagation',
+		'element:child:add' : 'onDescendantAdded',
+		'element:child:remove' : 'onDescendantRemoved',
+		'before:element:child:ready' : 'stopEventPropagation',
+		'element:child:ready' : 'onDescendantReady',
+		'before:element:child:refresh' : 'stopEventPropagation',
+		'element:child:refresh' : 'stopEventPropagation',
+		'before:element:child:destroy' : 'stopEventPropagation',
+		'element:child:destroy' : 'onDescendantDestroyed'
+	},
+
+	childEvents : {
+		'before:element:ready' : 'beforeChildElementReady',
+		'element:ready' : 'childElementReady',
+		'before:element:refresh' : 'beforeChildElementRefreshed',
+		'element:refresh' : 'childElementRefreshed',
+		'before:element:destroy' : 'beforeChildElementDestroyed',
+		'element:destroy' : 'childElementDestroyed'
+	},
+	
+    /**
+     * Initializes the view.
+     *
+     * @since 1.0.0
+     */
+    initialize : function() {
+        this._isReady = false;
+        this._isBeingDestroyed = false;
+
+        this.addEventListeners();
+    },
+
+	/**
+	 * Adds the required event listeners.
+	 *
+	 * @since 1.0.0
+	 */
+    addEventListeners : function() {
+        this.listenTo( app.channel, 'before:elements:restore', this.onBeforeDestroy );
+    },
+
+    /**
+     * Returns the appropriate child view based on the element tag.
+     *
+     * @since 1.0.0
+     *
+     * @param child
+     * @returns {*|exports|module.exports}
+     */
+    getChildView : function( child ) {
+	    return Tailor.lookup( child.get( 'tag' ), child.get( 'type' ), 'Views' );
+    },
+
+    /**
+     * Provides the element collection to all child elements.
+     *
+     * @since 1.0.0
+     *
+     * @param child
+     * @param ChildViewClass
+     * @param childViewOptions
+     * @returns {*}
+     */
+    buildChildView : function( child, ChildViewClass, childViewOptions ) {
+        var options = _.extend({
+            model : child,
+            collection : this.collection
+        }, childViewOptions );
+
+        return new ChildViewClass( options );
+    },
+
+    /**
+     * Filters the collection to ensure that only the appropriate children are displayed.
+     *
+     * @since 1.0.0
+     *
+     * @param child
+     * @param index
+     * @param collection
+     * @returns {boolean}
+     */
+    filter : function( child, index, collection ) {
+        return child.get( 'parent' ) === this.model.get( 'id' );
+    },
+
+    /**
+     * Uses the rendered template HTML as the $el.
+     *
+     * @since 1.0.0
+     *
+     * @param html
+     * @returns {exports}
+     */
+    attachElContent : function( html ) {
+        var $el = jQuery( html );
+
+        this.$el.replaceWith( $el );
+        this.setElement( $el );
+        this.el.setAttribute( 'draggable', true );
+
+        return this;
+    },
+
+    /**
+     * Returns the template ID.
+     *
+     * @since 1.0.0
+     */
+    getTemplateId : function() {
+        return 'tmpl-tailor-' + this.model.get( 'id' );
+    },
+
+    /**
+     * Returns the element template.
+     *
+     * @since 1.0.0
+     *
+     * @returns {string}
+     */
+    getTemplate : function() {
+        var el = document.querySelector( '#' + this.getTemplateId() );
+        var template;
+
+        if ( el ) {
+            template = _.template( el.innerHTML );
+            el.parentElement.removeChild( el );
+        }
+        else {
+            el = document.querySelector( '#tmpl-tailor-' + this.model.get( 'tag' ) + '-default' );
+            template = _.template( el.innerHTML );
+        }
+
+        return template;
+    },
+
+    /**
+     * Updates the element template with the HTML provided.
+     *
+     * If the script element containing the element template does not exist in the page, it will be created.
+     *
+     * @since 1.0.0
+     *
+     * @param html
+     */
+    updateTemplate : function( html ) {
+        var templateId = this.getTemplateId();
+        var el = document.querySelector( '#' + templateId );
+
+        if ( ! el ) {
+            el = document.createElement( 'script' );
+            el.setAttribute( 'type', 'text/html' );
+            el.id = templateId;
+            document.body.appendChild( el );
+        }
+
+        el.innerHTML = html;
+    },
+
+    /**
+     * Renders the element template, without affecting child elements.
+     *
+     * @since 1.0.0
+     */
+    renderTemplate : function() {
+        this._ensureViewIsIntact();
+
+        var $childViewContainer = this.getChildViewContainer( this );
+        var $children = $childViewContainer.contents().detach();
+
+        this.resetChildViewContainer();
+        this._renderTemplate();
+
+        $childViewContainer = this.getChildViewContainer( this );
+        $childViewContainer.append( $children );
+
+        return this;
+    },
+
+    /**
+     * Updated Marionette function : changed to update the 'order' attribute along with the view _index.
+     *
+     * @since 1.0.0
+     *
+     * @param view
+     * @param increment
+     * @param index
+     * @private
+     */
+    _updateIndices : function( view, increment, index ) {
+
+        if ( increment ) {
+            view._index = index;
+
+            //console.log( '\n Updated index of view ' + view.model.get( 'id' ) + ' ' + view.model.get( 'id' ) + ' to ' + index );
+
+            view.model._changing = false;
+            view.model.set( 'order', index );
+        }
+
+        this.children.each( function( laterView ) {
+            if ( laterView._index >= view._index ) {
+                laterView._index += increment ? 1 : -1;
+
+                //console.log( '\n Updated index of view ' + laterView.model.get( 'tag' ) + ' ' + laterView.model.get( 'id' ) + ' to ' + laterView._index );
+
+                laterView.model.set( 'order', laterView._index );
+            }
+        }, this );
+    },
+
+	/**
+	 * Triggers events before the element is ready.
+	 *
+	 * @since 1.0.0
+	 */
+	onBeforeRender : function() {
+		this.triggerAll( 'before:element:ready', this );
+	},
+
+	/**
+	 * Prepares the view and triggers events when the DOM is refreshed.
+	 *
+	 * @since 1.0.0
+	 */
+	onDomRefresh : function() {
+
+		this.$el
+			.addClass( 'tailor-' + this.model.get( 'id' ) )
+			.attr( { draggable: true } )
+			.find( 'a' )
+			.attr( { draggable : false, target : '_blank' } );
+
+		this.$el
+			.find( 'img' )
+			.attr( { draggable : false } );
+	},
+
+	/**
+	 * Triggers events before the element is destroyed.
+	 *
+	 * @since 1.0.0
+	 */
+	onBeforeDestroy : function() {
+		this.triggerAll( 'before:element:destroy', this );
+	},
+
+	/**
+	 * Triggers an event when the element is destroyed.
+	 *
+	 * @since 1.0.0
+	 */
+	onDestroy : function() {
+		this.triggerAll( 'element:destroy', this );
+	},
+	
+	/**
+	 * Refreshes the element template when its attributes change.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param model
+	 * @param atts
+	 */
+	onChangeAttributes : _.debounce( function( model, atts ) {
+		model = this.model.toJSON();
+		model.atts = atts ? atts : {};
+		
+		var view = this;
+		view.el.classList.add( 'is-rendering' );
+
+		window.ajax.send( 'tailor_render', {
+			data : {
+				model : JSON.stringify( model ),
+				nonce : window._nonces.render
+			},
+
+			/**
+			 * Attaches the refreshed template to the page.
+			 *
+			 * @since 1.0.0
+			 *
+			 * @param response
+			 */
+			success : function( response ) {
+				view.updateTemplate( response.html );
+				var id = view.model.get( 'id' );
+				
+				/**
+				 * Fires when the custom CSS rules for a given element are updated.
+				 *
+				 * @since 1.0.0
+				 *
+				 * @param id
+				 * @param response.css
+				 */
+				app.channel.trigger( 'css:update', id, response.css );
+			},
+
+			/**
+			 * Catches template rendering errors.
+			 *
+			 * @since 1.0.0
+			 */
+			error : function() {
+				view.updateTemplate( 'The template for ' + view.cid + ' could not be refreshed' );
+			},
+
+			/**
+			 * Renders the element with the new template.
+			 *
+			 * @since 1.0.0
+			 */
+			complete : function() {
+				var isEditing = view.$el.hasClass( 'is-editing' );
+				var isSelected = view.$el.hasClass( 'is-selected' );
+
+				view.$el.removeClass( 'is-rendering' );
+
+				/**
+				 * Fires before the container template is refreshed.
+				 *
+				 * @since 1.0.0
+				 *
+				 * @param compositeView
+				 * @param model.atts
+				 */
+				view.triggerAll( 'before:element:refresh', view, model.atts );
+
+				view.renderTemplate();
+
+				/**
+				 * Fires after the container template is refreshed.
+				 *
+				 * @since 1.0.0
+				 *
+				 * @param compositeView
+				 * @param model.atts
+				 */
+				view.triggerAll( 'element:refresh', view, model.atts );
+
+				view.refreshChildren();
+
+				if ( isEditing ) {
+					view.$el.addClass( 'is-editing' );
+				}
+
+				if ( isSelected ) {
+					view.$el.addClass( 'is-selected' );
+				}
+			}
+		} );
+
+	}, 250 ),
+
+	/**
+	 * Triggers an event to update the DOM, if the setting is configured to update via JavaScript.
+	 *
+	 * @since 1.5.0
+	 *
+	 * @param setting
+	 * @param refresh
+	 */
+	onChangeSetting: function( setting, refresh ) {
+		if ( refresh ) {
+
+			/**
+			 * Fires when an element setting configured to be updated using JavaScript changes.
+			 *
+			 * @since 1.5.0
+			 */
+			app.channel.trigger( 'element:setting:change', setting, this );
+		}
+	},
+
+	/**
+	 * Triggers events and refreshes all child elements when the element parent changes.
+	 *
+	 * @since 1.0.0
+	 */
+	onChangeParent : function() {
+
+		/**
+		 * Fires when the parent attributes of the element changes.
+		 *
+		 * @since 1.0.0
+		 */
+		this.triggerAll( 'element:change:parent', this );
+
+		this.refreshChildren();
+	},
+	
+	/**
+	 * Triggers an event before a child element is ready.
+	 *
+	 * @since 1.0.0
+	 */
+	beforeChildElementReady : function( childView ) {
+		if ( this._isReady ) {
+			this.triggerAll( 'before:element:child:ready', childView );
+		}
+	},
+
+	/**
+	 * Triggers events after a child element is ready.
+	 *
+	 * If all children are ready, the element is also considered ready.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param childView
+	 */
+	childElementReady : function( childView ) {
+		if ( ! this._isReady ) {
+
+			var readyChildren = this.children.filter( function( childView ) {
+				return childView._isReady;
+			} ).length;
+
+			if ( this.children.length == readyChildren ) {
+				this._isReady = true;
+
+				/**
+				 * Fires when all child elements are ready (i.e., the container is fully-rendered).
+				 *
+				 * @since 1.0.0
+				 */
+				this.triggerAll( 'element:ready', this );
+
+				this.refreshChildren();
+			}
+		}
+		else  {
+
+			/**
+			 * Fires when a child element within this fully-rendered container is ready.
+			 *
+			 * @since 1.0.0
+			 */
+			this.triggerAll( 'element:child:ready', childView );
+		}
+	},
+
+	/**
+	 * Triggers events before a child element template is refreshed.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param childView
+	 */
+	beforeChildElementRefreshed : function( childView ) {
+		this.triggerAll( 'before:element:child:refresh', childView );
+	},
+
+	/**
+	 * Triggers events after a child element template is refreshed.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param childView
+	 */
+	childElementRefreshed : function( childView ) {
+		this.triggerAll( 'element:child:refresh', childView );
+	},
+
+	/**
+	 * Triggers events before a child element is destroyed.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param childView
+	 */
+	beforeChildElementDestroyed : function( childView ) {
+		if ( ! this._isBeingDestroyed ) {
+			this.triggerAll( 'before:element:child:destroy', childView );
+		}
+	},
+
+	/**
+	 * Triggers events after a child element is destroyed.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param childView
+	 */
+	childElementDestroyed : function( childView ) {
+		if ( ! this._isBeingDestroyed && this.children.length > 1 ) {
+			this.triggerAll( 'element:child:destroy', childView );
+		}
+	},
+
+	/**
+	 * Refreshes all child elements when the parent element is modified.
+	 *
+	 * @since 1.0.0
+	 */
+	onElementParentChange : function() {
+		this.refreshChildren();
+	},
+
+	/**
+	 * Refreshes all child elements when the a child element is destroyed.
+	 *
+	 * @since 1.0.0
+	 */
+	onElementChildDestroy : function() {
+		this.refreshChildren();
+	},
+
+	/**
+	 * Triggers events after a child element is added.
+	 *
+	 * If this container is not fully rendered (i.e., it was created to contain the child element), the element is considered ready.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param e
+	 * @param descendantView
+	 */
+	onDescendantAdded : function( e, descendantView ) {
+		if ( ! this._isReady ) {
+
+			var readyChildren = this.children.filter( function( childView ) {
+				return childView._isReady;
+			} ).length;
+
+			if ( this.children.length == readyChildren ) {
+				this._isReady = true;
+
+				/**
+				 * Fires when all child elements are ready (i.e., the container is fully-rendered).
+				 *
+				 * @since 1.0.0
+				 */
+				this.triggerAll( 'element:ready', this );
+			}
+
+			e.stopImmediatePropagation();
+		}
+		else  {
+
+			/**
+			 * Fires when a descendant element within this fully-rendered container is ready.
+			 *
+			 * @since 1.0.0
+			 */
+			this.triggerAll( 'element:descendant:add', descendantView );
+
+			e.stopPropagation();
+		}
+	},
+
+	/**
+	 * Triggers events after a child element is removed.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param e
+	 * @param descendantView
+	 */
+	onDescendantRemoved : function( e, descendantView ) {
+		if ( ( 'container' == this.model.get( 'type' ) && this.children.length > 1 ) || this.children.length > 0 ) {
+			this.triggerAll( 'element:descendant:remove', descendantView );
+		}
+
+		e.stopPropagation();
+	},
+
+	/**
+	 * Triggers events after a child element is ready.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param e
+	 * @param descendantView
+	 */
+	onDescendantReady : function( e, descendantView ) {
+		if ( ! this._isReady ) {
+			if ( this.children.length == 1 && this.children.contains( descendantView ) ) {
+				this._isReady = true;
+
+				/**
+				 * Fires when all child elements are ready (i.e., the container is fully-rendered).
+				 *
+				 * @since 1.0.0
+				 */
+				this.triggerAll( 'element:ready', this );
+			}
+			e.stopImmediatePropagation();
+		}
+		else  {
+
+			/**
+			 * Fires when a descendant element is created in this fully-rendered container.
+			 *
+			 * @since 1.0.0
+			 */
+			this.triggerAll( 'element:descendant:add', descendantView );
+
+			// @todo Find a better way of refreshing complex content elements like carousel galleries
+			this.refreshChildren();
+
+			e.stopPropagation();
+		}
+	},
+
+	/**
+	 * Triggers events after a child element is destroyed.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param e
+	 * @param descendantView
+	 */
+	onDescendantDestroyed : function( e, descendantView ) {
+		if ( ( 'container' == this.model.get( 'type' ) && this.children.length > 1 ) || this.children.length > 0 ) {
+
+			/**
+			 * Fires when a descendant element within in this fully-rendered container is destroyed.
+			 *
+			 * @since 1.0.0
+			 */
+			this.triggerAll( 'element:descendant:destroy', descendantView );
+		}
+
+		e.stopPropagation();
+	},
+
+	/**
+	 * Refreshes all child elements.
+	 *
+	 * @since 1.0.0
+	 */
+	refreshChildren : function() {
+		this.children.each( function( childView ) {
+			childView.triggerAll( 'element:parent:change', childView );
+		}, this );
+	},
+
+	/**
+	 * Triggers events and methods during a given event in the lifecycle.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param event
+	 * @param view
+	 * @param atts
+	 */
+	triggerAll : function( event, view, atts ) {
+		this.$el.trigger( event, view );
+		this.triggerMethod( event, view );
+
+		if ( atts ) {
+			app.channel.trigger( event, this, atts);
+		}
+		else {
+			app.channel.trigger( event, this );
+		}
+	},
+
+	/**
+	 * Stops the event from bubbling up the DOM tree.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param e
+	 */
+	stopEventPropagation : function( e ) {
+		e.stopPropagation();
+	}
+
+} );
+
+module.exports = CompositeView;
+},{}],20:[function(require,module,exports){
+var $ = window.jQuery,
+	ElementView;
+
+ElementView = Marionette.ItemView.extend( {
+
+	className : 'element',
+
+	attributes : {
+		draggable : true
+	},
+
+	behaviors : {
+		Draggable : {},
+		Droppable : {},
+		Editable : {},
+		Movable : {}
+	},
+
+	modelEvents : {
+		'change:atts' : 'onChangeAttributes',
+		'change:parent' : 'onChangeParent',
+		'change:setting' : 'onChangeSetting'
+	},
+
+	/**
+	 * Initializes the view.
+	 *
+	 * @since 1.0.0
+	 */
+	initialize : function() {
+		this._isReady = false;
+		this._isBeingDestroyed = false;
+
+		this.addEventListeners();
+	},
+
+	/**
+	 * Adds the required event listeners.
+	 *
+	 * @since 1.0.0
+	 */
+	addEventListeners : function() {
+		this.listenTo( app.channel, 'before:elements:restore', this.onBeforeDestroy );
+	},
+
+	/**
+	 * Returns the template ID.
+	 *
+	 * @since 1.0.0
+	 */
+	getTemplateId : function() {
+		return 'tmpl-tailor-' + this.model.get( 'id' );
+	},
+
+	/**
+	 * Returns the element template.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @returns {string}
+	 */
+	getTemplate : function() {
+		var el = document.querySelector( '#' + this.getTemplateId() );
+		var template;
+
+		if ( el ) {
+			template = _.template( el.innerHTML );
+			el.parentElement.removeChild( el );
+		}
+		else {
+			el = document.querySelector( '#tmpl-tailor-' + this.model.get( 'tag' ) + '-default' );
+			template = _.template( el.innerHTML );
+		}
+
+		return template;
+	},
+
+	/**
+	 * Uses the rendered template HTML as the $el.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param html
+	 * @returns {exports}
+	 */
+	attachElContent : function( html ) {
+		var $el = $( html );
+		var el = $el[0]; // Fix for elements that contain comments
+
+		this.$el.replaceWith( el );
+		this.setElement( el );
+
+		return this;
+	},
+
+	/**
+	 * Updates the element template with the HTML provided.
+	 *
+	 * If the script element containing the element template does not exist in the page, it will be created.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param html
+	 */
+	updateTemplate : function( html ) {
+		var templateId = this.getTemplateId();
+		var el = document.querySelector( '#' + templateId );
+
+		if ( ! el ) {
+			el = document.createElement( 'script' );
+			el.setAttribute( 'type', 'text/html' );
+			el.id = templateId;
+			document.body.appendChild( el );
+		}
+
+		el.innerHTML = html;
+	},
+
+	/**
+	 * Refreshes the element template when the element attributes change.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param model
+	 * @param atts
+	 */
+	onChangeAttributes :  _.debounce( function( model, atts ) {
+		var view = this;
+		
+		model = model.toJSON();
+		if ( atts ) {
+			model.atts = atts;
+		}
+		
+		view.el.classList.add( 'is-rendering' );
+
+		window.ajax.send( 'tailor_render', {
+			data : {
+				model : JSON.stringify( model ),
+				nonce : window._nonces.render
+			},
+
+			/**
+			 * Attaches the refreshed template to the page.
+			 *
+			 * @since 1.0.0
+			 *
+			 * @param response
+			 */
+			success : function( response ) {
+				view.updateTemplate( response.html );
+				
+				/**
+				 * Fires when the custom CSS rules for a given element are updated.
+				 *
+				 * @since 1.0.0
+				 */
+				app.channel.trigger( 'css:update', view.model.get( 'id' ), response.css );
+			},
+
+			/**
+			 * Catches template rendering errors.
+			 *
+			 * @since 1.0.0
+			 */
+			error : function() {
+				view.updateTemplate( 'The template for ' + view.cid + ' could not be refreshed' );
+			},
+
+			/**
+			 * Renders the element with the new template.
+			 *
+			 * @since 1.0.0
+			 */
+			complete : function() {
+				var isEditing = view.$el.hasClass( 'is-editing' );
+				var isSelected = view.$el.hasClass( 'is-selected' );
+
+				view.$el.removeClass( 'is-rendering' );
+
+				/**
+				 * Fires before the container template is refreshed.
+				 *
+				 * @since 1.0.0
+				 */
+				view.triggerAll( 'before:element:refresh', view, model.atts );
+
+				view.render();
+
+				/**
+				 * Fires after the container template is refreshed.
+				 *
+				 * @since 1.0.0
+				 */
+				view.triggerAll( 'element:refresh', view, model.atts );
+
+				if ( isEditing ) {
+					view.$el.addClass( 'is-editing' );
+				}
+
+				if ( isSelected ) {
+					view.$el.addClass( 'is-selected' );
+				}
+			}
+		} );
+
+	}, 500 ),
+
+	/**
+	 * Triggers an event to update the DOM, if the setting is configured to update via JavaScript.
+	 *
+	 * @since 1.5.0
+	 *
+	 * @param setting
+	 * @param refresh
+	 */
+	onChangeSetting: function( setting, refresh ) {
+		if ( refresh ) {
+
+			/**
+			 * Fires when an element setting configured to be updated using JavaScript changes.
+			 *
+			 * @since 1.5.0
+			 */
+			app.channel.trigger( 'element:setting:change', setting, this );
+		}
+	},
+
+	/**
+	 * Triggers events when the element parent changes.
+	 *
+	 * @since 1.0.0
+	 */
+	onChangeParent : function() {
+		this.triggerAll( 'element:change:parent', this );
+	},
+
+	/**
+	 * Triggers an event on the application channel before the DOM element is rendered.
+	 *
+	 * @since 1.0.0
+	 */
+	onBeforeRender : function() {
+		this.triggerAll( 'before:element:ready', this );
+	},
+
+	/**
+	 * Prepares the view and triggers events when the DOM is refreshed.
+	 *
+	 * @since 1.0.0
+	 */
+	onDomRefresh : function() {
+		var view = this;
+		
+		this.$el
+			.addClass( 'tailor-' + this.model.get( 'id' ) )
+			.attr( { draggable: true } )
+			.find( 'a' )
+			.attr( { draggable : false, target : '_blank' } );
+
+		this.$el
+			.find( 'img' )
+			.attr( { draggable : false } );
+		
+		this.$el.imagesLoaded( function() {
+			view._isReady = true;
+
+			/**
+			 * Fires when the element is rendered and all images have been loaded.
+			 *
+			 * @since 1.0.0
+			 * 
+			 * @param view
+			 */
+			view.triggerAll( 'element:ready', view );
+		} );
+	},
+
+	/**
+	 * Triggers events before the element is destroyed.
+	 *
+	 * @since 1.0.0
+	 */
+	onBeforeDestroy : function() {
+		this.triggerAll( 'before:element:destroy', this );
+	},
+
+	/**
+	 * Triggers an event when the element is destroyed.
+	 *
+	 * @since 1.0.0
+	 */
+	onDestroy : function() {
+		this.triggerAll( 'element:destroy', this );
+	},
+	
+	/**
+	 * Triggers events and methods during a given event in the lifecycle.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param event
+	 * @param view
+	 * @param atts
+	 */
+	triggerAll : function( event, view, atts ) {
+		this.$el.trigger( event, view );
+		this.triggerMethod( event, view );
+
+		if ( atts ) {
+			app.channel.trigger( event, this, atts);
+		}
+		else {
+			app.channel.trigger( event, this );
+		}
+	}
+
+} );
+
+module.exports = ElementView;
+},{}],21:[function(require,module,exports){
+var ContainerView = require( './../element-container' ),
+    BoxView;
+
+BoxView = ContainerView.extend( {
+    childViewContainer : '.tailor-box__content'
+} );
+
+module.exports = BoxView;
+},{"./../element-container":19}],22:[function(require,module,exports){
+var ContainerView = require( './../element-container' ),
+    CardView;
+
+CardView = ContainerView.extend( {
+    childViewContainer : '.tailor-card__content'
+} );
+
+module.exports = CardView;
+},{"./../element-container":19}],23:[function(require,module,exports){
+var ContainerView = require( './../element-container' ),
+    HeroView;
+
+HeroView = ContainerView.extend( {
+    childViewContainer : '.tailor-hero__content'
+} );
+
+module.exports = HeroView;
+},{"./../element-container":19}],24:[function(require,module,exports){
+var ContainerView = require( './../element-container' ),
+	SectionView;
+
+SectionView = ContainerView.extend( {
+
+	attributes : {
+		draggable : true
+	},
+
+    modelEvents : {
+        'change:atts' : 'onChangeAttributes',
+        'change:order' : 'onChangeOrder',
+        'change:setting' : 'onChangeSetting'
+    },
+
+    childViewContainer : '.tailor-section__content',
+
+	onChangeOrder : function() {
+		jQuery( window ).trigger( 'resize' );
+	}
+
+} );
+
+module.exports = SectionView;
+},{"./../element-container":19}],25:[function(require,module,exports){
 var $ = window.jQuery,
     Carousel;
 
@@ -1407,14 +2830,7 @@ $.fn.tailorSimpleCarousel = function( options, callbacks ) {
         }
     } );
 };
-},{}],15:[function(require,module,exports){
-/**
- * Tailor.Objects.Carousel
- *
- * A carousel module for managing Slick Slider elements in the Canvas.
- *
- * @class
- */
+},{}],26:[function(require,module,exports){
 var $ = window.jQuery,
     Carousel;
 
@@ -1846,842 +3262,2041 @@ $.fn.tailorCarousel = function( options, callbacks ) {
         }
     } );
 };
-},{}],16:[function(require,module,exports){
-/**
- * Tailor.Views.TailorCarouselItem
- *
- * Carousel item element view.
- *
- * @class
- */
-var ContainerView = require( './../view-container' ),
-    CarouselItemView;
-
-CarouselItemView = ContainerView.extend( {
+},{}],27:[function(require,module,exports){
+var ElementCollection = Backbone.Collection.extend( {
 
     /**
-     * Sets the DOM element ID to the model ID.
+     * Sorts the collection by order.
      *
      * @since 1.0.0
      */
-    onRenderTemplate : function() {
-        this.el.draggable = false;
-        this.el.id = this.model.cid;
-    }
-
-} );
-
-module.exports = CarouselItemView;
-},{"./../view-container":27}],17:[function(require,module,exports){
-/**
- * Tailor.Views.TailorColumn
- *
- * Column element view.
- *
- * @class
- */
-var ContainerView = require( './../view-container' ),
-	ColumnView;
-
-ColumnView = ContainerView.extend( {
-
-    ui : {
-        'sizer' : '.tailor-column__sizer'
-    },
-
-    events : {
-        'mousedown @ui.sizer' : 'onResize'
-    },
-
-    modelEvents : {
-        'change:atts' : 'onChangeAttributes',
-        'change:width' : 'onChangeWidth'
-    },
+    comparator: 'order',
 
     /**
-     * Appends the column handle to the element after child elements have been rendered.
-     *
-     * @since 1.0.0
-     */
-    onRenderCollection : function() {
-        this.updateClassName( this.model.get( 'atts' ).width );
-        this.$el
-            .attr( 'draggable', true )
-            .prepend(
-	            '<div class="tailor-column__helper">' +
-	                '<div class="tailor-column__sizer"></div>' +
-	            '</div>'
-	        );
-    },
-
-    /**
-     * Handles resizing of the column when the resize handle is dragged.
+     * Returns the appropriate model based on the given tag.
      *
      * @since 1.0.0
      *
-     * @param e
+     * @param attrs
+     * @param options
+     * @returns {*|exports|module.exports}
      */
-	onResize : function( e ) {
-		var columnView = this;
-		var model = columnView.model;
-		var nextModel = model.collection.findWhere( {
-            parent : model.get( 'parent' ),
-            order : model.get( 'order' ) + 1 }
-        );
-
-        var originalWidth = model.get( 'atts' ).width;
-
-	    /**
-	     * Handles the resizing of columns.
-	     *
-	     * @since 1.0.0
-	     *
-	     * @param e
-	     */
-		function onResize( e ) {
-			document.body.classList.add( 'is-resizing' );
-			document.body.style.cursor = 'col-resize';
-
-			var rect = columnView.el.getBoundingClientRect();
-            var atts = _.clone( model.get( 'atts' ) );
-            var nextAtts = _.clone( nextModel.get( 'atts' ) );
-			var width = parseInt( atts.width );
-            var nextWidth = parseInt( nextAtts.width );
-			var newWidth = Math.round( ( e.clientX - rect.left ) / ( rect.width ) * width );
-			if ( newWidth < 1 || ( newWidth + 1 ) > ( width + nextWidth ) || newWidth == width ) {
-				return;
-			}
-
-            atts.width = newWidth;
-            nextAtts.width =  nextWidth - ( newWidth - width );
-
-            model.set( 'atts', atts, { silent : true } );
-            nextModel.set( 'atts', nextAtts, { silent : true } );
-
-            model.trigger( 'change:width', model, atts.width );
-		    nextModel.trigger( 'change:width', nextModel, nextAtts.width );
-        }
-
-	    /**
-	     * Maybe update the widths of affected columns after resizing ends.
-	     *
-	     * @since 1.0.0
-	     *
-	     * @param e
-	     */
-		function onResizeEnd( e ) {
-			document.removeEventListener( 'mousemove', onResize, false );
-			document.removeEventListener( 'mouseup', onResizeEnd, false );
-
-            document.body.classList.remove( 'is-resizing' );
-            document.body.style.cursor = 'default';
-
-            if ( originalWidth != model.get( 'atts' ).width ) {
-
-                /**
-                 * Fires after the column has been resized.
-                 *
-                 * @since 1.0.0
-                 */
-                app.channel.trigger( 'element:resize', model );
-            }
-        }
-
-        document.addEventListener( 'mousemove', onResize, false );
-        document.addEventListener( 'mouseup', onResizeEnd, false );
-
-	    /**
-	     * Fires when the resizing of a column begins.
-	     *
-	     * @since 1.0.0
-	     */
-        app.channel.trigger( 'canvas:reset' );
-
-        return false;
+	model : function( attrs, options ) {
+        var Model = Tailor.lookup( attrs.tag, attrs.type, 'Models' );
+        return new Model( attrs, options );
 	},
 
     /**
-     * Updates the column class name when the width changes.
+     * Initializes the elements collection.
+     *
+     * @since 1.0.0
+     */
+	initialize : function() {
+        this.addEventListeners();
+    },
+
+    /**
+     * Adds the required event listeners.
+     *
+     * @since 1.0.0
+     */
+    addEventListeners : function() {
+        this.listenTo( this, 'change:parent', this.onChangeParent );
+        this.listenTo( this, 'add', this.onAdd );
+        this.listenTo( this, 'destroy', this.onDestroy );
+        this.listenTo( this, 'container:collapse', this.onCollapse );
+        this.listenTo( this, 'reset', this.onReset );
+    },
+
+    /**
+     * Returns the parent of a given model.
      *
      * @since 1.0.0
      *
      * @param model
-     * @param width
+     * @returns {*}
      */
-	onChangeWidth : function( model, width ) {
-        this.updateClassName( width );
-
-	    /**
-	     * Fires after the column width has changed.
-	     *
-	     * @since 1.0.0
-	     */
-	    this.triggerAll( 'element:parent:change', this );
-	},
+    getParent : function( model ) {
+        return this.findWhere( { id : model.get( 'parent' ) } );
+    },
 
     /**
-     * Updates the class name following a change to the column width.
+     * Returns the siblings for a given element.
      *
      * @since 1.0.0
      *
-     * @param width
+     * @param model
+     * @returns {*}
      */
-    updateClassName : function( width ) {
-        this.$el.removeClass( function( index, css ) {
-            return ( css.match( /(^|\s)columns-\S+/g) || [] ).join( ' ' );
+    getChildren : function( model ) {
+        return this.where( { parent : model.get( 'id' ) } );
+    },
+
+    /**
+     * Returns the siblings for a given element.
+     *
+     * @since 1.0.0
+     *
+     * @param model
+     * @returns {*}
+     */
+    getSiblings : function( model ) {
+        return this.where( { parent : model.get( 'parent' ) } );
+    },
+
+    /**
+     * Returns true if the given element has a selected parent.
+     *
+     * @since 1.0.0
+     *
+     * @param model
+     * @returns {boolean}
+     */
+    hasSelectedParent : function( model ) {
+        var selected = app.channel.request( 'canvas:element:selected' );
+
+        if ( ! selected || model === selected ) {
+            return false;
+        }
+
+        var parentId = model.get( 'parent' );
+        var parent = this.findWhere( { id : parentId } );
+
+        while ( 'undefined' !== typeof parent ) {
+            if ( selected === parent ) {
+                return true;
+            }
+            parentId = parent.get( 'parent' );
+            parent = this.get( parentId );
+        }
+        
+        return false;
+    },
+
+    /**
+     * Performs checks on the previous parent when an element changes parent.
+     *
+     * @since 1.0.0
+     *
+     * @param model
+     */
+	onChangeParent : function( model ) {
+		var parent = this.get( model.get( 'parent' ) );
+		var previousParent = this.get( model.previous( 'parent' ) );
+
+        //console.log( '\n Changed parent of ' + model.get( 'id' ) + ' from ' + model.previous( 'parent' ) + ' to ' + model.get( 'parent' ) );
+
+	    this.sort( { silent : true } );
+
+		this._checkParent( previousParent );
+
+		if ( 'tailor_column' === model.get( 'tag' ) ) {
+			this._reBalanceColumns( parent );
+			this._reBalanceColumns( previousParent );
+		}
+	},
+
+    /**
+     * Re-balances the columns in a row when a new column is added.
+     *
+     * @since 1.0.0
+     *
+     * @param model
+     * @param collection
+     * @param options
+     */
+	onAdd : function( model, collection, options ) {
+
+	    //console.log( '\n Added ' + model.get( 'id' ) + ' at ' + model.get( 'order' ) );
+
+		if ( 'tailor_column' == model.get( 'tag' ) && options.rebalance ) {
+			this._reBalanceColumns( this.get( model.get( 'parent' ) ) );
+		}
+    },
+
+    /**
+     * Performs checks on the parent when an element is deleted.
+     *
+     * @since 1.0.0
+     *
+     * @param model
+     */
+	onDestroy : function( model ) {
+		var parent = this.get( model.get( 'parent' ) );
+
+        //console.log( '\n Destroyed ' + model.get( 'id' ) );
+
+		this._checkParent( parent );
+        var children = this.where( { parent : model.get( 'id' ) } );
+
+        if ( children.length ) {
+
+            // Remove any children of the destroyed element
+            _.each( children, function( child ) {
+                child.trigger( 'destroy', child, this );
+            }, this );
+        }
+
+        if ( parent && 'tailor_column' === model.get( 'tag' ) ) {
+            this._reBalanceColumns( parent );
+        }
+
+        if ( 0 === this.length ) {
+            this.onEmpty();
+        }
+	},
+
+    /**
+     * Ensures that the default section/content element is displayed if the canvas is empty following a reset.
+     *
+     * @since 1.0.0
+     */
+    onReset : function() {
+        if ( 0 === this.length ) {
+            this.onEmpty();
+        }
+    },
+
+    /**
+     * Populates the element collection with an empty text element inside a section.
+     *
+     * @since 1.0.0
+     */
+    onEmpty : function() {
+        var section = this.createSection( 0 );
+
+        this.create( [ {
+            tag : 'tailor_content',
+            atts : {},
+            parent : section.get( 'id' ),
+            order : 0
+        } ] );
+    },
+
+    /**
+     * Updates the parent reference for children of a collapsed element.
+     *
+     * @since 1.0.0
+     *
+     * @param model
+     * @param children
+     */
+    onCollapse : function( model, children ) {
+        var parentId = model.get( 'parent' );
+
+        _.each( children, function( child ) {
+            child.set( 'parent', parentId );
+        }, this );
+    },
+
+    /**
+     * Re-balances the columns in a given row.
+     *
+     * @since 1.0.0
+     *
+     * @param model
+     */
+    _reBalanceColumns : function( model ) {
+        var children = this.where( { parent : model.get( 'id' ) } );
+        var numberChildren = children.length;
+
+        _.each( children, function( child ) {
+            var atts = _.clone( child.get( 'atts' ) );
+            atts.width = 12 / numberChildren;
+
+            child.set( 'atts', atts, { silent : true } );
+            child.trigger( 'change:width', model, atts.width );
+        }, this );
+    },
+
+    /**
+     * Performs checks on the previous parent when an element changes parent.
+     *
+     * @since 1.0.0
+     *
+     * @param model
+     */
+	_checkParent : function( model ) {
+        if ( ! model ) {
+            return;
+        }
+        if ( 'container' == model.get( 'type' ) ) {
+            this._checkCollapsibleContainer( model );
+        }
+        this._checkChildren( model );
+	},
+
+    /**
+     * Checks whether a collapsible container is still valid.
+     *
+     * @since 1.0.0
+     *
+     * @param model
+     * @private
+     */
+    _checkCollapsibleContainer : function( model ) {
+        var childTag = this.getElementDefinitions().findWhere( { tag : model.get( 'tag' ) } ).get( 'child' ) ;
+        var containerId = model.get( 'id' );
+        var children = this.filter( function( element ) {
+            return containerId === element.get( 'parent' ) && childTag === element.get( 'tag' );
         } );
 
-        this.el.classList.add( 'columns-' + width );
+        // Collapse the container
+        if ( 0 === children.length ) {
+            model.trigger( 'container:collapse', model, this.where( { parent : containerId } ) );
+        }
+
+        // Collapse the only remaining column
+        else if ( 1 === children.length ) {
+	        var child = _.first( children );
+            
+            if ( 'tailor_row' === model.get( 'tag' ) ) {
+                child.trigger( 'container:collapse', child, this.where( { parent : child.get( 'id' ) } ) );
+            }
+        }
+    },
+
+    /**
+     * Destroys a container element if it is empty.
+     *
+     * @since 1.0.0
+     *
+     * @param model
+     * @private
+     */
+	_checkChildren : function( model ) {
+		var children = this.where( { parent : model.get( 'id' ) } );
+		if ( 0 === children.length ) {
+			model.trigger( 'destroy', model );
+		}
+	},
+
+    /**
+     * Creates and returns an element model.
+     *
+     * @since 1.0.0
+     *
+     * @param models
+     * @param options
+     * @returns {*}
+     */
+    create : function( models, options ) {
+        options = options || {};
+
+        if (_.isArray( models ) ) {
+            models = _.each( models, this.applyDefaults, this );
+        }
+        else {
+            models = this.applyDefaults( models );
+        }
+
+        return this.add( models, options );
+    },
+
+	/**
+	 * Returns the library collection.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @returns {*}
+	 */
+    getElementDefinitions : function() {
+          return this.library || app.channel.request( 'sidebar:library' );
+    },
+
+    /**
+     * Applies default values to the element model.
+     *
+     * @since 1.0.0
+     *
+     * @param model
+     * @returns {*}
+     */
+    applyDefaults : function( model ) {
+        var item = this.getElementDefinitions().findWhere( { tag : model.tag } );
+        var label = item.get( 'label' );
+        var defaults = {
+            label : item.get( 'label' ),
+            type : item.get( 'type' ),
+            child : item.get( 'child' )
+        };
+
+        model.atts = model.atts || {};
+
+        _.each( item.get( 'settings' ), function( setting ) {
+            model.atts[ setting['id'] ] = model.atts[ setting['id'] ] || setting['value'];
+        }, this );
+
+        return _.extend( model, defaults );
+    },
+
+    /**
+     * Creates and returns a new section.
+     *
+     * @since 1.0.0
+     *
+     * @param order
+     * @returns {*}
+     */
+    createSection : function( order ) {
+        return _.first( this.create( [ {
+            tag : 'tailor_section',
+            label : this.getElementDefinitions().findWhere( { tag : 'tailor_section' } ).get( 'label' ),
+            order : order
+        } ], {
+            at : order
+        } ) );
+    },
+
+    /**
+     * Creates a new row/column layout based on a parent ID and order and returns the two resulting column models.
+     *
+     * @since 1.0.0
+     *
+     * @param parentId
+     * @param order
+     * @returns {*}
+     */
+    createRow : function( parentId, order ) {
+        var row = _.first( this.create( [ {
+            tag : 'tailor_row',
+            parent : parentId,
+            order : order
+        } ], {} ) );
+
+	    //console.log( '\n Created row ' + row.get( 'id' ) + ' at ' + order );
+
+        return this.create( [ {
+            tag : 'tailor_column',
+            atts : { width : 6 },
+            parent : row.get( 'id' ),
+            order : 0
+        }, {
+            tag : 'tailor_column',
+            atts : { width : 6 },
+            parent : row.get( 'id' ),
+            order : 1
+        } ] );
+    },
+
+    /**
+     * Creates and returns a new column.
+     *
+     * @since 1.0.0
+     *
+     * @param parentId
+     * @param order
+     * @returns {*}
+     */
+    createColumn : function( parentId, order ) {
+        var columns = this.where( { parent : parentId } );
+        return _.first( this.create( [ {
+			tag : 'tailor_column',
+			atts : { width : ( 12 / ( columns.length + 1 ) ) },
+			parent : parentId,
+			order : order
+		} ], {
+			rebalance : true
+		} ) );
+
+	    //console.log( '\n Created column ' + column.get( 'id' ) + ' at ' + order );
+    },
+
+    /**
+     * Inserts a child into the specified parent.
+     *
+     * @since 1.0.0
+     *
+     * @param child
+     * @param parent
+     */
+    insertChild : function( child, parent ) {
+
+        if ( ! child ) {
+            return;
+        }
+
+        if ( child.get( 'parent' ) !== parent.get( 'id' ) ) {
+            child.trigger( 'remove:child' );
+        }
+
+        parent.trigger( 'insert', child );
+        child.trigger( 'add:child' );
+
+        child.set( 'parent', parent.get( 'id' ) );
+    },
+
+	/**
+	 * Creates a new container.
+     *
+     * @since 1.0.0
+     *
+     * @param model
+     * @param parentId
+     * @param order
+     * @param descendants
+     */
+    createContainer : function( model, parentId, order, descendants ) {
+        var tag = model.get( 'tag' );
+        var container = _.first( this.create( [ {
+            tag : tag,
+            parent : parentId,
+            order : order
+        } ], {
+            at : order,
+            silent : true
+        } ) );
+
+        var childTag = model.get( 'child' );
+        var childLabel = this.getElementDefinitions().findWhere( { tag : childTag } ).get( 'label' );
+        var children = this.create( [ {
+            tag : childTag,
+            label : childLabel,
+            atts : {},
+            parent : container.get( 'id' ),
+            order : 0
+        }, {
+            tag : childTag,
+            label : childLabel,
+            atts : {},
+            parent : container.get( 'id' ),
+            order : 1
+
+        } ], {
+            silent : true
+        } );
+
+        if ( descendants ) {
+            _.first( descendants ).set( 'parent', _.first( children ).get( 'id' ), { silent : true } );
+            _.last( descendants ).set( 'parent', _.last( children ).get( 'id' ), { silent : true } );
+        }
+
+        this.trigger( 'add', container, this, {} );
+    },
+
+	/**
+     * Creates and returns a new wrapper element.
+     *
+     * @since 1.0.0
+     *
+     * @param tag
+     * @param parentId
+     * @param order
+     * @param child
+     * @returns {*}
+     */
+    createWrapper : function( tag, parentId, order, child ) {
+        var wrapper = _.first( this.create( [ {
+            tag : tag,
+            parent : parentId,
+            order : order
+        } ], {
+            silent : true
+        } ) );
+
+        if ( 'undefined' == typeof child ) {
+            this.create( [ {
+                tag : 'tailor_content',
+                atts : {},
+                parent : wrapper.get( 'id' ),
+                order : 0
+            } ], {
+                silent : true
+            } )
+        }
+
+        this.trigger( 'add', wrapper, this, {} );
+
+        if ( 'undefined' != typeof child ) {
+            this.insertChild( child, wrapper );
+        }
+
+        return wrapper;
     }
 
 } );
 
-module.exports = ColumnView;
-},{"./../view-container":27}],18:[function(require,module,exports){
-/**
- * Tailor.Views.TailorListItem
- *
- * List item element view.
- *
- * @class
- */
-var ContainerView = require( './../view-container' ),
-    ListItemView;
+module.exports = ElementCollection;
 
-ListItemView = ContainerView.extend( {
-    childViewContainer : '.tailor-list__content'
+},{}],28:[function(require,module,exports){
+var ChildModel = require( './../element-child' ),
+    ColumnModel;
+
+ColumnModel = ChildModel.extend( {
+
+    /**
+     * Returns true if this element is a valid drop target.
+     *
+     * @since 1.0.0
+     *
+     * @param that The element being dragged
+     * @param region The region of this element that the other element is over
+     */
+    validTarget : function( that, region ) {
+        if ( _.contains( [ 'tailor_section', 'tailor_row' ], that.get( 'tag' ) ) || ! _.contains( [ 'left', 'right' ], region ) ) {
+            return false;
+        }
+        if ( 'child' == that.get( 'type' ) && that.get( 'tag' ) != this.get( 'tag' ) ) {
+            return false;
+        }
+
+        var siblings = this.collection.getSiblings( this );
+
+        return that.get( 'parent' ) == this.get( 'parent' ) || siblings.length < 4;
+    }
+
 } );
 
-module.exports = ListItemView;
-},{"./../view-container":27}],19:[function(require,module,exports){
-/**
- * Tailor.Views.TailorTab
- *
- * Tab element view.
- *
- * @class
- */
-var ContainerView = require( './../view-container' ),
-    TabView;
+module.exports = ColumnModel;
+},{"./../element-child":34}],29:[function(require,module,exports){
+var ChildModel = require( './../element-child' ),
+    GridItemModel;
 
-TabView = ContainerView.extend( {
+GridItemModel = ChildModel.extend( {
+
+    /**
+     * Returns true if this element is a valid drop target.
+     *
+     * @since 1.0.0
+     *
+     * @param that The element being dragged
+     * @param region The region of this element that the other element is over
+     */
+    validTarget : function( that, region ) {
+        if ( 'tailor_section' == that.get( 'tag' ) || _.contains( [ 'top', 'bottom', 'center' ], region ) ) {
+            return false;
+        }
+
+        var parent = this.collection.getParent( this );
+        if ( parent.get( 'tag' ) == that.get( 'tag' ) ) {
+            return false;
+        }
+
+        return that.get( 'tag' ) == this.get( 'tag' );
+    }
+
+} );
+
+module.exports = GridItemModel;
+},{"./../element-child":34}],30:[function(require,module,exports){
+var ContainerModel = require( './../element-container' ),
+	CarouselModel;
+
+CarouselModel = ContainerModel.extend( {
+
+    /**
+     * Creates a new template based on the element.
+     *
+     * @since 1.0.0
+     *
+     * @param id
+     * @param view
+     */
+    createTemplate : function( id, view ) {
+        var isEditing =  view.el.classList.contains( 'is-editing' );
+
+        this.beforeCopyElement( view );
+
+        var $childViewContainer = view.getChildViewContainer( view );
+        var $children = $childViewContainer.contents().detach();
+        var $navigation = view.$el.find( '.slick-dots' ).detach();
+
+        this.appendTemplate( id, view );
+
+        $childViewContainer.append( $children );
+	    $navigation.insertAfter( $childViewContainer );
+
+        this.afterCopyElement( id, view );
+
+        if ( isEditing ) {
+            view.el.classList.add( 'is-editing' );
+        }
+    }
+
+} );
+
+module.exports = CarouselModel;
+},{"./../element-container":36}],31:[function(require,module,exports){
+var ContainerModel = require( './../element-container' ),
+    RowModel;
+
+RowModel = ContainerModel.extend( {
+
+    /**
+     * Returns true if this element is a valid drop target.
+     *
+     * @since 1.0.0
+     *
+     * @param that The element being dragged
+     * @param region The region of this element that the other element is over
+     */
+    validTarget : function( that, region ) {
+        if ( 'child' == that.get( 'type' ) || 'tailor_section' == that.get( 'tag' ) || 'center' == region ) {
+            return false;
+        }
+
+        return _.contains( [ 'top', 'bottom' ], region ) && 'tailor_column' != that.get( 'tag' );
+    }
+
+} );
+
+module.exports = RowModel;
+},{"./../element-container":36}],32:[function(require,module,exports){
+var ContainerModel = require( './../element-container' ),
+    TabsModel;
+
+TabsModel = ContainerModel.extend( {
 
 	/**
-	 * Sets the DOM element ID to the model ID.
+	 * Creates a new template based on the element.
 	 *
 	 * @since 1.0.0
+	 *
+	 * @param id
+	 * @param view
 	 */
-	onRenderTemplate : function() {
-		this.el.draggable = false;
-		this.el.id = this.model.cid;
+	createTemplate : function( id, view ) {
+		var isEditing =  view.el.classList.contains( 'is-editing' );
+
+		this.beforeCopyElement( view );
+
+		var $childViewContainer = view.getChildViewContainer( view );
+		var $children = $childViewContainer.contents().detach();
+		var $navigation = view.$el.find( '.tailor-tabs__navigation' );
+		var $navigationItems = $navigation.children().detach();
+
+		this.appendTemplate( id, view );
+
+		$childViewContainer.append( $children );
+		$navigation.append( $navigationItems );
+
+		this.afterCopyElement( id, view );
+
+		if ( isEditing ) {
+			view.el.classList.add( 'is-editing' );
+		}
 	}
 
 } );
 
-module.exports = TabView;
-},{"./../view-container":27}],20:[function(require,module,exports){
-/**
- * Tailor.Views.TailorToggle
- *
- * Toggles element view.
- *
- * @class
- */
-var ContainerView = require( './../view-container' ),
-    ToggleView;
+module.exports = TabsModel;
+},{"./../element-container":36}],33:[function(require,module,exports){
+var Model;
 
-ToggleView = ContainerView.extend( {
-    childViewContainer : '.tailor-toggle__body'
+/**
+ * Wrap `model.set()` and update the internal unsaved changes record keeping.
+ *
+ * @since 1.0.0
+ */
+Backbone.Model.prototype.set = _.wrap( Backbone.Model.prototype.set, function( oldSet, key, val, options ) {
+
+    if ( key == null ) return this;
+
+    var attrs;
+
+    if ( typeof key === 'object' ) {
+        attrs = key;
+        options = val;
+    }
+    else {
+        ( attrs = {} )[ key ] = val;
+    }
+
+    options || ( options = {} );
+
+    var ret = oldSet.call( this, attrs, options );
+
+    if ( this._tracking ) {
+        _.each( attrs, _.bind( function( val, key ) {
+            if ( _.isEqual( this._original[ key ], val ) ) {
+                delete this._unsaved[ key ];
+            }
+            else {
+                this._unsaved[ key ] = val;
+            }
+        }, this ) );
+    }
+
+    return ret;
+
 } );
 
-module.exports = ToggleView;
-},{"./../view-container":27}],21:[function(require,module,exports){
-module.exports = Marionette.ItemView.extend( {
+/**
+ * Modified implementation of Backbone.trackit
+ *
+ * @since 1.0.0
+ *
+ * https://github.com/NYTimes/backbone.trackit
+ */
+Model = Backbone.Model.extend( {
+    _tracking : false,
+    _original : {},
+    _unsaved: {},
 
-    tagName : 'li',
-
-    attributes : function() {
+    /**
+     * Returns an object containing the default parameters for an element.
+     *
+     * @since 1.0.0
+     *
+     * @returns object
+     */
+    defaults : function() {
         return {
-            'data-id' : this.model.cid
+            id : this.cid,
+            tag : '',
+            label : '',
+            atts : {},
+            parent : '',
+            order : 0,
+            collection : 'element'
         };
     },
 
+	/**
+	 * Returns true if the model is tracking changes.
+     *
+     * @since 1.0.0
+     *
+     * @returns {boolean}
+     */
+    isTracking : function() {
+        return this._tracking;
+    },
+
     /**
-     * Returns the element template.
+     * Opt in to tracking attribute changes between saves.
+     *
+     * @since 1.0.0
+     *
+     * @returns {Backbone.Model}
+     */
+    startTracking : function() {
+        this._tracking = true;
+        this.resetTracking();
+
+        return this;
+    },
+
+    /**
+     * Resets the default tracking values and stops tracking attribute changes.
+     *
+     * @since 1.0.0
+     *
+     * @returns {Backbone.Model}
+     */
+    stopTracking : function() {
+        this._tracking = false;
+        this._original = {};
+        this._unsaved = {};
+
+        return this;
+    },
+
+    /**
+     * Gets rid of accrued changes and resets state.
+     *
+     * @since 1.0.0
+     *
+     * @returns {Backbone.Model}
+     */
+    resetTracking : function() {
+        this._original = _.clone( this.attributes );
+        this._unsaved = {};
+
+        return this;
+    },
+
+    /**
+     * Restores this model's attributes to their original values since tracking started.
+     *
+     * @since 1.0.0
+     *
+     * @returns {Backbone.Model}
+     */
+    resetAttributes: function() {
+        if ( ! this._tracking ) { return; }
+        this.attributes = this._original;
+        this.resetTracking();
+
+        this.trigger( 'change:atts', this, this.get( 'atts' ) );
+
+        return this;
+    },
+
+    /**
+     * Returns a text shortcode representing the element.
      *
      * @since 1.0.0
      *
      * @returns {string}
      */
-	getTemplate : function() {
-        return _.template( '<button data-role="none" role="button" aria-required="false" tabindex="0"></button>' );
-    }
+    toShortcode : function() {
+        var tag = this.get( 'tag' );
+        var atts = this.get( 'atts' );
+        var content = '';
+        var shortcode = '[' + tag;
 
-} );
-},{}],22:[function(require,module,exports){
-module.exports = Marionette.CollectionView.extend( {
+        _.each( atts, function( attr, id ) {
+	        if ( attr ) {
+		        if ( 'content' === id ) {
+			        content = attr;
+		        }
+		        else {
 
-    tagName : 'ul',
+			        if ( _.isNumber( id ) ) {
+				        if ( /\s/.test( attr ) ) {
+					        shortcode += ' "' + attr + '"';
+				        }
+				        else {
+					        shortcode += ' ' + attr;
+				        }
+			        }
+			        else {
+				        shortcode += ' ' + id + '="' + attr + '"';
+			        }
+		        }
+	        }
 
-    className : 'slick-dots',
+        }, this );
 
-	childView : require( './navigation-carousel-item' ),
-
-    events : {
-        'dragstart' : 'onDragStart'
+        return shortcode + ']' + content + '[/' + tag + ']';
     },
 
-	/**
-     * Resets the canvas when dragging of a carousel item starts.
+    /**
+     * Inserts the element before the target view inside a section.
      *
      * @since 1.0.0
      *
-     * @param e
+     * @param view
      */
-    onDragStart : function( e ) {
+    insertBefore : function( view ) {
+        this.trigger( 'remove:child' );
+        this.trigger( 'insert:before', view );
+        this.trigger( 'add:child' );
 
+        this.set( 'parent', view.model.get( 'parent' ) );
+    },
+
+    /**
+     * Inserts the element after the target view inside a section.
+     *
+     * @since 1.0.0
+     *
+     * @param view
+     */
+    insertAfter : function( view ) {
+        this.trigger( 'remove:child' );
+        this.trigger( 'insert:after', view );
+        this.trigger( 'add:child' );
+
+        this.set( 'parent', view.model.get( 'parent' ) );
+    },
+
+    /**
+     * Inserts the element before the target view in a row/column layout.
+     *
+     * @since 1.0.0
+     *
+     * @param view
+     */
+    columnBefore : function( view ) {
+        var model = view.model;
+        var parent = model.get( 'parent' );
+
+        if ( 'tailor_column' === model.get( 'tag' ) ) {
+            var column = this.collection.createColumn( parent, model.get( 'order' ) - 1 );
+            this.collection.insertChild( this, column );
+        }
+        else {
+            var columns = this.collection.createRow( parent, model.get( 'order' ) );
+            this.collection.insertChild( this, _.first( columns ) );
+            this.collection.insertChild( model, _.last( columns ) );
+        }
+    },
+
+    /**
+     * Inserts the element after the target view in a row/column layout.
+     *
+     * @since 1.0.0
+     *
+     * @param view
+     */
+    columnAfter : function( view ) {
+        var model = view.model;
+        var parent = model.get( 'parent' );
+
+        if ( 'tailor_column' === model.get( 'tag' ) ) {
+            var column = this.collection.createColumn( parent, ( model.get( 'order' ) ) );
+            this.collection.insertChild( this, column );
+        }
+        else {
+            var columns = this.collection.createRow( parent, model.get( 'order' ) );
+            this.collection.insertChild( model, _.first( columns ) );
+            this.collection.insertChild( this, _.last( columns ) );
+        }
+    },
+
+	/**
+	 * Triggers events before the element has been copied.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param view
+	 */
+	beforeCopyElement : function( view ) {
+		var el = view.el;
+
+		view.triggerAll( 'before:element:copy', view );
+
+		el.classList.remove( 'is-dragging' );
+		el.classList.remove( 'is-hovering' );
+		el.classList.remove( 'is-selected' );
+		el.classList.remove( 'is-editing' );
+	},
+
+	/**
+	 * Appends a template based on the element to the page.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param id
+	 * @param view
+	 */
+	appendTemplate : function( id, view ) {
+		var oldId = view.model.get( 'id' );
+		var template = document.createElement( 'script' );
+
+		template.setAttribute( 'type', 'text/html' );
+		template.id = 'tmpl-tailor-' + id;
+		template.innerHTML = view.el.outerHTML.replace( oldId, id );
+
+		document.body.appendChild( template );
+	},
+
+	/**
+	 * Triggers events after the element has been copied.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param id
+	 * @param view
+	 */
+	afterCopyElement : function( id, view ) {
+		var oldId = view.model.get( 'id' );
+		
 		/**
-		 * Fires when dragging of a carousel navigation item begins.
+		 * Fires after the element has been copied.
 		 *
 		 * @since 1.0.0
 		 */
-		app.channel.trigger( 'canvas:reset' );
-        e.stopPropagation();
-    },
+		view.$el.trigger( 'element:copy', view );
 
-	/**
-     * Initializes the SortableJS plugin when the elememt is rendered.
-     *
-     * SortableJS is used to allow reordering of carousel items.
-     *
-     * @since 1.0.0
-     */
-    onRender : function() {
-        var navigation = this;
-        this.sortable = new Sortable( navigation.el, {
-            draggable : 'li',
-            animation : 150,
-
-	        /**
-	         * Update the order of the carousel items when they are repositioned.
-	         *
-	         * @since 1.0.0
-	         */
-            onUpdate : function( e ) {
-                var $container = navigation.$el.parent();
-
-                /**
-                 * Fires before a carousel item is reordered.
-                 *
-                 * @since 1.0.0
-                 */
-                $container.trigger( 'before:element:change:order' );
-
-	            /**
-                 * Fires when a carousel item is reordered.
-                 *
-                 * @since 1.0.0
-                 */
-                $container.trigger( 'element:change:order', [ e.item.getAttribute( 'data-id' ), e.newIndex, e.oldIndex ] );
-
-                /**
-                 * Fires when a carousel item is reordered.
-                 *
-                 * @since 1.0.0
-                 */
-                app.channel.trigger( 'element:change:order', navigation.model );
-            }
-        } );
-    },
-
-    /**
-     * Provides the element collection to all child elements.
-     *
-     * @since 1.0.0
-     *
-     * @param child
-     * @param ChildViewClass
-     * @param childViewOptions
-     * @returns {*}
-     */
-    buildChildView : function( child, ChildViewClass, childViewOptions ) {
-        var options = _.extend({
-            model : child,
-            collection : this.collection
-        }, childViewOptions );
-
-        return new ChildViewClass( options );
-    },
-
-    /**
-     * Filters the element collection so that only children of this element are displayed.
-     *
-     * @since 1.0.0
-     *
-     * @param child
-     * @param index
-     * @param collection
-     * @returns {boolean}
-     */
-    filter : function( child, index, collection ) {
-        return child.get( 'parent' ) === this.model.get( 'id' );
-    },
-
-	/**
-	 * Cleans up the Sortable instance when the element is destroyed.
-	 *
-	 * @since 1.0.0
-	 */
-	onBeforeDestroy : function() {
-		this.sortable.destroy();
+		/**
+		 * Fires after an element has been copied.
+		 *
+		 * @since 1.0.0
+		 */
+		app.channel.trigger( 'css:copy', oldId, id );
 	}
 
 } );
-},{"./navigation-carousel-item":21}],23:[function(require,module,exports){
-module.exports = Marionette.ItemView.extend( {
 
-    tagName : 'li',
+module.exports = Model;
 
-	className : function() {
-        return  'tailor-tabs__navigation-item tailor-' + this.model.get( 'id' );
-    },
+},{}],34:[function(require,module,exports){
+var CompositeModel = require( './element-composite' ),
+    ChildModel;
 
-    modelEvents : {
-        'change:atts' : 'onChangeAttributes'
-    },
+ChildModel = CompositeModel.extend( {
 
     /**
-     * Adds the view ID to the element for use by the tab script.
+     * Returns true if this element is a valid drop target.
      *
      * @since 1.0.0
      *
-     * @returns {*}
+     * @param that The element being dragged
+     * @param region The region of this element that the other element is over
      */
-    attributes : function() {
-        return {
-            'data-id' : this.model.cid
-        };
-    },
-
-    /**
-     * Returns the element template.
-     *
-     * @since 1.0.0
-     *
-     * @returns {string}
-     */
-	getTemplate : function() {
-        return _.template( '<%= title || "Tab" %>' );
-    },
-
-    /**
-     * Provides the required information to the template rendering function.
-     *
-     * @since 1.0.0
-     *
-     * @returns {*}
-     */
-    serializeData : function() {
-        var data = Marionette.ItemView.prototype.serializeData.apply( this, arguments );
-        var atts = this.model.get( 'atts' );
-        data.title = atts.title;
-
-        return data;
-    },
-
-    /**
-     * Update the title when the attributes are updated.
-     *
-     * @since 1.0.0
-     *
-     * @param model
-     * @param atts
-     */
-    onChangeAttributes : function( model, atts ) {
-        this.el.innerHTML = atts.title || 'Tab';
-    }
-
-} );
-},{}],24:[function(require,module,exports){
-module.exports = Marionette.CollectionView.extend( {
-
-	childView : require( './navigation-tab' ),
-
-    events : {
-        'dragstart' : 'onDragStart'
-    },
-
-    onDragStart : function( e ) {
-
-	    /**
-	     * Fires when the dragging of a tab navigation item begins.
-	     *
-	     * @since 1.0.0
-	     */
-        app.channel.trigger( 'canvas:reset' );
-        e.stopPropagation();
-    },
-
-    /**
-     * Provides the element collection to all child elements.
-     *
-     * @since 1.0.0
-     *
-     * @param child
-     * @param ChildViewClass
-     * @param childViewOptions
-     * @returns {*}
-     */
-    buildChildView : function( child, ChildViewClass, childViewOptions ) {
-        var options = _.extend({
-            model : child,
-            collection : this.collection
-        }, childViewOptions );
-
-        return new ChildViewClass( options );
-    },
-
-    /**
-     * Filters the element collection so that only children of this element are displayed.
-     *
-     * @since 1.0.0
-     *
-     * @param child
-     * @param index
-     * @param collection
-     * @returns {boolean}
-     */
-    filter : function( child, index, collection ) {
-        return child.get( 'parent' ) === this.model.get( 'id' );
-    },
-
-    /**
-     * Enable sorting behavior for the tabs.
-     *
-     * @since 1.0.0
-     */
-    onRender : function() {
-        var navigation = this;
-        this.sortable = new Sortable( navigation.el, {
-            draggable : '.tailor-tabs__navigation-item',
-            animation : 150,
-
-            /**
-             * Updates the order of the tabs when they are repositioned.
-             *
-             * @since 1.0.0
-             */
-            onUpdate : function( e ) {
-                var $container = navigation.$el.parent();
-
-                /**
-                 * Fires before a tab is reordered.
-                 *
-                 * @since 1.0.0
-                 */
-                $container.trigger( 'before:element:change:order' );
-
-                /**
-                 * Fires when a tab is reordered.
-                 *
-                 * @since 1.0.0
-                 */
-                $container.trigger( 'element:change:order', [ e.item.getAttribute( 'data-id' ), e.newIndex, e.oldIndex ] );
-
-	            /**
-	             * Fires when a tab is reordered.
-	             *
-	             * @since 1.0.0
-	             */
-	            app.channel.trigger( 'element:change:order', navigation.model );
-            }
-
-        } );
-    },
-
-	/**
-	 * Cleans up the Sortable instance when the element is destroyed.
-	 *
-	 * @since 1.0.0
-	 */
-    onBeforeDestroy : function() {
-        this.sortable.destroy();
-    }
-
-} );
-},{"./navigation-tab":23}],25:[function(require,module,exports){
-/**
- * Tailor.Views.TailorCarousel
- *
- * Carousel element view.
- *
- * @class
- */
-var ContainerView = require( './../view-container' ),
-	CarouselView;
-
-CarouselView = ContainerView.extend( {
-
-    childViewContainer : '.tailor-carousel__wrap',
-
-    events : {
-        'element:change:order' : 'onReorderElement'
-    },
-
-	/**
-	 * Handles the reordering of carousel items.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param e
-	 * @param id
-	 * @param newIndex
-	 * @param oldIndex
-	 */
-    onReorderElement : function( e, id, newIndex, oldIndex ) {
-        if ( newIndex - oldIndex < 0 ) {
-            this.children.each( function( view ) {
-                if ( view._index >= newIndex && view._index <= oldIndex ) {
-                    if ( view._index == oldIndex ) {
-                        view._index = newIndex;
-                    }
-                    else {
-                        view._index++;
-                    }
-                    view.model.set( 'order', view._index );
-                }
-            }, this );
-        }
-        else {
-            this.children.each( function( view ) {
-                if ( view._index >= oldIndex && view._index <= newIndex ) {
-                    if ( view._index == oldIndex ) {
-                        view._index = newIndex;
-                    }
-                    else {
-                        view._index--;
-                    }
-                    view.model.set( 'order', view._index );
-                }
-            }, this );
+    validTarget : function( that, region ) {
+        if ( 'tailor_section' == that.get( 'tag' ) || _.contains( [ 'left', 'right', 'center' ], region ) ) {
+            return false;
         }
 
-        this.model.collection.sort();
-    },
-
-	/**
-	 * Destroys the carousel navigation dots before the template is refreshed.
-	 *
-	 * @since 1.0.0
-	 */
-    onBeforeRenderTemplate : function() {
-        if ( this.navigation ) {
-            this.navigation.triggerMethod( 'destroy' );
-        }
-    },
-
-	/**
-	 * Inserts the carousel navigation dots into the DOM.
-	 *
-	 * @since 1.0.0
-	 */
-    onRenderTemplate : function() {
-        var NavigationView = require( './navigation/navigation-carousel' );
-
-        this.navigation = new NavigationView( {
-            model : this.model,
-            collection : this.collection,
-            sort : false
-        } );
-
-		this.$el.append( this.navigation.render().el );
-    },
-
-	/**
-	 * Destroys the carousel navigation dots before the carousel is destroyed.
-	 *
-	 * @since 1.0.0
-	 */
-    onBeforeDestroy : function() {
-		this.triggerAll( 'before:element:destroy', this );
-        this.navigation.triggerMethod( 'destroy' );
-    }
-
-} );
-
-module.exports = CarouselView;
-},{"./../view-container":27,"./navigation/navigation-carousel":22}],26:[function(require,module,exports){
-/**
- * Tailor.Views.TailorTabs
- *
- * Tabs element view.
- *
- * @class
- */
-var ContainerView = require( './../view-container' ),
-	TabsView;
-
-TabsView = ContainerView.extend( {
-
-    ui : {
-        navigation : '.tailor-tabs__navigation'
-    },
-
-    childViewContainer : '.tailor-tabs__content',
-
-    events : {
-        'element:change:order' : 'onReorderElement'
-    },
-
-	/**
-	 * Handles the reordering of tabs.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param e
-	 * @param id
-	 * @param newIndex
-	 * @param oldIndex
-	 */
-    onReorderElement : function( e, id, newIndex, oldIndex ) {
-        if ( newIndex - oldIndex < 0 ) {
-            this.children.each( function( view ) {
-                if ( view._index >= newIndex && view._index <= oldIndex ) {
-                    if ( view._index == oldIndex ) {
-                        view._index = newIndex;
-                    }
-                    else {
-                        view._index++;
-                    }
-                    view.model.set( 'order', view._index );
-                }
-            }, this );
-        }
-        else {
-            this.children.each( function( view ) {
-                if ( view._index >= oldIndex && view._index <= newIndex ) {
-                    if ( view._index == oldIndex ) {
-                        view._index = newIndex;
-                    }
-                    else {
-                        view._index--;
-                    }
-                    view.model.set( 'order', view._index );
-                }
-            }, this );
+        var parent = this.collection.getParent( this );
+        if ( parent.get( 'tag' ) == that.get( 'tag' ) ) {
+            return false;
         }
 
-        this.model.collection.sort();
-    },
-
-	/**
-	 * Destroys the tabs navigation before the template is refreshed.
-	 *
-	 * @since 1.0.0
-	 */
-    onBeforeRenderTemplate : function() {
-        if ( this.navigation ) {
-            this.navigation.triggerMethod( 'destroy' );
-        }
-    },
-
-	/**
-	 * Inserts the tabs navigation into the DOM.
-	 *
-	 * @since 1.0.0
-	 */
-    onRenderTemplate : function() {
-        var NavigationView = require( './navigation/navigation-tabs' );
-
-        this.navigation = new NavigationView( {
-            el : this.ui.navigation,
-            model : this.model,
-            collection : this.collection,
-            sort : false
-        } );
-
-        this.navigation.render();
-    },
-
-	/**
-	 * Triggers events when a child element template is refreshed.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param childView
-	 */
-	childRefreshed : function( childView ) {
-		childView.el.id = childView.model.cid;
-		childView.el.classList.add( 'is-active' );
-
-		this.triggerAll( 'element:child:refresh', childView );
-	},
-
-    /**
-     * Destroys the tabs navigation before the tabs element is destroyed.
-     *
-     * @since 1.0.0
-     */
-    onBeforeDestroy : function() {
-	    this.triggerAll( 'before:element:destroy', this );
-        this.navigation.triggerMethod( 'destroy' );
-    }
-
-} );
-
-module.exports = TabsView;
-},{"./../view-container":27,"./navigation/navigation-tabs":24}],27:[function(require,module,exports){
-/**
- * Tailor.Views.Container
- *
- * A container element view.
- *
- * @class
- */
-var $ = window.jQuery,
-	CompositeView;
-
-CompositeView = Marionette.CompositeView.extend( {
-
-    behaviors : {
-        Container : {},
-        Draggable : {},
-        Droppable : {},
-        Editable : {},
-        Movable : {}
+        return that.get( 'tag' ) == this.get( 'tag' );
     },
 
     /**
-     * Initializes the view.
+     * Initializes the tabs model.
      *
      * @since 1.0.0
      */
     initialize : function() {
-        this._isReady = false;
-        this._isBeingDestroyed = false;
-
         this.addEventListeners();
     },
+
+    /**
+     * Adds the required event listeners.
+     *
+     * @since 1.0.0
+     */
+    addEventListeners : function() {
+        this.listenTo( this, 'element:move:top', this.insertBefore );
+        this.listenTo( this, 'element:move:bottom', this.insertAfter );
+        this.listenTo( this, 'element:move:left', this.insertBefore ); // Column
+        this.listenTo( this, 'element:move:right', this.insertAfter ); // Column
+
+        this.listenTo( this, 'element:copy:top', this.copyBefore );
+        this.listenTo( this, 'element:copy:bottom', this.copyAfter );
+        this.listenTo( this, 'element:copy:left', this.copyBefore ); // Column
+        this.listenTo( this, 'element:copy:right', this.copyAfter ); // Column
+    }
+
+} );
+
+module.exports = ChildModel;
+},{"./element-composite":35}],35:[function(require,module,exports){
+var BaseModel = require( './element-base' ),
+    CompositeModel;
+
+CompositeModel = BaseModel.extend( {
+
+    /**
+     * Clones the element and its child elements.
+     *
+     * @since 1.0.0
+     *
+     * @param sourceView
+     * @param parent
+     * @param index
+     */
+    cloneContainer : function( sourceView, parent, index ) {
+        var collection = this.collection;
+        var clone = sourceView.model.clone();
+
+        clone.set( 'id', clone.cid );
+        clone.set( 'parent', parent );
+        clone.set( 'order', index );
+
+        this.createTemplate( clone.cid, sourceView );
+
+        var clonedChildren = this.cloneChildren( sourceView.children, clone, [] );
+
+        collection.add( clonedChildren, { silent : true } );
+        collection.add( clone );
+
+	    /**
+	     * Fires after the element has been copied.
+	     *
+	     * @since 1.0.0
+	     */
+        sourceView.triggerMethod( 'element:refresh' );
+    },
+
+    /**
+     * Clones all children of a given element.
+     *
+     * @since 1.0.0
+     *
+     * @param childViews
+     * @param parent
+     * @param clones
+     * @returns {*}
+     */
+    cloneChildren : function( childViews, parent, clones ) {
+        if ( childViews.length ) {
+            childViews.each( function( childView ) {
+                var clone = childView.model.clone();
+                clone.set( 'id', clone.cid );
+                clone.set( 'parent', parent.get( 'id' ) );
+
+                clone.createTemplate( clone.cid, childView );
+                clones.push( clone );
+
+                if ( childView.children ) {
+                    this.cloneChildren( childView.children, clone, clones );
+                }
+
+            }, this );
+        }
+
+        return clones;
+    },
+
+    /**
+     * Copies the source element and inserts it before the target element.
+     *
+     * @since 1.0.0
+     *
+     * @param targetView
+     * @param sourceView
+     */
+    copyBefore : function( targetView, sourceView ) {
+        this.cloneContainer( sourceView, targetView.model.get( 'parent' ), targetView.model.get( 'order' ) - 1 );
+    },
+
+    /**
+     * Copies the source element and inserts it after the target element.
+     *
+     * @since 1.0.0
+     *
+     * @param targetView
+     * @param sourceView
+     */
+    copyAfter : function( targetView, sourceView ) {
+        this.cloneContainer( sourceView, targetView.model.get( 'parent' ), targetView.model.get( 'order' ) );
+    },
+
+    /**
+     * Copies the source element and inserts it before the target element in a row/column layout.
+     *
+     * @since 1.0.0
+     *
+     * @param targetView
+     * @param sourceView
+     */
+    copyColumnBefore : function( targetView, sourceView ) {
+        var parent = targetView.model.get( 'parent' );
+
+        if ( 'tailor_column' === targetView.model.get( 'tag' ) ) {
+            var column = this.collection.createColumn( parent, targetView.model.get( 'order' ) - 1 );
+            this.cloneContainer( sourceView, column.get( 'id' ), 0 );
+        }
+        else {
+            var columns = this.collection.createRow( parent, targetView.model.get( 'order' ) );
+            this.collection.insertChild( targetView.model, _.last( columns ) );
+            this.cloneContainer( sourceView, _.first( columns ).get( 'id' ), 0 );
+        }
+
+    },
+
+    /**
+     * Copies the source element and inserts it after the target element in a row/column layout.
+     *
+     * @since 1.0.0
+     *
+     * @param targetView
+     * @param sourceView
+     */
+    copyColumnAfter : function( targetView, sourceView ) {
+        var parent = targetView.model.get( 'parent' );
+
+        if ( 'tailor_column' === targetView.model.get( 'tag' ) ) {
+            var column = this.collection.createColumn( parent, targetView.model.get( 'order' ) );
+            this.cloneContainer( sourceView, column.get( 'id' ), 0 );
+        }
+        else {
+            var columns = this.collection.createRow( parent, targetView.model.get( 'order' ) );
+            this.collection.insertChild( targetView.model, _.first( columns ) );
+            this.cloneContainer( sourceView, _.last( columns ).get( 'id' ), 0 );
+        }
+    },
+
+	/**
+	 * Creates a new template based on the element.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param id
+	 * @param view
+	 */
+	createTemplate : function( id, view ) {
+		var isEditing =  view.el.classList.contains( 'is-editing' );
+
+		this.beforeCopyElement( view );
+
+		var $childViewContainer = view.getChildViewContainer( view );
+		var $children = $childViewContainer.contents().detach();
+
+		this.appendTemplate( id, view );
+
+		$childViewContainer.append( $children );
+
+		this.afterCopyElement( id, view );
+
+		if ( isEditing ) {
+			view.el.classList.add( 'is-editing' );
+		}
+	}
+
+} );
+
+module.exports = CompositeModel;
+},{"./element-base":33}],36:[function(require,module,exports){
+var CompositeModel = require( './element-composite' ),
+    ContainerModel;
+
+ContainerModel = CompositeModel.extend( {
+
+    /**
+     * Returns true if this element is a valid drop target.
+     *
+     * @since 1.0.0
+     *
+     * @param that The element being dragged
+     * @param region The region of this element that the other element is over
+     */
+    validTarget : function( that, region ) {
+        if ( 'child' == that.get( 'type' ) || _.contains( [ 'tailor_section', 'tailor_column' ], that.get( 'tag' ) ) ) {
+            return false;
+        }
+
+        var parent = this.collection.getParent( this );
+        if ( 'tailor_row' == that.get( 'tag' ) ) {
+            return 'tailor_section' == parent.get( 'tag' ) && _.contains( [ 'top', 'bottom' ], region );
+        }
+        if ( 'center' == region ) {
+            return 'container' != that.get( 'type' );
+        }
+        if ( _.contains( [ 'wrapper', 'child' ], parent.get( 'type' ) ) ) {
+
+            if ( _.contains( [ 'top', 'bottom' ], region ) ) {
+                return _.contains( [ 'tailor_section', 'tailor_column' ], parent.get( 'tag' ) ) || ! _.contains( [ 'container', 'wrapper', 'child' ], that.get( 'type' ) );
+            }
+
+            return 'tailor_section' == parent.get( 'tag' ) || ! _.contains( [ 'left', 'right' ], region );
+        }
+
+        return 'container' != that.get( 'type' );
+    },
+
+    /**
+     * Initializes the tabs model.
+     *
+     * @since 1.0.0
+     */
+    initialize : function() {
+        this.addEventListeners();
+    },
+
+    /**
+     * Adds the required event listeners.
+     *
+     * @since 1.0.0
+     */
+    addEventListeners : function() {
+        this.listenTo( this, 'element:move:top', this.insertBefore );
+        this.listenTo( this, 'element:move:bottom', this.insertAfter );
+        this.listenTo( this, 'element:move:left', this.columnBefore );
+        this.listenTo( this, 'element:move:right', this.columnAfter );
+
+        this.listenTo( this, 'element:copy:top', this.copyBefore );
+        this.listenTo( this, 'element:copy:bottom', this.copyAfter );
+        this.listenTo( this, 'element:copy:left', this.copyColumnBefore );
+        this.listenTo( this, 'element:copy:right', this.copyColumnAfter );
+    }
+
+} );
+
+module.exports = ContainerModel;
+},{"./element-composite":35}],37:[function(require,module,exports){
+var CompositeModel = require( './element-composite' ),
+    WrapperModel;
+
+WrapperModel = CompositeModel.extend( {
+
+    /**
+     * Returns true if this element is a valid drop target.
+     *
+     * @since 1.0.0
+     *
+     * @param that The element being dragged
+     * @param region The region of this element that the other element is over
+     */
+    validTarget : function( that, region ) {
+        if ( 'child' == that.get( 'type' ) || _.contains( [ 'tailor_section', 'tailor_column' ], that.get( 'tag' ) ) || 'center' == region ) {
+            return false;
+        }
+
+        var parent = this.collection.getParent( this );
+        if ( 'tailor_row' == that.get( 'tag' ) ) {
+            return 'tailor_section' == parent.get( 'tag' ) && _.contains( [ 'top', 'bottom' ], region );
+        }
+        if ( 'child' == parent.get( 'type' ) && 'tailor_column' != parent.get( 'tag' ) ) {
+            return 'container' != that.get( 'type' ) && ! _.contains( [ 'left', 'right' ], region );
+        }
+        if ( _.contains( [ 'container', 'wrapper', 'child' ], parent.get( 'type' ) ) ) {
+            return 'tailor_section' == parent.get( 'tag' ) || ! _.contains( [ 'left', 'right' ], region );
+        }
+
+        return true;
+    },
+
+    /**
+     * Initializes the tabs model.
+     *
+     * @since 1.0.0
+     */
+    initialize : function() {
+        this.addEventListeners();
+    },
+
+    /**
+     * Adds the required event listeners.
+     *
+     * @since 1.0.0
+     */
+    addEventListeners : function() {
+        this.listenTo( this, 'element:move:top', this.insertBefore );
+        this.listenTo( this, 'element:move:bottom', this.insertAfter );
+        this.listenTo( this, 'element:move:left', this.columnBefore );
+        this.listenTo( this, 'element:move:right', this.columnAfter );
+
+        this.listenTo( this, 'element:copy:top', this.copyBefore );
+        this.listenTo( this, 'element:copy:bottom', this.copyAfter );
+        this.listenTo( this, 'element:copy:left', this.copyColumnBefore );
+        this.listenTo( this, 'element:copy:right', this.copyColumnAfter );
+
+        this.listenTo( this, 'element:move:center', this.createChild );
+        this.listenTo( this, 'element:copy:center', this.copyChild );
+    },
+
+    /**
+     * Inserts the source element inside a new child element in the target view.
+     *
+     * @since 1.0.0
+     *
+     * @param targetView
+     * @param sourceView
+     */
+    createChild : function( targetView, sourceView ) {
+        var id = targetView.model.get( 'id' );
+        var childTag = targetView.model.get( 'child' );
+        var numberChildren = this.collection.where( { parent : id, tag : childTag } ).length;
+
+        this.createTemplate( sourceView.model.get( 'id' ), sourceView );
+        this.collection.createWrapper( childTag, id, numberChildren, sourceView.model );
+    },
+
+    /**
+     * Copies the source element and inserts it inside a new child element in the target view.
+     *
+     * @since 1.0.0
+     *
+     * @param targetView
+     * @param sourceView
+     */
+    copyChild : function( targetView, sourceView ) {
+        var id = targetView.model.get( 'id' );
+        var childTag = targetView.model.get( 'child' );
+        var numberChildren = this.collection.where( { parent : id, tag : childTag } ).length;
+        var wrapper = this.collection.createWrapper( childTag, id, numberChildren, false );
+
+        this.cloneContainer( sourceView, wrapper.get( 'id' ), 0 );
+    }
+
+} );
+
+module.exports = WrapperModel;
+},{"./element-composite":35}],38:[function(require,module,exports){
+var BaseModel = require( './element-base' ),
+	ElementModel;
+
+ElementModel = BaseModel.extend( {
+
+	/**
+	 * Returns true if this element is a valid drop target.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param that The element being dragged
+	 * @param region The region of this element that the other element is over
+	 * @param threshold The distance to the closest edge, if applicable
+	 */
+	validTarget : function( that, region, threshold ) {
+
+		if ( threshold < 20 ) {
+			return false;
+		}
+		
+		if ( 'child' == that.get( 'type' ) || _.contains( [ 'tailor_section', 'tailor_column' ], that.get( 'tag' ) ) || 'center' == region ) {
+			return false;
+		}
+
+		var parent = this.collection.getParent( this );
+		if ( 'tailor_row' == that.get( 'tag' ) ) {
+			return 'tailor_section' == parent.get( 'tag' ) && _.contains( [ 'top', 'bottom' ], region );
+		}
+
+		if ( 'child' == parent.get( 'type' ) && 'tailor_column' != parent.get( 'tag' ) ) {
+			return 'container' != that.get( 'type' ) && ! _.contains( [ 'left', 'right' ], region );
+		}
+
+		if ( _.contains( [ 'wrapper', 'child' ], parent.get( 'type' ) ) ) {
+			if ( _.contains( [ 'top', 'bottom' ], region ) ) {
+				return _.contains( [ 'tailor_section', 'tailor_column' ], parent.get( 'tag' ) ) || ! _.contains( [ 'container', 'wrapper', 'child' ], that.get( 'type' ) );
+			}
+
+			return 'tailor_section' == parent.get( 'tag' ) || ! _.contains( [ 'left', 'right' ], region );
+		}
+
+		return true;
+	},
+
+	/**
+	 * Initializes the element model.
+	 *
+	 * @since 1.0.0
+	 */
+	initialize : function() {
+		this.addEventListeners();
+	},
 
 	/**
 	 * Adds the required event listeners.
 	 *
 	 * @since 1.0.0
 	 */
-    addEventListeners : function() {
-        this.listenTo( app.channel, 'before:elements:restore', this.onBeforeDestroy );
+	addEventListeners : function() {
+		this.listenTo( this, 'element:move:top', this.insertBefore );
+		this.listenTo( this, 'element:move:bottom', this.insertAfter );
+		this.listenTo( this, 'element:move:left', this.columnBefore );
+		this.listenTo( this, 'element:move:right', this.columnAfter );
+
+		this.listenTo( this, 'element:copy:top', this.copyBefore );
+		this.listenTo( this, 'element:copy:bottom', this.copyAfter );
+		this.listenTo( this, 'element:copy:left', this.copyColumnBefore );
+		this.listenTo( this, 'element:copy:right', this.copyColumnAfter );
+
+		this.listenTo( this, 'element:move:center', this.createChild );
+		this.listenTo( this, 'element:copy:center', this.copyChild );
+	},
+
+	/**
+	 * Copies the source element and inserts it before the target element.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param targetView
+	 * @param sourceView
+	 */
+	copyBefore : function( targetView, sourceView ) {
+		var clone = sourceView.model.clone();
+		var index = targetView.model.get( 'order' ) - 1;
+
+		clone.set( 'id', clone.cid );
+		clone.set( 'parent', targetView.model.get( 'parent' ) );//, { silent : true } );
+		clone.set( 'order', index );//, { silent : true } );
+
+		this.createTemplate( clone.cid, sourceView );
+		this.collection.add( clone );//, { at : index } );
+	},
+
+	/**
+	 * Copies the source element and inserts it after the target element.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param targetView
+	 * @param sourceView
+	 */
+	copyAfter : function( targetView, sourceView ) {
+		var clone = sourceView.model.clone();
+		var index = targetView.model.get( 'order' );
+
+		clone.set( 'id', clone.cid );
+		clone.set( 'parent', targetView.model.get( 'parent' ) );//, { silent : true } );
+		clone.set( 'order', index );//, { silent : true } );
+
+		this.createTemplate( clone.cid, sourceView );
+
+		this.collection.add( clone );//, { at : index } );
+	},
+
+	/**
+	 * Copies the source element and inserts it before the target element in a row/column layout.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param targetView
+	 * @param sourceView
+	 */
+	copyColumnBefore : function( targetView, sourceView ) {
+		var model = targetView.model;
+		var clone = sourceView.model.clone();
+
+		clone.set( 'id', clone.cid );
+
+		this.createTemplate( clone.cid, sourceView );
+
+		if ( 'tailor_column' === model.get( 'tag' ) ) {
+			var column = this.collection.createColumn( model.get( 'parent' ),  model.get( 'order' ) - 1 );
+
+			clone.set( 'parent', column.get( 'id' ) );
+			this.collection.add( clone );
+		}
+		else {
+			var columns = this.collection.createRow( model.get( 'parent' ), model.get( 'order' ) );
+			this.collection.insertChild( model, _.last( columns ) );
+
+			clone.set( 'parent', _.first( columns ).get( 'id' ) );
+			this.collection.add( clone );
+		}
+	},
+
+	/**
+	 * Copies the source element and inserts it after the target element in a row/column layout.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param targetView
+	 * @param sourceView
+	 */
+	copyColumnAfter : function( targetView, sourceView ) {
+		var model = targetView.model;
+		var clone = sourceView.model.clone();
+
+		clone.set( 'id', clone.cid );
+
+		this.createTemplate( clone.cid, sourceView );
+
+		if ( 'tailor_column' === model.get( 'tag' ) ) {
+			var column = this.collection.createColumn( model.get( 'parent' ), model.get( 'order' ) );
+
+			clone.set( 'parent', column.get( 'id' ) );
+			this.collection.add( clone );
+		}
+		else {
+			var columns = this.collection.createRow( model.get( 'parent' ), model.get( 'order' ) );
+
+			this.collection.insertChild( model, _.first( columns ) );
+			clone.set( 'parent', _.last( columns ).get( 'id' ) );
+			this.collection.add( clone );
+		}
+	},
+
+	/**
+	 * Inserts the source element inside a new child element in the target view.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param targetView
+	 * @param sourceView
+	 */
+	createChild : function( targetView, sourceView ) {
+		var id = targetView.model.get( 'id' );
+		var childTag = targetView.model.get( 'child' );
+		var numberChildren = this.collection.where( { parent : id, tag : childTag } ).length;
+
+		this.appendTemplate( sourceView.model.get( 'id' ), sourceView );
+		this.collection.createWrapper( childTag, id, numberChildren, sourceView.model );
+	},
+
+	/**
+	 * Copies the source element and inserts it inside a new child element in the target view.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param targetView
+	 * @param sourceView
+	 */
+	copyChild : function( targetView, sourceView ) {
+		var id = targetView.model.get( 'id' );
+		var childTag = targetView.model.get( 'child' );
+		var numberChildren = this.collection.where( { parent : id, tag : childTag } ).length;
+		var wrapper = this.collection.createWrapper( childTag, id, numberChildren, false );
+
+		var clone = sourceView.model.clone();
+		clone.set( 'id', clone.cid );
+		clone.set( 'parent', wrapper.get( 'id' ) );
+		clone.set( 'order', 0 );
+
+		this.createTemplate( clone.cid, sourceView );
+		this.collection.add( clone );
+	},
+
+	/**
+	 * Creates a new element template based on a given element and appends it to the page.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param id
+	 * @param view
+	 */
+	createTemplate : function( id, view ) {
+		var isEditing =  view.el.classList.contains( 'is-editing' );
+
+		this.beforeCopyElement( view );
+		this.appendTemplate( id, view );
+		this.afterCopyElement( id, view );
+
+		if ( isEditing ) {
+			view.el.classList.add( 'is-editing' );
+		}
+	}
+
+} );
+
+module.exports = ElementModel;
+},{"./element-base":33}],39:[function(require,module,exports){
+var WrapperModel = require( './../element-wrapper' ),
+    SectionModel;
+
+SectionModel = WrapperModel.extend( {
+
+    /**
+     * Returns true if this element is a valid drop target.
+     *
+     * @since 1.0.0
+     *
+     * @param that The element being dragged
+     * @param region The region of this element that the other element is over
+     */
+    validTarget : function( that, region ) {
+        return 'tailor_section' == that.get( 'tag' ) && ! _.contains( [ 'left', 'right', 'center' ], region );
+    }
+
+} );
+
+module.exports = SectionModel;
+},{"./../element-wrapper":37}],40:[function(require,module,exports){
+var CanvasRegion = Backbone.Marionette.Region.extend( {
+
+	/**
+     * Initialize the canvas region.
+     * 
+     * @since 1.0.0
+     */
+    initialize : function() {
+        this.listenTo( app.channel, 'canvas:dragstart', this.onDragStart );
+        this.listenTo( app.channel, 'canvas:dragend', this.onDragEnd );
     },
+
+    /**
+     * Adds a class name to the canvas when dragging begins.
+     *
+     * @since 1.0.0
+     *
+     * @param view
+     * @param region
+     * @param options
+     */
+    onDragStart : function( view, region, options ) {
+        this.el.classList.add( 'is-active' );
+    },
+
+    /**
+     * Removes a class name from the canvas when dragging ends.
+     *
+     * @since 1.0.0
+     *
+     * @param view
+     * @param region
+     * @param options
+     */
+    onDragEnd : function( view, region, options ) {
+        this.el.classList.remove( 'is-active' );
+    }
+
+} );
+
+module.exports = CanvasRegion;
+},{}],41:[function(require,module,exports){
+var $ = Backbone.$,
+    $win = $( window ),
+    $doc = $( document ),
+    CanvasCollectionView = require( './show/canvas-view' ),
+    CanvasModule;
+
+CanvasModule = Marionette.Module.extend( {
+
+    /**
+     * Initializes the module.
+     *
+     * @since 1.0.0
+     */
+	onStart : function() {
+		this._model = null;
+		this._isDragging = false;
+        this.collection = app.channel.request( 'canvas:elements' );
+
+        this.addEventListeners();
+        this.showCanvas();
+
+        /**
+         * Fires when the Canvas module is initialized.
+         *
+         * @since 1.5.0
+         *
+         * @param this
+         */
+        app.channel.trigger( 'module:canvas:ready', this );
+	},
+
+    /**
+     * Adds the required event listeners.
+     *
+     * @since 1.0.0
+     */
+    addEventListeners : function() {
+        this.listenTo( app.channel, 'canvas:dragstart', this.onDragStart );
+        this.listenTo( app.channel, 'canvas:dragover', this.onDragOver );
+        this.listenTo( app.channel, 'canvas:dragend', this.onDragEnd );
+        this.listenTo( app.channel, 'canvas:drop', this.onDrop );
+
+        $doc.on( 'click dragover', this.reset.bind( this ) );
+        $win.on( 'resize', this.reset.bind( this ) );
+    },
+
+    /**
+     * Displays elements on the canvas.
+     *
+     * @since 1.0.0
+     */
+    showCanvas : function() {
+        app.canvasRegion.show( new CanvasCollectionView( {
+            collection : this.collection
+        } ) );
+    },
+
+    /**
+     * Records information about the drag target when dragging begins.
+     *
+     * @since 1.0.0
+     *
+     * @param e
+     * @param view
+     */
+	onDragStart : function( e, view ) {
+        var collection = view.model.collection;
+
+        // Do nothing if this is an element with a selected parent
+        if ( 'function' === typeof collection.hasSelectedParent && collection.hasSelectedParent( view.model ) ) {
+            return;
+        }
+
+		this._view = view;
+		this._model = view.model;
+		this._isDragging = true;
+
+        view.el.classList.add( 'is-dragging' );
+
+        // Use an empty drag image for elements to improve performance
+        if ( 'element' == view.model.get( 'collection' ) ) {
+            var testVar = window.DataTransfer || window.Clipboard;
+            if ( 'setDragImage' in testVar.prototype ) {
+                var dragImage = document.createElement( 'img' );
+                dragImage.src = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
+                e.dataTransfer.setDragImage( dragImage, 0, 0 );
+            }
+        }
+
+        e.dataTransfer.effectAllowed = "copyMove";
+        e.dataTransfer.setData( 'Text', this._model.cid );
+
+		e.stopPropagation();
+	},
+
+    /**
+     * Validates the drop target and updates the insertion guide when the drag target is dragged over an element.
+     *
+     * @since 1.0.0
+     *
+     * @param e
+     * @param view
+     */
+	onDragOver : function( e, view ) {
+        if ( ! this._isDragging ) {
+            return;
+        }
+
+	    // Maybe scroll the window while dragging
+	    if ( e.pageY ) {
+		    var scrollY = window.scrollY || document.documentElement.scrollTop;
+		    if ( ( e.pageY - scrollY ) < 40 ) {
+			    window.scrollTo( 0, scrollY - 20 );
+		    }
+		    else if ( ( ( scrollY + window.innerHeight ) - e.pageY ) < 40 ) {
+			    window.scrollTo( 0, scrollY + 20 );
+		    }
+	    }
+
+        var action = ( 'element' === this._model.get( 'collection' ) && e.shiftKey ) ? 'copy' : 'move';
+
+        if ( 'move' === action && view.model === this._model ) {
+            this.reset();
+            e.stopPropagation();
+            return;
+        }
+
+        var region = this._getDropRegion( e, view );
+        if ( ! view.model.validTarget( this._model, region ) ) {
+            return;
+        }
+
+        e.dataTransfer.dropEffect = action;
+
+        app.channel.trigger( 'canvas:guide', view, region );
+
+        e.preventDefault();
+        e.stopPropagation();
+	},
+
+    /**
+     * Validates the drop target and updates the canvas the drag target is dropped on an element.
+     *
+     * @since 1.0.0
+     *
+     * @param e
+     * @param view
+     */
+	onDrop : function( e, view ) {
+        if ( ! this._isDragging ) {
+            return;
+        }
+
+        var model = this._model;
+        var region = this._getDropRegion( e, view );
+        if ( ! view.model.validTarget( model, region ) ) {
+            return;
+        }
+
+        var action;
+        if ( 'element' === model.get( 'collection' ) ) {
+           action = e.shiftKey ? 'copy' : 'move';
+            if ( 'move' === action && view.model === model ) {
+                return;
+            }
+        }
+        else {
+            action = 'add';
+        }
+
+        /**
+         * Fires after an action has been taken on the canvas.
+         *
+         * @since 1.0.0
+         */
+        model.trigger( 'element:' + action + ':' + region, view, this._view );
+
+        /**
+         * Fires after an action has been taken on the canvas.
+         *
+         * @since 1.0.0
+         */
+        app.channel.trigger( 'element:' + action, model );
+
+        this.collection.sort( { silent : true } );
+
+        e.preventDefault();
+        e.stopPropagation();
+	},
+
+    /**
+     * Cleans up the canvas when dragging of the drag target ends.
+     *
+     * @since 1.0.0
+     *
+     * @param e
+     * @param view
+     */
+	onDragEnd : function( e, view ) {
+        if ( ! this._isDragging ) {
+            return;
+        }
+
+ 		this._isDragging = false;
+		this._view.el.classList.remove( 'is-dragging' );
+        this.reset();
+
+        //app.channel.trigger( 'debug' );
+    },
+
+    /**
+     * Resets the canvas.
+     *
+     * @since 1.0.0
+     */
+    reset : function() {
+
+        /**
+         * Fires when the canvas is reset.
+         *
+         * @since 1.0.0
+         */
+        app.channel.trigger( 'canvas:reset' );
+    },
+
+    /**
+     * Returns the current point (x,y coordinates).
+     *
+     * @since 1.0.0
+     *
+     * @param e
+     * @returns {{x: (*|number|Number), y: (*|number|Number)}}
+     * @private
+     */
+    _getPoint : function( e ) {
+        if ( e.targetTouches ) { // Prefer Touch Events
+            return {
+                x : e.targetTouches[0].clientX,
+                y : e.targetTouches[0].clientY
+            };
+        }
+        return {
+            x : e.clientX,
+            y : e.clientY
+        };
+    },
+
+    /**
+     * Returns the region of the element currently occupied by the drag target (top, right, bottom, left, center).
+     *
+     * @since 1.0.0
+     *
+     * @param e
+     * @param view
+     * @returns string
+     * @private
+     */
+    _getDropRegion : function( e, view ) {
+        var point = this._getPoint( e );
+        var rect = view.el.getBoundingClientRect();
+        var width = rect.width / 2;
+        var height = rect.height / 2;
+        var top = rect.top + ( rect.height - height ) / 2;
+        var left = rect.left + ( rect.width - width ) / 2;
+
+        if (
+            ( left <= point.x ) && ( point.x <= ( left + width ) ) &&
+            ( top <= point.y ) && ( point.y <= ( top + height ) )
+        ) {
+            return 'center';
+        }
+        else {
+            var x = ( point.x - ( rect.left + width ) ) / ( width );
+            var y = ( point.y - ( rect.top + height ) ) / ( height );
+            
+            if ( Math.abs( x ) > Math.abs( y ) ) {
+                return x > 0 ? 'right' : 'left';
+            }
+            return y > 0 ? 'bottom' : 'top';
+        }
+    }
+
+} );
+
+module.exports = CanvasModule;
+},{"./show/canvas-view":42}],42:[function(require,module,exports){
+module.exports = Marionette.CollectionView.extend( {
+
+	behaviors : {
+		Container : {}
+	},
 
     /**
      * Returns the appropriate child view based on the element tag.
      *
      * @since 1.0.0
      *
-     * @param child
      * @returns {*|exports|module.exports}
      */
-    getChildView : function( child ) {
-        return window.Tailor.Views.lookup( child.get( 'tag' ), child.get( 'type' ) );
+    getChildView : function() {
+        return Tailor.lookup( 'tailor_section', 'wrapper', 'Views' );
     },
 
     /**
@@ -2695,7 +5310,7 @@ CompositeView = Marionette.CompositeView.extend( {
      * @returns {*}
      */
     buildChildView : function( child, ChildViewClass, childViewOptions ) {
-        var options = _.extend({
+        var options = _.extend( {
             model : child,
             collection : this.collection
         }, childViewOptions );
@@ -2704,7 +5319,7 @@ CompositeView = Marionette.CompositeView.extend( {
     },
 
     /**
-     * Filters the collection to ensure that only the appropriate children are displayed.
+     * Filters the element collection so that only children of this element are displayed.
      *
      * @since 1.0.0
      *
@@ -2714,100 +5329,7 @@ CompositeView = Marionette.CompositeView.extend( {
      * @returns {boolean}
      */
     filter : function( child, index, collection ) {
-        return child.get( 'parent' ) === this.model.get( 'id' );
-    },
-
-    /**
-     * Uses the rendered template HTML as the $el.
-     *
-     * @since 1.0.0
-     *
-     * @param html
-     * @returns {exports}
-     */
-    attachElContent : function( html ) {
-        var $el = jQuery( html );
-
-        this.$el.replaceWith( $el );
-        this.setElement( $el );
-        this.el.setAttribute( 'draggable', true );
-
-        return this;
-    },
-
-    /**
-     * Returns the template ID.
-     *
-     * @since 1.0.0
-     */
-    getTemplateId : function() {
-        return 'tmpl-tailor-' + this.model.get( 'id' );
-    },
-
-    /**
-     * Returns the element template.
-     *
-     * @since 1.0.0
-     *
-     * @returns {string}
-     */
-    getTemplate : function() {
-        var el = document.querySelector( '#' + this.getTemplateId() );
-        var template;
-
-        if ( el ) {
-            template = _.template( el.innerHTML );
-            el.parentElement.removeChild( el );
-        }
-        else {
-            el = document.querySelector( '#tmpl-tailor-' + this.model.get( 'tag' ) + '-default' );
-            template = _.template( el.innerHTML );
-        }
-
-        return template;
-    },
-
-    /**
-     * Updates the element template with the HTML provided.
-     *
-     * If the script element containing the element template does not exist in the page, it will be created.
-     *
-     * @since 1.0.0
-     *
-     * @param html
-     */
-    updateTemplate : function( html ) {
-        var templateId = this.getTemplateId();
-        var el = document.querySelector( '#' + templateId );
-
-        if ( ! el ) {
-            el = document.createElement( 'script' );
-            el.setAttribute( 'type', 'text/html' );
-            el.id = templateId;
-            document.body.appendChild( el );
-        }
-
-        el.innerHTML = html;
-    },
-
-    /**
-     * Renders the element template, without affecting child elements.
-     *
-     * @since 1.0.0
-     */
-    renderTemplate : function() {
-        this._ensureViewIsIntact();
-
-        var $childViewContainer = this.getChildViewContainer( this );
-        var $children = $childViewContainer.contents().detach();
-
-        this.resetChildViewContainer();
-        this._renderTemplate();
-
-        $childViewContainer = this.getChildViewContainer( this );
-        $childViewContainer.append( $children );
-
-        return this;
+        return ! child.get( 'parent' );
     },
 
     /**
@@ -2825,7 +5347,7 @@ CompositeView = Marionette.CompositeView.extend( {
         if ( increment ) {
             view._index = index;
 
-            //console.log( '\n Updated index of view ' + view.model.get( 'id' ) + ' ' + view.model.get( 'id' ) + ' to ' + index );
+            //console.log( '\n Updated index of view ' + view.model.get( 'id' ) + ' to ' + index );
 
             view.model._changing = false;
             view.model.set( 'order', index );
@@ -2835,895 +5357,1794 @@ CompositeView = Marionette.CompositeView.extend( {
             if ( laterView._index >= view._index ) {
                 laterView._index += increment ? 1 : -1;
 
-                //console.log( '\n Updated index of view ' + laterView.model.get( 'tag' ) + ' ' + laterView.model.get( 'id' ) + ' to ' + laterView._index );
+                //console.log( '\n Updated index of view ' + laterView.model.get( 'id' ) + ' to ' + laterView._index );
 
                 laterView.model.set( 'order', laterView._index );
             }
         }, this );
     },
 
-	/**
-	 * Triggers events before the element is ready.
-	 *
-	 * @since 1.0.0
-	 */
-	onBeforeRender : function() {
-		this.triggerAll( 'before:element:ready', this );
-	},
-
-	/**
-	 * Prepares the view and triggers events when the DOM is refreshed.
-	 *
-	 * @since 1.0.0
-	 */
-	onDomRefresh : function() {
-
-		this.el.setAttribute( 'draggable', true );
-
-		this.$el
-			.find( 'a' )
-			.attr( { draggable : false, target : '_blank' } );
-
-		this.$el
-			.find( 'img' )
-			.attr( { draggable : false } );
-	},
-
-	/**
-	 * Triggers events before the element is destroyed.
-	 *
-	 * @since 1.0.0
-	 */
-	onBeforeDestroy : function() {
-		this.triggerAll( 'before:element:destroy', this );
-	},
-
-	/**
-	 * Triggers an event when the element is destroyed.
-	 *
-	 * @since 1.0.0
-	 */
-	onDestroy : function() {
-		this.triggerAll( 'element:destroy', this );
-	},
-
-
-
-
-
-	modelEvents : {
-		'change:atts' : 'onChangeAttributes',
-		'change:parent' : 'onChangeParent'
-	},
-
-	/**
-	 * Refreshes the element template when its attributes change.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param model
-	 * @param atts
-	 */
-	onChangeAttributes : function( model, atts ) {
-		model = this.model.toJSON();
-		model.atts = atts ? atts : {};
-
-		var compositeView = this;
-		var options = {
-			data : {
-				model : JSON.stringify( model ),
-				nonce : window._nonces.render
-			},
-
-			/**
-			 * Attaches the refreshed template to the page.
-			 *
-			 * @since 1.0.0
-			 *
-			 * @param response
-			 */
-			success : function( response ) {
-				compositeView.updateTemplate( response.html );
-
-				/**
-				 * Fires when the custom CSS rules for a given element are updated.
-				 *
-				 * @since 1.0.0
-				 */
-				app.channel.trigger( 'css:update', compositeView.model.get( 'id' ), response.css );
-			},
-
-			/**
-			 * Catches template rendering errors.
-			 *
-			 * @since 1.0.0
-			 */
-			error : function() {
-				compositeView.updateTemplate( 'The template for ' + compositeView.cid + ' could not be refreshed' );
-			},
-
-			/**
-			 * Renders the element with the new template.
-			 *
-			 * @since 1.0.0
-			 */
-			complete : function() {
-				var isEditing = compositeView.$el.hasClass( 'is-editing' );
-				var isSelected = compositeView.$el.hasClass( 'is-selected' );
-
-				compositeView.$el.removeClass( 'is-rendering' );
-
-				/**
-				 * Fires before the container template is refreshed.
-				 *
-				 * @since 1.0.0
-				 */
-				compositeView.triggerAll( 'before:element:refresh', compositeView, model.atts );
-
-				compositeView.renderTemplate();
-
-				/**
-				 * Fires after the container template is refreshed.
-				 *
-				 * @since 1.0.0
-				 */
-				compositeView.triggerAll( 'element:refresh', compositeView, model.atts );
-
-				compositeView.refreshChildren();
-
-				if ( isEditing ) {
-					compositeView.$el.addClass( 'is-editing' );
-				}
-
-				if ( isSelected ) {
-					compositeView.$el.addClass( 'is-selected' );
-				}
-			}
-		};
-
-		compositeView.el.classList.add( 'is-rendering' );
-
-		window.ajax.send( 'tailor_render', options );
-	},
-
-	/**
-	 * Triggers events and refreshes all child elements when the element parent changes.
-	 *
-	 * @since 1.0.0
-	 */
-	onChangeParent : function() {
-
-		/**
-		 * Fires when the parent attributes of the element changes.
-		 *
-		 * @since 1.0.0
-		 */
-		this.triggerAll( 'element:change:parent', this );
-
-		this.refreshChildren();
-	},
-
-
-
-
-
-	childEvents : {
-		'before:element:ready' : 'beforeChildElementReady',
-		'element:ready' : 'childElementReady',
-		'before:element:refresh' : 'beforeChildElementRefreshed',
-		'element:refresh' : 'childElementRefreshed',
-		'before:element:destroy' : 'beforeChildElementDestroyed',
-		'element:destroy' : 'childElementDestroyed'
-	},
-
-	/**
-	 * Triggers an event before a child element is ready.
-	 *
-	 * @since 1.0.0
-	 */
-	beforeChildElementReady : function( childView ) {
-		if ( this._isReady ) {
-			this.triggerAll( 'before:element:child:ready', childView );
-		}
-	},
-
-	/**
-	 * Triggers events after a child element is ready.
-	 *
-	 * If all children are ready, the element is also considered ready.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param childView
-	 */
-	childElementReady : function( childView ) {
-		if ( ! this._isReady ) {
-
-			var readyChildren = this.children.filter( function( childView ) {
-				return childView._isReady;
-			} ).length;
-
-			if ( this.children.length == readyChildren ) {
-				this._isReady = true;
-
-				/**
-				 * Fires when all child elements are ready (i.e., the container is fully-rendered).
-				 *
-				 * @since 1.0.0
-				 */
-				this.triggerAll( 'element:ready', this );
-
-				this.refreshChildren();
-			}
-		}
-		else  {
-
-			/**
-			 * Fires when a child element within this fully-rendered container is ready.
-			 *
-			 * @since 1.0.0
-			 */
-			this.triggerAll( 'element:child:ready', childView );
-		}
-	},
-
-	/**
-	 * Triggers events before a child element template is refreshed.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param childView
-	 */
-	beforeChildElementRefreshed : function( childView ) {
-		this.triggerAll( 'before:element:child:refresh', childView );
-	},
-
-	/**
-	 * Triggers events after a child element template is refreshed.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param childView
-	 */
-	childElementRefreshed : function( childView ) {
-		this.triggerAll( 'element:child:refresh', childView );
-	},
-
-	/**
-	 * Triggers events before a child element is destroyed.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param childView
-	 */
-	beforeChildElementDestroyed : function( childView ) {
-		if ( ! this._isBeingDestroyed ) {
-			this.triggerAll( 'before:element:child:destroy', childView );
-		}
-	},
-
-	/**
-	 * Triggers events after a child element is destroyed.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param childView
-	 */
-	childElementDestroyed : function( childView ) {
-		if ( ! this._isBeingDestroyed && this.children.length > 1 ) {
-			this.triggerAll( 'element:child:destroy', childView );
-		}
-	},
-
-
-
-
-
-	/**
-	 * Refreshes all child elements when the parent element is modified.
-	 *
-	 * @since 1.0.0
-	 */
-	onElementParentChange : function() {
-		this.refreshChildren();
-	},
-
-	/**
-	 * Refreshes all child elements when the a child element is destroyed.
-	 *
-	 * @since 1.0.0
-	 */
-	onElementChildDestroy : function() {
-		this.refreshChildren();
-	},
-
-
-
-
-
-	events : {
-		'element:parent:change' : 'stopEventPropagation',
-
-		'before:element:ready' : 'stopEventPropagation',
-		'element:ready' : 'stopEventPropagation',
-		'before:element:refresh' : 'stopEventPropagation',
-		'element:refresh' : 'stopEventPropagation',
-		'before:element:destroy' : 'stopEventPropagation',
-		'element:destroy' : 'stopEventPropagation',
-		'before:element:copy' : 'stopEventPropagation',
-		'element:copy' : 'stopEventPropagation',
-
-		'element:child:add' : 'onDescendantAdded',
-		'element:child:remove' : 'onDescendantRemoved',
-
-		'before:element:child:ready' : 'stopEventPropagation',
-		'element:child:ready' : 'onDescendantReady',
-		'before:element:child:refresh' : 'stopEventPropagation',
-		'element:child:refresh' : 'stopEventPropagation',
-		'before:element:child:destroy' : 'stopEventPropagation',
-		'element:child:destroy' : 'onDescendantDestroyed'
-	},
-
-	/**
-	 * Triggers events after a child element is added.
-	 *
-	 * If this container is not fully rendered (i.e., it was created to contain the child element), the element is considered ready.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param e
-	 * @param descendantView
-	 */
-	onDescendantAdded : function( e, descendantView ) {
-		if ( ! this._isReady ) {
-
-			var readyChildren = this.children.filter( function( childView ) {
-				return childView._isReady;
-			} ).length;
-
-			if ( this.children.length == readyChildren ) {
-				this._isReady = true;
-
-				/**
-				 * Fires when all child elements are ready (i.e., the container is fully-rendered).
-				 *
-				 * @since 1.0.0
-				 */
-				this.triggerAll( 'element:ready', this );
-			}
-
-			e.stopImmediatePropagation();
-		}
-		else  {
-
-			/**
-			 * Fires when a descendant element within this fully-rendered container is ready.
-			 *
-			 * @since 1.0.0
-			 */
-			this.triggerAll( 'element:descendant:add', descendantView );
-
-			e.stopPropagation();
-		}
-	},
-
-	/**
-	 * Triggers events after a child element is removed.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param e
-	 * @param descendantView
-	 */
-	onDescendantRemoved : function( e, descendantView ) {
-		if ( ( 'container' == this.model.get( 'type' ) && this.children.length > 1 ) || this.children.length > 0 ) {
-			this.triggerAll( 'element:descendant:remove', descendantView );
-		}
-
-		e.stopPropagation();
-	},
-
-	/**
-	 * Triggers events after a child element is ready.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param e
-	 * @param descendantView
-	 */
-	onDescendantReady : function( e, descendantView ) {
-		if ( ! this._isReady ) {
-			if ( this.children.length == 1 && this.children.contains( descendantView ) ) {
-				this._isReady = true;
-
-				/**
-				 * Fires when all child elements are ready (i.e., the container is fully-rendered).
-				 *
-				 * @since 1.0.0
-				 */
-				this.triggerAll( 'element:ready', this );
-			}
-			e.stopImmediatePropagation();
-		}
-		else  {
-
-			/**
-			 * Fires when a descendant element is created in this fully-rendered container.
-			 *
-			 * @since 1.0.0
-			 */
-			this.triggerAll( 'element:descendant:add', descendantView );
-
-			// @todo Find a better way of refreshing complex content elements like carousel galleries
-			this.refreshChildren();
-
-			e.stopPropagation();
-		}
-	},
-
-	/**
-	 * Triggers events after a child element is destroyed.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param e
-	 * @param descendantView
-	 */
-	onDescendantDestroyed : function( e, descendantView ) {
-		if ( ( 'container' == this.model.get( 'type' ) && this.children.length > 1 ) || this.children.length > 0 ) {
-
-			/**
-			 * Fires when a descendant element within in this fully-rendered container is destroyed.
-			 *
-			 * @since 1.0.0
-			 */
-			this.triggerAll( 'element:descendant:destroy', descendantView );
-		}
-
-		e.stopPropagation();
-	},
-
-	/**
-	 * Refreshes all child elements.
-	 *
-	 * @since 1.0.0
-	 */
-	refreshChildren : function() {
-		this.children.each( function( childView ) {
-			childView.triggerAll( 'element:parent:change', childView );
-		}, this );
-	},
-
-	/**
-	 * Triggers events and methods during a given event in the lifecycle.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param event
-	 * @param view
-	 * @param atts
-	 */
-	triggerAll : function( event, view, atts ) {
-
-		this.$el.trigger( event, view );
-
-		this.triggerMethod( event, view );
-
-		if ( atts ) {
-			app.channel.trigger( event, this, atts);
-		}
-		else {
-			app.channel.trigger( event, this );
-		}
-	},
-
-	/**
-	 * Stops the event from bubbling up the DOM tree.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param e
-	 */
-	stopEventPropagation : function( e ) {
-		e.stopPropagation();
-	}
+    /**
+     * Triggers events and methods during a given event in the lifecycle.
+     *
+     * @since 1.0.0
+     *
+     * @param event
+     * @param view
+     * @param atts
+     */
+    triggerAll : function( event, view, atts ) {
+        this.$el.trigger( event, view );
+        this.triggerMethod( event, view );
+
+        if ( atts ) {
+            app.channel.trigger( event, this, atts);
+        }
+        else {
+            app.channel.trigger( event, this );
+        }
+    }
 
 } );
 
-module.exports = CompositeView;
-},{}],28:[function(require,module,exports){
-/**
- * Tailor.Views.Element
- *
- * A standard content element view.
- *
- * @class
- */
-var $ = window.jQuery,
-	ElementView;
+},{}],43:[function(require,module,exports){
+var Stylesheet = require( './stylesheet' ),
+	CSSModule;
 
-ElementView = Marionette.ItemView.extend( {
+CSSModule = Marionette.Module.extend( {
 
-	className : 'element',
+    /**
+     * Initializes the module.
+     *
+     * @since 1.0.0
+     */
+    onStart : function( options ) {
+        this.stylesheets = [];
+	    this.collection = app.channel.request( 'canvas:elements' );
 
-	attributes : {
-		draggable : true
-	},
+        this.createSheets( options.mediaQueries || {} );
+        this.addRules( options.cssRules || {} );
+        this.addEventListeners();
 
-	behaviors : {
-		Draggable : {},
-		Droppable : {},
-		Editable : {},
-		Movable : {}
-	},
-
-	modelEvents : {
-		'change:atts' : 'onChangeAttributes',
-		'change:parent' : 'onChangeParent'
-	},
-
-	/**
-	 * Initializes the view.
-	 *
-	 * @since 1.0.0
-	 */
-	initialize : function() {
-		this._isReady = false;
-		this._isBeingDestroyed = false;
-
-		this.addEventListeners();
-	},
-
-	/**
-	 * Adds the required event listeners.
-	 *
-	 * @since 1.0.0
-	 */
-	addEventListeners : function() {
-		this.listenTo( app.channel, 'before:elements:restore', this.onBeforeDestroy );
-	},
-
-	/**
-	 * Returns the template ID.
-	 *
-	 * @since 1.0.0
-	 */
-	getTemplateId : function() {
-		return 'tmpl-tailor-' + this.model.get( 'id' );
-	},
-
-	/**
-	 * Returns the element template.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @returns {string}
-	 */
-	getTemplate : function() {
-		var el = document.querySelector( '#' + this.getTemplateId() );
-		var template;
-
-		if ( el ) {
-			template = _.template( el.innerHTML );
-			el.parentElement.removeChild( el );
-		}
-		else {
-			el = document.querySelector( '#tmpl-tailor-' + this.model.get( 'tag' ) + '-default' );
-			template = _.template( el.innerHTML );
-		}
-
-		return template;
-	},
-
-	/**
-	 * Uses the rendered template HTML as the $el.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param html
-	 * @returns {exports}
-	 */
-	attachElContent : function( html ) {
-
-		var $el = $( html );
-		var el = $el[0]; // Fix for elements like Jetpack portfolio that contain comments
-
-		this.$el.replaceWith( el );
-		this.setElement( el );
-
-		return this;
-	},
-
-	/**
-	 * Updates the element template with the HTML provided.
-	 *
-	 * If the script element containing the element template does not exist in the page, it will be created.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param html
-	 */
-	updateTemplate : function( html ) {
-		var templateId = this.getTemplateId();
-		var el = document.querySelector( '#' + templateId );
-
-		if ( ! el ) {
-			el = document.createElement( 'script' );
-			el.setAttribute( 'type', 'text/html' );
-			el.id = templateId;
-			document.body.appendChild( el );
-		}
-
-		el.innerHTML = html;
-	},
-
-	/**
-	 * Refreshes the element template when the element attributes change.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param model
-	 * @param atts
-	 */
-	onChangeAttributes : function( model, atts ) {
-		var itemView = this;
-
-		model = this.model.toJSON();
-		if ( atts ) {
-			model.atts = atts;
-		}
-
-		var options = {
-
-			data : {
-				model : JSON.stringify( model ),
-				nonce : window._nonces.render
-			},
-
-			/**
-			 * Attaches the refreshed template to the page.
-			 *
-			 * @since 1.0.0
-			 *
-			 * @param response
-			 */
-			success : function( response ) {
-				itemView.updateTemplate( response.html );
-
-				/**
-				 * Fires when the custom CSS rules for a given element are updated.
-				 *
-				 * @since 1.0.0
-				 */
-				app.channel.trigger( 'css:update', itemView.model.get( 'id' ), response.css );
-			},
-
-			/**
-			 * Catches template rendering errors.
-			 *
-			 * @since 1.0.0
-			 *
-			 * @param response
-			 */
-			error : function( response ) {
-				itemView.updateTemplate( 'The template for ' + itemView.cid + ' could not be refreshed' );
-			},
-
-			/**
-			 * Renders the element with the new template.
-			 *
-			 * @since 1.0.0
-			 */
-			complete : function() {
-				var isEditing = itemView.$el.hasClass( 'is-editing' );
-				var isSelected = itemView.$el.hasClass( 'is-selected' );
-
-				itemView.$el.removeClass( 'is-rendering' );
-
-				/**
-				 * Fires before the container template is refreshed.
-				 *
-				 * @since 1.0.0
-				 */
-				itemView.triggerAll( 'before:element:refresh', itemView, model.atts );
-
-				itemView.render();
-
-				/**
-				 * Fires after the container template is refreshed.
-				 *
-				 * @since 1.0.0
-				 */
-				itemView.triggerAll( 'element:refresh', itemView, model.atts );
-
-				if ( isEditing ) {
-					itemView.$el.addClass( 'is-editing' );
-				}
-
-				if ( isSelected ) {
-					itemView.$el.addClass( 'is-selected' );
-				}
-			}
-		};
-
-		itemView.el.classList.add( 'is-rendering' );
-
-		window.ajax.send( 'tailor_render', options );
-	},
-
-	/**
-	 * Triggers events when the element parent changes.
-	 *
-	 * @since 1.0.0
-	 */
-	onChangeParent : function() {
-		this.triggerAll( 'element:change:parent', this );
-	},
-
-	/**
-	 * Triggers an event on the application channel before the DOM element is rendered.
-	 *
-	 * @since 1.0.0
-	 */
-	onBeforeRender : function() {
-		this.triggerAll( 'before:element:ready', this );
-	},
-
-	/**
-	 * Prepares the view and triggers events when the DOM is refreshed.
-	 *
-	 * @since 1.0.0
-	 */
-	onDomRefresh : function() {
-		var elementView = this;
-		
-		this.el.setAttribute( 'draggable', true );
-
-		this.$el
-			.find( 'a' )
-			.attr( { draggable : false, target : '_blank' } );
-
-		this.$el
-			.find( 'img' )
-			.attr( { draggable : false } );
-		
-		this.$el.imagesLoaded( function() {
-
-			elementView._isReady = true;
-
-			/**
-			 * Fires when the element is rendered and all images have been loaded.
-			 *
-			 * @since 1.0.0
-			 */
-			elementView.triggerAll( 'element:ready', elementView );
-		} );
-	},
-
-	/**
-	 * Triggers events before the element is destroyed.
-	 *
-	 * @since 1.0.0
-	 */
-	onBeforeDestroy : function() {
-		this.triggerAll( 'before:element:destroy', this );
-	},
-
-	/**
-	 * Triggers an event when the element is destroyed.
-	 *
-	 * @since 1.0.0
-	 */
-	onDestroy : function() {
-		this.triggerAll( 'element:destroy', this );
-	},
-	
-	/**
-	 * Triggers events and methods during a given event in the lifecycle.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param event
-	 * @param view
-	 * @param atts
-	 */
-	triggerAll : function( event, view, atts ) {
-
-		this.$el.trigger( event, view );
-
-		this.triggerMethod( event, view );
-
-		if ( atts ) {
-			app.channel.trigger( event, this, atts);
-		}
-		else {
-			app.channel.trigger( event, this );
-		}
-	}
-
-} );
-
-module.exports = ElementView;
-},{}],29:[function(require,module,exports){
-/**
- * Tailor.Views.TailorBox
- *
- * Box element view.
- *
- * @class
- */
-var ContainerView = require( './../view-container' ),
-    BoxView;
-
-BoxView = ContainerView.extend( {
-    childViewContainer : '.tailor-box__content'
-} );
-
-module.exports = BoxView;
-},{"./../view-container":27}],30:[function(require,module,exports){
-/**
- * Tailor.Views.TailorCard
- *
- * Card element view.
- *
- * @class
- */
-var ContainerView = require( './../view-container' ),
-    CardView;
-
-CardView = ContainerView.extend( {
-    childViewContainer : '.tailor-card__content'
-} );
-
-module.exports = CardView;
-},{"./../view-container":27}],31:[function(require,module,exports){
-/**
- * Tailor.Views.TailorHero
- *
- * Hero element view.
- *
- * @class
- */
-var ContainerView = require( './../view-container' ),
-    HeroView;
-
-HeroView = ContainerView.extend( {
-    childViewContainer : '.tailor-hero__content'
-} );
-
-module.exports = HeroView;
-},{"./../view-container":27}],32:[function(require,module,exports){
-/**
- * Tailor.Views.TailorSection
- *
- * Section element view.
- *
- * @class
- */
-var ContainerView = require( './../view-container' ),
-	SectionView;
-
-SectionView = ContainerView.extend( {
-
-	attributes : {
-		draggable : true
-	},
-
-    modelEvents : {
-        'change:atts' : 'onChangeAttributes',
-        'change:order' : 'onChangeOrder'
+	    /**
+	     * Fires when the CSS module is initialized.
+	     *
+	     * @since 1.5.0
+	     *
+	     * @param this
+	     */
+	    app.channel.trigger( 'module:css:ready', this );
     },
 
-    childViewContainer : '.tailor-section__content',
+	/**
+     * Adds the required event listeners.
+     *
+     * @since 1.0.0
+     */
+    addEventListeners : function() {
+        this.listenTo( app.channel, 'css:add', this.addRules );         // Add CSS for an element (or elements)
+        this.listenTo( app.channel, 'css:update', this.updateRules );   // Update the CSS for a given element
+		this.listenTo( app.channel, 'css:copy', this.copyRules );       // Copy the CSS for one element to another
+		this.listenTo( app.channel, 'css:clear', this.clearRules );     // Delete all CSS in the stylesheet
 
-	onChangeOrder : function() {
-		jQuery( window ).trigger( 'resize' );
+		//this.listenTo( this.collection, 'reset', this.onReset );
+		this.listenTo( this.collection, 'destroy', this.onDestroy );
+	},
+
+	/**
+	 * Creates a new stylesheet.
+	 *
+	 * @since 1.5.0
+	 * 
+	 * @param id
+	 * @param min
+	 * @param max
+	 * @returns {*}
+	 */
+	createSheet : function( id, min, max ) {
+		var media = 'only screen';
+		if ( min ) {
+			media += ' and (min-width: ' + min + ')';
+		}
+		if ( max ) {
+			media += ' and (max-width: ' + max + ')';
+		}
+		return new Stylesheet( id, media );
+	},
+
+	/**
+	 * Creates a stylesheet for each registered media query.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param mediaQueries
+	 */
+	createSheets : function( mediaQueries ) {
+		_.each( mediaQueries, function( atts, id ) {
+			if ( ! _.isEmpty( atts.min ) ) {
+				if ( ! _.isEmpty( atts.max ) ) {
+					this.stylesheets[ id ] = this.createSheet( id, atts.min, atts.max );
+					this.stylesheets[ id + '-up' ] = this.createSheet( id + '-up', atts.min );
+				}
+				else {
+					this.stylesheets[ id ] = this.createSheet( id, atts.min );
+				}
+			}
+			else  {
+				if ( ! _.isEmpty( atts.max ) ) {
+					this.stylesheets[ id ] = this.createSheet( id, null, atts.max );
+				}
+				else {
+					this.stylesheets[ id ] = this.createSheet( id );
+				}
+			}
+		}, this );
+
+		/**
+		 * Fires when stylesheets have been created.
+		 *
+		 * @since 1.5.0
+		 *
+		 * @param this
+		 */
+		app.channel.trigger( 'module:css:stylesheets:ready', this );
+	},
+
+	/**
+	 * Returns the stylesheet with the given ID (media query type).
+	 * 
+	 * @since 1.5.0
+	 * 
+	 * @param id
+	 */
+	getSheet : function( id ) {
+		if ( this.stylesheets.hasOwnProperty( id ) ) {
+			return this.stylesheets[ id ];
+		}
+		return false;
+	},
+
+	/**
+	 * Adds CSS rules for each registered media query.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param cssRules
+	 */
+    addRules : function( cssRules ) {
+		for ( var queryId in cssRules ) {
+			if ( cssRules.hasOwnProperty( queryId ) ) {
+				if ( this.stylesheets.hasOwnProperty( queryId ) ) {
+					this.stylesheets[ queryId ].addRules( cssRules[ queryId ] );
+				}
+			}
+		}
+    },
+
+	/**
+	 * Clears all dynamic CSS rules.
+	 *
+	 * @since 1.0.0
+	 */
+    clearRules : function() {
+        for ( var queryId in this.stylesheets ) {
+            if ( this.stylesheets.hasOwnProperty( queryId ) ) {
+                this.stylesheets[ queryId ].clearRules();
+            }
+        }
+    },
+
+	/**
+	 * Copies the CSS rules associated with a given element.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param elementId
+	 * @param newElementId
+	 */
+    copyRules : function( elementId, newElementId ) {
+        for ( var queryId in this.stylesheets ) {
+            if ( this.stylesheets.hasOwnProperty( queryId ) ) {
+
+	            // Get rules for the existing element
+	            var rules = this.stylesheets[ queryId ].getRules( elementId );
+
+	            if ( rules.length ) {
+
+		            // Update the selector strings
+		            for ( var rule in rules ) {
+			            if ( rules.hasOwnProperty( rule ) ) {
+				            rules[ rule ].selectors = rules[ rule ].selectors.replace( new RegExp( elementId, "g" ), newElementId );
+			            }
+		            }
+
+		            // Generate a new rule set and add them to the stylesheet
+		            var rulesSet = {};
+		            rulesSet[ queryId ] = {};
+		            rulesSet[ queryId ][ newElementId ] = rules;
+		            
+		            this.addRules( rulesSet );
+	            }
+            }
+        }
+    },
+
+	/**
+	 * Deletes the CSS rules associated with a given element.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param elementId
+	 * @param settingId
+	 */
+    deleteRules : function( elementId, settingId ) {
+        for ( var queryId in this.stylesheets ) {
+            if ( this.stylesheets.hasOwnProperty( queryId ) ) {
+                this.stylesheets[ queryId ].deleteRules( elementId, settingId );
+            }
+        }
+    },
+
+	/**
+	 * Replaces the CSS rules for a given element.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param elementId
+	 * @param cssRules
+	 */
+    updateRules : function( elementId, cssRules ) {
+        this.deleteRules( elementId );
+        this.addRules( cssRules );
+	},
+
+	/**
+	 * Clears all rules for this stylesheet when the element collection is reset.
+	 *
+	 * @since 1.5.0
+	 */
+	onReset: function() {
+		this.clearRules();
+	},
+
+	/**
+	 * Deletes the rules associated with an element when it is destroyed.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param model
+	 */
+	onDestroy : function( model ) {
+		this.deleteRules( model.get( 'id' ) );
 	}
 
 } );
 
-module.exports = SectionView;
-},{"./../view-container":27}],33:[function(require,module,exports){
+module.exports = CSSModule;
+},{"./stylesheet":44}],44:[function(require,module,exports){
+/**
+ * Stylesheet object for managing CSS.
+ *
+ * @param id
+ * @param media
+ * @constructor
+ */
+function Stylesheet( id, media ) {
+    this.id = id;
+
+    this.initialize( media );
+}
+
+Stylesheet.prototype = {
+
+	/**
+     * Initializes the stylesheet.
+     *
+     * @since 1.0.0
+     *
+     * @param media
+     */
+    initialize : function( media ) {
+        this.stylesheet = this.createStylesheet( media );
+        this.sheet = this.stylesheet.sheet;
+		this.lookup = [];
+	},
+
+	/**
+	 * Adds the stylesheet to the DOM.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param media
+	 * @returns {Element}
+	 */
+    createStylesheet : function( media ) {
+        var style = document.createElement( 'style' );
+        style.appendChild( document.createTextNode( '' ) );
+
+        media = media || 'screen';
+        style.setAttribute( 'media', media );
+        style.setAttribute( 'id', 'tailor-' + this.id );
+
+        document.head.appendChild( style );
+        return style;
+    },
+
+	/**
+	 * Adds a set of CSS rules to the stylesheet.
+	 *
+	 * @since 1.5.0
+	 *
+	 * @param ruleSet
+	 */
+    addRules : function( ruleSet ) {
+		for ( var elementId in ruleSet ) {
+			if ( ruleSet.hasOwnProperty( elementId ) ) {
+
+				this.lookup = this.lookup || [];
+
+				// Add rules for each element
+				for ( var rule in ruleSet[ elementId ] ) {
+
+					// Check that the data is correctly formatted
+					if (
+						ruleSet[ elementId ].hasOwnProperty( rule ) &&
+						_.has( ruleSet[ elementId ][ rule ], 'selectors' ) &&
+						_.has( ruleSet[ elementId ][ rule ], 'declarations' ) &&
+						_.has( ruleSet[ elementId ][ rule ], 'setting' )
+					) {
+						var selectorString = Tailor.CSS.parseSelectors( ruleSet[ elementId ][ rule ]['selectors'], elementId );
+						var declarationString = Tailor.CSS.parseDeclarations( ruleSet[ elementId ][ rule ]['declarations'] );
+
+						if ( ! _.isEmpty( declarationString ) ) {
+
+							// Add the rule to the stylesheet
+							Tailor.CSS.addRule(
+								this.sheet,
+								selectorString,
+								declarationString,
+								this.lookup.length
+							);
+
+							// Add rule data to the lookup array
+							this.lookup.push( {
+								elementId: elementId,
+								settingId: ruleSet[ elementId ][ rule ]['setting']
+							} );
+						}
+					}
+				}
+			}
+		}
+	},
+
+	/**
+	 * Gets the rules for a given element.
+	 *
+	 * @since 1.5.0
+	 *
+	 * @param elementId
+	 * 
+	 * @returns {Array}
+	 */
+	getRules : function( elementId ) {
+		var rules = [];
+		for ( var i = 0; i < this.lookup.length; i++ ) {
+			if ( _.has( this.lookup[ i ], 'elementId' ) && elementId == this.lookup[ i ]['elementId'] ) {
+				var rule = this.sheet.cssRules[ i ];
+				if ( rule.selectorText && rule.selectorText.indexOf( elementId ) > -1 ) {
+					rules.push( {
+						selectors : rule.selectorText,
+						declarations : rule.style.cssText,
+						setting: this.lookup[ i ]['settingId'] || ''
+					} );
+				}
+			}
+		}
+		return rules;
+	},
+
+	/**
+	 * Deletes rules for a given element from the stylesheet.
+	 *
+	 * @since 1.5.0
+	 *
+	 * @param elementId
+	 * @param settingId
+	 */
+    deleteRules : function( elementId, settingId ) {
+		for ( var i = 0; i < this.sheet.cssRules.length; i++ ) {
+			if ( _.has( this.lookup[ i ], 'elementId' ) && elementId == this.lookup[ i ]['elementId'] ) {
+
+				if ( _.isEmpty( settingId ) ) {
+					this.deleteRule( i );
+					i--;
+				}
+
+				// Check the element and setting ID
+				else {
+					if ( _.has( this.lookup[ i ], 'settingId' ) && settingId == this.lookup[ i ]['settingId'] ) {
+						this.deleteRule( i );
+						i--;
+					}
+				}
+			}
+		}
+	},
+
+	/**
+	 * Deletes a rule from the stylesheet.
+	 * 
+	 * @since 1.5.0
+	 * 
+	 * @param i
+	 */
+	deleteRule: function( i ) {
+		Tailor.CSS.deleteRule( this.sheet, i );
+		this.lookup.splice( i, 1 );
+	},
+
+	/**
+	 * Deletes all rules from the stylesheet.
+	 *
+	 * @since 1.0.0
+	 **/
+    clearRules : function() {
+		for ( var i = 0; i < this.sheet.cssRules.length; i++ ) {
+			this.deleteRule( i );
+			i--;
+		}
+		this.lookup = [];
+    }
+};
+
+module.exports = Stylesheet;
+},{}],45:[function(require,module,exports){
+var $ = Backbone.$,
+    $body = $( 'body' ),
+    $win = $( window ),
+    ElementCollection = require( '../../entities/collections/elements' ),
+    ElementModule;
+
+ElementModule = Marionette.Module.extend( {
+
+    /**
+     * Initializes the module.
+     *
+     * @param options
+     */
+	onBeforeStart : function( options ) {
+        var module = this;
+
+        this.collection = new ElementCollection( options.elements, { silent: false } );
+
+        var api = {
+
+            /**
+             * Returns a given element if an ID is provided, otherwise the element collection.
+             *
+             * @since 1.0.0
+             *
+             * @param id
+             * @returns {*}
+             */
+            getElements : function( id ) {
+                if ( id ) {
+                    return module.collection.findWhere( { id : id } );
+                }
+                return module.collection;
+            },
+
+            /**
+             * Resets the element collection with an array of objects.
+             *
+             * New templates are created in a single request to the server before the collection is reset.
+             *
+             * @since 1.0.0
+             *
+             * @param models
+             */
+            resetElements : function( models ) {
+                if ( models === module.collection.models ) {
+                    return;
+                }
+
+                var canvas = app.canvasRegion.el;
+                var templates;
+                
+                canvas.classList.add( 'is-loading' );
+                
+                window.ajax.send( 'tailor_reset', {
+                    data : {
+                        models : JSON.stringify( models ),
+                        nonce : window._nonces.reset
+                    },
+
+                    /**
+                     * Appends the element templates to the page.
+                     *
+                     * @since 1.0.0
+                     *
+                     * @param response
+                     */
+                    success : function( response ) {
+
+                        // Update the model collection with the sanitized models
+                        models = response.models;
+
+                        // Record the template HTML and append it to the page
+                        templates = response.templates;
+
+                        $body.append( templates );
+                        
+                        /**
+                         * Clears all existing dynamic CSS rules.
+                         *
+                         * @since 1.0.0
+                         */
+                        app.channel.trigger( 'css:clear' );
+
+                        /**
+                         * Adds new dynamic CSS rules.
+                         *
+                         * @since 1.0.0
+                         */
+                        app.channel.trigger( 'css:add', response.css );
+                    },
+
+                    /**
+                     * Resets the collection with the given set of elements.
+                     *
+                     * @since 1.0.0
+                     */
+                    complete : function() {
+
+                        if ( templates ) {
+
+                            /**
+                             * Fires before the element collection is restored.
+                             *
+                             * @since 1.0.0
+                             */
+                            app.channel.trigger( 'before:elements:restore' );
+                            app.channel.trigger( 'canvas:reset' );
+
+                            module.collection.reset( null );
+                            module.collection.reset( models );
+
+                            /**
+                             * Fires when the element collection is restored.
+                             *
+                             * @since 1.0.0
+                             */
+                            app.channel.trigger( 'elements:restore' );
+
+                            $win.trigger( 'resize' );
+                        }
+
+                        canvas.classList.remove( 'is-loading' );
+                    }
+                } );
+            }
+        };
+
+        app.channel.reply( 'canvas:elements', api.getElements );
+        app.channel.on( 'elements:reset', api.resetElements );
+    },
+
+    /**
+     * Initializes the module.
+     */
+    onStart : function() {
+
+        /**
+         * Fires when the module is initialized.
+         *
+         * @since 1.5.0
+         *
+         * @param this
+         */
+        app.channel.trigger( 'module:elements:ready', this );
+    }
+
+} );
+
+module.exports = ElementModule;
+},{"../../entities/collections/elements":27}],46:[function(require,module,exports){
+var $ = Backbone.$,
+    $body = $( 'body' ),
+    $win = $( window ),
+    TemplateModule;
+
+TemplateModule = Marionette.Module.extend( {
+
+    /**
+     * Initializes the module.
+     */
+	onStart : function() {
+        var module = this;
+
+        this.collection = app.channel.request( 'canvas:elements' );
+
+        var api = {
+
+            /**
+             * Loads a template by retrieving, sanitizing and inserting the associated models into the collection.
+             *
+             * @since 1.0.0
+             *
+             * @param model
+             * @param parent
+             * @param index
+             */
+            loadTemplate : function( model, parent, index ) {
+                var models;
+                var templates;
+                var canvas = app.canvasRegion.el;
+                
+                canvas.classList.add( 'is-loading' );
+                
+                window.ajax.send( 'tailor_load_template', {
+                    data : {
+                        template_id : model.get( 'id' ),
+                        nonce : window._nonces.loadTemplate
+                    },
+
+                    /**
+                     * Appends the element templates to the page.
+                     *
+                     * @param response
+                     */
+                    success : function( response ) {
+
+                        // Update the model collection with the sanitized models
+                        models = response.models;
+
+                        // Record the template HTML and append it to the page
+                        templates = response.templates;
+
+                        $body.append( templates );
+                        
+                        /**
+                         * Adds new dynamic CSS rules.
+                         *
+                         * @since 1.0.0
+                         */
+                        app.channel.trigger( 'css:add', response.css );
+                    },
+
+                    /**
+                     * Resets the collection with the given set of elements.
+                     */
+                    complete : function() {
+                        if ( templates ) {
+                            var parents = [];
+                            var children = [];
+
+                            _.each( models, function( model ) {
+                                if ( '' == model.parent ) {
+                                    parents.push( model );
+                                }
+                                else {
+                                    children.push( model );
+                                }
+                            } );
+
+                            module.collection.add( children, { silent : true } );
+
+                            if ( parents.length > 1 ) {
+                                module.collection.add( parents, { at : index + 1 } );
+                            }
+                            else {
+                                parents[0].parent = parent;
+                                parents[0].order = index;
+                                module.collection.add( parents );
+                            }
+
+                            /**
+                             * Fires when a template is added.
+                             *
+                             * @since 1.0.0
+                             */
+                            app.channel.trigger( 'template:add', model );
+
+                            $win.trigger( 'resize' );
+                        }
+
+                        canvas.classList.remove( 'is-loading' );
+                    }
+                } );
+            }
+        };
+
+        app.channel.on( 'template:load', api.loadTemplate );
+
+        /**
+         * Fires when the module is initialized.
+         *
+         * @since 1.5.0
+         *
+         * @param this
+         */
+        app.channel.trigger( 'module:templates:ready', this );
+    }
+
+} );
+
+module.exports = TemplateModule;
+},{}],47:[function(require,module,exports){
+var SelectRegion = Backbone.Marionette.Region.extend( {
+
+    /**
+     * Adds a class name to the underlying view when selected.
+     *
+     * @since 1.0.0
+     *
+     * @param view
+     * @param region
+     * @param options
+     */
+    onShow : function( view, region, options ) {
+        view._view.el.classList.add( 'is-selected' );
+    },
+
+    /**
+     * Removes a class name from the underlying view when deselected.
+     *
+     * @since 1.0.0
+     *
+     * @param view
+     * @param region
+     * @param options
+     */
+    onEmpty : function( view, region, options ) {
+        view._view.el.classList.remove( 'is-selected' );
+    }
+
+} );
+
+module.exports = SelectRegion;
+},{}],48:[function(require,module,exports){
+var GuideView = Marionette.ItemView.extend( {
+
+	template : false,
+
+	/**
+     * Positions the insertion guide over a given element.
+     *
+     * @since 1.0.0
+     *
+     * @param view
+     * @param drop
+     */
+    position : function( view, drop ) {
+        var $el = view.$el;
+        var offset = $el.offset();
+        var parentOffset = this.$el.offsetParent().offset();
+
+        this.el.style.visibility = 'visible';
+        this.el.className = 'guide guide--' + drop + ' guide--' + view.model.get( 'tag' );
+        this.el.style.left = offset.left - parentOffset.left + 'px';
+        this.el.style.top = offset.top - parentOffset.top + 'px';
+        this.el.style.width = $el.outerWidth() + 'px';
+        this.el.style.height = $el.outerHeight() + 'px';
+        this.el.style.opacity = 1;
+    },
+
+	/**
+     * Resets the insertion guide.
+     *
+     * @since 1.0.0
+     */
+    reset : function() {
+        this.el.style.visibility = 'hidden';
+        this.el.style.opacity = 0;
+    }
+
+} );
+
+module.exports = GuideView;
+},{}],49:[function(require,module,exports){
+var SelectMenuItemView = Marionette.ItemView.extend( {
+
+    tagName : 'a',
+
+	className : 'select__item',
+
+	events : {
+		'click' : 'onClick'
+	},
+
+	getTemplate : function() {
+		return _.template( '<%= label %>' );
+	},
+
+	/**
+	 * Toggles the breadcrumb list, or selects a breadcrumb.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param e
+	 */
+	onClick : function( e ) {
+		if ( 0 === this._index ) {
+
+            /**
+             * Toggles the breadcrumbs.
+             *
+             * @since 1.0.0
+             */
+			this.triggerMethod( 'toggle' );
+		}
+		else {
+
+            /**
+             * Triggers a select event on the model.
+             *
+             * @since 1.0.0
+             */
+			this.model.trigger( 'select' );
+		}
+
+		e.stopPropagation();
+	}
+
+} );
+
+module.exports = SelectMenuItemView;
+},{}],50:[function(require,module,exports){
+var SelectMenuItemView = require( './select-menu-item' ),
+    SelectMenuView;
+
+SelectMenuView = Marionette.CompositeView.extend( {
+
+    className : 'select',
+
+	childView : SelectMenuItemView,
+
+	childViewContainer : '.select__menu',
+
+	ui : {
+		'edit' : '.js-edit',
+		'delete' : '.js-delete'
+	},
+
+    events : {
+        'click @ui.edit' : 'editElement',
+        'click @ui.delete' : 'deleteElement'
+    },
+
+    childEvents : {
+		'toggle' : 'toggleMenu'
+	},
+
+    template : '#tmpl-tailor-tools-select',
+
+    /**
+     * Provides the required information to the template rendering function.
+     *
+     * @since 1.0.0
+     *
+     * @returns {*}
+     */
+    serializeData : function() {
+        var data = Backbone.Marionette.CompositeView.prototype.serializeData.apply( this, arguments );
+        data.siblings = this.collection.where( { parent : this.model.get( 'parent' ) } ).length;
+        return data;
+    },
+
+    /**
+     * Initializes the selector.
+     *
+     * @since 1.0.0
+     *
+     * @param options
+     */
+	initialize : function( options ) {
+        this._view = options.view;
+        this._model = this._view.model;
+    },
+
+    /**
+     * Filters the collection so that only ancestors of the target element are displayed in the menu.
+     *
+     * @since 1.0.0
+     *
+     * @returns {Array}
+     * @private
+     */
+    _filteredSortedModels : function() {
+        var models = [];
+        var model = this.model;
+
+        while ( 'undefined' !== typeof model ) {
+            models.push( model );
+            model = this.collection.get( model.get( 'parent' ) );
+        }
+        return models;
+    },
+
+    /**
+     * Positions the selector over the target view.
+     *
+     * @since 1.0.0
+     */
+	onDomRefresh : function() {
+        var thisRect = this.el.parentNode.getBoundingClientRect();
+        var thatRect = this._view.el.getBoundingClientRect();
+
+        this.el.style.top = thatRect.top - thisRect.top + 'px';
+        this.el.style.left = thatRect.left - thisRect.left + 'px';
+        this.el.style.width = thatRect.width + 'px';
+        this.el.style.height = thatRect.height + 'px';
+    },
+
+    /**
+     * Edits the target element.
+     *
+     * @since 1.0.0
+     */
+    editElement : function() {
+
+        /**
+         * Fires when the edit modal is opened.
+         *
+         * @since 1.0.0
+         */
+        app.channel.trigger( 'modal:open', this.model );
+    },
+
+    /**
+     * Removes the target element.
+     *
+     * @since 1.0.0
+     */
+    deleteElement : function() {
+        this.model.trigger( 'destroy', this.model );
+
+        /**
+         * Fires when an element is deleted.
+         *
+         * This is used by the History module instead of listening to the element collection, as the removal of
+         * an element can have cascading effects (e.g., the removal of column and row structures) which should
+         * not be tracked as steps.
+         *
+         * @since 1.0.0
+         *
+         * @param this.model
+         */
+        app.channel.trigger( 'element:delete', this.model );
+    },
+
+    /**
+     * Toggles the menu.
+     *
+     * @since 1.0.0
+     */
+    toggleMenu : function() {
+        this.$el.toggleClass( 'is-expanded' );
+    }
+
+} );
+
+module.exports = SelectMenuView;
+},{"./select-menu-item":49}],51:[function(require,module,exports){
+var GuideView = require( './show/guide' ),
+    SelectorView = require( './show/select-menu' ),
+    ToolsModule;
+
+ToolsModule = Marionette.Module.extend( {
+
+    /**
+     * Initializes the module.
+     *
+     * @since 1.0.0
+     */
+	onStart : function() {
+        var guide = new GuideView( { el : '#guide' } ).render();
+        var api = {
+
+            /**
+             * Shows and positions the insertion guide.
+             *
+             * @since 1.0.0
+             *
+             * @param view
+             * @param drop
+             */
+            positionGuide : function( view, drop ) {
+                guide.position( view, drop );
+            },
+
+            /**
+             * Displays the element selector.
+             *
+             * @since 1.0.0
+             *
+             * @param view
+             */
+            selectElement : function( view ) {
+                app.selectRegion.show(
+                    new SelectorView( {
+                        model : view.model,
+                        collection : app.channel.request( 'canvas:elements' ),
+                        view : view
+                    } )
+                );
+            },
+
+            /**
+             * Resets the canvas.
+             *
+             * @since 1.0.0
+             */
+            resetGuide : function() {
+                guide.reset();
+
+                app.selectRegion.empty();
+            },
+
+            /**
+             * Returns the currently selected element, if one exists.
+             *
+             * @since 1.0.0
+             *
+             * @returns {*}
+             */
+            getSelectedElement : function() {
+                var select = app.selectRegion.currentView;
+                return select ? select.model : null;
+            }
+        };
+
+        this.listenTo( app.channel, 'canvas:guide', api.positionGuide );
+        this.listenTo( app.channel, 'canvas:select', api.selectElement );
+        this.listenTo( app.channel, 'canvas:reset', api.resetGuide );
+        this.listenTo( app.channel, 'element:refresh:template', api.resetGuide );
+
+        app.channel.reply( 'canvas:element:selected', api.getSelectedElement );
+
+        /**
+         * Fires when the module is initialized.
+         *
+         * @since 1.5.0
+         *
+         * @param this
+         */
+        app.channel.trigger( 'module:tools:ready', this );
+    }
+
+} );
+
+module.exports = ToolsModule;
+},{"./show/guide":48,"./show/select-menu":50}],52:[function(require,module,exports){
+var $ = Backbone.$,
+	$win = $( window );
+
+/**
+ * Element behaviors.
+ */
+( function( app, SettingAPI, ElementAPI ) {
+
+	ElementAPI.onRender( 'tailor_carousel', function( atts, model ) {
+		var carousel = this;
+		var options = {
+			autoplay : '1' == atts.autoplay,
+			arrows : '1' == atts.arrows,
+			dots : false,
+			fade : '1' == atts.fade && '1' == atts.items_per_row,
+			slidesToShow : parseInt( atts.items_per_row, 10 ) || 1,
+			adaptiveHeight : true
+		};
+
+		carousel.$el.tailorCarousel( options );
+
+		SettingAPI.onChange( 'sidebar:_tailor_element_spacing', function( to, from ) {
+			carousel.triggerAll( 'element:parent:change', carousel );
+		} );
+	} );
+
+	ElementAPI.onRender( 'tailor_column', function( atts, model ) {
+		var column = this;
+
+		// Refreshes all child elements when the column spacing setting changes
+		SettingAPI.onChange( 'sidebar:_tailor_column_spacing', function( to, from ) {
+			column.triggerAll( 'element:parent:change', column );
+		} );
+	} );
+
+	ElementAPI.onRender( 'tailor_content', function( atts, model ) {
+		this.$el.tailorLightbox( {
+			disableOn : function() {
+				return $el.hasClass( 'is-selected' );
+			}
+		} );
+	} );
+
+	ElementAPI.onRender( 'tailor_gallery', function( atts, model ) {
+		var $el = this.$el;
+		var options;
+
+		if ( 'carousel' == atts.layout ) {
+			options = {
+				autoplay : '1' == atts.autoplay,
+				arrows : '1' == atts.arrows,
+				dots : '1' == atts.dots,
+				fade : ( '1' == atts.fade && '1' == atts.items_per_row ),
+				infinite: false,
+				slidesToShow : parseInt( atts.items_per_row, 10 ) || 2
+			};
+
+			$el.tailorSimpleCarousel( options ) ;
+		}
+		else if ( 'slideshow' == atts.layout ) {
+			options = {
+				autoplay : '1' == atts.autoplay,
+				arrows : '1' == atts.arrows,
+				dots : false,
+				fade : true,
+				items : '.tailor-slideshow__slide',
+				adaptiveHeight : true,
+				draggable : false,
+				speed : 250
+			};
+
+			if ( '1' == atts.thumbnails ) {
+				options.customPaging = function( slider, i ) {
+					var thumb = $( slider.$slides[ i ] ).data( 'thumb' );
+					return '<img class="slick-thumbnail" src="' + thumb + '">';
+				};
+				options.dots = true;
+			}
+
+			$el.tailorSlideshow( options );
+		}
+		else if ( atts.masonry ) {
+			$el.tailorMasonry();
+		}
+
+		if ( this.el.classList.contains( 'is-lightbox-gallery' ) ) {
+			$el.tailorLightbox( {
+				disableOn : function() {
+					return $el.hasClass( 'is-selected' );
+				}
+			} );
+		}
+	} );
+
+	ElementAPI.onRender( 'tailor_map', function( atts, model ) {
+		this.$el.tailorGoogleMap();
+	} );
+
+	ElementAPI.onRender( 'tailor_posts', function( atts, model ) {
+		var $el = this.$el;
+		var options;
+
+		if ( 'carousel' == atts.layout ) {
+			options = {
+				autoplay : '1' == atts.autoplay,
+				arrows : '1' == atts.arrows,
+				dots : '1' == atts.dots,
+				fade : ( '1' == atts.fade && '1' == atts.items_per_row ),
+				infinite: false,
+				slidesToShow : parseInt( atts.items_per_row, 10 ) || 2
+			};
+
+			this.$el.tailorSimpleCarousel( options ) ;
+		}
+		else if ( atts.masonry ) {
+			$el.tailorMasonry();
+		}
+	} );
+
+	ElementAPI.onRender( 'tailor_section', function( atts, model ) {
+		var section = this;
+
+		// Refreshes all child elements when the section width setting changes
+		SettingAPI.onChange( 'sidebar:_tailor_section_width', function( to, from ) {
+			section.triggerAll( 'element:parent:change', section );
+		} );
+
+		var ratio = this.el.getAttribute( 'data-ratio' );
+		if ( atts.parallax && ratio ) {
+			this.$el.tailorParallax( { ratio: ratio } );
+		}
+	} );
+
+	ElementAPI.onRender( 'tailor_tabs', function( atts, model ) {
+		this.$el.tailorTabs();
+	} );
+
+	ElementAPI.onRender( 'tailor_toggles', function( atts, model ) {
+		this.$el.tailorToggles();
+	} );
+
+} ( window.app, window.Tailor.Api.Setting, window.Tailor.Api.Element ) );
+
+/**
+ * Live setting and dynamic CSS updates.
+ */
+( function( app, SettingAPI ) {
+
+	// CSS rule sets associated with sidebar settings
+	var cssRules = window._pageRules || [];
+
+	// Collection of CSS by setting ID
+	var cssCollection = {
+		'_tailor_section_width' : '',
+		'_tailor_column_spacing' : '',
+		'_tailor_element_spacing' : '',
+		'_tailor_page_css' : '' // Custom page CSS
+	};
+
+	// Stylesheet for page setting CSS
+	var stylesheet = document.createElement( 'style' );
+	stylesheet.appendChild( document.createTextNode( '' ) );
+	stylesheet.setAttribute( 'media', 'screen' );
+	stylesheet.setAttribute( 'id', 'tailor-settings' );
+	document.head.appendChild( stylesheet );
+
+	/**
+	 * Returns true if all values in an array are equal.
+	 *
+	 * @since 1.5.0
+	 *
+	 * @param array
+	 * @returns {boolean}
+	 */
+	function isIdentical( array ) {
+		for ( var i = 0; i < array.length - 1; i++ ) {
+			if( array[ i ] !== array[ i + 1 ] ) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Generates CSS for a given setting.
+	 *
+	 * @since 1.4.0
+	 *
+	 * @param settingId
+	 * @param value
+	 */
+	function generateCSS( settingId, value ) {
+		cssCollection[ settingId ] = '';
+		value = _.isString( value ) ? value.trim() : value;
+
+		// Compile the CSS rules for non-empty setting values
+		if ( ! _.isEmpty( value ) ) {
+			_.each( cssRules[ settingId ], function( rule ) {
+				var selectors = Tailor.CSS.parseSelectors( rule.selectors );
+				var declarations = Tailor.CSS.parseDeclarations( rule.declarations ).replace( /\{\{(.*?)\}\}/g, value );
+				cssCollection[ settingId ] += "\n" + selectors + " {" + declarations + "}";
+			} );
+		}
+	}
+
+	/**
+	 * Updates the stylesheet.
+	 *
+	 * @since 1.4.0
+	 */
+	function updateStylesheet() {
+		var value = '';
+		for ( var settingId in cssCollection ) {
+			if ( cssCollection.hasOwnProperty( settingId ) ) {
+				value += cssCollection[ settingId ];
+			}
+		}
+		stylesheet.innerHTML = value;
+		$win.trigger( 'resize' );
+	}
+
+	app.channel.on( 'module:css:stylesheets:ready', function( cssModule ) {
+
+		// Generate page setting CSS on page load
+		var settings = app.channel.request( 'sidebar:settings' );
+		if ( settings && settings.length ) {
+			settings.each( function( setting ) {
+				var id = setting.get( 'id' );
+				var value = setting.get( 'value' );
+				value = _.isString( value ) ? value.trim() : value;
+
+				if ( ! _.isEmpty( value ) && cssCollection.hasOwnProperty( id ) ) {
+					if ( cssRules.hasOwnProperty( id ) ) {
+						generateCSS( id, value );
+					}
+					else {
+						cssCollection[ id ] = value
+					}
+				}
+			} );
+		}
+
+		updateStylesheet();
+
+		/**
+		 * Sidebar settings.
+		 */
+		var ids = [
+			'_tailor_section_width',
+			'_tailor_column_spacing',
+			'_tailor_element_spacing'
+		];
+		_.each( ids, function( settingId ) {
+			if ( cssRules.hasOwnProperty( settingId ) ) {
+				SettingAPI.onChange( 'sidebar:' + settingId, function( to, from ) {
+					generateCSS( settingId, to );
+					updateStylesheet();
+				} );
+			}
+		} );
+
+		// Custom page CSS
+		SettingAPI.onChange( 'sidebar:_tailor_page_css', function( to, from ) {
+			cssCollection[ '_tailor_page_css' ] = to;
+			updateStylesheet();
+		} );
+
+		// Post title
+		SettingAPI.onChange( 'sidebar:_post_title', function( to, from ) {
+			$( 'h1, h2, h1 a, h2 a'  ).each( function() {
+				if ( from == this.textContent ) {
+					this.textContent = to;
+				}
+			} );
+		} );
+
+		/**
+		 * Element settings.
+		 */
+		ids = [
+
+			// Dimensions
+			'min_height',
+
+			// Colors
+			'color',
+			'background_color',
+			'border_color',
+
+			// Borders
+			'border_style',
+			'border_radius',
+
+			// Background images
+			'background_repeat',
+			'background_position',
+			'background_size',
+			'background_attachment'
+		];
+		_.each( ids, function( settingId ) {
+			SettingAPI.onChange( 'element:' + settingId, function( to, from, model ) {
+				var rule = {
+					selectors: 'tailor_button' == model.get( 'tag' ) ? [ 'a.tailor-button__inner' ] : [],
+					declarations: {}
+				};
+				rule.declarations[ settingId.replace( '_', '-' ) ] = to;
+
+				// Return the rule(s)
+				return [ rule ];
+			} );
+		} );
+
+		// Link color
+		SettingAPI.onChange( 'element:link_color', function( to, from, model ) {
+			return [ {
+				selectors: [ 'a' ],
+				declarations: { color : to }
+			} ];
+		} );
+
+		// Heading color
+		SettingAPI.onChange( 'element:heading_color', function( to, from, model ) {
+			return [ {
+				selectors: [ 'h1, h2, h3, h4, h5' ],
+				declarations: { color : to }
+			} ];
+		} );
+
+		// Graphic color
+		SettingAPI.onChange( 'element:graphic_color', function( to, from, model ) {
+			var tag = model.get( 'tag' );
+			if ( 'tailor_list_item' == tag ) {
+				return [ {
+					selectors: [ '.tailor-list__graphic' ],
+					declarations: { color : to }
+				} ];
+			}
+			return [ {
+				selectors: [ '.' + tag.replace( /_/gi, '-' ) + '__graphic' ],
+				declarations: { color : to }
+			} ];
+		} );
+
+		// Graphic hover color
+		SettingAPI.onChange( 'element:graphic_color_hover', function( to, from, model ) {
+			var tag = model.get( 'tag' );
+			if ( 'tailor_list_item' == tag ) {
+				return [ {
+					selectors: [ '.tailor-list__graphic:hover' ],
+					declarations: { color : to }
+				} ];
+			}
+			return [ {
+				selectors: [ '.' + tag.replace( /_/gi, '-' ) + '__graphic:hover' ],
+				declarations: { color : to }
+			} ];
+		} );
+
+		// Minimum item height
+		SettingAPI.onChange( 'element:min_item_height', function( to, from, model ) {
+			return [ {
+				selectors: [ model.get( 'tag' ).replace( /_/gi, '-' ) + '__item' ],
+				declarations: { minHeight : to }
+			} ];
+		} );
+
+		// Maximum width
+		SettingAPI.onChange( 'element:max_width', function( to, from, model ) {
+			var $el = this.$childViewContainer ? this.$childViewContainer : this.$el;
+			$el.css( { maxWidth: to } );
+		} );
+
+		// Minimum column height
+		SettingAPI.onChange( 'element:min_column_height', function( to, from, model ) {
+			return [ {
+				selectors: [ '.tailor-column' ],
+				declarations: { 'min-height' : to }
+			} ];
+		} );
+
+		// Column spacing
+		SettingAPI.onChange( 'element:column_spacing', function( to, from, model ) {
+			return [
+				{
+					selectors: [],
+					declarations: {
+						'margin-left' : '-calc(' + to + '/2)',
+						'margin-right' : '-calc(' + to + '/2)'
+					}
+				},
+				{
+					selectors: [ '.tailor-column' ],
+					declarations: {
+						'padding-left' : 'calc(' + to + '/2)',
+						'padding-right' : 'calc(' + to + '/2)'
+					}
+				}
+			];
+		} );
+
+		// Horizontal alignment
+		SettingAPI.onChange( 'element:horizontal_alignment', function( to, from, model ) {
+			this.el.className = this.el.className.replace( /\bu-text-.*?\b/g, '' );
+			this.el.classList.add( 'u-text-' + to );
+		} );
+
+		// Vertical alignment
+		SettingAPI.onChange( 'element:vertical_alignment', function( to, from, model ) {
+			this.el.className = this.el.className.replace( /\bu-align-.*?\b/g, '' );
+			this.el.classList.add( 'u-align-' + to );
+		} );
+
+		// Class name
+		SettingAPI.onChange( 'element:class', function( to, from, model ) {
+			if ( ! _.isEmpty( from ) ) {
+				this.el.classList.remove( from );
+			}
+			if ( ! _.isEmpty( to ) ) {
+				this.el.classList.add( to );
+			}
+		} );
+
+		// Box shadow
+		SettingAPI.onChange( 'element:shadow', function( to, from, model ) {
+			var rules = [];
+			if ( 1 == to ) {
+				rules.push( {
+					selectors: [],
+					declarations: { 'box-shadow' : '0 2px 6px rgba(0, 0, 0, 0.1)' }
+				} );
+			}
+			return rules;
+		} );
+
+		// Hover colors
+		ids = [
+			'color_hover',
+			'background_color_hover',
+			'border_color_hover'
+		];
+		_.each( ids, function( settingId ) {
+			SettingAPI.onChange( 'element:' + settingId, function( to, from, model ) {
+				var rule = {
+					selectors: 'tailor_button' == model.get( 'tag' ) ? [ 'a.tailor-button__inner:hover' ] : [ ':hover' ],
+					declarations: {}
+				};
+				rule.declarations[ settingId.substring( 0, settingId.lastIndexOf( '_hover' ) ).replace( '_', '-' ) ] = to;
+				return [ rule ];
+			} );
+		} );
+		
+		// Link hover color
+		SettingAPI.onChange( 'element:link_color_hover', function( to, from, model ) {
+			return [ {
+				selectors: [ 'a:hover' ],
+				declarations: { color : to }
+			} ];
+		} );
+		
+		// Multi-dimensional attributes
+		ids = [
+			'padding',
+			'margin'
+		];
+		_.each( ids, function( settingId ) {
+			SettingAPI.onChange( 'element:' + settingId, function( to, from, model ) {
+				var rules = [];
+				var rule = {
+					selectors: [],
+					declarations: {}
+				};
+
+				// Process setting value
+				to = to.split( '-' );
+				if ( isIdentical( to ) ) {
+					rule.declarations[ settingId ] = to[0];
+				}
+				else {
+					if ( 2 == to.length ) {
+						to = _.object( [ 'top', 'bottom' ], to );
+					}
+					else if ( 4 == to.length ) {
+						to = _.object( [ 'top', 'right', 'bottom', 'left' ], to );
+					}
+					else {
+						return;
+					}
+					for ( var key in to ) {
+						if ( to.hasOwnProperty( key ) ) {
+							rule.declarations[ settingId + '-' + key ] = to[ key ];
+						}
+					}
+				}
+
+				if ( _.keys( rule.declarations ).length > 0 ) {
+					rules.push( rule );
+				}
+
+				return rules;
+			} );
+		} );
+
+		// Border width
+		SettingAPI.onChange( 'element:border_width', function( to, from, model ) {
+			var rules = [];
+			var rule = {
+				selectors: [],
+				declarations: {}
+			};
+
+			// Process setting value
+			to = to.split( '-' );
+			if ( isIdentical( to ) ) {
+				rule.declarations[ 'border-width' ] = to[0];
+			}
+			else {
+				if ( 2 == to.length ) {
+					to = _.object( [ 'top', 'bottom' ], to );
+				}
+				else if ( 4 == to.length ) {
+					to = _.object( [ 'top', 'right', 'bottom', 'left' ], to );
+				}
+				else {
+					return;
+				}
+				for ( var key in to ) {
+					if ( to.hasOwnProperty( key ) ) {
+						rule.declarations[ 'border-' + key + '-width' ] = to[ key ];
+					}
+				}
+			}
+
+			if ( _.keys( rule.declarations ).length > 0 ) {
+				rules.push( rule );
+			}
+
+			return rules;
+		} );
+
+	} );
+} ( window.app, window.Tailor.Api.Setting ) );
+},{}],53:[function(require,module,exports){
+
+var app = window.app,
+    cssModule,
+    callbacks = {
+        'sidebar' : [],
+        'element' : []
+    };
+
+/**
+ * Ensures that the query name provided is valid.
+ *
+ * @since 1.5.0
+ *
+ * @param query
+ * @returns {*}
+ */
+function checkQuery( query ) {
+    if ( ! query || ! _.contains( _.keys( cssModule.stylesheets ), query ) ) {
+        query = 'all';
+    }
+    return query;
+}
+
+/**
+ * Triggers registered callback functions when a sidebar setting is changed.
+ *
+ * @since 1.5.0
+ *
+ * @param setting
+ */
+var onSidebarChange = function( setting ) {
+    var settingId = setting.get( 'id' );
+
+    // Do nothing if there are no registered callbacks for this setting
+    if ( _.isEmpty( callbacks['sidebar'][ settingId ] ) ) {
+        return;
+    }
+
+    _.each( callbacks['sidebar'][ settingId ], function( callback ) {
+        callback.apply( window, [ setting.get( 'value' ), setting.previous( 'value' ) ] );
+    } );
+};
+
+/**
+ * Triggers registered callback functions when an element setting is changed.
+ *
+ * @since 1.5.0
+ *
+ * @param setting
+ * @param view
+ */
+var onElementChange = function( setting, view ) {
+    var elementId = view.model.get( 'id' );
+    var settingId = setting.get( 'id' );
+
+    // Do nothing if there are no registered callbacks for this setting
+    if ( ! callbacks['element'].hasOwnProperty( settingId ) || 0 == callbacks['element'][ settingId ].length ) {
+        return;
+    }
+
+    if ( 1 == callbacks['element'][ settingId ].length ) {
+        cssModule.deleteRules( elementId, settingId );
+    }
+
+    var ruleSets = {};
+    var rules;
+    
+    _.each( callbacks['element'][ settingId ], function( callback ) {
+        if ( 'function' == typeof callback ) {
+            
+            // Get the collection of rules from the callback function
+            rules = callback.apply( view, [ setting.get( 'value' ), setting.previous( 'value' ), view.model ] );
+            
+            if ( _.isArray( rules ) && rules.length > 0 ) {
+
+                // Process the rules
+                for ( var rule in rules ) {
+                    if ( rules.hasOwnProperty( rule ) ) {
+                        
+                        if (
+                            ! rules[ rule ].hasOwnProperty( 'selectors' ) ||
+                            ! rules[ rule ].hasOwnProperty( 'declarations' )
+                        ) {
+                            continue;
+                        }
+                        
+                        var query = checkQuery( rules[ rule ].media );
+                        ruleSets[ query ] = ruleSets[ query ] || {};
+                        ruleSets[ query ][ elementId ] = ruleSets[ query ][ elementId ] || [];
+
+                        if ( _.keys( rules[ rule ].declarations ).length > 0 ) {
+                            ruleSets[ query ][ elementId ].push( {
+                                selectors: rules[ rule ].selectors,
+                                declarations: rules[ rule ].declarations,
+                                setting: settingId
+                            } );
+                        }
+                    }
+                }
+
+                // Update the rules for the element/setting
+                cssModule.addRules( ruleSets );
+            }
+        }
+    } );
+};
+
+app.listenTo( app.channel, 'sidebar:setting:change', onSidebarChange );
+app.listenTo( app.channel, 'element:setting:change', onElementChange );
+app.channel.on( 'module:css:stylesheets:ready', function( module ) {
+    cssModule = module;
+} );
+
+function registerCallback( type, id, callback ) {
+    if ( 'function' === typeof callback ) {
+        callbacks[ type ][ id ] = callbacks[ type ][ id ] || [];
+        callbacks[ type ][ id ].push( callback );
+    }
+}
+
+module.exports = {
+
+    /**
+     * API for updating the canvas when a sidebar or element setting is changed.
+     * 
+     * Accepts an event in the form "setting_type:setting_id".
+     *
+     * @since 1.5.0
+     *
+     * @param id
+     * @param callback
+     */
+    onChange : function( id, callback ) {
+        var parts = id.split( ':' );
+        if ( parts.length >= 2 && _.contains( [ 'sidebar', 'element' ], parts[0] ) ) {
+            registerCallback( parts[0], parts[1], callback );
+        }
+    }
+};
+},{}],54:[function(require,module,exports){
+var DraggableBehaviors = Marionette.Behavior.extend( {
+
+	events : {
+		'dragstart' : 'onDragStart',
+		'dragend' : 'onDragEnd',
+		'drag' : 'onDrag'
+	},
+
+    /**
+     * Triggers an event when dragging starts.
+     *
+     * @since 1.0.0
+     *
+     * @param e
+     */
+	onDragStart : function( e ) {
+        app.channel.trigger( 'canvas:dragstart', e.originalEvent, this.view );
+	},
+
+	/**
+	 * Triggers an event while dragging.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param e
+	 */
+	onDrag : function( e ) {
+		app.channel.trigger( 'canvas:drag', e.originalEvent, this.view );
+	},
+
+    /**
+     * Triggers an event when dragging ends.
+     *
+     * @since 1.0.0
+     *
+     * @param e
+     */
+	onDragEnd : function( e ) {
+        app.channel.trigger( 'canvas:dragend', e.originalEvent, this.view );
+	}
+
+} );
+
+module.exports = DraggableBehaviors;
+},{}],55:[function(require,module,exports){
 /**
  * Tailor.Objects.Lightbox
  *
@@ -3860,7 +7281,8 @@ $.fn.tailorLightbox = function( options, callbacks ) {
         }
     } );
 };
-},{}],34:[function(require,module,exports){
+
+},{}],56:[function(require,module,exports){
 /**
  * Tailor.Objects.Map
  *
@@ -4184,7 +7606,8 @@ $.fn.tailorGoogleMap = function( options, callbacks ) {
 };
 
 module.exports = Map;
-},{}],35:[function(require,module,exports){
+
+},{}],57:[function(require,module,exports){
 /**
  * Tailor.Objects.Masonry
  *
@@ -4395,7 +7818,8 @@ $.fn.tailorMasonry = function( options, callbacks ) {
 };
 
 module.exports = Masonry;
-},{}],36:[function(require,module,exports){
+
+},{}],58:[function(require,module,exports){
 /**
  * Tailor.Objects.Parallax
  *
@@ -4663,7 +8087,8 @@ $.fn.tailorParallax = function( options, callbacks ) {
 };
 
 module.exports = Parallax;
-},{}],37:[function(require,module,exports){
+
+},{}],59:[function(require,module,exports){
 /**
  * Tailor.Objects.Slideshow
  *
@@ -4888,7 +8313,8 @@ $.fn.tailorSlideshow = function( options, callbacks ) {
         }
     } );
 };
-},{}],38:[function(require,module,exports){
+
+},{}],60:[function(require,module,exports){
 /**
  * Tailor.Objects.Tabs
  *
@@ -5179,7 +8605,8 @@ $.fn.tailorTabs = function( options, callbacks ) {
 };
 
 module.exports = Tabs;
-},{}],39:[function(require,module,exports){
+
+},{}],61:[function(require,module,exports){
 /**
  * Tailor.Objects.Toggles
  *
@@ -5425,3459 +8852,8 @@ $.fn.tailorToggles = function( options, callbacks ) {
 };
 
 module.exports = Toggles;
-},{}],40:[function(require,module,exports){
-/**
- * The Canvas Marionette module.
- *
- * @class
- */
-var $ = window.jQuery,
-    Tailor = window.Tailor,
-    Canvas;
 
-Tailor.Collections = Tailor.Collections || {};
-Tailor.Collections.Element = require( './collections/elements' );
-Tailor.Collections.History = require( './collections/history' );
-
-Canvas = Marionette.Module.extend( {
-
-    /**
-     * Initializes the module.
-     *
-     * @param options
-     */
-	onBeforeStart : function( options ) {
-        var module = this;
-        var api = {
-
-            /**
-             * Returns a given element if an ID is provided, otherwise the element collection.
-             *
-             * @since 1.0.0
-             *
-             * @param id
-             * @returns {*}
-             */
-            getElements : function( id ) {
-                return ( id ) ? module.elementCollection.findWhere( { id : id } ) : module.elementCollection;
-            },
-
-            /**
-             * Returns a given history entry if an ID is provided, otherwise the history entry collection.
-             *
-             * @since 1.0.0
-             *
-             * @param id
-             * @returns {*}
-             */
-            getHistory : function( id ) {
-                return ( id ) ? module.historyCollection.findWhere( { id : id } ) : module.historyCollection;
-            },
-
-            /**
-             * Resets the element collection with an array of objects.
-             *
-             * New templates are created in a single request to the server before the collection is reset.
-             *
-             * @since 1.0.0
-             *
-             * @param models
-             */
-            resetElements : function( models ) {
-                if ( models === module.elementCollection.models ) {
-                    return;
-                }
-
-                var canvas = document.getElementById( 'canvas' );
-                var templates;
-
-                canvas.classList.add( 'is-loading' );
-
-                var options = {
-
-                    /**
-                     * Data passed to the reset function.
-                     *
-                     * @since 1.0.0
-                     */
-                    data : {
-                        models : JSON.stringify( models ),
-                        nonce : window._nonces.reset
-                    },
-
-                    /**
-                     * Appends the element templates to the page.
-                     *
-                     * @since 1.0.0
-                     *
-                     * @param response
-                     */
-                    success : function( response ) {
-
-                        // Update the model collection with the sanitized models
-                        models = response.models;
-
-                        // Record the template HTML and append it to the page
-                        templates = response.templates;
-
-                        $( 'body' ).append( templates );
-
-	                    /**
-	                     * Fires when existing custom CSS rules are clear.
-	                     *
-	                     * @since 1.0.0
-	                     */
-                        app.channel.trigger( 'css:clear' );
-
-	                    /**
-	                     * Fires when custom CSS rules are added.
-	                     *
-	                     * @since 1.0.0
-	                     */
-	                    app.channel.trigger( 'css:add', response.css );
-                    },
-
-                    /**
-                     * Resets the collection with the given set of elements.
-                     *
-                     * @since 1.0.0
-                     */
-                    complete : function( response ) {
-
-                        if ( templates ) {
-
-                            /**
-                             * Fires before the element collection is restored.
-                             *
-                             * @since 1.0.0
-                             */
-                            app.channel.trigger( 'before:elements:restore' );
-                            app.channel.trigger( 'canvas:reset' );
-
-                            module.elementCollection.reset( null );
-                            module.elementCollection.reset( models );
-
-                            /**
-                             * Fires when the element collection is restored.
-                             *
-                             * @since 1.0.0
-                             */
-                            app.channel.trigger( 'elements:restore' );
-
-                            $( window ).trigger( 'resize' );
-                        }
-
-                        canvas.classList.remove( 'is-loading' );
-                    }
-                };
-
-                window.ajax.send( 'tailor_reset', options );
-            },
-
-            /**
-             * Loads a template by retrieving, sanitizing and inserting the associated models into the element
-             * collection.
-             *
-             * @since 1.0.0
-             *
-             * @param model
-             * @param parent
-             * @param index
-             */
-            loadTemplate : function( model, parent, index ) {
-                var canvas = document.getElementById( 'canvas' );
-                var models;
-                var templates;
-
-                canvas.classList.add( 'is-loading' );
-
-                var options = {
-
-                    /**
-                     * Data passed to the reset function.
-                     */
-                    data : {
-                        template_id : model.get( 'id' ),
-                        nonce : window._nonces.loadTemplate
-                    },
-
-                    /**
-                     * Appends the element templates to the page.
-                     *
-                     * @param response
-                     */
-                    success : function( response ) {
-
-                        // Update the model collection with the sanitized models
-                        models = response.models;
-
-                        // Record the template HTML and append it to the page
-                        templates = response.templates;
-
-                        $( 'body' ).append( templates );
-
-	                    /**
-	                     * Fires when custom CSS rules are added.
-	                     *
-	                     * @since 1.0.0
-	                     */
-                        app.channel.trigger( 'css:add', response.css );
-                    },
-
-                    /**
-                     * Resets the collection with the given set of elements.
-                     */
-                    complete : function( response ) {
-
-                        if ( templates ) {
-                            var parents = [];
-                            var children = [];
-
-                            _.each( models, function( model ) {
-                                if ( '' == model.parent ) {
-                                    parents.push( model );
-                                }
-                                else {
-                                    children.push( model );
-                                }
-                            } );
-
-                            module.elementCollection.add( children, { silent : true } );
-
-                            if ( parents.length > 1 ) {
-                                module.elementCollection.add( parents, { at : index + 1 } );
-                            }
-                            else {
-                                parents[0].parent = parent;
-                                parents[0].order = index;
-                                module.elementCollection.add( parents );
-                            }
-
-                            /**
-                             * Fires when a template is added.
-                             *
-                             * @since 1.0.0
-                             */
-                            app.channel.trigger( 'template:add', model );
-
-                            $( window ).trigger( 'resize' );
-                        }
-
-                        canvas.classList.remove( 'is-loading' );
-                    }
-                };
-
-                window.ajax.send( 'tailor_load_template', options );
-            }
-        };
-
-        app.channel.reply( 'canvas:elements', api.getElements );
-        app.channel.reply( 'sidebar:history', api.getHistory );
-
-        app.channel.on( 'elements:reset', api.resetElements );
-        app.channel.on( 'template:load', api.loadTemplate );
-
-	    this.elementCollection = new Tailor.Collections.Element( options.elements, { silent: false } );
-	    this.historyCollection = new Tailor.Collections.History();
-	    this.l10n = options.l10n;
-    },
-
-    /**
-     * Initializes the Elements module.
-     *
-     * @param options
-     */
-    onStart : function( options ) {
-        this.addEventListeners();
-    },
-
-    /**
-     * Adds the required event listeners.
-     *
-     * @since 1.0.0
-     */
-    addEventListeners : function() {
-        this.listenTo( this.elementCollection, 'change:atts', this.onEditAttributes );
-
-        this.listenTo( app.channel, 'element:add', this.onAddElement );
-	    this.listenTo( app.channel, 'element:copy', this.onCopyElement );
-	    this.listenTo( app.channel, 'element:move', this.onMoveElement );
-
-        this.listenTo( app.channel, 'modal:apply', this.onEditElement );
-        this.listenTo( app.channel, 'element:delete', this.onDeleteElement );
-        this.listenTo( app.channel, 'element:resize', this.onResizeElement );
-        this.listenTo( app.channel, 'element:change:order', this.onReorderElement );
-
-        this.listenTo( app.channel, 'template:add', this.onAddTemplate );
-
-        this.listenTo( app.channel, 'history:restore', this.restoreSnapshot );
-        this.listenTo( app.channel, 'history:undo', this.undoStep );
-        this.listenTo( app.channel, 'history:redo', this.redoStep );
-    },
-
-    /**
-     * Triggers an event when an element's attributes are changed.
-     *
-     * @since 1.0.0
-     *
-     * @param model
-     * @param atts
-     */
-    onEditAttributes : function( model, atts ) {
-        if ( model.previous( 'atts' ) === model.get( 'atts' ) ) {
-            return;  // Do not trigger an event on the channel if this is a preview
-        }
-
-        /**
-         * Fires after the element has been edited.
-         *
-         * @since 1.0.0
-         */
-        app.channel.trigger( 'element:edit', model );
-    },
-
-    /**
-     * Creates a new history entry after a new element is added.
-     *
-     * @since 1.0.0
-     *
-     * @param model
-     */
-    onAddElement : function( model ) {
-
-        // Only show elements in the list of snapshots
-        // Templates are added separately
-        if ( 'library' != model.get( 'collection' ) ) {
-            return;
-        }
-
-        this.saveSnapshot( this.l10n.added + ' ' + model.get( 'label' ) );
-    },
-
-    /**
-     * Creates a new history entry after an element is edited.
-     *
-     * @since 1.0.0
-     *
-     * @param modal
-     * @param model
-     */
-    onEditElement : function( modal, model ) {
-        this.saveSnapshot( this.l10n.edited + ' ' + model.get( 'label' ) );
-    },
-
-    /**
-     * Creates a new history entry after an element is copied.
-     *
-     * @since 1.0.0
-     *
-     * @param model
-     */
-    onCopyElement : function( model ) {
-        this.saveSnapshot( this.l10n.copied + ' ' + model.get( 'label' ) );
-    },
-
-    /**
-     * Creates a new history entry after an element is moved.
-     *
-     * @since 1.0.0
-     *
-     * @param model
-     */
-    onMoveElement : function( model ) {
-        this.saveSnapshot( this.l10n.moved + ' ' + model.get( 'label' ) );
-    },
-
-    /**
-     * Creates a new history entry after an element is deleted.
-     *
-     * @since 1.0.0
-     *
-     * @param model
-     */
-    onDeleteElement : function( model ) {
-        this.saveSnapshot( this.l10n.deleted + ' ' + model.get( 'label' ) );
-    },
-
-    /**
-     * Creates a new history entry after an element is resized.
-     *
-     * @since 1.0.0
-     *
-     * @param model
-     */
-    onResizeElement : function( model ) {
-        this.saveSnapshot( this.l10n.resized + ' ' + model.get( 'label' ) );
-    },
-
-    /**
-     * Creates a new history entry after the children of a container are reordered.
-     *
-     * @since 1.0.0
-     *
-     * @param model
-     */
-    onReorderElement : function( model ) {
-        this.saveSnapshot( this.l10n.reordered + ' ' + model.get( 'label' ) );
-    },
-
-    /**
-     * Creates a new history entry after a template is added.
-     *
-     * @since 1.0.0
-     *
-     * @param model
-     */
-    onAddTemplate : function( model ) {
-        this.saveSnapshot( this.l10n.added + ' ' + this.l10n.template + ' - ' + model.get( 'label' ) );
-    },
-
-    /**
-     * Creates a snapshot of the element collection.
-     *
-     * @since 1.0.0
-     *
-     * @param label
-     */
-    saveSnapshot : function( label ) {
-        this.historyCollection.save( label );
-    },
-
-    /**
-     * Restores a snapshot of the element collection.
-     *
-     * @since 1.0.0
-     *
-     * @param timestamp
-     */
-    restoreSnapshot : function( timestamp ) {
-        this.historyCollection.restore( timestamp );
-    },
-
-    /**
-     * Restores the previous history snapshot.
-     *
-     * @since 1.0.0
-     */
-    undoStep : function() {
-        this.historyCollection.undo();
-    },
-
-    /**
-     * Restores the next history snapshot.
-     *
-     * @since 1.0.0
-     */
-    redoStep : function() {
-        this.historyCollection.redo();
-    }
-
-} );
-
-module.exports = Canvas;
-},{"./collections/elements":41,"./collections/history":42}],41:[function(require,module,exports){
-/**
- * Tailor.Collections.Element
- *
- * The element collection.
- *
- * @augments Backbone.Collection
- */
-var $ = Backbone.$,
-	ElementCollection;
-
-ElementCollection = Backbone.Collection.extend( {
-
-    /**
-     * Sorts the collection by order.
-     *
-     * @since 1.0.0
-     */
-    comparator: 'order',
-
-    /**
-     * Returns the appropriate model based on the given tag.
-     *
-     * @since 1.0.0
-     *
-     * @param attrs
-     * @param options
-     * @returns {*|exports|module.exports}
-     */
-	model : function( attrs, options ) {
-        var Model = window.Tailor.Models.lookup( attrs.tag, attrs.type );
-        return new Model( attrs, options );
-	},
-
-    /**
-     * Initializes the elements collection.
-     *
-     * @since 1.0.0
-     */
-	initialize : function() {
-        this.addEventListeners();
-    },
-
-    /**
-     * Adds the required event listeners.
-     *
-     * @since 1.0.0
-     */
-    addEventListeners : function() {
-        this.listenTo( this, 'change:parent', this.onChangeParent );
-        this.listenTo( this, 'add', this.onAdd );
-        this.listenTo( this, 'destroy', this.onDestroy );
-        this.listenTo( this, 'container:collapse', this.onCollapse );
-        this.listenTo( this, 'reset', this.onReset );
-    },
-
-    /**
-     * Returns the parent of a given model.
-     *
-     * @since 1.0.0
-     *
-     * @param model
-     * @returns {*}
-     */
-    getParent : function( model ) {
-        return this.findWhere( { id : model.get( 'parent' ) } );
-    },
-
-    /**
-     * Returns the siblings for a given element.
-     *
-     * @since 1.0.0
-     *
-     * @param model
-     * @returns {*}
-     */
-    getChildren : function( model ) {
-        return this.where( { parent : model.get( 'id' ) } );
-    },
-
-    /**
-     * Returns the siblings for a given element.
-     *
-     * @since 1.0.0
-     *
-     * @param model
-     * @returns {*}
-     */
-    getSiblings : function( model ) {
-        return this.where( { parent : model.get( 'parent' ) } );
-    },
-
-    /**
-     * Returns true if the given element has a selected parent.
-     *
-     * @since 1.0.0
-     *
-     * @param model
-     * @returns {boolean}
-     */
-    hasSelectedParent : function( model ) {
-        var selected = app.channel.request( 'canvas:element:selected' );
-
-        if ( ! selected || model === selected ) {
-            return false;
-        }
-
-        var parentId = model.get( 'parent' );
-        var parent = this.findWhere( { id : parentId } );
-
-        while ( 'undefined' !== typeof parent ) {
-            if ( selected === parent ) {
-                return true;
-            }
-            parentId = parent.get( 'parent' );
-            parent = this.get( parentId );
-        }
-        
-        return false;
-    },
-
-    /**
-     * Performs checks on the previous parent when an element changes parent.
-     *
-     * @since 1.0.0
-     *
-     * @param model
-     */
-	onChangeParent : function( model ) {
-		var parent = this.get( model.get( 'parent' ) );
-		var previousParent = this.get( model.previous( 'parent' ) );
-
-        //console.log( '\n Changed parent of ' + model.get( 'id' ) + ' from ' + model.previous( 'parent' ) + ' to ' + model.get( 'parent' ) );
-
-	    this.sort( { silent : true } );
-
-		this._checkParent( previousParent );
-
-		if ( 'tailor_column' === model.get( 'tag' ) ) {
-			this._reBalanceColumns( parent );
-			this._reBalanceColumns( previousParent );
-		}
-	},
-
-    /**
-     * Re-balances the columns in a row when a new column is added.
-     *
-     * @since 1.0.0
-     *
-     * @param model
-     * @param collection
-     * @param options
-     */
-	onAdd : function( model, collection, options ) {
-
-	    //console.log( '\n Added ' + model.get( 'id' ) + ' at ' + model.get( 'order' ) );
-
-		if ( 'tailor_column' == model.get( 'tag' ) && options.rebalance ) {
-			this._reBalanceColumns( this.get( model.get( 'parent' ) ) );
-		}
-    },
-
-    /**
-     * Performs checks on the parent when an element is deleted.
-     *
-     * @since 1.0.0
-     *
-     * @param model
-     */
-	onDestroy : function( model ) {
-		var parent = this.get( model.get( 'parent' ) );
-
-        //console.log( '\n Destroyed ' + model.get( 'id' ) );
-
-		this._checkParent( parent );
-        var children = this.where( { parent : model.get( 'id' ) } );
-
-        if ( children.length ) {
-
-            // Remove any children of the destroyed element
-            _.each( children, function( child ) {
-                child.trigger( 'destroy', child, this );
-            }, this );
-        }
-
-        if ( parent && 'tailor_column' === model.get( 'tag' ) ) {
-            this._reBalanceColumns( parent );
-        }
-
-        if ( 0 === this.length ) {
-            this.onEmpty();
-        }
-	},
-
-    /**
-     * Ensures that the default section/content element is displayed if the canvas is empty following a reset.
-     *
-     * @since 1.0.0
-     */
-    onReset : function() {
-        if ( 0 === this.length ) {
-            this.onEmpty();
-        }
-    },
-
-    /**
-     * Populates the element collection with an empty text element inside a section.
-     *
-     * @since 1.0.0
-     */
-    onEmpty : function() {
-        var section = this.createSection( 0 );
-
-        this.create( [ {
-            tag : 'tailor_content',
-            atts : {},
-            parent : section.get( 'id' ),
-            order : 0
-        } ] );
-    },
-
-    /**
-     * Updates the parent reference for children of a collapsed element.
-     *
-     * @since 1.0.0
-     *
-     * @param model
-     * @param children
-     */
-    onCollapse : function( model, children ) {
-        var parentId = model.get( 'parent' );
-
-        _.each( children, function( child ) {
-            child.set( 'parent', parentId );
-        }, this );
-    },
-
-    /**
-     * Re-balances the columns in a given row.
-     *
-     * @since 1.0.0
-     *
-     * @param model
-     */
-    _reBalanceColumns : function( model ) {
-        var children = this.where( { parent : model.get( 'id' ) } );
-        var numberChildren = children.length;
-
-        _.each( children, function( child ) {
-            var atts = _.clone( child.get( 'atts' ) );
-            atts.width = 12 / numberChildren;
-
-            child.set( 'atts', atts, { silent : true } );
-            child.trigger( 'change:width', model, atts.width );
-        }, this );
-    },
-
-    /**
-     * Performs checks on the previous parent when an element changes parent.
-     *
-     * @since 1.0.0
-     *
-     * @param model
-     */
-	_checkParent : function( model ) {
-        if ( ! model ) {
-            return;
-        }
-        if ( 'container' == model.get( 'type' ) ) {
-            this._checkCollapsibleContainer( model );
-        }
-        this._checkChildren( model );
-	},
-
-    /**
-     * Checks whether a collapsible container is still valid.
-     *
-     * @since 1.0.0
-     *
-     * @param model
-     * @private
-     */
-    _checkCollapsibleContainer : function( model ) {
-        var childTag = this.getLibrary().findWhere( { tag : model.get( 'tag' ) } ).get( 'child' ) ;
-        var containerId = model.get( 'id' );
-        var children = this.filter( function( element ) {
-            return containerId === element.get( 'parent' ) && childTag === element.get( 'tag' );
-        } );
-
-        // Collapse the container
-        if ( 0 === children.length ) {
-            model.trigger( 'container:collapse', model, this.where( { parent : containerId } ) );
-        }
-
-        // Collapse the only remaining column
-        else if ( 1 === children.length ) {
-	        var child = _.first( children );
-            
-            if ( 'tailor_row' === model.get( 'tag' ) ) {
-                child.trigger( 'container:collapse', child, this.where( { parent : child.get( 'id' ) } ) );
-            }
-        }
-    },
-
-    /**
-     * Destroys a container element if it is empty.
-     *
-     * @since 1.0.0
-     *
-     * @param model
-     * @private
-     */
-	_checkChildren : function( model ) {
-		var children = this.where( { parent : model.get( 'id' ) } );
-		if ( 0 === children.length ) {
-			model.trigger( 'destroy', model );
-		}
-	},
-
-    /**
-     * Creates and returns an element model.
-     *
-     * @since 1.0.0
-     *
-     * @param models
-     * @param options
-     * @returns {*}
-     */
-    create : function( models, options ) {
-        options = options || {};
-
-        if (_.isArray( models ) ) {
-            models = _.each( models, this.applyDefaults, this );
-        }
-        else {
-            models = this.applyDefaults( models );
-        }
-
-        return this.add( models, options );
-    },
-
-	/**
-	 * Returns the library collection.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @returns {*}
-	 */
-    getLibrary : function() {
-          return this.library || app.channel.request( 'sidebar:library' );
-    },
-
-    /**
-     * Applies default values to the element model.
-     *
-     * @since 1.0.0
-     *
-     * @param model
-     * @returns {*}
-     */
-    applyDefaults : function( model ) {
-        var item = this.getLibrary().findWhere( { tag : model.tag } );
-        var label = item.get( 'label' );
-        var defaults = {
-            label : item.get( 'label' ),
-            type : item.get( 'type' ),
-            child : item.get( 'child' )
-        };
-
-        model.atts = model.atts || {};
-
-        _.each( item.get( 'settings' ), function( setting ) {
-            model.atts[ setting['id'] ] = model.atts[ setting['id'] ] || setting['value'];
-        }, this );
-
-        return _.extend( model, defaults );
-    },
-
-    /**
-     * Creates and returns a new section.
-     *
-     * @since 1.0.0
-     *
-     * @param order
-     * @returns {*}
-     */
-    createSection : function( order ) {
-        return _.first( this.create( [ {
-            tag : 'tailor_section',
-            label : this.getLibrary().findWhere( { tag : 'tailor_section' } ).get( 'label' ),
-            order : order
-        } ], {
-            at : order
-        } ) );
-    },
-
-    /**
-     * Creates a new row/column layout based on a parent ID and order and returns the two resulting column models.
-     *
-     * @since 1.0.0
-     *
-     * @param parentId
-     * @param order
-     * @returns {*}
-     */
-    createRow : function( parentId, order ) {
-        var row = _.first( this.create( [ {
-            tag : 'tailor_row',
-            parent : parentId,
-            order : order
-        } ], {} ) );
-
-	    //console.log( '\n Created row ' + row.get( 'id' ) + ' at ' + order );
-
-        return this.create( [ {
-            tag : 'tailor_column',
-            atts : { width : 6 },
-            parent : row.get( 'id' ),
-            order : 0
-        }, {
-            tag : 'tailor_column',
-            atts : { width : 6 },
-            parent : row.get( 'id' ),
-            order : 1
-        } ] );
-    },
-
-    /**
-     * Creates and returns a new column.
-     *
-     * @since 1.0.0
-     *
-     * @param parentId
-     * @param order
-     * @returns {*}
-     */
-    createColumn : function( parentId, order ) {
-        var columns = this.where( { parent : parentId } );
-		var column = _.first( this.create( [ {
-			tag : 'tailor_column',
-			atts : { width : ( 12 / ( columns.length + 1 ) ) },
-			parent : parentId,
-			order : order
-		} ], {
-			rebalance : true
-		} ) );
-
-	    //console.log( '\n Created column ' + column.get( 'id' ) + ' at ' + order );
-
-        return column;
-    },
-
-    /**
-     * Inserts a child into the specified parent.
-     *
-     * @since 1.0.0
-     *
-     * @param child
-     * @param parent
-     */
-    insertChild : function( child, parent ) {
-
-        if ( ! child ) {
-            return;
-        }
-
-        if ( child.get( 'parent' ) !== parent.get( 'id' ) ) {
-            child.trigger( 'remove:child' );
-        }
-
-        parent.trigger( 'insert', child );
-        child.trigger( 'add:child' );
-
-        child.set( 'parent', parent.get( 'id' ) );
-    },
-
-	/**
-	 * Creates a new container.
-     *
-     * @since 1.0.0
-     *
-     * @param model
-     * @param parentId
-     * @param order
-     * @param descendants
-     */
-    createContainer : function( model, parentId, order, descendants ) {
-        var tag = model.get( 'tag' );
-        var container = _.first( this.create( [ {
-            tag : tag,
-            parent : parentId,
-            order : order
-        } ], {
-            at : order,
-            silent : true
-        } ) );
-
-        var childTag = model.get( 'child' );
-        var childLabel = this.getLibrary().findWhere( { tag : childTag } ).get( 'label' );
-        var children = this.create( [ {
-            tag : childTag,
-            label : childLabel,
-            atts : {},
-            parent : container.get( 'id' ),
-            order : 0
-        }, {
-            tag : childTag,
-            label : childLabel,
-            atts : {},
-            parent : container.get( 'id' ),
-            order : 1
-
-        } ], {
-            silent : true
-        } );
-
-        if ( descendants ) {
-            _.first( descendants ).set( 'parent', _.first( children ).get( 'id' ), { silent : true } );
-            _.last( descendants ).set( 'parent', _.last( children ).get( 'id' ), { silent : true } );
-        }
-
-        this.trigger( 'add', container, this, {} );
-    },
-
-	/**
-     * Creates and returns a new wrapper element.
-     *
-     * @since 1.0.0
-     *
-     * @param tag
-     * @param parentId
-     * @param order
-     * @param child
-     * @returns {*}
-     */
-    createWrapper : function( tag, parentId, order, child ) {
-        var wrapper = _.first( this.create( [ {
-            tag : tag,
-            parent : parentId,
-            order : order
-        } ], {
-            silent : true
-        } ) );
-
-        if ( 'undefined' == typeof child ) {
-            this.create( [ {
-                tag : 'tailor_content',
-                atts : {},
-                parent : wrapper.get( 'id' ),
-                order : 0
-            } ], {
-                silent : true
-            } )
-        }
-
-        this.trigger( 'add', wrapper, this, {} );
-
-        if ( 'undefined' != typeof child ) {
-            this.insertChild( child, wrapper );
-        }
-
-        return wrapper;
-    }
-
-} );
-
-module.exports = ElementCollection;
-},{}],42:[function(require,module,exports){
-/**
- * Tailor.Collections.History
- *
- * The history entry collection.
- *
- * @augments Backbone.Collection
- */
-var $ = Backbone.$,
-    HistoryCollection;
-
-HistoryCollection = Backbone.Collection.extend( {
-
-    /**
-     * The maximum number of history entries to store.
-     *
-     * @since 1.0.0
-     */
-	maxSize : 50,
-
-    /**
-     * The active history entry.
-     *
-     * @since 1.0.0
-     */
-    active : null,
-
-    /**
-     * The attribute by which entries in the collection are sorted.
-     *
-     * @since 1.0.0
-     */
-    comparator : function( model ) {
-        return - model.get( 'timestamp' );
-    },
-
-    /**
-     * Initializes the history entry collection.
-     *
-     * @since 1.0.0
-     */
-	initialize: function() {
-        this.elements = app.channel.request( 'canvas:elements' );
-        this.addEventListeners();
-        this.save( window._l10n.initialized );
-	},
-
-    /**
-     * Adds the required event listeners.
-     *
-     * @since 1.0.0
-     */
-    addEventListeners : function() {
-        this.listenTo( this, 'add', this.checkLength );
-    },
-
-    /**
-     * Saves the current element collection as a history entry.
-     *
-     * @since 1.0.0
-     *
-     * @param label
-     */
-    save : function( label ) {
-
-        // If the active entry exists and is not the latest one, remove subsequent entries
-        if ( this.active ) {
-            var activePosition = this.indexOf( this.active );
-            if ( activePosition > 0 ) {
-                this.remove( this.slice( 0, activePosition ) );
-            }
-        }
-
-        // Add the new entry to the collection
-        var entry = this.add( {
-            label : label || '',
-            elements : this.elements ? this.elements.toJSON() : [],
-            time : this.getTime(),
-            timestamp : _.now()
-        } );
-
-	    this.setActive( entry );
-    },
-
-    /**
-     * Returns the current time as a formatted string.
-     *
-     * @since 1.0.0
-     *
-     * @returns {string}
-     */
-    getTime : function() {
-        var date = new Date();
-        var hours = date.getHours();
-        var separator = ':';
-        var suffix;
-
-        if ( hours > 12 ) {
-            hours -= 12;
-            suffix = ' PM';
-        }
-        else {
-            suffix = ' AM';
-        }
-
-        return (
-            hours + separator +
-            ( '0' + date.getMinutes() ).slice( -2 ) + separator +
-            ( '0' + date.getSeconds() ).slice( -2 ) + suffix
-        );
-    },
-
-    /**
-     * Restores a given history entry.
-     *
-     * @since 1.0.0
-     *
-     * @param timestamp
-     */
-    restore : function( timestamp ) {
-        var entry = this.findWhere( { timestamp : timestamp } );
-        if ( ! entry || entry === this.getActive() ) {
-            return;
-        }
-
-        this.setActive( entry );
-        var elements = entry.get( 'elements' );
-
-        /**
-         * Fires when the element collection is reset.
-         *
-         * @since 1.0.0
-         */
-        app.channel.trigger( 'elements:reset', elements );
-    },
-
-    /**
-     * Restores the previous history entry.
-     *
-     * @since 1.0.0
-     */
-    undo : function() {
-        if ( ! this.length ) {
-            return;
-        }
-
-        var entry = this.at( this.indexOf( this.getActive() ) + 1 );
-
-        if ( entry ) {
-            this.restore( entry.get( 'timestamp' ) );
-        }
-    },
-
-    /**
-     * Restores the next history entry.
-     *
-     * @since 1.0.0
-     */
-    redo : function() {
-        if ( ! this.length ) {
-            return;
-        }
-
-        var entry = this.at( this.indexOf( this.getActive() ) - 1 );
-
-        if ( entry ) {
-            this.restore( entry.get( 'timestamp' ) );
-        }
-    },
-
-    /**
-     * Removes the oldest entry from the collection if it reaches it's maximum length.
-     *
-     * @since 1.0.0
-     */
-    checkLength : function() {
-        if ( this.length > this.maxSize ) {
-            this.pop();
-        }
-	},
-
-    /**
-     * Sets the given entry as active.
-     *
-     * @since 1.0.0
-     *
-     * @param model
-     */
-    setActive : function( model ) {
-        this.active = model;
-        this.trigger( 'change:active', model );
-    },
-
-    /**
-     * Returns the active entry.
-     *
-     * @since 1.0.0
-     *
-     * @returns {null}
-     */
-    getActive : function() {
-        return this.active;
-    }
-
-} );
-
-module.exports = HistoryCollection;
-},{}],43:[function(require,module,exports){
-/**
- * Tailor.Models.Column
- *
- * The column model.
- *
- * @augments Tailor.Models.Child
- */
-var $ = Backbone.$,
-    ChildModel = require( './../model-child' ),
-    ColumnModel;
-
-ColumnModel = ChildModel.extend( {
-
-    /**
-     * Returns true if this element is a valid drop target.
-     *
-     * @since 1.0.0
-     *
-     * @param that The element being dragged
-     * @param region The region of this element that the other element is over
-     */
-    validTarget : function( that, region ) {
-        if ( _.contains( [ 'tailor_section', 'tailor_row' ], that.get( 'tag' ) ) || ! _.contains( [ 'left', 'right' ], region ) ) {
-            return false;
-        }
-        if ( 'child' == that.get( 'type' ) && that.get( 'tag' ) != this.get( 'tag' ) ) {
-            return false;
-        }
-
-        var siblings = this.collection.getSiblings( this );
-
-        return that.get( 'parent' ) == this.get( 'parent' ) || siblings.length < 4;
-    }
-
-} );
-
-module.exports = ColumnModel;
-},{"./../model-child":50}],44:[function(require,module,exports){
-/**
- * Tailor.Models.GridItem
- *
- * The grid item model.
- *
- * @augments Tailor.Models.Child
- */
-var $ = Backbone.$,
-    ChildModel = require( './../model-child' ),
-    GridItemModel;
-
-GridItemModel = ChildModel.extend( {
-
-    /**
-     * Returns true if this element is a valid drop target.
-     *
-     * @since 1.0.0
-     *
-     * @param that The element being dragged
-     * @param region The region of this element that the other element is over
-     */
-    validTarget : function( that, region ) {
-        if ( 'tailor_section' == that.get( 'tag' ) || _.contains( [ 'top', 'bottom', 'center' ], region ) ) {
-            return false;
-        }
-
-        var parent = this.collection.getParent( this );
-        if ( parent.get( 'tag' ) == that.get( 'tag' ) ) {
-            return false;
-        }
-
-        return that.get( 'tag' ) == this.get( 'tag' );
-    }
-
-} );
-
-module.exports = GridItemModel;
-},{"./../model-child":50}],45:[function(require,module,exports){
-/**
- * Tailor.Models.Carousel
- *
- * The carousel model.
- *
- * @augments Tailor.Models.Container
- */
-var $ = Backbone.$,
-	ContainerModel = require( './../model-container' ),
-	CarouselModel;
-
-CarouselModel = ContainerModel.extend( {
-
-    /**
-     * Creates a new template based on the element.
-     *
-     * @since 1.0.0
-     *
-     * @param id
-     * @param view
-     */
-    createTemplate : function( id, view ) {
-        var isEditing =  view.el.classList.contains( 'is-editing' );
-
-        this.beforeCopyElement( view );
-
-        var $childViewContainer = view.getChildViewContainer( view );
-        var $children = $childViewContainer.contents().detach();
-        var $navigation = view.$el.find( '.slick-dots' ).detach();
-
-        this.appendTemplate( id, view );
-
-        $childViewContainer.append( $children );
-	    $navigation.insertAfter( $childViewContainer );
-
-        this.afterCopyElement( id, view );
-
-        if ( isEditing ) {
-            view.el.classList.add( 'is-editing' );
-        }
-    }
-
-} );
-
-module.exports = CarouselModel;
-},{"./../model-container":52}],46:[function(require,module,exports){
-/**
- * Tailor.Models.Row
- *
- * The row model.
- *
- * @augments Tailor.Models.Container
- */
-var $ = Backbone.$,
-    ContainerModel = require( './../model-container' ),
-    RowModel;
-
-RowModel = ContainerModel.extend( {
-
-    /**
-     * Returns true if this element is a valid drop target.
-     *
-     * @since 1.0.0
-     *
-     * @param that The element being dragged
-     * @param region The region of this element that the other element is over
-     */
-    validTarget : function( that, region ) {
-        if ( 'child' == that.get( 'type' ) || 'tailor_section' == that.get( 'tag' ) || 'center' == region ) {
-            return false;
-        }
-
-        return _.contains( [ 'top', 'bottom' ], region ) && 'tailor_column' != that.get( 'tag' );
-    }
-
-} );
-
-module.exports = RowModel;
-},{"./../model-container":52}],47:[function(require,module,exports){
-/**
- * Tailor.Models.Tabs
- *
- * The tabs model.
- *
- * @augments Tailor.Models.Container
- */
-var $ = Backbone.$,
-    ContainerModel = require( './../model-container' ),
-    TabsModel;
-
-TabsModel = ContainerModel.extend( {
-
-	/**
-	 * Creates a new template based on the element.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param id
-	 * @param view
-	 */
-	createTemplate : function( id, view ) {
-		var isEditing =  view.el.classList.contains( 'is-editing' );
-
-		this.beforeCopyElement( view );
-
-		var $childViewContainer = view.getChildViewContainer( view );
-		var $children = $childViewContainer.contents().detach();
-		var $navigation = view.$el.find( '.tailor-tabs__navigation' );
-		var $navigationItems = $navigation.children().detach();
-
-		this.appendTemplate( id, view );
-
-		$childViewContainer.append( $children );
-		$navigation.append( $navigationItems );
-
-		this.afterCopyElement( id, view );
-
-		if ( isEditing ) {
-			view.el.classList.add( 'is-editing' );
-		}
-	}
-
-} );
-
-module.exports = TabsModel;
-},{"./../model-container":52}],48:[function(require,module,exports){
-/**
- * Tailor.Models.Element
- *
- * The element model.
- *
- * @augments Backbone.Model
- */
-var $ = Backbone.$,
-	BaseModel = require( './model-base' ),
-	ElementModel;
-
-ElementModel = BaseModel.extend( {
-
-	/**
-	 * Returns true if this element is a valid drop target.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param that The element being dragged
-	 * @param region The region of this element that the other element is over
-	 */
-	validTarget : function( that, region ) {
-
-		if ( 'child' == that.get( 'type' ) || _.contains( [ 'tailor_section', 'tailor_column' ], that.get( 'tag' ) ) || 'center' == region ) {
-			return false;
-		}
-
-		var parent = this.collection.getParent( this );
-		if ( 'tailor_row' == that.get( 'tag' ) ) {
-			return 'tailor_section' == parent.get( 'tag' ) && _.contains( [ 'top', 'bottom' ], region );
-		}
-
-		if ( 'child' == parent.get( 'type' ) && 'tailor_column' != parent.get( 'tag' ) ) {
-			return 'container' != that.get( 'type' ) && ! _.contains( [ 'left', 'right' ], region );
-		}
-
-		if ( _.contains( [ 'wrapper', 'child' ], parent.get( 'type' ) ) ) {
-			if ( _.contains( [ 'top', 'bottom' ], region ) ) {
-				return _.contains( [ 'tailor_section', 'tailor_column' ], parent.get( 'tag' ) ) || ! _.contains( [ 'container', 'wrapper', 'child' ], that.get( 'type' ) );
-			}
-
-			return 'tailor_section' == parent.get( 'tag' ) || ! _.contains( [ 'left', 'right' ], region );
-		}
-
-		return true;
-	},
-
-	/**
-	 * Initializes the element model.
-	 *
-	 * @since 1.0.0
-	 */
-	initialize : function() {
-		this.addEventListeners();
-	},
-
-	/**
-	 * Adds the required event listeners.
-	 *
-	 * @since 1.0.0
-	 */
-	addEventListeners : function() {
-		this.listenTo( this, 'element:move:top', this.insertBefore );
-		this.listenTo( this, 'element:move:bottom', this.insertAfter );
-		this.listenTo( this, 'element:move:left', this.columnBefore );
-		this.listenTo( this, 'element:move:right', this.columnAfter );
-
-		this.listenTo( this, 'element:copy:top', this.copyBefore );
-		this.listenTo( this, 'element:copy:bottom', this.copyAfter );
-		this.listenTo( this, 'element:copy:left', this.copyColumnBefore );
-		this.listenTo( this, 'element:copy:right', this.copyColumnAfter );
-
-		this.listenTo( this, 'element:move:center', this.createChild );
-		this.listenTo( this, 'element:copy:center', this.copyChild );
-	},
-
-	/**
-	 * Copies the source element and inserts it before the target element.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param targetView
-	 * @param sourceView
-	 */
-	copyBefore : function( targetView, sourceView ) {
-		var clone = sourceView.model.clone();
-		var index = targetView.model.get( 'order' ) - 1;
-
-		clone.set( 'id', clone.cid );
-		clone.set( 'parent', targetView.model.get( 'parent' ) );//, { silent : true } );
-		clone.set( 'order', index );//, { silent : true } );
-
-		this.createTemplate( clone.cid, sourceView );
-		this.collection.add( clone );//, { at : index } );
-	},
-
-	/**
-	 * Copies the source element and inserts it after the target element.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param targetView
-	 * @param sourceView
-	 */
-	copyAfter : function( targetView, sourceView ) {
-		var clone = sourceView.model.clone();
-		var index = targetView.model.get( 'order' );
-
-		clone.set( 'id', clone.cid );
-		clone.set( 'parent', targetView.model.get( 'parent' ) );//, { silent : true } );
-		clone.set( 'order', index );//, { silent : true } );
-
-		this.createTemplate( clone.cid, sourceView );
-
-		this.collection.add( clone );//, { at : index } );
-	},
-
-	/**
-	 * Copies the source element and inserts it before the target element in a row/column layout.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param targetView
-	 * @param sourceView
-	 */
-	copyColumnBefore : function( targetView, sourceView ) {
-		var model = targetView.model;
-		var clone = sourceView.model.clone();
-
-		clone.set( 'id', clone.cid );
-
-		this.createTemplate( clone.cid, sourceView );
-
-		if ( 'tailor_column' === model.get( 'tag' ) ) {
-			var column = this.collection.createColumn( model.get( 'parent' ),  model.get( 'order' ) - 1 );
-
-			clone.set( 'parent', column.get( 'id' ) );
-			this.collection.add( clone );
-		}
-		else {
-			var columns = this.collection.createRow( model.get( 'parent' ), model.get( 'order' ) );
-			this.collection.insertChild( model, _.last( columns ) );
-
-			clone.set( 'parent', _.first( columns ).get( 'id' ) );
-			this.collection.add( clone );
-		}
-	},
-
-	/**
-	 * Copies the source element and inserts it after the target element in a row/column layout.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param targetView
-	 * @param sourceView
-	 */
-	copyColumnAfter : function( targetView, sourceView ) {
-		var model = targetView.model;
-		var clone = sourceView.model.clone();
-
-		clone.set( 'id', clone.cid );
-
-		this.createTemplate( clone.cid, sourceView );
-
-		if ( 'tailor_column' === model.get( 'tag' ) ) {
-			var column = this.collection.createColumn( model.get( 'parent' ), model.get( 'order' ) );
-
-			clone.set( 'parent', column.get( 'id' ) );
-			this.collection.add( clone );
-		}
-		else {
-			var columns = this.collection.createRow( model.get( 'parent' ), model.get( 'order' ) );
-
-			this.collection.insertChild( model, _.first( columns ) );
-			clone.set( 'parent', _.last( columns ).get( 'id' ) );
-			this.collection.add( clone );
-		}
-	},
-
-	/**
-	 * Inserts the source element inside a new child element in the target view.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param targetView
-	 * @param sourceView
-	 */
-	createChild : function( targetView, sourceView ) {
-		var id = targetView.model.get( 'id' );
-		var childTag = targetView.model.get( 'child' );
-		var numberChildren = this.collection.where( { parent : id, tag : childTag } ).length;
-
-		this.appendTemplate( sourceView.model.get( 'id' ), sourceView );
-		this.collection.createWrapper( childTag, id, numberChildren, sourceView.model );
-	},
-
-	/**
-	 * Copies the source element and inserts it inside a new child element in the target view.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param targetView
-	 * @param sourceView
-	 */
-	copyChild : function( targetView, sourceView ) {
-		var id = targetView.model.get( 'id' );
-		var childTag = targetView.model.get( 'child' );
-		var numberChildren = this.collection.where( { parent : id, tag : childTag } ).length;
-		var wrapper = this.collection.createWrapper( childTag, id, numberChildren, false );
-
-		var clone = sourceView.model.clone();
-		clone.set( 'id', clone.cid );
-		clone.set( 'parent', wrapper.get( 'id' ) );
-		clone.set( 'order', 0 );
-
-		this.createTemplate( clone.cid, sourceView );
-		this.collection.add( clone );
-	},
-
-	/**
-	 * Creates a new element template based on a given element and appends it to the page.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param id
-	 * @param view
-	 */
-	createTemplate : function( id, view ) {
-		var isEditing =  view.el.classList.contains( 'is-editing' );
-
-		this.beforeCopyElement( view );
-		this.appendTemplate( id, view );
-		this.afterCopyElement( id, view );
-
-		if ( isEditing ) {
-			view.el.classList.add( 'is-editing' );
-		}
-	}
-
-} );
-
-module.exports = ElementModel;
-},{"./model-base":49}],49:[function(require,module,exports){
-/**
- * Wrap `model.set()` and update the internal unsaved changes record keeping.
- *
- * @since 1.0.0
- */
-Backbone.Model.prototype.set = _.wrap( Backbone.Model.prototype.set, function( oldSet, key, val, options ) {
-
-    if ( key == null ) return this;
-
-    var attrs;
-
-    if ( typeof key === 'object' ) {
-        attrs = key;
-        options = val;
-    }
-    else {
-        ( attrs = {} )[ key ] = val;
-    }
-
-    options || ( options = {} );
-
-    var ret = oldSet.call( this, attrs, options );
-
-    if ( this._tracking ) {
-        _.each( attrs, _.bind( function( val, key ) {
-            if ( _.isEqual( this._original[ key ], val ) ) {
-                delete this._unsaved[ key ];
-            }
-            else {
-                this._unsaved[ key ] = val;
-            }
-        }, this ) );
-    }
-
-    return ret;
-
-} );
-
-/**
- * Modified implementation of Backbone.trackit
- *
- * @since 1.0.0
- *
- * https://github.com/NYTimes/backbone.trackit
- */
-var Model = Backbone.Model.extend( {
-    _tracking : false,
-    _original : {},
-    _unsaved: {},
-
-    /**
-     * Returns an object containing the default parameters for an element.
-     *
-     * @since 1.0.0
-     *
-     * @returns object
-     */
-    defaults : function() {
-        return {
-            id : this.cid,
-            tag : '',
-            label : '',
-            atts : {},
-            parent : '',
-            order : 0,
-            collection : 'element'
-        };
-    },
-
-	/**
-	 * Returns true if the model is tracking changes.
-     *
-     * @since 1.0.0
-     *
-     * @returns {boolean}
-     */
-    isTracking : function() {
-        return this._tracking;
-    },
-
-    /**
-     * Opt in to tracking attribute changes between saves.
-     *
-     * @since 1.0.0
-     *
-     * @returns {Backbone.Model}
-     */
-    startTracking : function() {
-        this._tracking = true;
-        this.resetTracking();
-
-        return this;
-    },
-
-    /**
-     * Resets the default tracking values and stops tracking attribute changes.
-     *
-     * @since 1.0.0
-     *
-     * @returns {Backbone.Model}
-     */
-    stopTracking : function() {
-        this._tracking = false;
-        this._original = {};
-        this._unsaved = {};
-
-        return this;
-    },
-
-    /**
-     * Gets rid of accrued changes and resets state.
-     *
-     * @since 1.0.0
-     *
-     * @returns {Backbone.Model}
-     */
-    resetTracking : function() {
-        this._original = _.clone( this.attributes );
-        this._unsaved = {};
-
-        return this;
-    },
-
-    /**
-     * Restores this model's attributes to their original values since tracking started.
-     *
-     * @since 1.0.0
-     *
-     * @returns {Backbone.Model}
-     */
-    resetAttributes: function() {
-        if ( ! this._tracking ) { return; }
-        this.attributes = this._original;
-        this.resetTracking();
-
-        this.trigger( 'change:atts', this, this.get( 'atts' ) );
-
-        return this;
-    },
-
-    /**
-     * Returns a text shortcode representing the element.
-     *
-     * @since 1.0.0
-     *
-     * @returns {string}
-     */
-    toShortcode : function() {
-        var tag = this.get( 'tag' );
-        var atts = this.get( 'atts' );
-        var content = '';
-        var shortcode = '[' + tag;
-
-        _.each( atts, function( attr, id ) {
-	        if ( attr ) {
-		        if ( 'content' === id ) {
-			        content = attr;
-		        }
-		        else {
-
-			        if ( _.isNumber( id ) ) {
-				        if ( /\s/.test( attr ) ) {
-					        shortcode += ' "' + attr + '"';
-				        }
-				        else {
-					        shortcode += ' ' + attr;
-				        }
-			        }
-			        else {
-				        shortcode += ' ' + id + '="' + attr + '"';
-			        }
-		        }
-	        }
-
-        }, this );
-
-        return shortcode + ']' + content + '[/' + tag + ']';
-    },
-
-    /**
-     * Inserts the element before the target view inside a section.
-     *
-     * @since 1.0.0
-     *
-     * @param view
-     */
-    insertBefore : function( view ) {
-        this.trigger( 'remove:child' );
-        this.trigger( 'insert:before', view );
-        this.trigger( 'add:child' );
-
-        this.set( 'parent', view.model.get( 'parent' ) );
-    },
-
-    /**
-     * Inserts the element after the target view inside a section.
-     *
-     * @since 1.0.0
-     *
-     * @param view
-     */
-    insertAfter : function( view ) {
-        this.trigger( 'remove:child' );
-        this.trigger( 'insert:after', view );
-        this.trigger( 'add:child' );
-
-        this.set( 'parent', view.model.get( 'parent' ) );
-    },
-
-    /**
-     * Inserts the element before the target view in a row/column layout.
-     *
-     * @since 1.0.0
-     *
-     * @param view
-     */
-    columnBefore : function( view ) {
-        var model = view.model;
-        var parent = model.get( 'parent' );
-
-        if ( 'tailor_column' === model.get( 'tag' ) ) {
-            var column = this.collection.createColumn( parent, model.get( 'order' ) - 1 );
-            this.collection.insertChild( this, column );
-        }
-        else {
-            var columns = this.collection.createRow( parent, model.get( 'order' ) );
-            this.collection.insertChild( this, _.first( columns ) );
-            this.collection.insertChild( model, _.last( columns ) );
-        }
-    },
-
-    /**
-     * Inserts the element after the target view in a row/column layout.
-     *
-     * @since 1.0.0
-     *
-     * @param view
-     */
-    columnAfter : function( view ) {
-        var model = view.model;
-        var parent = model.get( 'parent' );
-
-        if ( 'tailor_column' === model.get( 'tag' ) ) {
-            var column = this.collection.createColumn( parent, ( model.get( 'order' ) ) );
-            this.collection.insertChild( this, column );
-        }
-        else {
-            var columns = this.collection.createRow( parent, model.get( 'order' ) );
-            this.collection.insertChild( model, _.first( columns ) );
-            this.collection.insertChild( this, _.last( columns ) );
-        }
-    },
-
-	/**
-	 * Triggers events before the element has been copied.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param view
-	 */
-	beforeCopyElement : function( view ) {
-		var el = view.el;
-
-		view.triggerAll( 'before:element:copy', view );
-
-		el.classList.remove( 'is-dragging' );
-		el.classList.remove( 'is-hovering' );
-		el.classList.remove( 'is-selected' );
-		el.classList.remove( 'is-editing' );
-	},
-
-	/**
-	 * Appends a template based on the element to the page.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param id
-	 * @param view
-	 */
-	appendTemplate : function( id, view ) {
-		var oldId = view.model.get( 'id' );
-		var template = document.createElement( 'script' );
-
-		template.setAttribute( 'type', 'text/html' );
-		template.id = 'tmpl-tailor-' + id;
-		template.innerHTML = view.el.outerHTML.replace( oldId, id );
-
-		document.body.appendChild( template );
-	},
-
-	/**
-	 * Triggers events after the element has been copied.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param id
-	 * @param view
-	 */
-	afterCopyElement : function( id, view ) {
-		var oldId = view.model.get( 'id' );
-
-		/**
-		 * Fires after the element has been copied.
-		 *
-		 * @since 1.0.0
-		 */
-		view.$el.trigger( 'element:copy', view );
-
-		/**
-		 * Fires after an element has been copied.
-		 *
-		 * @since 1.0.0
-		 */
-		app.channel.trigger( 'css:copy', oldId, id );
-	}
-
-} );
-
-module.exports = Model;
-},{}],50:[function(require,module,exports){
-/**
- * Tailor.Models.Child
- *
- * The child model.
- *
- * @augments Tailor.Models.Composite
- */
-var $ = Backbone.$,
-    CompositeModel = require( './model-composite' ),
-    ChildModel;
-
-ChildModel = CompositeModel.extend( {
-
-    /**
-     * Returns true if this element is a valid drop target.
-     *
-     * @since 1.0.0
-     *
-     * @param that The element being dragged
-     * @param region The region of this element that the other element is over
-     */
-    validTarget : function( that, region ) {
-        if ( 'tailor_section' == that.get( 'tag' ) || _.contains( [ 'left', 'right', 'center' ], region ) ) {
-            return false;
-        }
-
-        var parent = this.collection.getParent( this );
-        if ( parent.get( 'tag' ) == that.get( 'tag' ) ) {
-            return false;
-        }
-
-        return that.get( 'tag' ) == this.get( 'tag' );
-    },
-
-    /**
-     * Initializes the tabs model.
-     *
-     * @since 1.0.0
-     */
-    initialize : function() {
-        this.addEventListeners();
-    },
-
-    /**
-     * Adds the required event listeners.
-     *
-     * @since 1.0.0
-     */
-    addEventListeners : function() {
-        this.listenTo( this, 'element:move:top', this.insertBefore );
-        this.listenTo( this, 'element:move:bottom', this.insertAfter );
-        this.listenTo( this, 'element:move:left', this.insertBefore ); // Column
-        this.listenTo( this, 'element:move:right', this.insertAfter ); // Column
-
-        this.listenTo( this, 'element:copy:top', this.copyBefore );
-        this.listenTo( this, 'element:copy:bottom', this.copyAfter );
-        this.listenTo( this, 'element:copy:left', this.copyBefore ); // Column
-        this.listenTo( this, 'element:copy:right', this.copyAfter ); // Column
-    }
-
-} );
-
-module.exports = ChildModel;
-},{"./model-composite":51}],51:[function(require,module,exports){
-/**
- * Tailor.Models.Composite
- *
- * The composite model.
- *
- * @augments Backbone.Model
- */
-var $ = Backbone.$,
-    BaseModel = require( './model-base' ),
-    CompositeModel;
-
-CompositeModel = BaseModel.extend( {
-
-    /**
-     * Clones the element and its child elements.
-     *
-     * @since 1.0.0
-     *
-     * @param sourceView
-     * @param parent
-     * @param index
-     */
-    cloneContainer : function( sourceView, parent, index ) {
-        var collection = this.collection;
-        var clone = sourceView.model.clone();
-
-        clone.set( 'id', clone.cid );
-        clone.set( 'parent', parent );
-        clone.set( 'order', index );
-
-        this.createTemplate( clone.cid, sourceView );
-
-        var clonedChildren = this.cloneChildren( sourceView.children, clone, [] );
-
-        collection.add( clonedChildren, { silent : true } );
-        collection.add( clone );
-
-	    /**
-	     * Fires after the element has been copied.
-	     *
-	     * @since 1.0.0
-	     */
-        sourceView.triggerMethod( 'element:refresh' );
-    },
-
-    /**
-     * Clones all children of a given element.
-     *
-     * @since 1.0.0
-     *
-     * @param childViews
-     * @param parent
-     * @param clones
-     * @returns {*}
-     */
-    cloneChildren : function( childViews, parent, clones ) {
-        if ( childViews.length ) {
-            childViews.each( function( childView ) {
-                var clone = childView.model.clone();
-                clone.set( 'id', clone.cid );
-                clone.set( 'parent', parent.get( 'id' ) );
-
-                clone.createTemplate( clone.cid, childView );
-                clones.push( clone );
-
-                if ( childView.children ) {
-                    this.cloneChildren( childView.children, clone, clones );
-                }
-
-            }, this );
-        }
-
-        return clones;
-    },
-
-    /**
-     * Copies the source element and inserts it before the target element.
-     *
-     * @since 1.0.0
-     *
-     * @param targetView
-     * @param sourceView
-     */
-    copyBefore : function( targetView, sourceView ) {
-        this.cloneContainer( sourceView, targetView.model.get( 'parent' ), targetView.model.get( 'order' ) - 1 );
-    },
-
-    /**
-     * Copies the source element and inserts it after the target element.
-     *
-     * @since 1.0.0
-     *
-     * @param targetView
-     * @param sourceView
-     */
-    copyAfter : function( targetView, sourceView ) {
-        this.cloneContainer( sourceView, targetView.model.get( 'parent' ), targetView.model.get( 'order' ) );
-    },
-
-    /**
-     * Copies the source element and inserts it before the target element in a row/column layout.
-     *
-     * @since 1.0.0
-     *
-     * @param targetView
-     * @param sourceView
-     */
-    copyColumnBefore : function( targetView, sourceView ) {
-        var parent = targetView.model.get( 'parent' );
-
-        if ( 'tailor_column' === targetView.model.get( 'tag' ) ) {
-            var column = this.collection.createColumn( parent, targetView.model.get( 'order' ) - 1 );
-            this.cloneContainer( sourceView, column.get( 'id' ), 0 );
-        }
-        else {
-            var columns = this.collection.createRow( parent, targetView.model.get( 'order' ) );
-            this.collection.insertChild( targetView.model, _.last( columns ) );
-            this.cloneContainer( sourceView, _.first( columns ).get( 'id' ), 0 );
-        }
-
-    },
-
-    /**
-     * Copies the source element and inserts it after the target element in a row/column layout.
-     *
-     * @since 1.0.0
-     *
-     * @param targetView
-     * @param sourceView
-     */
-    copyColumnAfter : function( targetView, sourceView ) {
-        var parent = targetView.model.get( 'parent' );
-
-        if ( 'tailor_column' === targetView.model.get( 'tag' ) ) {
-            var column = this.collection.createColumn( parent, targetView.model.get( 'order' ) );
-            this.cloneContainer( sourceView, column.get( 'id' ), 0 );
-        }
-        else {
-            var columns = this.collection.createRow( parent, targetView.model.get( 'order' ) );
-            this.collection.insertChild( targetView.model, _.first( columns ) );
-            this.cloneContainer( sourceView, _.last( columns ).get( 'id' ), 0 );
-        }
-    },
-
-	/**
-	 * Creates a new template based on the element.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param id
-	 * @param view
-	 */
-	createTemplate : function( id, view ) {
-		var isEditing =  view.el.classList.contains( 'is-editing' );
-
-		this.beforeCopyElement( view );
-
-		var $childViewContainer = view.getChildViewContainer( view );
-		var $children = $childViewContainer.contents().detach();
-
-		this.appendTemplate( id, view );
-
-		$childViewContainer.append( $children );
-
-		this.afterCopyElement( id, view );
-
-		if ( isEditing ) {
-			view.el.classList.add( 'is-editing' );
-		}
-	}
-
-} );
-
-module.exports = CompositeModel;
-},{"./model-base":49}],52:[function(require,module,exports){
-/**
- * Tailor.Models.Container
- *
- * The container model.
- *
- * @augments Tailor.Models.Composite
- */
-var $ = Backbone.$,
-    CompositeModel = require( './model-composite' ),
-    ContainerModel;
-
-ContainerModel = CompositeModel.extend( {
-
-    /**
-     * Returns true if this element is a valid drop target.
-     *
-     * @since 1.0.0
-     *
-     * @param that The element being dragged
-     * @param region The region of this element that the other element is over
-     */
-    validTarget : function( that, region ) {
-        if ( 'child' == that.get( 'type' ) || _.contains( [ 'tailor_section', 'tailor_column' ], that.get( 'tag' ) ) ) {
-            return false;
-        }
-
-        var parent = this.collection.getParent( this );
-        if ( 'tailor_row' == that.get( 'tag' ) ) {
-            return 'tailor_section' == parent.get( 'tag' ) && _.contains( [ 'top', 'bottom' ], region );
-        }
-        if ( 'center' == region ) {
-            return 'container' != that.get( 'type' );
-        }
-        if ( _.contains( [ 'wrapper', 'child' ], parent.get( 'type' ) ) ) {
-
-            if ( _.contains( [ 'top', 'bottom' ], region ) ) {
-                return _.contains( [ 'tailor_section', 'tailor_column' ], parent.get( 'tag' ) ) || ! _.contains( [ 'container', 'wrapper', 'child' ], that.get( 'type' ) );
-            }
-
-            return 'tailor_section' == parent.get( 'tag' ) || ! _.contains( [ 'left', 'right' ], region );
-        }
-
-        return 'container' != that.get( 'type' );
-    },
-
-    /**
-     * Initializes the tabs model.
-     *
-     * @since 1.0.0
-     */
-    initialize : function() {
-        this.addEventListeners();
-    },
-
-    /**
-     * Adds the required event listeners.
-     *
-     * @since 1.0.0
-     */
-    addEventListeners : function() {
-        this.listenTo( this, 'element:move:top', this.insertBefore );
-        this.listenTo( this, 'element:move:bottom', this.insertAfter );
-        this.listenTo( this, 'element:move:left', this.columnBefore );
-        this.listenTo( this, 'element:move:right', this.columnAfter );
-
-        this.listenTo( this, 'element:copy:top', this.copyBefore );
-        this.listenTo( this, 'element:copy:bottom', this.copyAfter );
-        this.listenTo( this, 'element:copy:left', this.copyColumnBefore );
-        this.listenTo( this, 'element:copy:right', this.copyColumnAfter );
-    }
-
-} );
-
-module.exports = ContainerModel;
-},{"./model-composite":51}],53:[function(require,module,exports){
-/**
- * Tailor.Models.Wrapper
- *
- * The wrapper model.
- *
- * @augments Tailor.Models.Composite
- */
-var $ = Backbone.$,
-    CompositeModel = require( './model-composite' ),
-    WrapperModel;
-
-WrapperModel = CompositeModel.extend( {
-
-    /**
-     * Returns true if this element is a valid drop target.
-     *
-     * @since 1.0.0
-     *
-     * @param that The element being dragged
-     * @param region The region of this element that the other element is over
-     */
-    validTarget : function( that, region ) {
-        if ( 'child' == that.get( 'type' ) || _.contains( [ 'tailor_section', 'tailor_column' ], that.get( 'tag' ) ) || 'center' == region ) {
-            return false;
-        }
-
-        var parent = this.collection.getParent( this );
-        if ( 'tailor_row' == that.get( 'tag' ) ) {
-            return 'tailor_section' == parent.get( 'tag' ) && _.contains( [ 'top', 'bottom' ], region );
-        }
-        if ( 'child' == parent.get( 'type' ) && 'tailor_column' != parent.get( 'tag' ) ) {
-            return 'container' != that.get( 'type' ) && ! _.contains( [ 'left', 'right' ], region );
-        }
-        if ( _.contains( [ 'container', 'wrapper', 'child' ], parent.get( 'type' ) ) ) {
-            return 'tailor_section' == parent.get( 'tag' ) || ! _.contains( [ 'left', 'right' ], region );
-        }
-
-        return true;
-    },
-
-    /**
-     * Initializes the tabs model.
-     *
-     * @since 1.0.0
-     */
-    initialize : function() {
-        this.addEventListeners();
-    },
-
-    /**
-     * Adds the required event listeners.
-     *
-     * @since 1.0.0
-     */
-    addEventListeners : function() {
-        this.listenTo( this, 'element:move:top', this.insertBefore );
-        this.listenTo( this, 'element:move:bottom', this.insertAfter );
-        this.listenTo( this, 'element:move:left', this.columnBefore );
-        this.listenTo( this, 'element:move:right', this.columnAfter );
-
-        this.listenTo( this, 'element:copy:top', this.copyBefore );
-        this.listenTo( this, 'element:copy:bottom', this.copyAfter );
-        this.listenTo( this, 'element:copy:left', this.copyColumnBefore );
-        this.listenTo( this, 'element:copy:right', this.copyColumnAfter );
-
-        this.listenTo( this, 'element:move:center', this.createChild );
-        this.listenTo( this, 'element:copy:center', this.copyChild );
-    },
-
-    /**
-     * Inserts the source element inside a new child element in the target view.
-     *
-     * @since 1.0.0
-     *
-     * @param targetView
-     * @param sourceView
-     */
-    createChild : function( targetView, sourceView ) {
-        var id = targetView.model.get( 'id' );
-        var childTag = targetView.model.get( 'child' );
-        var numberChildren = this.collection.where( { parent : id, tag : childTag } ).length;
-
-        this.createTemplate( sourceView.model.get( 'id' ), sourceView );
-        this.collection.createWrapper( childTag, id, numberChildren, sourceView.model );
-    },
-
-    /**
-     * Copies the source element and inserts it inside a new child element in the target view.
-     *
-     * @since 1.0.0
-     *
-     * @param targetView
-     * @param sourceView
-     */
-    copyChild : function( targetView, sourceView ) {
-        var id = targetView.model.get( 'id' );
-        var childTag = targetView.model.get( 'child' );
-        var numberChildren = this.collection.where( { parent : id, tag : childTag } ).length;
-        var wrapper = this.collection.createWrapper( childTag, id, numberChildren, false );
-
-        this.cloneContainer( sourceView, wrapper.get( 'id' ), 0 );
-    }
-
-} );
-
-module.exports = WrapperModel;
-},{"./model-composite":51}],54:[function(require,module,exports){
-/**
- * Tailor.Models.Section
- *
- * The section model.
- *
- * @augments Tailor.Models.Wrapper
- */
-var $ = Backbone.$,
-    WrapperModel = require( './../model-wrapper' ),
-    SectionModel;
-
-SectionModel = WrapperModel.extend( {
-
-    /**
-     * Returns true if this element is a valid drop target.
-     *
-     * @since 1.0.0
-     *
-     * @param that The element being dragged
-     * @param region The region of this element that the other element is over
-     */
-    validTarget : function( that, region ) {
-        return 'tailor_section' == that.get( 'tag' ) && ! _.contains( [ 'left', 'right', 'center' ], region );
-    }
-
-} );
-
-module.exports = SectionModel;
-},{"./../model-wrapper":53}],55:[function(require,module,exports){
-module.exports = Marionette.Module.extend( {
-
-    /**
-     * Initializes the Canvas module.
-     *
-     * @since 1.0.0
-     */
-	onStart : function() {
-		this._model = null;
-		this._isDragging = false;
-
-        this.addEventListeners();
-        this.showCanvas();
-	},
-
-    /**
-     * Adds the required event listeners.
-     *
-     * @since 1.0.0
-     */
-    addEventListeners : function() {
-        this.listenTo( app.channel, 'canvas:dragstart', this.onDragStart );
-        this.listenTo( app.channel, 'canvas:dragover', this.onDragOver );
-        this.listenTo( app.channel, 'canvas:dragend', this.onDragEnd );
-        this.listenTo( app.channel, 'canvas:drop', this.onDrop );
-    },
-
-    /**
-     * Displays the canvas.
-     *
-     * @since 1.0.0
-     */
-    showCanvas : function() {
-        this.collection = app.channel.request( 'canvas:elements' );
-        var Canvas = require( './canvas/canvas' );
-
-        app.canvasRegion.show( new Canvas( {
-            collection : this.collection
-        } ) );
-    },
-
-    /**
-     * Records information about the drag target when dragging begins.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     * @param view
-     */
-	onDragStart : function( e, view ) {
-        var collection = view.model.collection;
-
-        // Do nothing if this is an element with a selected parent
-        if ( 'function' === typeof collection.hasSelectedParent && collection.hasSelectedParent( view.model ) ) {
-            return;
-        }
-
-		this._view = view;
-		this._model = view.model;
-		this._isDragging = true;
-
-        view.el.classList.add( 'is-dragging' );
-
-        if ( 'element' == view.model.get( 'collection' ) ) {
-
-            // Set the drag image to an empty image for performance reasons
-            var testVar = window.DataTransfer || window.Clipboard;
-            if ( 'setDragImage' in testVar.prototype ) {
-                var dragImage = document.createElement( 'img' );
-                dragImage.src = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
-                e.dataTransfer.setDragImage( dragImage, 0, 0 );
-            }
-        }
-
-        e.dataTransfer.effectAllowed = "copyMove";
-        e.dataTransfer.setData( 'Text', this._model.cid );
-
-		e.stopPropagation();
-	},
-
-    /**
-     * Validates the drop target and updates the insertion guide when the drag target is dragged over an element.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     * @param view
-     */
-	onDragOver : function( e, view ) {
-
-        if ( ! this._isDragging ) {
-            return;
-        }
-
-	    // Maybe scroll the window while dragging
-	    if ( e.pageY ) {
-		    var scrollY = window.scrollY || document.documentElement.scrollTop;
-
-		    if ( ( e.pageY - scrollY ) < 40 ) {
-			    window.scrollTo( 0, scrollY - 20 );
-		    }
-		    else if ( ( ( scrollY + window.innerHeight ) - e.pageY ) < 40 ) {
-			    window.scrollTo( 0, scrollY + 20 );
-		    }
-	    }
-
-        var action = ( 'element' === this._model.get( 'collection' ) && e.shiftKey ) ? 'copy' : 'move';
-
-        if ( 'move' === action && view.model === this._model ) {
-            this.reset();
-            e.stopPropagation();
-            return;
-        }
-
-        var region = this._getDropRegion( e, view );
-
-        if ( ! view.model.validTarget( this._model, region ) ) {
-            return;
-        }
-
-        e.dataTransfer.dropEffect = action;
-
-        app.channel.trigger( 'canvas:guide', view, region );
-
-        e.preventDefault();
-        e.stopPropagation();
-	},
-
-    /**
-     * Validates the drop target and updates the canvas the drag target is dropped on an element.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     * @param view
-     */
-	onDrop : function( e, view ) {
-
-        if ( ! this._isDragging ) {
-            return;
-        }
-
-        var model = this._model;
-        var region = this._getDropRegion( e, view );
-        if ( ! view.model.validTarget( model, region ) ) {
-            return;
-        }
-
-        var action;
-
-        if ( 'element' === model.get( 'collection' ) ) {
-           action = e.shiftKey ? 'copy' : 'move';
-            if ( 'move' === action && view.model === model ) {
-                return;
-            }
-        }
-        else {
-            action = 'add';
-        }
-
-        /**
-         * Fires after an action has been taken on the canvas.
-         *
-         * @since 1.0.0
-         */
-        model.trigger( 'element:' + action + ':' + region, view, this._view );
-
-        /**
-         * Fires after an action has been taken on the canvas.
-         *
-         * @since 1.0.0
-         */
-        app.channel.trigger( 'element:' + action, model );
-
-        this.collection.sort( { silent : true } );
-
-        e.preventDefault();
-        e.stopPropagation();
-	},
-
-    /**
-     * Cleans up the canvas when dragging of the drag target ends.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     * @param view
-     */
-	onDragEnd : function( e, view ) {
-
-        if ( ! this._isDragging ) {
-            return;
-        }
-
- 		this._isDragging = false;
-		this._view.el.classList.remove( 'is-dragging' );
-        this.reset();
-
-        app.channel.trigger( 'debug' );
-    },
-
-    /**
-     * Resets the canvas.
-     *
-     * @since 1.0.0
-     */
-    reset : function() {
-
-        /**
-         * Fires when the canvas is reset.
-         *
-         * @since 1.0.0
-         */
-        app.channel.trigger( 'canvas:reset' );
-    },
-
-    /**
-     * Returns the current point (x,y coordinates).
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     * @returns {{x: (*|number|Number), y: (*|number|Number)}}
-     * @private
-     */
-    _getPoint : function( e ) {
-        if ( e.targetTouches ) { // Prefer Touch Events
-            return {
-                x : e.targetTouches[0].clientX,
-                y : e.targetTouches[0].clientY
-            };
-        }
-        return {
-            x : e.clientX,
-            y : e.clientY
-        };
-    },
-
-    /**
-     * Returns the region of the element currently occupied by the drag target (top, right, bottom, left, center).
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     * @param view
-     * @returns string
-     * @private
-     */
-    _getDropRegion : function( e, view ) {
-        var point = this._getPoint( e );
-        var rect = view.el.getBoundingClientRect();
-        var width = rect.width / 2;
-        var height = rect.height / 2;
-        var top = rect.top + ( rect.height - height ) / 2;
-        var left = rect.left + ( rect.width - width ) / 2;
-
-        if (
-            ( left <= point.x ) && ( point.x <= ( left + width ) ) &&
-            ( top <= point.y ) && ( point.y <= ( top + height ) )
-        ) {
-            return 'center';
-        }
-        else {
-            var x = ( point.x - ( rect.left + ( width ) ) ) / ( width );
-            var y = ( point.y - ( rect.top + ( height ) ) ) / ( height );
-
-            if ( Math.abs( x ) > Math.abs( y ) ) {
-                return x > 0 ? 'right' : 'left';
-            }
-            return y > 0 ? 'bottom' : 'top';
-        }
-    }
-
-} );
-},{"./canvas/canvas":57}],56:[function(require,module,exports){
-module.exports = Backbone.Marionette.Region.extend( {
-
-    initialize : function() {
-        this.listenTo( app.channel, 'canvas:dragstart', this.onDragStart );
-        this.listenTo( app.channel, 'canvas:dragend', this.onDragEnd );
-    },
-
-    /**
-     * Adds a class name to the canvas when dragging begins.
-     *
-     * @since 1.0.0
-     *
-     * @param view
-     * @param region
-     * @param options
-     */
-    onDragStart : function( view, region, options ) {
-        this.el.classList.add( 'is-active' );
-    },
-
-    /**
-     * Removes a class name from the canvas when dragging ends.
-     *
-     * @since 1.0.0
-     *
-     * @param view
-     * @param region
-     * @param options
-     */
-    onDragEnd : function( view, region, options ) {
-        this.el.classList.remove( 'is-active' );
-    }
-
-} );
-},{}],57:[function(require,module,exports){
-module.exports = Marionette.CollectionView.extend( {
-
-	behaviors : {
-		Container : {}
-	},
-
-    /**
-     * Returns the appropriate child view based on the element tag.
-     *
-     * @since 1.0.0
-     *
-     * @param child
-     * @returns {*|exports|module.exports}
-     */
-    getChildView : function( child ) {
-        return window.Tailor.Views.lookup( 'TailorSection' );
-    },
-
-    /**
-     * Provides the element collection to all child elements.
-     *
-     * @since 1.0.0
-     *
-     * @param child
-     * @param ChildViewClass
-     * @param childViewOptions
-     * @returns {*}
-     */
-    buildChildView : function( child, ChildViewClass, childViewOptions ) {
-
-        var options = _.extend( {
-            model : child,
-            collection : this.collection
-        }, childViewOptions );
-
-        return new ChildViewClass( options );
-    },
-
-    /**
-     * Filters the element collection so that only children of this element are displayed.
-     *
-     * @since 1.0.0
-     *
-     * @param child
-     * @param index
-     * @param collection
-     * @returns {boolean}
-     */
-    filter : function( child, index, collection ) {
-        return ! child.get( 'parent' );
-    },
-
-    /**
-     * Updated Marionette function : changed to update the 'order' attribute along with the view _index.
-     *
-     * @since 1.0.0
-     *
-     * @param view
-     * @param increment
-     * @param index
-     * @private
-     */
-    _updateIndices : function( view, increment, index ) {
-
-        if ( increment ) {
-            view._index = index;
-
-            //console.log( '\n Updated index of view ' + view.model.get( 'id' ) + ' to ' + index );
-
-            view.model._changing = false;
-            view.model.set( 'order', index );
-        }
-
-        this.children.each( function( laterView ) {
-            if ( laterView._index >= view._index ) {
-                laterView._index += increment ? 1 : -1;
-
-                //console.log( '\n Updated index of view ' + laterView.model.get( 'id' ) + ' to ' + laterView._index );
-
-                laterView.model.set( 'order', laterView._index );
-            }
-        }, this );
-    },
-
-    /**
-     * Triggers events and methods during a given event in the lifecycle.
-     *
-     * @since 1.0.0
-     *
-     * @param event
-     * @param view
-     * @param atts
-     */
-    triggerAll : function( event, view, atts ) {
-
-        this.$el.trigger( event, view );
-
-        this.triggerMethod( event, view );
-
-        if ( atts ) {
-            app.channel.trigger( event, this, atts);
-        }
-        else {
-            app.channel.trigger( event, this );
-        }
-    }
-
-} );
-},{}],58:[function(require,module,exports){
-module.exports = Marionette.Module.extend( {
-
-    /**
-     * Initializes the module.
-     *
-     * @since 1.0.0
-     */
-    onStart : function( options ) {
-        this.stylesheets = [];
-
-        this.createSheets( options.mediaQueries || {} );
-        this.addRules( options.cssRules || {} );
-        this.addEventListeners();
-    },
-
-	/**
-     * Adds the required event listeners.
-     *
-     * @since 1.0.0
-     */
-    addEventListeners : function() {
-        var collection = app.channel.request( 'canvas:elements' );
-        this.listenTo( collection, 'destroy', this.onDestroy );
-
-        this.listenTo( app.channel, 'css:add', this.addRules );
-        this.listenTo( app.channel, 'css:update', this.updateRules );
-        this.listenTo( app.channel, 'css:delete', this.deleteRules );
-        this.listenTo( app.channel, 'css:clear', this.clearRules );
-        this.listenTo( app.channel, 'css:copy', this.copyRules );
-    },
-
-	/**
-     * Creates stylesheets for each registered media query.
-     *
-     * @since 1.0.0
-     *
-     * @param mediaQueries
-     */
-    createSheets : function( mediaQueries ) {
-        var Stylesheet = require( './stylesheet/stylesheet' );
-
-        _.each( mediaQueries, function( queryAtts, queryId ) {
-            if ( '' != queryAtts.min ) {
-                if ( '' != queryAtts.max ) {
-                    this.stylesheets[ queryId ] = new Stylesheet( queryId, 'only screen and (min-width: ' + queryAtts.min + ') and (max-width: ' + queryAtts.max + ')' );
-                    this.stylesheets[ queryId + '-up' ] = new Stylesheet( queryId + '-up', 'only screen and (min-width: ' + queryAtts.min + ')' );
-                }
-                else {
-                    this.stylesheets[ queryId ] = new Stylesheet( queryId, 'only screen and (min-width: ' + queryAtts.min + ')' );
-                }
-            }
-            else  {
-                if ( '' != queryAtts.max ) {
-                    this.stylesheets[ queryId ] = new Stylesheet( queryId, 'only screen and (max-width: ' + queryAtts.max + ')' );
-                }
-                else {
-                    this.stylesheets[ queryId ] = new Stylesheet( queryId, 'only screen' );
-                }
-            }
-        }, this );
-    },
-
-	/**
-	 * Deletes the rules associated with an element when it is destroyed.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param model
-	 */
-    onDestroy : function( model ) {
-        this.deleteRules( model.get( 'id' ) );
-    },
-
-	/**
-	 * Adds a set of dynamic CSS rules.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param cssRules
-	 */
-    addRules : function( cssRules ) {
-        _.each( cssRules, function( queryRules, queryId ) {
-            if ( queryId in this.stylesheets ) {
-                this.stylesheets[ queryId ].addRules( queryRules );
-            }
-        }, this );
-    },
-
-	/**
-	 * Clears all dynamic CSS rules.
-	 *
-	 * @since 1.0.0
-	 */
-    clearRules : function() {
-        for ( var queryId in this.stylesheets ) {
-            if ( this.stylesheets.hasOwnProperty( queryId ) ) {
-                this.stylesheets[ queryId ].clearRules();
-            }
-        }
-    },
-
-	/**
-	 * Copies the CSS rules associated with a given element.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param originalId
-	 * @param copyId
-	 */
-    copyRules : function( originalId, copyId ) {
-        for ( var queryId in this.stylesheets ) {
-            if ( this.stylesheets.hasOwnProperty( queryId ) ) {
-                var rules = this.stylesheets[ queryId ].copyRules( 'tailor-' + originalId, 'tailor-' + copyId );
-                if ( rules.length ) {
-                    var rulesSet = {};
-                    rulesSet[ queryId ] = {};
-                    rulesSet[ queryId ][ copyId ] = rules;
-                    this.addRules( rulesSet );
-                }
-            }
-        }
-    },
-
-	/**
-	 * Deletes the CSS rules associated with a given element.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param elementId
-	 */
-    deleteRules : function( elementId ) {
-        for ( var queryId in this.stylesheets ) {
-            if ( this.stylesheets.hasOwnProperty( queryId ) ) {
-                this.stylesheets[ queryId ].deleteRules( 'tailor-' + elementId );
-            }
-        }
-    },
-
-	/**
-	 * Replaces the CSS rules for a given element.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param elementId
-	 * @param cssRules
-	 */
-    updateRules : function( elementId, cssRules ) {
-        this.deleteRules( elementId );
-        this.addRules( cssRules );
-    }
-
-} );
-},{"./stylesheet/stylesheet":59}],59:[function(require,module,exports){
-
-function Stylesheet( id, media ) {
-    this.id = id;
-    this.elements = [];
-
-    this.initialize( media );
-}
-
-Stylesheet.prototype = {
-
-	/**
-     * Initializes the stylesheet.
-     *
-     * @since 1.0.0
-     *
-     * @param media
-     */
-    initialize : function( media ) {
-        this.stylesheet = this.createStylesheet( media );
-        this.sheet = this.stylesheet.sheet;
-    },
-
-	/**
-	 * Adds the stylesheet to the DOM.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param media
-	 * @returns {Element}
-	 */
-    createStylesheet : function( media ) {
-        var style = document.createElement( 'style' );
-        style.appendChild( document.createTextNode( '' ) );
-
-        media = media || 'screen';
-        style.setAttribute( 'media', media );
-        style.setAttribute( 'id', 'tailor-' + this.id );
-
-        document.head.appendChild( style );
-        return style;
-    },
-
-	/**
-	 * Adds a set of CSS rules to the stylesheet.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param ruleSet
-	 */
-    addRules : function( ruleSet ) {
-        _.each( ruleSet, function( rules, elementId ) {
-            rules.forEach( function( rule ) {
-                if ( 'selectors' in rule && 'declarations' in rule ) {
-                    Tailor.CSS.addRule( this.sheet, rule.selectors, rule.declarations, 'tailor-' + elementId );
-                }
-            }, this );
-        }, this );
-    },
-
-	/**
-	 * Copies the set of CSS rules associated with a given element.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param elementId
-	 * @param newElementId
-	 * @returns {Array}
-	 */
-    copyRules : function( elementId, newElementId ) {
-        var rules = [];
-        for ( var i = 0; i < this.sheet.cssRules.length; i++ ) {
-            var rule = this.sheet.cssRules[ i ];
-            if ( rule.selectorText && rule.selectorText.indexOf( elementId ) > -1 ) {
-                rules.push( {
-                    selectors : rule.selectorText.replace( new RegExp( elementId, "g" ), newElementId ),
-                    declarations : rule.style.cssText
-                } );
-            }
-        }
-        return rules;
-    },
-
-	/**
-	 * Deletes the set of CSS rules associated with a given element.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param elementId
-	 */
-    deleteRules : function( elementId ) {
-        for ( var i = 0; i < this.sheet.cssRules.length; i++ ) {
-            var rule = this.sheet.cssRules[ i ];
-            if ( rule.selectorText && rule.selectorText.indexOf( elementId ) > -1 ) {
-                Tailor.CSS.deleteRule( this.sheet, i );
-                i--;
-            }
-        }
-    },
-
-	/**
-	 * Clears all dynamic CSS rules contained in the stylesheet.
-	 *
-	 * @since 1.0.0
-	 */
-    clearRules : function() {
-        for ( var i = 0; i < this.sheet.cssRules.length; i++ ) {
-            Tailor.CSS.deleteRule( this.sheet, i );
-            i--;
-        }
-    }
-};
-
-module.exports = Stylesheet;
-},{}],60:[function(require,module,exports){
-module.exports = Marionette.Module.extend( {
-
-    /**
-     * Initializes the module.
-     *
-     * @since 1.0.0
-     */
-	onStart : function() {
-        var GuideView = require( './tools/show/guide' );
-        var SelectorView = require( './tools/show/select' );
-        var guide = new GuideView( { el : '#guide' } );
-
-        guide.render();
-
-        var api = {
-
-            /**
-             * Shows and positions the insertion guide.
-             *
-             * @since 1.0.0
-             *
-             * @param view
-             * @param drop
-             */
-            positionGuide : function( view, drop ) {
-                guide.position( view, drop );
-            },
-
-            /**
-             * Displays the element selector.
-             *
-             * @since 1.0.0
-             *
-             * @param view
-             */
-            selectElement : function( view ) {
-                app.selectRegion.show(
-                    new SelectorView( {
-                        model : view.model,
-                        collection : app.channel.request( 'canvas:elements' ),
-                        view : view
-                    } )
-                );
-            },
-
-            /**
-             * Resets the canvas.
-             *
-             * @since 1.0.0
-             */
-            resetGuide : function() {
-                guide.reset();
-
-                app.selectRegion.empty();
-            },
-
-            /**
-             * Returns the currently selected element, if one exists.
-             *
-             * @since 1.0.0
-             *
-             * @returns {*}
-             */
-            getSelectedElement : function() {
-                var select = app.selectRegion.currentView;
-                return select ? select.model : null;
-            }
-        };
-
-        this.listenTo( app.channel, 'canvas:guide', api.positionGuide );
-        this.listenTo( app.channel, 'canvas:select', api.selectElement );
-        this.listenTo( app.channel, 'canvas:reset', api.resetGuide );
-        this.listenTo( app.channel, 'element:refresh:template', api.resetGuide );
-
-        app.channel.reply( 'canvas:element:selected', api.getSelectedElement );
-    }
-
-} );
-},{"./tools/show/guide":62,"./tools/show/select":64}],61:[function(require,module,exports){
-module.exports = Backbone.Marionette.Region.extend( {
-
-    /**
-     * Adds a class name to the underlying view when selected.
-     *
-     * @since 1.0.0
-     *
-     * @param view
-     * @param region
-     * @param options
-     */
-    onShow : function( view, region, options ) {
-        view._view.el.classList.add( 'is-selected' );
-    },
-
-    /**
-     * Removes a class name from the underlying view when deselected.
-     *
-     * @since 1.0.0
-     *
-     * @param view
-     * @param region
-     * @param options
-     */
-    onEmpty : function( view, region, options ) {
-        view._view.el.classList.remove( 'is-selected' );
-    }
-
-} );
 },{}],62:[function(require,module,exports){
-module.exports = Marionette.ItemView.extend( {
-
-	template : false,
-
-	/**
-     * Positions the insertion guide over a given element.
-     *
-     * @since 1.0.0
-     *
-     * @param view
-     * @param drop
-     */
-    position : function( view, drop ) {
-        var $el = view.$el;
-        var offset = $el.offset();
-        var parentOffset = this.$el.offsetParent().offset();
-
-        this.el.style.visibility = 'visible';
-        this.el.className = 'guide guide--' + drop + ' guide--' + view.model.get( 'tag' );
-        this.el.style.left = offset.left - parentOffset.left + 'px';
-        this.el.style.top = offset.top - parentOffset.top + 'px';
-        this.el.style.width = $el.outerWidth() + 'px';
-        this.el.style.height = $el.outerHeight() + 'px';
-        this.el.style.opacity = 1;
-    },
-
-	/**
-     * Resets the insertion guide.
-     *
-     * @since 1.0.0
-     */
-    reset : function() {
-        this.el.style.visibility = 'hidden';
-        this.el.style.opacity = 0;
-    }
-
-} );
-},{}],63:[function(require,module,exports){
-module.exports = Marionette.ItemView.extend( {
-
-    tagName : 'a',
-
-	className : 'select__item',
-
-	events : {
-		'click' : 'onClick'
-	},
-
-	getTemplate : function() {
-		return _.template( '<%= label %>' );
-	},
-
-	/**
-	 * Toggles the breadcrumb list, or selects a breadcrumb.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param e
-	 */
-	onClick : function( e ) {
-		if ( 0 === this._index ) {
-
-            /**
-             * Toggles the breadcrumbs.
-             *
-             * @since 1.0.0
-             */
-			this.triggerMethod( 'toggle' );
-		}
-		else {
-
-            /**
-             * Triggers a select event on the model.
-             *
-             * @since 1.0.0
-             */
-			this.model.trigger( 'select' );
-		}
-
-		e.stopPropagation();
-	}
-
-} );
-},{}],64:[function(require,module,exports){
-module.exports = Marionette.CompositeView.extend( {
-
-    className : 'select',
-
-	childView : require( './menu-item' ),
-
-	childViewContainer : '.select__menu',
-
-	ui : {
-		'edit' : '.js-edit',
-		'delete' : '.js-delete'
-	},
-
-    events : {
-        'click @ui.edit' : 'editElement',
-        'click @ui.delete' : 'deleteElement'
-    },
-
-    childEvents : {
-		'toggle' : 'toggleMenu'
-	},
-
-    template : '#tmpl-tailor-tools-select',
-
-    /**
-     * Provides the required information to the template rendering function.
-     *
-     * @since 1.0.0
-     *
-     * @returns {*}
-     */
-    serializeData : function() {
-        var data = Backbone.Marionette.CompositeView.prototype.serializeData.apply( this, arguments );
-
-        data.siblings = this.collection.where( { parent : this.model.get( 'parent' ) } ).length;
-
-        return data;
-    },
-
-    /**
-     * Initializes the selector.
-     *
-     * @since 1.0.0
-     *
-     * @param options
-     */
-	initialize : function( options ) {
-        this._view = options.view;
-        this._model = this._view.model;
-    },
-
-    /**
-     * Filters the collection so that only ancestors of the target element are displayed in the menu.
-     *
-     * @since 1.0.0
-     *
-     * @returns {Array}
-     * @private
-     */
-    _filteredSortedModels : function() {
-        var models = [];
-        var model = this.model;
-
-        while ( 'undefined' !== typeof model ) {
-            models.push( model );
-            model = this.collection.get( model.get( 'parent' ) );
-        }
-        return models;
-    },
-
-    /**
-     * Positions the selector over the target view.
-     *
-     * @since 1.0.0
-     */
-	onDomRefresh : function() {
-        var thisRect = this.el.parentNode.getBoundingClientRect();
-        var thatRect = this._view.el.getBoundingClientRect();
-
-        this.el.style.top = thatRect.top - thisRect.top + 'px';
-        this.el.style.left = thatRect.left - thisRect.left + 'px';
-        this.el.style.width = thatRect.width + 'px';
-        this.el.style.height = thatRect.height + 'px';
-    },
-
-    /**
-     * Edits the target element.
-     *
-     * @since 1.0.0
-     */
-    editElement : function() {
-
-        /**
-         * Fires when the edit modal is opened.
-         *
-         * @since 1.0.0
-         */
-        app.channel.trigger( 'modal:open', this.model );
-    },
-
-    /**
-     * Removes the target element.
-     *
-     * @since 1.0.0
-     */
-    deleteElement : function() {
-
-        this.model.trigger( 'destroy', this.model );
-
-        /**
-         * Fires when an element is deleted.
-         *
-         * This is used by the History module instead of listening to the element collection, as the removal of
-         * an element can have cascading effects (e.g., the removal of column and row structures) which should
-         * not be tracked as steps.
-         *
-         * @since 1.0.0
-         *
-         * @param this.model
-         */
-        app.channel.trigger( 'element:delete', this.model );
-    },
-
-    /**
-     * Toggles the menu.
-     *
-     * @since 1.0.0
-     */
-    toggleMenu : function() {
-        this.$el.toggleClass( 'is-expanded' );
-    }
-
-} );
-},{"./menu-item":63}],65:[function(require,module,exports){
 /**
  * window.ajax
  *
@@ -8886,10 +8862,9 @@ module.exports = Marionette.CompositeView.extend( {
  * @class
  */
 var $ = jQuery,
-    Ajax,
-    Tailor = window.Tailor;
+    Ajax;
 
-var Ajax = {
+Ajax = {
 
     url : window.ajaxurl,
 
@@ -8976,45 +8951,39 @@ var Ajax = {
      */
     onError : function( response ) {
 
+        // Print the error to the console if the Notify feature is unavailable
         if ( ! Tailor.Notify ) {
             console.error( response );
+            return;
         }
-        else if ( response && response.hasOwnProperty( 'message' ) ) {
 
-            // Display the error from the server
+        if ( response && response.hasOwnProperty( 'message' ) ) {  // Display the error from the server
             Tailor.Notify( response.message );
         }
-        else if ( '0' == response ) {
-
-            // Session expired
+        else if ( '0' == response ) {  // Session expired
             Tailor.Notify( window._l10n.expired );
         }
-        else if ( '-1' == response ) {
-
-            // Invalid nonce
+        else if ( '-1' == response ) {  // Invalid nonce
             Tailor.Notify( window._l10n.invalid );
         }
-        else {
-
-            // General error condition
+        else {  // General error condition
             Tailor.Notify( window._l10n.error );
         }
     }
 };
 
+window.ajax = Ajax;
+
 module.exports = Ajax;
-},{}],66:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 /**
  * Tailor.CSS
  *
- * Helper functions for managing dynamic CSS rules.
+ * Helper functions for managing dynamic stylesheets.
  *
  * @class
  */
-var $ = Backbone.$,
-    CSS;
-
-CSS = {
+var CSS = {
 
 	/**
 	 * Adds a CSS rule to an existing style sheet.
@@ -9022,19 +8991,16 @@ CSS = {
 	 * @since 1.0.0
 	 *
 	 * @param sheet
-	 * @param selectors
-	 * @param declarations
-	 * @param elementId
+	 * @param selector
+	 * @param declaration
+	 * @param index
 	 */
-    addRule : function( sheet, selectors, declarations, elementId ) {
-        var selectorString = Tailor.CSS.parseSelectors( selectors, elementId );
-        var declarationString = Tailor.CSS.parseDeclarations( declarations );
-
+    addRule : function( sheet, selector, declaration, index ) {
         if ( 'insertRule' in sheet ) {
-            sheet.insertRule( selectorString + " {" + declarationString + "}", sheet.cssRules.length );
+            sheet.insertRule( selector + " {" + declaration + "}", sheet.cssRules.length );
         }
         else if ( 'addRule' in sheet ) {
-            sheet.addRule( selectorString, declarationString, sheet.cssRules.length );
+            sheet.addRule( selector, declaration, sheet.cssRules.length );
         }
     },
 
@@ -9065,19 +9031,17 @@ CSS = {
 	 * @returns {*}
 	 */
     parseSelectors : function( selectors, elementId ) {
-
         if ( _.isString( selectors ) ) {
             return selectors;
         }
 
-        var elementClass = elementId ? '.tailor-ui .' + elementId : '';
+        var elementClass = elementId ? '.tailor-ui .tailor-' + elementId : '';
         var selector;
 
         if ( ! selectors.length ) {
             selector = elementClass;
         }
         else {
-
             if ( elementClass ) {
                 selectors = selectors.map( function( selector ) {
                     if ( selector.indexOf( '&' ) > -1 ) {
@@ -9089,14 +9053,11 @@ CSS = {
                     else {
                         selector = elementClass + ' ' + selector;
                     }
-
                     return selector;
                 } );
             }
-
-            selector = selectors.join( ',.tailor-ui ' );
+            selector = selectors.join( ',' );
         }
-
         return selector;
     },
 
@@ -9109,23 +9070,20 @@ CSS = {
 	 * @returns {*}
 	 */
     parseDeclarations : function( declarations ) {
-
         if ( _.isString( declarations ) ) {
             return declarations;
         }
-
         var declaration = '';
         _.each( declarations, function( value, property ) {
             declaration += property + ':' + value + ';';
         } );
-
         return declaration;
     }
 
 };
 
 module.exports = CSS;
-},{}],67:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 /**
  * classList Polyfill
  *
@@ -9214,7 +9172,8 @@ module.exports = CSS;
 	} );
 
 } )();
-},{}],68:[function(require,module,exports){
+
+},{}],65:[function(require,module,exports){
 /**
  * requestAnimationFrame polyfill.
  *
@@ -9252,4 +9211,56 @@ module.exports = CSS;
 	}
 
 } ) ( window );
-},{}]},{},[6]);
+
+},{}],66:[function(require,module,exports){
+/**
+ * Makes animation and transition support status and end names available as global variables.
+ */
+( function( window ) {
+
+    'use strict';
+
+    var el = document.createElement( 'fakeelement' );
+
+    function getAnimationEvent(){
+        var t,
+            animations = {
+                'animation' : 'animationend',
+                'OAnimation' : 'oAnimationEnd',
+                'MozAnimation' : 'animationend',
+                'WebkitAnimation' : 'webkitAnimationEnd'
+            };
+
+        for ( t in animations ) {
+            if ( animations.hasOwnProperty( t ) && 'undefined' !== typeof el.style[ t ] ) {
+                return animations[ t ];
+            }
+        }
+
+        return false;
+    }
+
+    function getTransitionEvent(){
+        var t,
+            transitions = {
+                'transition' : 'transitionend',
+                'OTransition' : 'oTransitionEnd',
+                'MozTransition' : 'transitionend',
+                'WebkitTransition' : 'webkitTransitionEnd'
+            };
+
+        for ( t in transitions ) {
+            if ( transitions.hasOwnProperty( t ) && 'undefined' !== typeof el.style[ t ] ) {
+                return transitions[ t ];
+            }
+        }
+
+        return false;
+    }
+
+    window.animationEndName = getAnimationEvent();
+    window.transitionEndName = getTransitionEvent();
+
+} ) ( window );
+
+},{}]},{},[2]);
