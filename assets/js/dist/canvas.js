@@ -608,7 +608,7 @@ var EditableBehaviors = Marionette.Behavior.extend( {
      * @since 1.0.0
      */
     onRender : function() {
-        this.view.el.title = 'Shift-click to edit this element';
+        this.view.el.title = _strings.edit_element;
     },
 
     /**
