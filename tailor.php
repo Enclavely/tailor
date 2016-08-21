@@ -179,7 +179,7 @@ if ( ! class_exists( 'Tailor' ) ) {
          */
         public function init() {
 	        
-            load_plugin_textdomain( 'tailor', false, $this->plugin_dir() . 'languages/' );
+            load_plugin_textdomain( 'tailor', false, dirname(plugin_basename(__FILE__)) . '/languages/' );
 
 	        add_filter( 'body_class', array( $this, 'body_class' ) );
 

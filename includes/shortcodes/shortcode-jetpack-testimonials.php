@@ -70,7 +70,7 @@ if ( ! function_exists( 'tailor_shortcode_jetpack_testimonials' ) ) {
 		    $content = do_shortcode( "[testimonials {$attr_string}][/testimonials]" );
 	    }
 	    else {
-		    $content = sprintf( '<p class="tailor-notification tailor-notification--warning">%s</p>', __( 'Please enable Jetpack and the Testimonial custom post type' ) );
+		    $content = sprintf( '<p class="tailor-notification tailor-notification--warning">%s</p>', __( 'Please enable Jetpack and the Testimonial custom post type', 'tailor' ) );
 	    }
 
 	    return $html . $content . '</div>';

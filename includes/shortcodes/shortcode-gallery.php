@@ -70,7 +70,7 @@ if ( ! function_exists( 'tailor_shortcode_gallery' ) ) {
 	    $html = '<div ' . trim( "{$id} class=\"{$class}\"" ) . " {$data}>";
 
 	    if ( empty( $atts['ids'] ) ) {
-		    return $html . sprintf( '<p class="tailor-notification tailor-notification--warning">%s</p>', __( 'Please select one or more images to display in this gallery' ) ) . '</div>';
+		    return $html . sprintf( '<p class="tailor-notification tailor-notification--warning">%s</p>', __( 'Please select one or more images to display in this gallery', 'tailor' ) ) . '</div>';
 	    }
 
 	    $q = new WP_Query( array(

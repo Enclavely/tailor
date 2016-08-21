@@ -47,7 +47,7 @@ if ( ! function_exists( 'tailor_shortcode_map' ) ) {
         ), 'data-' );
 	    
 	    if ( false == tailor_get_setting( 'google_maps_api_key', false ) ) {
-		    $content = sprintf( '<p class="tailor-notification tailor-notification--warning">%s</p>', __( 'Please create and add a Google Maps API key in the admin settings' ) );
+		    $content = sprintf( '<p class="tailor-notification tailor-notification--warning">%s</p>', __( 'Please create and add a Google Maps API key in the admin settings', 'tailor' ) );
 	    }
 	    else {
 		    $content = '<div class="tailor-map__canvas"></div>' . do_shortcode( $content );

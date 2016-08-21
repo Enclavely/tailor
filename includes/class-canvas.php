@@ -196,6 +196,9 @@ if ( ! class_exists( 'Tailor_Canvas' ) ) {
 
 	        wp_localize_script( $handle, '_nonces', $this->create_nonces() );
 	        wp_localize_script( $handle, '_media_queries', tailor_get_registered_media_queries( true ) );
+	        wp_localize_script( $handle, '_strings', array(
+	            'edit_element'      => __( 'Shift-click to edit this element', 'tailor' )
+	        ) );
 
 	        /**
 	         * Fires after canvas scripts have been enqueued.

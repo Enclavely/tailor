@@ -582,7 +582,7 @@ if ( ! function_exists( 'tailor_get_preview_sizes' ) ) {
 	function tailor_get_preview_sizes() {
 		trigger_error(
 			sprintf(
-				__( '%1$s is <strong>deprecated</strong> since Tailor version %2$s! Use %3$s instead.' ),
+				__( '%1$s is <strong>deprecated</strong> since Tailor version %2$s! Use %3$s instead.', 'tailor' ),
 				'tailor_get_preview_sizes',
 				'1.1.3',
 				'tailor_get_media_queries'
