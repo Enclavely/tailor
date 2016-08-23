@@ -97,7 +97,7 @@ if ( ! function_exists( 'tailor_shortcode_jetpack_portfolio' ) ) {
 		    $content = do_shortcode( "[portfolio {$attr_string}][/portfolio]" );
 	    }
 	    else {
-		    $content = sprintf( '<p class="tailor-notification tailor-notification--warning">%s</p>', __( 'Please enable Jetpack and the Portfolio custom post type' ) );
+		    $content = sprintf( '<p class="tailor-notification tailor-notification--warning">%s</p>', __( 'Please enable Jetpack and the Portfolio custom post type', 'tailor' ) );
 	    }
 
 	    return $html . $content . '</div>';

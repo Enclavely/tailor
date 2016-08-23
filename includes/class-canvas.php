@@ -169,10 +169,24 @@ if ( ! class_exists( 'Tailor_Canvas' ) ) {
 	        $handle = 'tailor-canvas';
 	        $extension = SCRIPT_DEBUG ? '.js' : '.min.js';
 
+	        $dependencies = array(
+		        'jquery', 'underscore', 'backbone-marionette', 'imagesloaded',
+		        'sortable', 'slick-slider', 'shuffle', 'magnific-popup', 'google-maps-api',
+	        );
+
+	        /**
+	         * Filters the script dependencies for the canvas.
+	         *
+	         * @since 1.5.1
+	         *
+	         * @param array $dependencies
+	         */
+	        $dependencies = apply_filters( 'tailor_canvas_script_dependencies', $dependencies );
+	        
 	        wp_enqueue_script(
 		        $handle,
 		        tailor()->plugin_url() . 'assets/js/dist/canvas' . $extension,
-		        array( 'backbone-marionette', 'sortable', 'slick-slider' ),
+		        $dependencies,
 		        tailor()->version(),
 		        true
 	        );
@@ -194,6 +208,9 @@ if ( ! class_exists( 'Tailor_Canvas' ) ) {
 		        'isCrossDomain'     =>  $is_cross_domain,
 	        ) );
 
+	        wp_localize_script( $handle, '_strings', array(
+		        'edit_element'      => __( 'Shift-click to edit this element', 'tailor' )
+	        ) );
 	        wp_localize_script( $handle, '_nonces', $this->create_nonces() );
 	        wp_localize_script( $handle, '_media_queries', tailor_get_registered_media_queries( true ) );
 

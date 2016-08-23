@@ -37,28 +37,22 @@ CanvasApplication = Marionette.Application.extend( {
         // White listed events from the remote channel
         this.allowableEvents = [
 
-            // Used when dragging library items and templates from the sidebar
+            // Triggered when elements or templates are dragged from the sidebar
 	        'canvas:dragstart', 'canvas:drag', 'canvas:dragend',
 
-            // Used when loading a template
+            // Triggered when a template is loaded
             'template:load',
-
-            // History actions
-	        //'history:restore', 'history:undo', 'history:redo',
-
-            // Modal actions
+            
+            // Triggered when an element is edited
             'modal:apply',
-
-            // CSS actions
-	        //'css:add', 'css:delete', 'css:update', 'css:clear',
-
-            // Used by the setting API to respond to sidebar setting changes
+            
+            // Triggered when a sidebar setting changes
             'sidebar:setting:change',
 
             // Used to allow the sidebar to reset the canvas
             'canvas:reset',
 
-            // Used by the History module to reset the element collection
+            // Triggered when the element collection is reset (used by the History module)
             'elements:reset'
         ];
         
@@ -77,29 +71,48 @@ CanvasApplication = Marionette.Application.extend( {
         $( 'img' ).attr( { draggable : false } );
 
         $doc.on( 'keydown', function( e ) {
-            if ( e.ctrlKey && 89 == e.keyCode ) {
-                if ( ! _.contains( [ 'INPUT', 'SELECT', 'TEXTAREA' ], e.target.tagName ) ) {
 
-                    /**
-                     * Fires when a "CTRL-Y" is pressed.
-                     *
-                     * @since 1.0.0
-                     */
-                    canvas.channel.trigger( 'history:redo' );
-                }
+            if ( _.contains( [ 'INPUT', 'SELECT', 'TEXTAREA' ], e.target.tagName ) ) {
+                return;
             }
-        } );
 
-        $doc.on( 'keydown', function( e ) {
             if ( e.ctrlKey && 90 == e.keyCode ) {
-                if ( ! _.contains( [ 'INPUT', 'SELECT', 'TEXTAREA' ], e.target.tagName ) ) {
+
+                /**
+                 * Fires when a "CTRL-Z" is pressed.
+                 *
+                 * @since 1.0.0
+                 */
+                canvas.channel.trigger( 'history:undo' );
+            }
+
+            else if ( e.ctrlKey && 89 == e.keyCode ) {
+
+                /**
+                 * Fires when a "CTRL-Y" is pressed.
+                 *
+                 * @since 1.0.0
+                 */
+                canvas.channel.trigger( 'history:redo' );
+            }
+
+            else if ( 8 == e.keyCode ) {
+                var selectedElement = canvas.channel.request( 'canvas:element:selected' );
+                if ( selectedElement ) {
+                    selectedElement.trigger( 'destroy', selectedElement );
 
                     /**
-                     * Fires when a "CTRL-Z" is pressed.
+                     * Fires when an element is deleted.
+                     *
+                     * This is used by the History module instead of listening to the element collection, as the removal of
+                     * an element can have cascading effects (e.g., the removal of column and row structures) which should
+                     * not be tracked as steps.
                      *
                      * @since 1.0.0
+                     *
+                     * @param this.model
                      */
-                    canvas.channel.trigger( 'history:undo' );
+                    app.channel.trigger( 'element:delete', selectedElement );
                 }
             }
         } );
@@ -608,7 +621,7 @@ var EditableBehaviors = Marionette.Behavior.extend( {
      * @since 1.0.0
      */
     onRender : function() {
-        this.view.el.title = 'Shift-click to edit this element';
+        this.view.el.title = _strings.edit_element;
     },
 
     /**
@@ -6214,6 +6227,10 @@ SelectMenuView = Marionette.CompositeView.extend( {
         'click @ui.delete' : 'deleteElement'
     },
 
+    modelEvents : {
+        'destroy' : 'destroy'
+    },
+    
     childEvents : {
 		'toggle' : 'toggleMenu'
 	},
@@ -6242,7 +6259,6 @@ SelectMenuView = Marionette.CompositeView.extend( {
      */
 	initialize : function( options ) {
         this._view = options.view;
-        this._model = this._view.model;
     },
 
     /**

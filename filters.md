@@ -48,6 +48,7 @@
 |----------|----------|----------|
 | tailor_setting_id | Applies to the option key used to store setting values | string $setting_id |
 | tailor_enable_sidebar_styles | Allow developers to prevent Tailor sidebar styles from being enqueued | bool |
+| tailor_sidebar_script_dependencies | Allow developers to prevent Tailor sidebar script dependencies from being enqueued | array $dependencies |
 | tailor_preview_url | Applies to the URL of the preview/canvas frame | string $preview_url <br> string $permalink <br> array $query_args |
 
 ## Canvas filters
@@ -56,6 +57,13 @@
 |----------|----------|----------|
 | tailor_canvas_content | Applies to the content of the page during a canvas page load | string $content |
 | tailor_enable_canvas_styles | Allow developers to prevent Tailor canvas styles from being enqueued | bool |
+| tailor_canvas_script_dependencies | Allow developers to prevent Tailor canvas script dependencies from being enqueued | array $dependencies |
+
+## Frontend filters
+
+| Filter | Description | Argument(s) |
+|----------|----------|----------|
+| tailor_frontend_script_dependencies | Allow developers to prevent Tailor frontend script dependencies from being enqueued | array $dependencies |
 
 ## Custom CSS filters
 

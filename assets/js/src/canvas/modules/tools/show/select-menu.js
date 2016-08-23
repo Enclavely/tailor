@@ -19,6 +19,10 @@ SelectMenuView = Marionette.CompositeView.extend( {
         'click @ui.delete' : 'deleteElement'
     },
 
+    modelEvents : {
+        'destroy' : 'destroy'
+    },
+    
     childEvents : {
 		'toggle' : 'toggleMenu'
 	},
@@ -47,7 +51,6 @@ SelectMenuView = Marionette.CompositeView.extend( {
      */
 	initialize : function( options ) {
         this._view = options.view;
-        this._model = this._view.model;
     },
 
     /**

@@ -287,7 +287,7 @@ if ( ! class_exists( 'Tailor_Section' ) ) {
 	     * @see Tailor_Panel::print_template()
 	     */
 	    protected function empty_template() {
-		    printf( '<p>%s</p>', __( 'There are no controls to display' ) );
+		    printf( '<p>%s</p>', __( 'There are no controls to display', 'tailor' ) );
 	    }
     }
 }

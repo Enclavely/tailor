@@ -2,6 +2,7 @@
  * The Sidebar Marionette application.
  */
 var $ = Backbone.$,
+    $doc = $( document ),
     SidebarApplication;
 
 SidebarApplication = Marionette.Application.extend( {
@@ -35,7 +36,10 @@ SidebarApplication = Marionette.Application.extend( {
 
             // Triggered when a set of template models are added to the element collection
             'template:add',
-            
+
+            // Triggered when CTRL-Z or CTRL-Y is used on the canvas
+            'history:undo', 'history:redo',
+
             // Triggered when an element is edited
             'modal:open',
             'modal:destroy'
@@ -183,7 +187,7 @@ SidebarApplication = Marionette.Application.extend( {
          *
          * @since 1.0.0
          */
-        $( document ).on( 'keydown', function( e ) {
+        $doc.on( 'keydown', function( e ) {
             if ( e.ctrlKey && 89 == e.keyCode ) {
                 if ( ! _.contains( [ 'INPUT', 'SELECT', 'TEXTAREA' ], e.target.tagName ) ) {
 
@@ -202,7 +206,7 @@ SidebarApplication = Marionette.Application.extend( {
          *
          * @since 1.0.0
          */
-        $( document ).on( 'keydown', function( e ) {
+        $doc.on( 'keydown', function( e ) {
             if ( e.ctrlKey && 90 == e.keyCode ) {
                 if ( ! _.contains( [ 'INPUT', 'SELECT', 'TEXTAREA' ], e.target.tagName ) ) {
 

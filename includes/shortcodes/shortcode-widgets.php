@@ -32,7 +32,7 @@ if ( ! function_exists( 'tailor_shortcode_widgets' ) ) {
 	    $class = trim( esc_attr( "tailor-element tailor-widget-area {$atts['class']}" ) );
 
 	    if ( empty( $atts['widget_area'] ) ) {
-		    $content = sprintf( '<p class="tailor-notification tailor-notification--warning">%s</p>', __( 'Please select a widget area to display' ) );
+		    $content = sprintf( '<p class="tailor-notification tailor-notification--warning">%s</p>', __( 'Please select a widget area to display', 'tailor' ) );
 	    }
 	    else if ( is_active_sidebar( $atts['widget_area'] ) ) {
 		    ob_start();
@@ -40,7 +40,7 @@ if ( ! function_exists( 'tailor_shortcode_widgets' ) ) {
 		    $content = ob_get_clean();
 	    }
 	    else {
-		    $content = sprintf( '<p class="tailor-notification tailor-notification--warning">%s</p>', __( 'The selected widget area contains no widgets' ) );
+		    $content = sprintf( '<p class="tailor-notification tailor-notification--warning">%s</p>', __( 'The selected widget area contains no widgets', 'tailor' ) );
 	    }
 
         return '<div ' . trim( "{$id} class=\"{$class}\"" ) . '>' . do_shortcode( $content ) . '</div>';

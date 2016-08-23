@@ -4,7 +4,7 @@
  * Plugin Name: Tailor
  * Plugin URI: http://www.gettailor.com
  * Description: Build beautiful page layouts quickly and easily using your favourite theme.
- * Version: 1.5.0
+ * Version: 1.5.1
  * Author: Andrew Worsfold
  * Author URI:  http://www.andrewworsfold.com
  * Text Domain: tailor
@@ -179,7 +179,7 @@ if ( ! class_exists( 'Tailor' ) ) {
          */
         public function init() {
 	        
-            load_plugin_textdomain( 'tailor', false, $this->plugin_dir() . 'languages/' );
+            load_plugin_textdomain( 'tailor', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 
 	        add_filter( 'body_class', array( $this, 'body_class' ) );
 
@@ -273,6 +273,7 @@ if ( ! class_exists( 'Tailor' ) ) {
 	     * @since 1.0.0
 	     */
 	    public function register_script_dependencies() {
+
 		    wp_register_script(
 			    'modernizr',
 			    $this->plugin_url() . 'assets/js/dist/vendor/modernizr.min.js',
@@ -280,13 +281,17 @@ if ( ! class_exists( 'Tailor' ) ) {
 			    $this->version(),
 			    true
 		    );
-		    wp_register_script(
-			    'imagesloaded',
-			    $this->plugin_url() . 'assets/js/dist/vendor/imagesloaded.min.js',
-			    array(),
-			    $this->version(),
-			    true
-		    );
+
+		    if ( 'registered' != wp_script_is( 'imagesloaded' ) ) {
+			    wp_register_script(
+				    'imagesloaded',
+				    $this->plugin_url() . 'assets/js/dist/vendor/imagesloaded.min.js',
+				    array(),
+				    $this->version(),
+				    true
+			    );
+		    }
+
 		    wp_register_script(
 			    'sortable',
 			    $this->plugin_url() . 'assets/js/dist/vendor/sortable.min.js',
@@ -294,6 +299,7 @@ if ( ! class_exists( 'Tailor' ) ) {
 			    $this->version(),
 			    true
 		    );
+
 		    wp_register_script(
 			    'slick-slider',
 			    $this->plugin_url() . 'assets/js/dist/vendor/slick.min.js',
@@ -301,6 +307,7 @@ if ( ! class_exists( 'Tailor' ) ) {
 			    $this->version(),
 			    true
 		    );
+
 		    wp_register_script(
 			    'shuffle',
 			    $this->plugin_url() . 'assets/js/dist/vendor/shuffle.min.js',
@@ -308,6 +315,7 @@ if ( ! class_exists( 'Tailor' ) ) {
 			    $this->version(),
 			    true
 		    );
+
 		    wp_register_script(
 			    'magnific-popup',
 			    $this->plugin_url() . 'assets/js/dist/vendor/magnific-popup.min.js',
@@ -315,6 +323,7 @@ if ( ! class_exists( 'Tailor' ) ) {
 			    $this->version(),
 			    true
 		    );
+
 		    wp_register_script(
 			    'backbone-marionette',
 			    $this->plugin_url() . 'assets/js/dist/vendor/backbone.marionette' . ( SCRIPT_DEBUG ? '.js' : '.min.js' ),
@@ -348,7 +357,7 @@ if ( ! class_exists( 'Tailor' ) ) {
 	         *
 	         * @param bool
 	         */
-	        if ( apply_filters( 'tailor_enable_frontend_styles', true ) ) {
+	        if ( is_singular() && apply_filters( 'tailor_enable_frontend_styles', true ) ) {
 		        wp_enqueue_style(
 			        'tailor-styles',
 			        $this->plugin_url() . 'assets/css/frontend' . ( SCRIPT_DEBUG ? '.css' : '.min.css' ),
@@ -374,20 +383,28 @@ if ( ! class_exists( 'Tailor' ) ) {
 		     */
 		    if ( apply_filters( 'tailor_enable_frontend_scripts', true ) ) {
 
-			    // Enqueue script dependencies
-			    wp_enqueue_script( 'slick-slider' );
-			    wp_enqueue_script( 'shuffle' );
-			    wp_enqueue_script( 'magnific-popup' );
-			    wp_enqueue_script( 'google-maps-api' );
-
 			    if ( $this->is_canvas() ) {
 				    return;
 			    }
+			    
+			    $dependencies = array(
+				    'jquery', 'underscore', 'imagesloaded',
+				    'slick-slider', 'shuffle', 'magnific-popup', 'google-maps-api'
+			    );
 
+			    /**
+			     * Filters the script dependencies for the frontend.
+			     * 
+			     * @since 1.5.1
+			     * 
+			     * @param array $dependencies
+			     */
+			    $dependencies = apply_filters( 'tailor_frontend_script_dependencies', $dependencies );
+			    
 			    wp_enqueue_script(
 				    'tailor-frontend',
 				    $this->plugin_url() . 'assets/js/dist/frontend' . ( SCRIPT_DEBUG ? '.js' : '.min.js' ),
-				    array( 'jquery', 'underscore', 'imagesloaded' ),
+				    $dependencies,
 				    $this->version()
 			    );
 		    }

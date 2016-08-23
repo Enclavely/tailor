@@ -245,10 +245,24 @@ if ( ! class_exists( 'Tailor_Sidebar' ) ) {
 	        $handle = 'tailor-sidebar';
 	        $extension = SCRIPT_DEBUG ? '.js' : '.min.js';
 
+	        $dependencies = array(
+		        'wp-auth-check', 'media-views', 'media-editor', 'media-audiovideo', 'mce-view',
+		        'modernizr', 'backbone-marionette'
+	        );
+
+	        /**
+	         * Filters the script dependencies for the sidebar.
+	         *
+	         * @since 1.5.1
+	         *
+	         * @param array $dependencies
+	         */
+	        $dependencies = apply_filters( 'tailor_sidebar_script_dependencies', $dependencies );
+
 	        wp_enqueue_script(
 		        $handle,
                 tailor()->plugin_url() . 'assets/js/dist/sidebar' . $extension,
-                array( 'wp-auth-check', 'media-views', 'media-editor', 'media-audiovideo', 'mce-view', 'modernizr', 'backbone-marionette' ),
+		        $dependencies,
                 tailor()->version(),
                 true
             );
