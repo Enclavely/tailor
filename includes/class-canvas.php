@@ -169,24 +169,10 @@ if ( ! class_exists( 'Tailor_Canvas' ) ) {
 	        $handle = 'tailor-canvas';
 	        $extension = SCRIPT_DEBUG ? '.js' : '.min.js';
 
-	        $dependencies = array(
-		        'jquery', 'underscore', 'backbone-marionette', 'imagesloaded',
-		        'sortable', 'slick-slider', 'shuffle', 'magnific-popup', 'google-maps-api',
-	        );
-
-	        /**
-	         * Filters the script dependencies for the canvas.
-	         *
-	         * @since 1.5.1
-	         *
-	         * @param array $dependencies
-	         */
-	        $dependencies = apply_filters( 'tailor_canvas_script_dependencies', $dependencies );
-	        
 	        wp_enqueue_script(
 		        $handle,
 		        tailor()->plugin_url() . 'assets/js/dist/canvas' . $extension,
-		        $dependencies,
+		        array( 'backbone-marionette', 'sortable', 'slick-slider' ),
 		        tailor()->version(),
 		        true
 	        );

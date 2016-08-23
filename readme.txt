@@ -2,7 +2,7 @@
 Contributors: andrew.worsfold
 Donate link: http://gettailor.com/donate/
 Tags: page, layout, builder, frontend, content, page builder, drag and drop builder, home page builder, landing page builder, layout builder, frontend builder, frontend editor, responsive, visual composer, beaver builder
-Stable tag: 1.5.1
+Stable tag: 1.5.2
 Requires at least: 4.3
 Tested up to: 4.6
 License: GPLv3 or later
@@ -123,13 +123,15 @@ Yes, however, users should be directed to the WordPress plugin repository to ins
 
 == Changelog ==
 
+= 1.5.2 =
+* Fixed: Map element controls not displaying.
+
 = 1.5.1 =
 * Improved: Delete selected element by pressing the Delete key.
 * Added: Utility class for full-width sections.  Add 'u-full-width' as a custom class to the section(s) you want to be full-width.
 * Fixed: Scripts being loaded on archive pages.
 * Fixed: Undo and redo keyboard shortcuts (CTRL-Z and CTRL-Y, respectively).
 * Fixed: Missing textdomain strings
-* Developer: Added filters to remove frontend, sidebar and canvas script dependencies if desired.
 * Developer: Use WordPress bundled version of imagesloaded, if available.
 
 = 1.5.0 =
