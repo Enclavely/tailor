@@ -479,7 +479,11 @@ if ( ! function_exists( 'tailor_maybe_enable_scripts' ) ) {
 	 */
 	function tailor_maybe_enable_scripts() {
 		
-		if ( ! is_singular() || tailor()->is_canvas() || tailor()->is_template_preview() ) {
+		if ( ! is_singular() ) {
+			return false;
+		}
+
+		if ( tailor()->is_canvas() || tailor()->is_template_preview() ) {
 			return true;
 		}
 

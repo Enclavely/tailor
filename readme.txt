@@ -123,6 +123,9 @@ Yes, however, users should be directed to the WordPress plugin repository to ins
 
 == Changelog ==
 
+= 1.5.3 =
+* Added: French language translation.
+
 = 1.5.2 =
 * Fixed: Map element controls not displaying.
 
