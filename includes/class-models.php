@@ -666,12 +666,12 @@ if ( ! class_exists( 'Tailor_Models' ) ) {
 
 		    if ( $element = tailor_elements()->get_element( $unsanitized_model['tag'] ) ) {
 			    foreach ( $element->settings() as $setting ) { /* @var $setting Tailor_Setting */
+
 				    if ( ! array_key_exists( $setting->id, $unsanitized_model['atts'] ) ) {
-					    $sanitized_atts[ $setting->id ] = $setting->sanitize( $setting->default );
+					    $unsanitized_model['atts'][ $setting->id ] = $setting->default;
 				    }
-				    else {
-					    $sanitized_atts[ $setting->id ] = $setting->sanitize( $unsanitized_model['atts'][ $setting->id ] );
-				    }
+
+				    $sanitized_atts[ $setting->id ] = $setting->sanitize( $unsanitized_model['atts'][ $setting->id ] );
 			    }
 		    }
 		    else {

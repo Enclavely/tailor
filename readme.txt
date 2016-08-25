@@ -47,6 +47,8 @@ Tailor is open source and built based on WordPress' coding standards and best pr
 
 For more information:
 
+- Check out our example of how to extend Tailor [using a theme](https://github.com/andrew-worsfold/tailor-sample-theme).
+- Check out our example of how to extend Tailor [using a plugin](https://github.com/andrew-worsfold/tailor-sample-extension).
 - [Read the developer documentation](support.gettailor.com/hc/en-us/categories/202586427).
 - Check out the free [Portfolio](https://wordpress.org/plugins/tailor-portfolio/) and [WooCommerce](https://wordpress.org/plugins/tailor-woocommerce/) extensions.
 - Get involved in the [GitHub project](https://github.com/andrew-worsfold/tailor).

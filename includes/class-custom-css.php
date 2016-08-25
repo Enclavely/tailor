@@ -472,7 +472,7 @@ if ( ! class_exists( 'Tailor_Custom_CSS' ) ) {
 		    }
 
 		    /**
-		     * Allow developers to prevent CSS from being printed.
+		     * Allow developers to prevent Customizer CSS from being printed.
 		     *
 		     * @since 1.4.0
 		     *
@@ -511,7 +511,7 @@ if ( ! class_exists( 'Tailor_Custom_CSS' ) ) {
 		    }
 
 		    /**
-		     * Fires after custom page CSS has been printed.
+		     * Fires after Customizer CSS has been printed.
 		     *
 		     * @since 1.0.0
 		     */
