@@ -92,7 +92,7 @@ if ( ! function_exists( 'tailor_content_editor_link' ) ) {
      */
     function tailor_content_editor_link() {
 
-		if ( tailor()->is_canvas() ) {
+		if ( tailor()->is_canvas() || tailor()->is_tailoring() ) {
 			return;
 		}
 
