@@ -2,7 +2,7 @@
 Contributors: andrew.worsfold
 Donate link: http://gettailor.com/donate/
 Tags: page, layout, builder, frontend, content, page builder, drag and drop builder, home page builder, landing page builder, layout builder, frontend builder, frontend editor, responsive, visual composer, beaver builder
-Stable tag: 1.5.3
+Stable tag: 1.5.4
 Requires at least: 4.3
 Tested up to: 4.6
 License: GPLv3 or later
@@ -20,7 +20,6 @@ To get started:
 
 - [Read the user documentation](support.gettailor.com/hc/en-us/categories/202586427).
 - [View instructional videos on YouTube](https://www.youtube.com/channel/UCiFGt6qqPwN1ruuEnjlVOqA).
-- [Give it a try in a sandbox](https://addendio.com/try-plugin/?slug=tailor).
 
 = Easy to use =
 
@@ -124,6 +123,9 @@ Yes.  Tailored pages can be migrated like any other type of page using the [dupl
 Yes, however, users should be directed to the WordPress plugin repository to install the latest version of the plugin.  Consider using a tool like [TGM Plugin Activation](http://tgmpluginactivation.com/) to guide users through the installation process.
 
 == Changelog ==
+
+= 1.5.4 =
+* Added: 'Tailor this ..' button above the content editor.
 
 = 1.5.3 =
 * Added: French language translation.
