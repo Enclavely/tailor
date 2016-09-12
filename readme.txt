@@ -2,7 +2,7 @@
 Contributors: andrew.worsfold
 Donate link: http://gettailor.com/donate/
 Tags: page, layout, builder, frontend, content, page builder, drag and drop builder, home page builder, landing page builder, layout builder, frontend builder, frontend editor, responsive, visual composer, beaver builder
-Stable tag: 1.5.4
+Stable tag: 1.5.5
 Requires at least: 4.3
 Tested up to: 4.6
 License: GPLv3 or later
@@ -123,6 +123,12 @@ Yes.  Tailored pages can be migrated like any other type of page using the [dupl
 Yes, however, users should be directed to the WordPress plugin repository to install the latest version of the plugin.  Consider using a tool like [TGM Plugin Activation](http://tgmpluginactivation.com/) to guide users through the installation process.
 
 == Changelog ==
+
+= 1.5.5 =
+* Fixed: User permission check being called too early, resulting in a warning message [GitHub #30](https://github.com/andrew-worsfold/tailor/issues/30).
+* Developer: Consolidated frontend element initialization into a single function [GitHub #31](https://github.com/andrew-worsfold/tailor/issues/31).
+* Developer: Added filter for empty content placeholder text [GitHub #33](https://github.com/andrew-worsfold/tailor/issues/33).
+* Fixed: Fuzzy spinner image [GitHub #34](https://github.com/andrew-worsfold/tailor/issues/34).
 
 = 1.5.4 =
 * Added: 'Tailor this ..' button above the content editor.

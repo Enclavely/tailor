@@ -135,9 +135,10 @@ $.fn.tailorCarousel = function( options, callbacks ) {
         }
     } );
 };
-},{}],2:[function(require,module,exports){
 
+},{}],2:[function(require,module,exports){
 var $ = window.jQuery;
+var Tailor = window.Tailor || {};
 
 // Include polyfills
 require( '../shared/utility/polyfills/classlist' );
@@ -145,17 +146,17 @@ require( '../shared/utility/polyfills/raf' );
 require( '../shared/utility/polyfills/transitions' );
 
 // Include shared components
-require( '../shared/components/tabs' );
-require( '../shared/components/toggles' );
-require( '../shared/components/map' );
-require( '../shared/components/lightbox' );
-require( '../shared/components/slideshow' );
-require( '../shared/components/parallax' );
+require( '../shared/components/ui/tabs' );
+require( '../shared/components/ui/toggles' );
+require( '../shared/components/ui/map' );
+require( '../shared/components/ui/lightbox' );
+require( '../shared/components/ui/slideshow' );
+require( '../shared/components/ui/parallax' );
 
 // Include frontend-only components
-require( './components/carousel' );
+require( './components/ui/carousel' );
 
-$( document ).ready( function() {
+Tailor.initElements = function() {
 
 	// Parallax sections
 	$( '.tailor-section[data-ratio]' ).each( function() {
@@ -218,9 +219,13 @@ $( document ).ready( function() {
 
 	// Lightboxes
 	$( '.is-lightbox-gallery' ).tailorLightbox();
+};
 
+// Initialize elements when the document is ready
+$( document ).ready( function() {
+	Tailor.initElements();
 } );
-},{"../shared/components/lightbox":3,"../shared/components/map":4,"../shared/components/parallax":5,"../shared/components/slideshow":6,"../shared/components/tabs":7,"../shared/components/toggles":8,"../shared/utility/polyfills/classlist":9,"../shared/utility/polyfills/raf":10,"../shared/utility/polyfills/transitions":11,"./components/carousel":1}],3:[function(require,module,exports){
+},{"../shared/components/ui/lightbox":3,"../shared/components/ui/map":4,"../shared/components/ui/parallax":5,"../shared/components/ui/slideshow":6,"../shared/components/ui/tabs":7,"../shared/components/ui/toggles":8,"../shared/utility/polyfills/classlist":9,"../shared/utility/polyfills/raf":10,"../shared/utility/polyfills/transitions":11,"./components/ui/carousel":1}],3:[function(require,module,exports){
 /**
  * Tailor.Objects.Lightbox
  *
@@ -357,6 +362,7 @@ $.fn.tailorLightbox = function( options, callbacks ) {
         }
     } );
 };
+
 },{}],4:[function(require,module,exports){
 /**
  * Tailor.Objects.Map
@@ -681,6 +687,7 @@ $.fn.tailorGoogleMap = function( options, callbacks ) {
 };
 
 module.exports = Map;
+
 },{}],5:[function(require,module,exports){
 /**
  * Tailor.Objects.Parallax
@@ -949,6 +956,7 @@ $.fn.tailorParallax = function( options, callbacks ) {
 };
 
 module.exports = Parallax;
+
 },{}],6:[function(require,module,exports){
 /**
  * Tailor.Objects.Slideshow
@@ -1174,6 +1182,7 @@ $.fn.tailorSlideshow = function( options, callbacks ) {
         }
     } );
 };
+
 },{}],7:[function(require,module,exports){
 /**
  * Tailor.Objects.Tabs
@@ -1465,6 +1474,7 @@ $.fn.tailorTabs = function( options, callbacks ) {
 };
 
 module.exports = Tabs;
+
 },{}],8:[function(require,module,exports){
 /**
  * Tailor.Objects.Toggles
@@ -1711,6 +1721,7 @@ $.fn.tailorToggles = function( options, callbacks ) {
 };
 
 module.exports = Toggles;
+
 },{}],9:[function(require,module,exports){
 /**
  * classList Polyfill
@@ -1800,6 +1811,7 @@ module.exports = Toggles;
 	} );
 
 } )();
+
 },{}],10:[function(require,module,exports){
 /**
  * requestAnimationFrame polyfill.
@@ -1838,6 +1850,7 @@ module.exports = Toggles;
 	}
 
 } ) ( window );
+
 },{}],11:[function(require,module,exports){
 /**
  * Makes animation and transition support status and end names available as global variables.
@@ -1888,4 +1901,5 @@ module.exports = Toggles;
     window.transitionEndName = getTransitionEvent();
 
 } ) ( window );
+
 },{}]},{},[2]);

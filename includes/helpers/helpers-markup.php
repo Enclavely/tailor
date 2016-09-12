@@ -199,10 +199,22 @@ if ( ! function_exists( 'tailor_do_shakespeare' ) ) {
 		);
 
 		if ( array_key_exists( $quote_index, $quotes ) ) {
-			return $quotes[ $quote_index ];
+			$quote = $quotes[ $quote_index ];
+		}
+		else {
+			$quote = $quotes[0];
 		}
 
-		return $quotes[0];
+		/**
+		 * Filter the quote.
+		 *
+		 * @since 1.5.5
+		 *
+		 * @param string $quote
+		 */
+		$quote = apply_filters( 'tailor_do_shakespeare', $quote );
+
+		return $quote;
 	}
 }
 

@@ -161,6 +161,18 @@ $preview-background-color: #191e23 !default;
 					}
 				}
 			}
+
+			@media print,
+			(-webkit-min-device-pixel-ratio: 1.25),
+			(min-resolution: 120dpi) {
+
+				&__viewport {
+					background: url( ../img/spinner-2x.gif ) no-repeat center center;
+					-webkit-background-size: 20px 20px;
+					background-size: 20px 20px;
+					background-color: $tailor-background-color;
+				}
+			}
 		}
 
 		&-empty {
@@ -237,7 +249,21 @@ $preview-background-color: #191e23 !default;
 		height: 20px;
 		visibility: hidden;
 	}
+
+	@media print,
+	(-webkit-min-device-pixel-ratio: 1.25),
+	(min-resolution: 120dpi) {
+
+		:not( .media-frame ) .spinner {
+			background: url( ../img/spinner-2x.gif ) no-repeat;
+			-webkit-background-size: 20px 20px;
+			background-size: 20px 20px;
+			width: 20px;
+			height: 20px;
+		}
+	}
 }
+
 
 
 //

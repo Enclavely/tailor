@@ -79,7 +79,7 @@ if ( ! class_exists( 'Tailor_Sidebar' ) ) {
 	     * @return bool|string
 	     */
         public function render_page( $template = '' ) {
-
+	        
 	        if ( ! tailor()->check_user_role() || ! tailor()->check_post() ) {
 	            return $template;
 	        }

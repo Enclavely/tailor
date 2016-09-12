@@ -56,16 +56,15 @@ if ( ! class_exists( 'Tailor_TinyMCE' ) )  {
          * @since 1.0.0
          */
         public function __construct() {
-	        $this->add_actions();
+	        add_action( 'init', array( $this, 'add_actions' ) );
         }
 
 		/**
 		 * Adds required action hooks.
 		 *
 		 * @since 1.0.0
-		 * @access protected
 		 */
-		protected function add_actions() {
+		public function add_actions() {
 
 			if ( ! current_user_can( 'edit_posts' ) || ! current_user_can( 'edit_pages' ) ) {
 				return;

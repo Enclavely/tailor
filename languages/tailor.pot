@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the Tailor package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Tailor 1.5.1\n"
+"Project-Id-Version: Tailor 1.5.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/tailor\n"
-"POT-Creation-Date: 2016-08-23 11:18:40+00:00\n"
+"POT-Creation-Date: 2016-09-12 10:56:43+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -715,19 +715,19 @@ msgctxt "error message"
 msgid "The template does not exist"
 msgstr ""
 
-#: includes/class-tinymce.php:122
+#: includes/class-tinymce.php:121
 msgid "Dropcap"
 msgstr ""
 
-#: includes/class-tinymce.php:127
+#: includes/class-tinymce.php:126
 msgid "Lede"
 msgstr ""
 
-#: includes/class-tinymce.php:132
+#: includes/class-tinymce.php:131
 msgid "Pullquote"
 msgstr ""
 
-#: includes/class-tinymce.php:137
+#: includes/class-tinymce.php:136
 msgid "Pullquote Right"
 msgstr ""
 
@@ -1531,7 +1531,8 @@ msgstr ""
 msgid "Background video"
 msgstr ""
 
-#: includes/helpers/helpers-links.php:52 tailor.php:830
+#: includes/helpers/helpers-links.php:52 includes/helpers/helpers-links.php:125
+#: tailor.php:830
 msgid "Tailor this %s"
 msgstr ""
 
@@ -1543,35 +1544,35 @@ msgstr ""
 msgid "All %s"
 msgstr ""
 
-#: includes/helpers/helpers-settings.php:513
+#: includes/helpers/helpers-settings.php:518
 msgid "Desktop"
 msgstr ""
 
-#: includes/helpers/helpers-settings.php:518
+#: includes/helpers/helpers-settings.php:523
 msgid "Tablet"
 msgstr ""
 
-#: includes/helpers/helpers-settings.php:523
+#: includes/helpers/helpers-settings.php:528
 msgid "Mobile"
 msgstr ""
 
-#: includes/helpers/helpers-settings.php:531
+#: includes/helpers/helpers-settings.php:536
 msgid "All"
 msgstr ""
 
-#: includes/helpers/helpers-settings.php:585
+#: includes/helpers/helpers-settings.php:590
 msgid "%1$s is <strong>deprecated</strong> since Tailor version %2$s! Use %3$s instead."
 msgstr ""
 
-#: includes/helpers/helpers-settings.php:606
+#: includes/helpers/helpers-settings.php:611
 msgid "Enter desktop preview mode"
 msgstr ""
 
-#: includes/helpers/helpers-settings.php:610
+#: includes/helpers/helpers-settings.php:615
 msgid "Enter tablet preview mode"
 msgstr ""
 
-#: includes/helpers/helpers-settings.php:613
+#: includes/helpers/helpers-settings.php:618
 msgid "Enter mobile preview mode"
 msgstr ""
 

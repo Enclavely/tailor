@@ -532,6 +532,12 @@ ul {
         background-image: none; }
         .tailor-ui .tailor-preview__viewport.is-loaded > * {
           opacity: 1; }
+    @media print, (-webkit-min-device-pixel-ratio: 1.25), (min-resolution: 120dpi) {
+      .tailor-ui .tailor-preview__viewport {
+        background: url(../img/spinner-2x.gif) no-repeat center center;
+        -webkit-background-size: 20px 20px;
+        background-size: 20px 20px;
+        background-color: #efefef; } }
     .tailor-ui .tailor-empty {
       padding: 0 12px;
       margin-top: 15px; }
@@ -565,6 +571,13 @@ ul {
     width: 20px;
     height: 20px;
     visibility: hidden; }
+  @media print, (-webkit-min-device-pixel-ratio: 1.25), (min-resolution: 120dpi) {
+    .tailor-ui :not(.media-frame) .spinner {
+      background: url(../img/spinner-2x.gif) no-repeat;
+      -webkit-background-size: 20px 20px;
+      background-size: 20px 20px;
+      width: 20px;
+      height: 20px; } }
 
 @media only screen and (min-width: 641px) {
   .tailor-ui .tailor-sidebar {
@@ -1229,6 +1242,10 @@ ul {
   .tailor-ui .thumbnails.is-loading > *,
   .tailor-ui .video-preview.is-loading > * {
     visibility: hidden; }
+@media print, (-webkit-min-device-pixel-ratio: 1.25), (min-resolution: 120dpi) {
+  .tailor-ui .thumbnails.is-loading,
+  .tailor-ui .video-preview.is-loading {
+    background: url(../img/spinner-2x.gif) no-repeat center; } }
 .tailor-ui .video-preview.is-loading {
   position: relative;
   padding-bottom: 56.25%;
