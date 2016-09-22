@@ -89,7 +89,7 @@ if ( ! class_exists( 'Tailor_Templates' ) ) {
 				'rewrite'           =>  false,
 				'supports'          =>  false,
 				'can_export'        =>  true,
-				'public'            =>  true,
+				'public'            =>  false,
 				'show_in_nav_menus' =>  false
 			) );
 

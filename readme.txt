@@ -2,7 +2,7 @@
 Contributors: andrew.worsfold
 Donate link: http://gettailor.com/donate/
 Tags: page, layout, builder, frontend, content, page builder, drag and drop builder, home page builder, landing page builder, layout builder, frontend builder, frontend editor, responsive, visual composer, beaver builder
-Stable tag: 1.5.5
+Stable tag: 1.5.6
 Requires at least: 4.3
 Tested up to: 4.6
 License: GPLv3 or later
@@ -123,6 +123,14 @@ Yes.  Tailored pages can be migrated like any other type of page using the [dupl
 Yes, however, users should be directed to the WordPress plugin repository to install the latest version of the plugin.  Consider using a tool like [TGM Plugin Activation](http://tgmpluginactivation.com/) to guide users through the installation process.
 
 == Changelog ==
+
+= 1.5.6 =
+* Added: Added support for input HTML tags in content.
+* Fixed: Template custom post type is public [GitHub #37](https://github.com/andrew-worsfold/tailor/issues/37).
+* Fixed: Frontend element initialization function is not globally accessible [GitHub #31](https://github.com/andrew-worsfold/tailor/issues/31).
+* Fixed: Custom style formats defined by themes and plugins not being displayed in the editor.
+* Fixed: Excerpts are displayed for password protected posts.
+* Developer: Added filter for control arguments by control type (e.g., colorpicker).
 
 = 1.5.5 =
 * Fixed: User permission check being called too early, resulting in a warning message [GitHub #30](https://github.com/andrew-worsfold/tailor/issues/30).

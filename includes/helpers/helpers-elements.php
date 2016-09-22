@@ -1075,7 +1075,17 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 				$control_args = $control_definitions[ $control_id ]['control'];
 
 				/**
-				 * Filter the control arguments.
+				 * Filter the control arguments by control type.
+				 *
+				 * @since 1.5.6
+				 *
+				 * @param array $control_args
+				 * @param Tailor_Element $element
+				 */
+				$control_args = apply_filters( 'tailor_control_args_' . $control_args['type'], $control_args, $element );
+				
+				/**
+				 * Filter the control arguments by element tag.
 				 *
 				 * @since 1.4.0
 				 *
@@ -1085,7 +1095,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 				$control_args = apply_filters( 'tailor_control_args_' . $element->tag, $control_args, $element );
 
 				/**
-				 * Filter the control arguments.
+				 * Filter the control arguments by element tag and control ID.
 				 *
 				 * @since 1.4.0
 				 *

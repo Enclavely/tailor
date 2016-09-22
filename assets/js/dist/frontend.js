@@ -138,7 +138,8 @@ $.fn.tailorCarousel = function( options, callbacks ) {
 
 },{}],2:[function(require,module,exports){
 var $ = window.jQuery;
-var Tailor = window.Tailor || {};
+
+window.Tailor = window.Tailor || {};
 
 // Include polyfills
 require( '../shared/utility/polyfills/classlist' );
@@ -156,7 +157,7 @@ require( '../shared/components/ui/parallax' );
 // Include frontend-only components
 require( './components/ui/carousel' );
 
-Tailor.initElements = function() {
+window.Tailor.initElements = function() {
 
 	// Parallax sections
 	$( '.tailor-section[data-ratio]' ).each( function() {
@@ -223,7 +224,7 @@ Tailor.initElements = function() {
 
 // Initialize elements when the document is ready
 $( document ).ready( function() {
-	Tailor.initElements();
+	window.Tailor.initElements();
 } );
 },{"../shared/components/ui/lightbox":3,"../shared/components/ui/map":4,"../shared/components/ui/parallax":5,"../shared/components/ui/slideshow":6,"../shared/components/ui/tabs":7,"../shared/components/ui/toggles":8,"../shared/utility/polyfills/classlist":9,"../shared/utility/polyfills/raf":10,"../shared/utility/polyfills/transitions":11,"./components/ui/carousel":1}],3:[function(require,module,exports){
 /**

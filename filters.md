@@ -26,12 +26,14 @@
 | tailor_render_elements_response | Applies to the response data for a successful render_elements AJAX request | array $response |
 | tailor_setting\_args\_**{$tag}** | Applies to the setting arguments for a given element | array $setting_args <br> Tailor_Element $element |
 | tailor_setting\_args\_**{$tag}**\_**{$id}** | Applies to the setting arguments for a given element and control | array $setting_args <br> Tailor_Element $element |
+| tailor_control\_args\_**{$type}** | Applies to the control arguments for a given control type | array $control_args <br> Tailor_Element $element |
 | tailor_control\_args\_**{$tag}** | Applies to the control arguments for a given element | array $control_args <br> Tailor_Element $element |
 | tailor_control\_args\_**{$tag}**\_**{$id}** | Applies to the control arguments for a given element and control | array $control_args <br> Tailor_Element $element |
 | tailor_enable_element\_panel\_**{$id}** | Allow developers to prevent an element panel from being displayed | bool |
 | tailor_enable_element\_section\_**{$id}** | Allow developers to prevent an element section from being displayed | bool |
 | tailor_enable_element\_control\_**{$id}** | Allow developers to prevent an element control from being displayed | bool |
 | tailor_element_active | Allow developers to prevent an element from being displayed as active | bool $active <br> Tailor_Element $element |
+| tailor_excerpt_length | Applies to the entry excerpt length | int $excerpt_length |
 
 ## Model filters
 

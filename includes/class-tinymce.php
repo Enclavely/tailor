@@ -84,25 +84,25 @@ if ( ! class_exists( 'Tailor_TinyMCE' ) )  {
 		 *
 		 * @since 1.0.0
 		 *
-		 * @param array $args
-		 * @return array $args
+		 * @param array $settings
+		 * @return array $settings
 		 */
-		public function configure_tinymce( $args = array() ) {
+		public function configure_tinymce( $settings ) {
 
-			$args['body_class'] .= ' tailor-ui tailor-editor';
+			$settings['body_class'] .= ' tailor-ui tailor-editor';
 
-			if ( empty( $args['extended_valid_elements'] ) ) {
-				$args['extended_valid_elements'] = '';
+			if ( empty( $settings['extended_valid_elements'] ) ) {
+				$settings['extended_valid_elements'] = '';
 			}
 			else {
-				$args['extended_valid_elements'] .= ',';
+				$settings['extended_valid_elements'] .= ',';
 			}
 
-			$args['extended_valid_elements'] .= '@[id|class|data|data*|style|title|itemscope|itemtype|itemprop|datetime|rel],div,dl,ul,dt,dd,li[data-id],span[*],a|rev|charset|href|lang|tabindex|accesskey|type|name|href|target|title|class|onfocus|onblur]';
+			$settings['extended_valid_elements'] .= '@[id|class|data|data*|style|title|itemscope|itemtype|itemprop|datetime|rel],div,dl,ul,dt,dd,li[data-id],span[*],a|rev|charset|href|lang|tabindex|accesskey|type|name|href|target|title|class|onfocus|onblur]';
 
 			$style_formats = array(
 				array(
-					'title'         =>  'Headings',
+					'title'         =>  'Headlines',
 					'items'         =>  array(
 						array(
 							'title'         =>  'Custom Heading',
@@ -166,9 +166,13 @@ if ( ! class_exists( 'Tailor_TinyMCE' ) )  {
 				),
 			);
 
-			$args['style_formats'] = json_encode( $style_formats );
+			// Merge the style formats which any pre-existing ones
+			if ( ! empty( $settings['style_formats'] ) ) {
+				$style_formats = array_merge( json_decode( $settings['style_formats'] ), $style_formats );
+			}
+			$settings['style_formats'] = json_encode( $style_formats );
 
-			return $args;
+			return $settings;
 		}
 
 		function add_mce_button( $buttons ) {

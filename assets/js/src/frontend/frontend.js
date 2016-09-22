@@ -1,5 +1,6 @@
 var $ = window.jQuery;
-var Tailor = window.Tailor || {};
+
+window.Tailor = window.Tailor || {};
 
 // Include polyfills
 require( '../shared/utility/polyfills/classlist' );
@@ -17,7 +18,7 @@ require( '../shared/components/ui/parallax' );
 // Include frontend-only components
 require( './components/ui/carousel' );
 
-Tailor.initElements = function() {
+window.Tailor.initElements = function() {
 
 	// Parallax sections
 	$( '.tailor-section[data-ratio]' ).each( function() {
@@ -84,5 +85,5 @@ Tailor.initElements = function() {
 
 // Initialize elements when the document is ready
 $( document ).ready( function() {
-	Tailor.initElements();
+	window.Tailor.initElements();
 } );

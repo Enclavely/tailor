@@ -257,6 +257,43 @@ if ( ! function_exists( 'tailor_sanitize_text' ) ) {
 	}
 }
 
+if ( ! function_exists( 'tailor_kses_allowed_html' ) ) {
+
+	/**
+	 * Specifies additional allowable HTML tag types for Tailor content.
+	 * 
+	 * @since 1.5.6
+	 * 
+	 * @param array $tags
+	 * @return array $tags
+	 */
+	function tailor_kses_allowed_html( $tags, $context ) {
+
+		if ( ! array_key_exists( 'input', $tags ) ) {
+			$tags['input'] = array(
+				'autocomplete'      =>  1,
+				'autofocus'         =>  1,
+				'checked'           =>  1,
+				'disabled'          =>  1,
+				'name'              =>  1,
+				'placeholder'       =>  1,
+				'readonly'          =>  1,
+				'required'          =>  1,
+				'size'              =>  1,
+				'src'               =>  1,
+				'step'              =>  1,
+				'type'              =>  1,
+				'value'             =>  1,
+				'width'             =>  1,
+			);
+		}
+
+		return $tags;
+	}
+	
+	add_filter( 'wp_kses_allowed_html', 'tailor_kses_allowed_html', 10, 2 );
+}
+
 if ( ! function_exists( 'tailor_sanitize_html' ) ) {
 
 	/**
