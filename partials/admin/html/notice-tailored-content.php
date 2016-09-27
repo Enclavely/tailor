@@ -22,7 +22,7 @@ $alert_text = sprintf(
 ); ?>
 
 <div class="notice notice-warning is-dismissible">
-	<p><?php esc_html_e( $alert_text ); ?></p>
+	<p><?php _e( $alert_text ); ?></p>
 	<button type="button" class="notice-dismiss">
 		<span class="screen-reader-text"><?php esc_html_e( 'Dismiss this notice.', 'tailor' ); ?></span>
 	</button>
