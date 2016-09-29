@@ -6788,7 +6788,7 @@ ModalView = Marionette.LayoutView.extend( {
      */
     onClose : function() {
         if ( this.isModified ) {
-            var applyChanges = confirm( 'You have made changes to this element.  Would you like to apply them?' );
+            var applyChanges = confirm( window._l10n.confirmElement );
 
             if ( true === applyChanges ) {
                 this.triggerMethod( 'apply' );
