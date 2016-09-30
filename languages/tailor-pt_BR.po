@@ -1,0 +1,2014 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Tailor\n"
+"POT-Creation-Date: 2016-09-29 11:48-0300\n"
+"PO-Revision-Date: 2016-09-30 11:48-0300\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: pt_BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.9\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-WPHeader: tailor.php\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
+
+#: includes/admin/class-admin.php:51
+msgid "Tailor Settings"
+msgstr "Configurações do Tailor"
+
+#: includes/admin/class-admin.php:52 includes/class-panels.php:108
+msgid "Settings"
+msgstr "Configurações"
+
+#. Plugin Name of the plugin/theme
+#: includes/admin/class-settings.php:65
+#: includes/customizer/customizer-panels.php:24
+#: includes/settings/class-panel.php:232
+#: partials/admin/html/page-settings.php:22
+msgid "Tailor"
+msgstr "Tailor"
+
+#: includes/admin/class-settings.php:97
+#: partials/admin/html/page-settings.php:19
+msgid "Tailor settings"
+msgstr "Configurações do Tailor"
+
+#: includes/admin/class-settings.php:114 includes/class-panels.php:118
+#: includes/elements/class-box.php:32 includes/elements/class-button.php:31
+#: includes/elements/class-card.php:31
+#: includes/elements/class-carousel-item.php:31
+#: includes/elements/class-carousel.php:39
+#: includes/elements/class-column.php:35
+#: includes/elements/class-contact-form-7.php:29
+#: includes/elements/class-content.php:30
+#: includes/elements/class-gallery.php:31
+#: includes/elements/class-grid-item.php:31 includes/elements/class-grid.php:31
+#: includes/elements/class-hero.php:31
+#: includes/elements/class-jetpack-portfolio.php:31
+#: includes/elements/class-jetpack-testimonials.php:31
+#: includes/elements/class-list-item.php:31
+#: includes/elements/class-map-marker.php:31 includes/elements/class-map.php:31
+#: includes/elements/class-posts.php:31 includes/elements/class-row.php:31
+#: includes/elements/class-section.php:31 includes/elements/class-tab.php:31
+#: includes/elements/class-tabs.php:31 includes/elements/class-toggle.php:31
+#: includes/elements/class-toggles.php:31 includes/elements/class-user.php:29
+#: includes/elements/class-widgets.php:29
+msgid "General"
+msgstr "Geral"
+
+#: includes/admin/class-settings.php:120
+msgid "Enabled post types"
+msgstr "Tipos de posts habilitados"
+
+#: includes/admin/class-settings.php:137
+msgid "Restricted user roles"
+msgstr "Funções de usuário restritas"
+
+#: includes/admin/class-settings.php:146
+msgid ""
+"By default, user roles that can manage options or edit posts can Tailor "
+"posts."
+msgstr ""
+"Por padrão, os usuários que podem gerenciar opções ou editar posts podem "
+"utilizar o Tailor."
+
+#: includes/admin/class-settings.php:156 includes/class-panels.php:96
+msgid "Elements"
+msgstr "Elementos"
+
+#: includes/admin/class-settings.php:162
+msgid "Descriptions"
+msgstr "Descrições"
+
+#: includes/admin/class-settings.php:174
+msgid "Show element descriptions in the Elements list?"
+msgstr "Mostrar descrições do elemento na Lista de Elementos?"
+
+#: includes/admin/class-settings.php:180
+msgid "Inactive elements"
+msgstr "Elementos inativos"
+
+#: includes/admin/class-settings.php:189
+msgid ""
+"Inactive elements are those that depend on a third-party plugin to work (e."
+"g., Contact Form 7)."
+msgstr ""
+"Elementos inativos são aqueles que dependem de plugins de terceiros para "
+"funcionar (por exemplo, Contact Form 7)."
+
+#: includes/admin/class-settings.php:193
+msgid "Show inactive elements in the Elements list?"
+msgstr "Mostrar elementos inativos na Lista de Elementos?"
+
+#: includes/admin/class-settings.php:199
+msgid "Content placeholder"
+msgstr "Texto de substituição"
+
+#: includes/admin/class-settings.php:217
+msgid "Features"
+msgstr "Recursos"
+
+#: includes/admin/class-settings.php:223
+msgid "REST API"
+msgstr "API REST"
+
+#: includes/admin/class-settings.php:235
+msgid "Enable the Tailor REST API?"
+msgstr "Habilitar a API REST do Tailor?"
+
+#: includes/admin/class-settings.php:241 includes/class-panels.php:139
+msgid "Custom CSS"
+msgstr "CSS personalizado"
+
+#: includes/admin/class-settings.php:253
+msgid "Hide the custom CSS editor?"
+msgstr "Esconder o editor de CSS personalizado?"
+
+#: includes/admin/class-settings.php:259 includes/class-panels.php:152
+msgid "Custom JavaScript"
+msgstr "JavaScript personalizado"
+
+#: includes/admin/class-settings.php:271
+msgid "Hide the custom JavaScript editor?"
+msgstr "Esconder o editor JavaScript personalizado?"
+
+#: includes/admin/class-settings.php:277
+msgid "Styles and scripts"
+msgstr "Estilos e scripts"
+
+#: includes/admin/class-settings.php:289
+msgid "Load CSS and JavaScript on pages that have not been Tailored?"
+msgstr ""
+"Carregar o CSS e o JavaScript em páginas que não tenham sido editadas com o "
+"Tailor?"
+
+#: includes/admin/class-settings.php:295
+msgid "Google Maps API key"
+msgstr "Chave de API do Google Maps"
+
+#: includes/admin/class-settings.php:305
+#, php-format
+msgid "%1$sLearn more%2$s about creating your own Google Maps API key"
+msgstr ""
+"%1$sSaiba mais %2$s sobre como criar sua própria chave de API do Google Maps"
+
+#: includes/admin/class-settings.php:315
+msgid "Advanced settings"
+msgstr "Configurações avançadas"
+
+#: includes/admin/class-settings.php:327
+msgid "Hide the Attributes panel when editing elements?"
+msgstr ""
+"Deseja ocultar o painel de atributos quando estiver editando os elementos?"
+
+#: includes/admin/class-settings.php:333
+msgid "Icon kits"
+msgstr "Coleções de ícones"
+
+#: includes/admin/class-settings.php:343
+#, php-format
+msgid ""
+"Select an existing icon kit from your Media Library or %1$screate%2$s and "
+"upload the %3$s.zip%4$s file containing one."
+msgstr ""
+"Selecione uma coleção de ícones existente a partir da sua biblioteca de "
+"mídia ou %1$scrie %2$s e carregue o arquivo %3$s.zip%4$s contendo uma "
+"coleção."
+
+#: includes/admin/class-settings.php:450
+msgid "Select kit"
+msgstr "Selecione uma coleção"
+
+#: includes/admin/helpers/helpers-general.php:22
+msgid "Facebook"
+msgstr "Facebook"
+
+#: includes/admin/helpers/helpers-general.php:23
+msgid "Twitter"
+msgstr "Twitter"
+
+#: includes/admin/helpers/helpers-general.php:24
+msgid "Google Plus"
+msgstr "Google Plus"
+
+#: includes/api/endpoints/class-api-controller.php:150
+msgctxt "error message"
+msgid "The post could not be found"
+msgstr "O post não pôde ser encontrado"
+
+#: includes/api/endpoints/class-api-controller.php:165
+msgctxt "error message"
+msgid "No items could be found"
+msgstr "Os itens não foram encontrados"
+
+#: includes/api/endpoints/class-api-controller.php:180
+msgctxt "error message"
+msgid "No item could be found"
+msgstr "O item não foi encontrado"
+
+#: includes/api/endpoints/class-api-controller.php:195
+msgctxt "error message"
+msgid "The request format is invalid"
+msgstr "O formato da solicitação é inválido"
+
+#: includes/api/endpoints/class-api-models-controller.php:168
+msgctxt "error message"
+msgid "The models could not be created"
+msgstr "Os padrões não puderam ser criados"
+
+#: includes/api/endpoints/class-api-models-controller.php:350
+msgctxt "error message"
+msgid "The models could not be updated"
+msgstr "Os padrões não puderam ser atualizados"
+
+#: includes/api/endpoints/class-api-models-controller.php:399
+msgctxt "error message"
+msgid "The model could not be updated"
+msgstr "O padrão não pôde ser criado"
+
+#: includes/api/endpoints/class-api-models-controller.php:439
+msgctxt "error message"
+msgid "The models could not be deleted"
+msgstr "Os padrões não puderam ser apagados"
+
+#: includes/api/endpoints/class-api-models-controller.php:479
+msgctxt "error message"
+msgid "The model could not be deleted"
+msgstr "O padrão não pôde ser apagado"
+
+#: includes/api/endpoints/class-api-templates-controller.php:120
+msgctxt "error message"
+msgid "The templates could not be created"
+msgstr "Os modelos não puderam ser apagados"
+
+#: includes/api/endpoints/class-api-templates-controller.php:178
+msgctxt "error message"
+msgid "No template could be found"
+msgstr "Nenhum modelo foi encontrado"
+
+#: includes/api/endpoints/class-api-templates-controller.php:234
+msgctxt "error message"
+msgid "The template could not be updated"
+msgstr "O modelo não pôde ser atualizado"
+
+#: includes/api/endpoints/class-api-templates-controller.php:265
+#: includes/class-templates.php:450
+msgctxt "error message"
+msgid "The template could not be deleted"
+msgstr "O modelo não pode ser apagado"
+
+#: includes/class-canvas.php:198
+msgid "Shift-click to edit this element"
+msgstr "Shift+clique para editar este elemento"
+
+#: includes/class-compatibility.php:89
+#, php-format
+msgid ""
+"Tailor requires at least WordPress version 4.3. You are running version %s. "
+"Please upgrade and try again."
+msgstr ""
+"O Tailor exige pelo menos a versão 4.3 do WordPress. Você está utilizando a "
+"versão %s. Por favor, atualize e tente novamente."
+
+#: includes/class-elements.php:107
+msgid "Section"
+msgstr "Seção"
+
+#: includes/class-elements.php:108
+msgid "Group and style content."
+msgstr "Agrupe e estilize o conteúdo."
+
+#: includes/class-elements.php:113
+msgid "Tabs"
+msgstr "Abas"
+
+#: includes/class-elements.php:114
+msgid "Display content in tabs."
+msgstr "Exibir o conteúdo em abas."
+
+#: includes/class-elements.php:120
+msgid "Toggles"
+msgstr "Barra de alternância"
+
+#: includes/class-elements.php:121
+msgid "Display content in toggles."
+msgstr "Exibir o conteúdo em alternadores."
+
+#: includes/class-elements.php:127 includes/elements/class-gallery.php:79
+#: includes/elements/class-posts.php:84
+msgid "Carousel"
+msgstr "Carrossel"
+
+#: includes/class-elements.php:128
+msgid "Display content in a carousel."
+msgstr "Exibir o conteúdo em um carrossel."
+
+#: includes/class-elements.php:134 includes/elements/class-gallery.php:77
+#: includes/elements/class-posts.php:82
+msgid "List"
+msgstr "Lista"
+
+#: includes/class-elements.php:136
+msgid "Display content in list items."
+msgstr "Exibir o conteúdo em itens de lista."
+
+#: includes/class-elements.php:141 includes/elements/class-gallery.php:78
+#: includes/elements/class-posts.php:83
+msgid "Grid"
+msgstr "Grade"
+
+#: includes/class-elements.php:142
+msgid "Display content in a grid."
+msgstr "Exibir o conteúdo em uma grade."
+
+#: includes/class-elements.php:148
+msgid "Row"
+msgstr "Ligne"
+
+#: includes/class-elements.php:154
+msgid "Map"
+msgstr "Mapa"
+
+#: includes/class-elements.php:155
+msgid "A Google map."
+msgstr "Um mapa do Google."
+
+#: includes/class-elements.php:161
+msgid "Column"
+msgstr "Coluna"
+
+#: includes/class-elements.php:166 includes/shortcodes/shortcode-tabs.php:83
+msgid "Tab"
+msgstr "Aba"
+
+#: includes/class-elements.php:171
+msgid "Toggle"
+msgstr "Barra de alternancia"
+
+#: includes/class-elements.php:176
+msgid "Carousel item"
+msgstr "Item de carrossel"
+
+#: includes/class-elements.php:181
+msgid "Map marker"
+msgstr "Marcador de mapa"
+
+#: includes/class-elements.php:187
+msgid "List item"
+msgstr "Item de lista"
+
+#: includes/class-elements.php:192
+msgid "Grid item"
+msgstr "Item de grade"
+
+#: includes/class-elements.php:197
+msgid "Posts"
+msgstr "Posts"
+
+#: includes/class-elements.php:198
+msgid "Your site's posts."
+msgstr "Posts do seu site."
+
+#: includes/class-elements.php:203
+msgid "Gallery"
+msgstr "Galeria"
+
+#: includes/class-elements.php:204
+msgid "A flexible image gallery."
+msgstr "Uma galeria de imagem flexível."
+
+#: includes/class-elements.php:209
+msgid "Button"
+msgstr "Botão"
+
+#: includes/class-elements.php:210
+msgid "A simple button."
+msgstr "Um botão simples."
+
+#: includes/class-elements.php:214 includes/elements/class-map-marker.php:76
+msgid "Content"
+msgstr "Conteúdo"
+
+#: includes/class-elements.php:215
+msgid "HTML and multimedia content."
+msgstr "HTML e conteúdo multimídia."
+
+#: includes/class-elements.php:219 includes/elements/class-user.php:49
+msgid "User"
+msgstr "Usuário"
+
+#: includes/class-elements.php:220
+msgid "A user profile box."
+msgstr "Uma caixa de perfil de usuário."
+
+#: includes/class-elements.php:224
+msgid "Card"
+msgstr "Cartão"
+
+#: includes/class-elements.php:225
+msgid "Display content inside a card."
+msgstr "Exibir o conteúdo dentro de um cartão."
+
+#: includes/class-elements.php:230
+msgid "Hero"
+msgstr "Seção em destaque"
+
+#: includes/class-elements.php:231
+msgid "Emphasize content in a hero pane."
+msgstr "Enfatize o conteúdo em um painel de destaque."
+
+#: includes/class-elements.php:236
+msgid "Box"
+msgstr "Quadro"
+
+#: includes/class-elements.php:237
+msgid "Display content inside a box."
+msgstr "Exibir o conteúdo dentro de uma caixa."
+
+#: includes/class-elements.php:242
+msgid "Widgets"
+msgstr "Widgets"
+
+#: includes/class-elements.php:243
+msgid "A widget area from your site."
+msgstr "Uma área de widgets do seu site."
+
+#: includes/class-elements.php:249
+#: includes/elements/class-contact-form-7.php:56
+msgid "Contact form"
+msgstr "Formulário de contato"
+
+#: includes/class-elements.php:250
+msgid "A contact form."
+msgstr "Um formulário de contato."
+
+#: includes/class-elements.php:251
+msgid "Contact Form 7"
+msgstr "Contact Form 7"
+
+#: includes/class-elements.php:257
+msgid "Portfolio"
+msgstr "Portfólio"
+
+#: includes/class-elements.php:258
+msgid "Your site's projects."
+msgstr "Os projetos do seu site."
+
+#: includes/class-elements.php:259 includes/class-elements.php:267
+msgid "Jetpack"
+msgstr "Jetpack"
+
+#: includes/class-elements.php:265
+msgid "Testimonals"
+msgstr "Testemunhos"
+
+#: includes/class-elements.php:266
+msgid "Your site's testimonials."
+msgstr "Testemunhos do seu site."
+
+#: includes/class-elements.php:529
+msgid "Valid models were not provided"
+msgstr "Nenhum modelo válido foi fornecido"
+
+#: includes/class-elements.php:563
+msgid "A valid model was not provided"
+msgstr "Um modelo válido não foi fornecido."
+
+#: includes/class-icons.php:136 includes/class-icons.php:300
+msgid "Icon kit file does not exist"
+msgstr "O arquivo de coleção de ícones não existe"
+
+#: includes/class-icons.php:145
+msgid "Icon kit is already being used"
+msgstr "A coleção de ícones já está sendo utilizada"
+
+#: includes/class-icons.php:159
+msgid "Icon kit could not be unzipped"
+msgstr "A coleção de ícones não pôde ser descompactada"
+
+#: includes/class-icons.php:170
+msgid "Icon kit is invalid"
+msgstr "A coleção de ícones é inválida"
+
+#: includes/class-models.php:533
+msgctxt "error message"
+msgid "The post with the given ID could not be found"
+msgstr "O post com o ID especificado não pôde ser encontrado"
+
+#: includes/class-models.php:542
+msgctxt "error message"
+msgid "No valid models were provided"
+msgstr "Nenhum modelo válido foi fornecido"
+
+#: includes/class-models.php:682
+#, php-format
+msgid "%1$sThe element associated with shortcode %2$s could not be found.%3$s "
+msgstr ""
+"%1$sO elemento associado ao shortcode %2$s não pôde ser encontrado.%3$s"
+
+#: includes/class-panels.php:97
+msgid ""
+"Elements are the building blocks of your page.  Drag one from the list below "
+"to the desired position on the page to get started."
+msgstr ""
+"Elementos são os blocos de construção da sua página.  Arraste um da lista "
+"abaixo para a posição desejada na página para começar."
+
+#: includes/class-panels.php:102
+msgid "Templates"
+msgstr "Modelos"
+
+#: includes/class-panels.php:103
+msgid ""
+"Templates allow you to save customized elements, or the entire layout, for "
+"future use."
+msgstr ""
+"Modelos permitem que você salve elementos personalizados, ou todo o layout, "
+"para uso futuro."
+
+#: includes/class-panels.php:113
+msgid "History"
+msgstr "Histórico"
+
+#: includes/class-panels.php:128
+msgid "Page title"
+msgstr "Título da página"
+
+#: includes/class-panels.php:140
+msgid ""
+"Enter custom declarations and rules in the editor below to see them applied "
+"to the page in real-time."
+msgstr ""
+"Insira regras e declarações personalizadas no editor abaixo para vê-las "
+"aplicados à página em tempo real."
+
+#: includes/class-panels.php:153
+msgid ""
+"Enter custom JavaScript in the editor below.  Saved code will be run when "
+"the page is reloaded."
+msgstr ""
+"Insira JavaScript personalizado no editor abaixo. O código salvo será "
+"executado quando a página for recarregada."
+
+#: includes/class-panels.php:161 includes/customizer/customizer-sections.php:24
+#: includes/helpers/helpers-elements.php:150
+msgid "Layout"
+msgstr "Layout"
+
+#: includes/class-panels.php:162
+msgid "The settings on this page override those specified in the Customizer."
+msgstr ""
+"As definições nesta página substituem aquelas especificadas no "
+"Personalizador do WordPress."
+
+#: includes/class-panels.php:171 includes/customizer/customizer-settings.php:28
+msgid "Section width"
+msgstr "Largura da seção"
+
+#: includes/class-panels.php:172 includes/customizer/customizer-settings.php:29
+msgid "The maximum width for sections."
+msgstr "A largura máxima para as seções."
+
+#: includes/class-panels.php:182 includes/customizer/customizer-settings.php:40
+#: includes/elements/class-row.php:54
+msgid "Column spacing"
+msgstr "Espaçamento entre colunas"
+
+#: includes/class-panels.php:183 includes/customizer/customizer-settings.php:41
+msgid "The amount of horizontal space to display between columns."
+msgstr "A quantidade de espaço horizontal para exibir entre as colunas."
+
+#: includes/class-panels.php:193 includes/customizer/customizer-settings.php:52
+msgid "Element spacing"
+msgstr "Espaçamento entre elementos"
+
+#: includes/class-panels.php:194 includes/customizer/customizer-settings.php:53
+msgid "The amount of vertical space to display between elements."
+msgstr "A quantidade de espaço vertical para exibir entre os elementos."
+
+#: includes/class-sidebar.php:101
+#, php-format
+msgid "Tailoring: %s"
+msgstr "Adaptando: %s"
+
+#: includes/class-sidebar.php:282
+msgid "Tailoring: "
+msgstr "Adaptando:"
+
+#: includes/class-sidebar.php:283 includes/controls/class-search.php:64
+#: languages/tinymce-localization.php:28
+msgid "Select"
+msgstr "Selecionar"
+
+#: includes/class-sidebar.php:284 includes/settings/class-panel.php:522
+msgid "Save template"
+msgstr "Salvar modelo"
+
+#: includes/class-sidebar.php:285 partials/sidebar/sidebar-frame.php:28
+msgid "Saved"
+msgstr "Salvo"
+
+#: includes/class-sidebar.php:286 partials/sidebar/sidebar-frame.php:21
+msgid "Save & Publish"
+msgstr "Salvar e publicar"
+
+#: includes/class-sidebar.php:286 includes/class-sidebar.php:308
+#: partials/sidebar/sidebar-frame.php:24
+msgid "Save"
+msgstr "Salvar"
+
+#: includes/class-sidebar.php:287
+msgid "Import"
+msgstr "Importar"
+
+#: includes/class-sidebar.php:288 includes/settings/class-panel.php:528
+msgid "Import template"
+msgstr "Importar modelo"
+
+#: includes/class-sidebar.php:289 includes/controls/class-list.php:120
+#: partials/sidebar/sidebar-frame.php:34
+#: partials/underscore/dialog-layout.php:19
+#: partials/underscore/modal-layout.php:18
+msgid "Close"
+msgstr "Fechar"
+
+#: includes/class-sidebar.php:290
+msgid "An error occurred, please try again"
+msgstr "Ocorreu um erro, por favor tente novamente"
+
+#: includes/class-sidebar.php:291
+msgid "The session has expired"
+msgstr "A sessão expirou"
+
+#: includes/class-sidebar.php:292
+msgid "The request made was invalid"
+msgstr "A requisição realizada era inválida"
+
+#: includes/class-sidebar.php:293
+#, php-format
+msgid "%s saved successfully"
+msgstr "%s foi salvo com sucesso"
+
+#: includes/class-sidebar.php:294
+msgid "History entry restored successfully"
+msgstr "Entrada de histórico restaurada com sucesso"
+
+#: includes/class-sidebar.php:295
+msgid "Element deleted successfully"
+msgstr "Elemento excluído com sucesso"
+
+#: includes/class-sidebar.php:296
+msgid "Template saved successfully"
+msgstr "Modelo salvo com sucesso"
+
+#: includes/class-sidebar.php:297
+msgid "Template imported successfully"
+msgstr "Modelo importado com sucesso"
+
+#: includes/class-sidebar.php:298
+msgid "Template added successfully"
+msgstr "Modelo adicionado com sucesso"
+
+#: includes/class-sidebar.php:299
+msgid "Template deleted successfully"
+msgstr "Modelo excluído com sucesso"
+
+#: includes/class-sidebar.php:300
+msgid "To add an element, drag it into the desired position on the page"
+msgstr "Para adicionar um elemento, arraste-o até a posição desejada na página"
+
+#: includes/class-sidebar.php:301
+msgid "To add a template, drag it into the desired position on the page"
+msgstr "Para adicionar um modelo, arraste-o até a posição desejada na página"
+
+#: includes/class-sidebar.php:302
+msgid "The changes you made will be lost if you navigate away from this page"
+msgstr "As alterações feitas serão perdidas se você sair desta página"
+
+#: includes/class-sidebar.php:303
+msgid "You have made changes to this element.  Would you like to save them?"
+msgstr "Você fez alterações neste elemento. Gostaria de salvá-las?"
+
+#: includes/class-sidebar.php:305 partials/underscore/canvas-tools.php:13
+msgid "Edit"
+msgstr "Editar"
+
+#: includes/class-sidebar.php:306 includes/controls/class-list.php:119
+#: partials/admin/field-icon.php:31 partials/underscore/canvas-tools.php:14
+msgid "Delete"
+msgstr "Excluir"
+
+#: includes/class-sidebar.php:307
+msgid "Preview"
+msgstr "Pré-visualizar"
+
+#: includes/class-sidebar.php:309
+msgid "Initialized"
+msgstr "Inicializado"
+
+#: includes/class-sidebar.php:310
+msgid "Added"
+msgstr "Adicionado"
+
+#: includes/class-sidebar.php:311
+msgid "Deleted"
+msgstr "Excluído"
+
+#: includes/class-sidebar.php:312
+msgid "Edited"
+msgstr "Editado"
+
+#: includes/class-sidebar.php:313
+msgid "Copied"
+msgstr "Copiado"
+
+#: includes/class-sidebar.php:314
+msgid "Moved"
+msgstr "Movido"
+
+#: includes/class-sidebar.php:315
+msgid "Resized"
+msgstr "Redimensionado"
+
+#: includes/class-sidebar.php:316
+msgid "Reordered"
+msgstr "Reordenado"
+
+#: includes/class-sidebar.php:317
+msgid "Template"
+msgstr "Modelo"
+
+#: includes/class-templates.php:83
+msgid "Tailor Templates"
+msgstr "Modelos do Tailor"
+
+#: includes/class-templates.php:355
+msgctxt "error message"
+msgid "The collection provided does not contain any valid models"
+msgstr "A coleção fornecida não contem modelos válidos"
+
+#: includes/class-templates.php:367
+msgctxt "error message"
+msgid "The template could not be saved"
+msgstr "O modelo não pôde ser salvo"
+
+#: includes/class-templates.php:398 includes/class-templates.php:444
+msgctxt "error message"
+msgid "Invalid template ID"
+msgstr "ID do modelo inválido"
+
+#: includes/class-templates.php:405
+msgctxt "error message"
+msgid "The template does not exist"
+msgstr "O modelo não existe"
+
+#: includes/class-tinymce.php:121
+msgid "Dropcap"
+msgstr "Capitular"
+
+#: includes/class-tinymce.php:126
+msgid "Lede"
+msgstr "Lede"
+
+#: includes/class-tinymce.php:131
+msgid "Pullquote"
+msgstr "Citação"
+
+#: includes/class-tinymce.php:136
+msgid "Pullquote Right"
+msgstr "Citação direita"
+
+#: includes/controls/abstract-control.php:249
+#: includes/controls/class-colorpicker.php:81
+#: includes/controls/class-list.php:51 includes/controls/class-list.php:56
+#: includes/elements/class-button.php:70
+#: includes/elements/class-carousel.php:68 includes/elements/class-posts.php:74
+#: includes/elements/class-tabs.php:96
+#: includes/helpers/helpers-elements.php:827
+msgid "Default"
+msgstr "Padrão"
+
+#: includes/controls/class-colorpicker.php:80
+msgid "Clear"
+msgstr "Limpar"
+
+#: includes/controls/class-colorpicker.php:82
+msgid "Select Color"
+msgstr "Selecionar cor"
+
+#: includes/controls/class-colorpicker.php:83
+msgid "Current Color"
+msgstr "Cor atual"
+
+#: includes/controls/class-gallery.php:45
+msgid "No images selected"
+msgstr "Nenhuma imagem selecionada"
+
+#: includes/controls/class-gallery.php:47
+msgid "Create Gallery"
+msgstr "Criar galeria"
+
+#: includes/controls/class-gallery.php:58
+msgid "Remove Gallery"
+msgstr "Remover galeria"
+
+#: includes/controls/class-gallery.php:59
+msgid "Edit Gallery"
+msgstr "Editar galeria"
+
+#: includes/controls/class-icon.php:36
+msgid "No icon selected"
+msgstr "Nenhum ícone selecionado"
+
+#: includes/controls/class-icon.php:38 languages/tinymce-localization.php:27
+msgid "Select Icon"
+msgstr "Selecionar ícone"
+
+#: includes/controls/class-icon.php:45
+msgid "Remove Icon"
+msgstr "Remover ícone"
+
+#: includes/controls/class-icon.php:46
+msgid "Change Icon"
+msgstr "Alterar ícone"
+
+#: includes/controls/class-icon.php:66
+msgid "Please add and enable at least one icon kit on the"
+msgstr "Por favor, adicione e habilite ao menos uma coleção de ícones em"
+
+#: includes/controls/class-icon.php:68
+msgid "Settings Page."
+msgstr "Página de configurações."
+
+#: includes/controls/class-image.php:45
+msgid "No image selected"
+msgstr "Nenhuma imagem selecionada"
+
+#: includes/controls/class-image.php:47
+msgid "Select Image"
+msgstr "Selecionar imagem"
+
+#: includes/controls/class-image.php:56
+msgid "Remove Image"
+msgstr "Remover imagem"
+
+#: includes/controls/class-image.php:57
+msgid "Change Image"
+msgstr "Alterar imagem"
+
+#: includes/controls/class-link.php:84
+msgid "Nothing found matching your criteria. Showing recent items."
+msgstr ""
+"Não foram encontrados itens correspondentes aos seus critérios. Mostrando os "
+"ítens mais recentes."
+
+#: includes/controls/class-link.php:118
+msgid "Select Content"
+msgstr "Selecionar conteúdo"
+
+#: includes/controls/class-list.php:95
+msgid "Add"
+msgstr "Adicionar"
+
+#: includes/controls/class-list.php:138
+msgid "No items to display"
+msgstr "Nenhum item para mostrar"
+
+#: includes/controls/class-search.php:58
+msgid "Nothing selected"
+msgstr "Nada selecionado"
+
+#: includes/controls/class-video.php:45
+msgid "No video selected"
+msgstr "Nenhum vídeo selecionado"
+
+#: includes/controls/class-video.php:47
+msgid "Select Video"
+msgstr "Selecionar o vídeo"
+
+#: includes/controls/class-video.php:54
+msgid "Remove Video"
+msgstr "Excluir o vídeo"
+
+#: includes/controls/class-video.php:55
+msgid "Change Video"
+msgstr "Alterar o vídeo"
+
+#: includes/elements/class-box.php:37 includes/elements/class-button.php:36
+#: includes/elements/class-card.php:36
+#: includes/elements/class-carousel-item.php:36
+#: includes/elements/class-carousel.php:44
+#: includes/elements/class-column.php:40
+#: includes/elements/class-contact-form-7.php:34
+#: includes/elements/class-content.php:35
+#: includes/elements/class-gallery.php:36
+#: includes/elements/class-grid-item.php:36 includes/elements/class-grid.php:36
+#: includes/elements/class-hero.php:36
+#: includes/elements/class-jetpack-portfolio.php:41
+#: includes/elements/class-jetpack-testimonials.php:41
+#: includes/elements/class-list-item.php:36 includes/elements/class-list.php:31
+#: includes/elements/class-map.php:36 includes/elements/class-posts.php:41
+#: includes/elements/class-row.php:36 includes/elements/class-section.php:36
+#: includes/elements/class-tab.php:36 includes/elements/class-tabs.php:36
+#: includes/elements/class-toggle.php:36 includes/elements/class-toggles.php:36
+#: includes/elements/class-user.php:34 includes/elements/class-widgets.php:34
+msgid "Colors"
+msgstr "Cores"
+
+#: includes/elements/class-box.php:42 includes/elements/class-button.php:41
+#: includes/elements/class-card.php:41
+#: includes/elements/class-carousel-item.php:41
+#: includes/elements/class-carousel.php:49
+#: includes/elements/class-column.php:45
+#: includes/elements/class-contact-form-7.php:39
+#: includes/elements/class-content.php:40
+#: includes/elements/class-gallery.php:41
+#: includes/elements/class-grid-item.php:41 includes/elements/class-grid.php:41
+#: includes/elements/class-hero.php:41
+#: includes/elements/class-jetpack-portfolio.php:46
+#: includes/elements/class-jetpack-testimonials.php:46
+#: includes/elements/class-list-item.php:41 includes/elements/class-list.php:36
+#: includes/elements/class-map.php:41 includes/elements/class-posts.php:46
+#: includes/elements/class-row.php:41 includes/elements/class-section.php:41
+#: includes/elements/class-tab.php:41 includes/elements/class-tabs.php:41
+#: includes/elements/class-toggle.php:41 includes/elements/class-toggles.php:41
+#: includes/elements/class-user.php:39 includes/elements/class-widgets.php:39
+msgid "Attributes"
+msgstr "Atributos"
+
+#: includes/elements/class-box.php:64 includes/elements/class-list-item.php:71
+#: includes/helpers/helpers-elements.php:459
+msgid "Icon"
+msgstr "Ícone"
+
+#: includes/elements/class-box.php:65
+#: includes/elements/class-jetpack-testimonials.php:69
+#: includes/elements/class-list-item.php:72
+#: includes/elements/class-posts.php:178
+#: includes/helpers/helpers-elements.php:337
+#: includes/helpers/helpers-elements.php:361
+msgid "Image"
+msgstr "Imagem"
+
+#: includes/elements/class-button.php:52
+msgid "Label"
+msgstr "Rótulo"
+
+#: includes/elements/class-button.php:71
+msgid "Primary"
+msgstr "Primário"
+
+#: includes/elements/class-button.php:72
+msgid "Block"
+msgstr "Largura total"
+
+#: includes/elements/class-carousel.php:69
+msgid "Slider"
+msgstr "Slider"
+
+#: includes/elements/class-carousel.php:75
+#: includes/elements/class-carousel.php:90
+msgid "This will only take effect in the frontend"
+msgstr "Isto só terá efeito na frente do site"
+
+#: includes/elements/class-column.php:89 includes/elements/class-column.php:97
+#: includes/elements/class-list-item.php:176
+#: includes/elements/class-row.php:123 includes/elements/class-section.php:99
+#: includes/elements/class-tabs.php:54 includes/helpers/helpers-elements.php:69
+msgid "Top"
+msgstr "Topo"
+
+#: includes/elements/class-column.php:90 includes/elements/class-column.php:98
+#: includes/elements/class-list-item.php:177
+#: includes/elements/class-row.php:124 includes/elements/class-section.php:100
+#: includes/helpers/helpers-elements.php:71
+msgid "Bottom"
+msgstr "Fundo"
+
+#: includes/elements/class-contact-form-7.php:47
+#: includes/elements/class-widgets.php:51
+msgid "&mdash; Select &mdash;"
+msgstr "&mdash; Selecionar &mdash;"
+
+#: includes/elements/class-gallery.php:51
+msgid "Images"
+msgstr "Imagens"
+
+#: includes/elements/class-gallery.php:80
+msgid "Slideshow"
+msgstr "Apresentação de slides"
+
+#: includes/elements/class-grid.php:68 includes/elements/class-row.php:78
+msgid "Minimum screen size"
+msgstr "Tamanho mínimo de tela"
+
+#: includes/elements/class-grid.php:69
+msgid ""
+"Select the smallest screen size on which items are displayed in a grid layout"
+msgstr ""
+"Selecione o menor tamanho de tela na qual os itens são exibidos em um layout "
+"de grade"
+
+#: includes/elements/class-jetpack-portfolio.php:36
+#: includes/elements/class-jetpack-testimonials.php:36
+#: includes/elements/class-posts.php:36
+msgid "Query"
+msgstr "Delimitar"
+
+#: includes/elements/class-jetpack-portfolio.php:69
+#: includes/helpers/helpers-elements.php:307
+msgid "Type"
+msgstr "Tipo"
+
+#: includes/elements/class-jetpack-portfolio.php:70
+msgid "Tag"
+msgstr "Tag"
+
+#: includes/elements/class-jetpack-portfolio.php:71
+#: includes/elements/class-posts.php:168
+msgid "Excerpt"
+msgstr "Resumo"
+
+#: includes/elements/class-jetpack-portfolio.php:84
+msgid "Types"
+msgstr "Tipos"
+
+#: includes/elements/class-jetpack-portfolio.php:95
+#: includes/helpers/helpers-elements.php:521
+msgid "Tags"
+msgstr "Tags"
+
+#: includes/elements/class-list-item.php:73
+msgid "Number"
+msgstr "Número"
+
+#: includes/elements/class-map-marker.php:46 includes/elements/class-map.php:51
+msgid "Address"
+msgstr "Endereço"
+
+#: includes/elements/class-map-marker.php:56 includes/elements/class-map.php:61
+msgid "Latitude (optional)"
+msgstr "Latitude (opcional)"
+
+#: includes/elements/class-map-marker.php:66 includes/elements/class-map.php:71
+msgid "Longitude (optional)"
+msgstr "Longitude (opcional)"
+
+#: includes/elements/class-map.php:81
+msgid "Zoom level"
+msgstr "Nível de zoom"
+
+#: includes/elements/class-map.php:91
+msgid "Show controls"
+msgstr "Exibir controles"
+
+#: includes/elements/class-map.php:101
+msgid "Markers"
+msgstr "Marcadores"
+
+#: includes/elements/class-map.php:127
+msgid "Hue"
+msgstr "Tonalidade"
+
+#: includes/elements/class-map.php:135
+msgid "Saturation"
+msgstr "Saturação"
+
+#: includes/elements/class-posts.php:75
+msgid "Boxed"
+msgstr "Encaixotado"
+
+#: includes/elements/class-posts.php:165
+#: includes/helpers/helpers-elements.php:536
+msgid "Author"
+msgstr "Autor"
+
+#: includes/elements/class-posts.php:166
+msgid "Category"
+msgstr "Categoria"
+
+#: includes/elements/class-posts.php:167
+#: includes/helpers/helpers-elements.php:535
+msgid "Date"
+msgstr "Data"
+
+#: includes/elements/class-posts.php:169
+msgid "Thumbnail"
+msgstr "Miniatura"
+
+#: includes/elements/class-posts.php:170
+msgid "Comment number"
+msgstr "Número do comentário"
+
+#: includes/elements/class-posts.php:177
+#: includes/helpers/helpers-elements.php:360
+msgid "Post"
+msgstr "Post"
+
+#: includes/elements/class-posts.php:179 includes/elements/class-tabs.php:100
+#: includes/helpers/helpers-elements.php:363
+#: includes/helpers/helpers-elements.php:836
+msgid "None"
+msgstr "Nenhum"
+
+#: includes/elements/class-row.php:67 includes/helpers/helpers-elements.php:130
+msgid "Minimum height"
+msgstr "Altura mínima"
+
+#: includes/elements/class-row.php:79
+msgid "Select the smallest screen size on which columns are displayed"
+msgstr "Selecione o menor tamanho de tela no qual as colunas são exibidas"
+
+#: includes/elements/class-section.php:167
+msgid "Enable parallax?"
+msgstr "Habilitar paralaxe?"
+
+#: includes/elements/class-tabs.php:51
+msgid "Tabs position"
+msgstr "Posição das abas"
+
+#: includes/elements/class-tabs.php:55 includes/helpers/helpers-elements.php:72
+msgid "Left"
+msgstr "Esquerda"
+
+#: includes/elements/class-tabs.php:56 includes/helpers/helpers-elements.php:70
+msgid "Right"
+msgstr "Direita"
+
+#: includes/elements/class-tabs.php:97
+#: includes/helpers/helpers-elements.php:828
+msgid "Solid"
+msgstr "Sólida"
+
+#: includes/elements/class-tabs.php:98
+#: includes/helpers/helpers-elements.php:829
+msgid "Dashed"
+msgstr "Tracejada"
+
+#: includes/elements/class-tabs.php:99
+#: includes/helpers/helpers-elements.php:830
+msgid "Dotted"
+msgstr "Pontilhada"
+
+#: includes/elements/class-toggle.php:76
+msgid "Title color"
+msgstr "Cor do título"
+
+#: includes/elements/class-toggle.php:86
+msgid "Title background color"
+msgstr "Cor de fundo do Título"
+
+#: includes/elements/class-toggles.php:51
+msgid "Accordion"
+msgstr "Acordeão"
+
+#: includes/elements/class-widgets.php:49
+msgid "Widget area"
+msgstr "Área de widget"
+
+#: includes/helpers/helpers-elements.php:22
+#, php-format
+msgctxt "expected item type"
+msgid "No %1$s to display"
+msgstr "Não há %1$s para mostrar"
+
+#: includes/helpers/helpers-elements.php:42
+msgid "widget areas"
+msgstr "Áreas de widget"
+
+#: includes/helpers/helpers-elements.php:82
+msgid "Hide on"
+msgstr "Esconder em"
+
+#: includes/helpers/helpers-elements.php:94
+#: includes/helpers/helpers-elements.php:537
+msgid "Title"
+msgstr "Título"
+
+#: includes/helpers/helpers-elements.php:104
+msgid "Alignment"
+msgstr "Alinhamento"
+
+#: includes/helpers/helpers-elements.php:117
+msgid "Maximum width"
+msgstr "Largura máxima"
+
+#: includes/helpers/helpers-elements.php:140
+msgid "Style"
+msgstr "Estilo"
+
+#: includes/helpers/helpers-elements.php:160
+msgid "Items per row"
+msgstr "Itens por linha"
+
+#: includes/helpers/helpers-elements.php:174
+msgid "Minimum item height"
+msgstr "Altura mínima do item"
+
+#: includes/helpers/helpers-elements.php:184
+msgid "Autoplay"
+msgstr "Reprodução automática"
+
+#: includes/helpers/helpers-elements.php:194
+msgid "Fade"
+msgstr "Dissipar"
+
+#: includes/helpers/helpers-elements.php:204
+msgid "Arrows"
+msgstr "Setas"
+
+#: includes/helpers/helpers-elements.php:215
+msgid "Dots"
+msgstr "Pontos"
+
+#: includes/helpers/helpers-elements.php:226
+msgid "Thumbnails"
+msgstr "Miniaturas"
+
+#: includes/helpers/helpers-elements.php:236
+msgid "Item spacing"
+msgstr "Espaçamento do item"
+
+#: includes/helpers/helpers-elements.php:246
+msgid "Masonry"
+msgstr "Efeito Masonry"
+
+#: includes/helpers/helpers-elements.php:249
+msgid "Apply masonry layout?"
+msgstr "Aplicar efeito masonry ao layout?"
+
+#: includes/helpers/helpers-elements.php:259
+#: includes/helpers/helpers-elements.php:362
+msgid "Lightbox"
+msgstr "Lightbox"
+
+#: includes/helpers/helpers-elements.php:262
+msgid "Open images in lightbox?"
+msgstr "Abrir imagens em um lightbox?"
+
+#: includes/helpers/helpers-elements.php:272
+msgid "Meta"
+msgstr "Meta"
+
+#: includes/helpers/helpers-elements.php:283
+msgid "Posts per page"
+msgstr "Posts por página"
+
+#: includes/helpers/helpers-elements.php:294
+msgid "Pagination"
+msgstr "Paginação"
+
+#: includes/helpers/helpers-elements.php:296
+msgid "Show pagination links?"
+msgstr "Mostrar links de paginação?"
+
+#: includes/helpers/helpers-elements.php:317
+msgid "Graphic type"
+msgstr "Tipo de elemento"
+
+#: includes/helpers/helpers-elements.php:327
+msgid "Graphic size"
+msgstr "Tamanho do elemento"
+
+#: includes/helpers/helpers-elements.php:347
+msgid "Image width"
+msgstr "Largura da imagem"
+
+#: includes/helpers/helpers-elements.php:357
+msgid "Image link"
+msgstr "Link da imagem"
+
+#: includes/helpers/helpers-elements.php:373
+msgid "Image size"
+msgstr "Tamanho da imagem"
+
+#: includes/helpers/helpers-elements.php:384
+msgid "Aspect ratio"
+msgstr "Relação de aspecto"
+
+#: includes/helpers/helpers-elements.php:387
+#: includes/helpers/helpers-settings.php:166
+msgid "Original"
+msgstr "Original"
+
+#: includes/helpers/helpers-elements.php:388
+msgid "Square"
+msgstr "Quadrado"
+
+#: includes/helpers/helpers-elements.php:389
+msgid "Horizontal 3:2"
+msgstr "3:2 horizontal"
+
+#: includes/helpers/helpers-elements.php:390
+msgid "Horizontal 4:3"
+msgstr "4:3 Horizontal"
+
+#: includes/helpers/helpers-elements.php:391
+msgid "Horizontal 16:9"
+msgstr "16:9 Horizontal"
+
+#: includes/helpers/helpers-elements.php:392
+msgid "Vertical 2:3"
+msgstr "2:3 Vertical"
+
+#: includes/helpers/helpers-elements.php:393
+msgid "Vertical 3:4"
+msgstr "3:4 Vertical"
+
+#: includes/helpers/helpers-elements.php:406
+msgid "Horizontal alignment"
+msgstr "Alinhamento horizontal"
+
+#: includes/helpers/helpers-elements.php:424
+msgid "Vertical alignment"
+msgstr "Alinhamento vertical"
+
+#: includes/helpers/helpers-elements.php:439
+msgid "Stretch-to-fit image"
+msgstr "Esticar imagem para ajustar"
+
+#: includes/helpers/helpers-elements.php:449
+msgid "Caption"
+msgstr "Legenda"
+
+#: includes/helpers/helpers-elements.php:470
+msgid "Size"
+msgstr "Tamanho"
+
+#: includes/helpers/helpers-elements.php:473
+msgid "Small"
+msgstr "Pequeno"
+
+#: includes/helpers/helpers-elements.php:474
+msgid "Medium"
+msgstr "Médio"
+
+#: includes/helpers/helpers-elements.php:475
+msgid "Large"
+msgstr "Grande"
+
+#: includes/helpers/helpers-elements.php:485
+msgid "Link"
+msgstr "Link"
+
+#: includes/helpers/helpers-elements.php:496
+msgid "Link behavior"
+msgstr "Comportamento do link"
+
+#: includes/helpers/helpers-elements.php:499
+msgid "Open in a new window?"
+msgstr "Abrir em uma nova janela?"
+
+#: includes/helpers/helpers-elements.php:510
+msgid "Categories"
+msgstr "Categorias"
+
+#: includes/helpers/helpers-elements.php:532
+#: includes/helpers/helpers-elements.php:548
+msgid "Order by"
+msgstr "Ordenar por"
+
+#: includes/helpers/helpers-elements.php:538
+msgid "Number of comments"
+msgstr "Número de comentários"
+
+#: includes/helpers/helpers-elements.php:551
+msgid "Descending"
+msgstr "Descendente"
+
+#: includes/helpers/helpers-elements.php:552
+msgid "Ascending"
+msgstr "Ascendente"
+
+#: includes/helpers/helpers-elements.php:568
+msgid "Offset"
+msgstr "Deslocamento"
+
+#: includes/helpers/helpers-elements.php:583
+msgid "Text color"
+msgstr "Cor do texto"
+
+#: includes/helpers/helpers-elements.php:596
+msgid "Text hover color"
+msgstr "Cor do texto no hover"
+
+#: includes/helpers/helpers-elements.php:609
+msgid "Link color"
+msgstr "Cor do link"
+
+#: includes/helpers/helpers-elements.php:622
+msgid "Link hover color"
+msgstr "Cor do link no hover"
+
+#: includes/helpers/helpers-elements.php:641
+msgid "Heading color"
+msgstr "Cor do cabeçalho"
+
+#: includes/helpers/helpers-elements.php:660
+msgid "Background color"
+msgstr "Cor do fundo"
+
+#: includes/helpers/helpers-elements.php:674
+msgid "Background hover color"
+msgstr "Cor do fundo no hover"
+
+#: includes/helpers/helpers-elements.php:688
+msgid "Border color"
+msgstr "Cor da borda"
+
+#: includes/helpers/helpers-elements.php:701
+msgid "Border hover color"
+msgstr "Cor da borda no hover"
+
+#: includes/helpers/helpers-elements.php:711
+msgid "Navigation color"
+msgstr "Cor da navegação"
+
+#: includes/helpers/helpers-elements.php:724
+msgid "Graphic color"
+msgstr "Cor do gráfico"
+
+#: includes/helpers/helpers-elements.php:737
+msgid "Graphic hover color"
+msgstr "Cor do gráfico no hover"
+
+#: includes/helpers/helpers-elements.php:747
+msgid "Graphic background color"
+msgstr "Cor de fundo do gráfico"
+
+#: includes/helpers/helpers-elements.php:758
+msgid "Graphic hover background color"
+msgstr "Cor de fundo do gráfico no hover"
+
+#: includes/helpers/helpers-elements.php:773
+msgid "Class name"
+msgstr "Nome da classe"
+
+#: includes/helpers/helpers-elements.php:786
+msgid "Padding"
+msgstr "Espaço"
+
+#: includes/helpers/helpers-elements.php:805
+msgid "Margin"
+msgstr "Margem"
+
+#: includes/helpers/helpers-elements.php:824
+msgid "Border style"
+msgstr "Estilo da borda"
+
+#: includes/helpers/helpers-elements.php:831
+msgid "Double"
+msgstr "Dupla"
+
+#: includes/helpers/helpers-elements.php:832
+msgid "Groove"
+msgstr "Sombra (fundo à direita)"
+
+#: includes/helpers/helpers-elements.php:833
+msgid "Ridge"
+msgstr "Sombra (topo à esquerda)"
+
+#: includes/helpers/helpers-elements.php:834
+msgid "Inset"
+msgstr "Pressionada"
+
+#: includes/helpers/helpers-elements.php:835
+msgid "Outset"
+msgstr "Proeminente"
+
+#: includes/helpers/helpers-elements.php:849
+msgid "Border width"
+msgstr "Largura da borda"
+
+#: includes/helpers/helpers-elements.php:874
+msgid "Border radius"
+msgstr "Raio da borda"
+
+#: includes/helpers/helpers-elements.php:899
+msgid "Shadow "
+msgstr "Sombra"
+
+#: includes/helpers/helpers-elements.php:916
+msgid "Background image"
+msgstr "Imagem de fundo"
+
+#: includes/helpers/helpers-elements.php:929
+msgid "Background repeat"
+msgstr "Repetição do fundo"
+
+#: includes/helpers/helpers-elements.php:932
+msgid "No repeat"
+msgstr "Ne pas répéter"
+
+#: includes/helpers/helpers-elements.php:933
+msgid "Repeat"
+msgstr "Repetir"
+
+#: includes/helpers/helpers-elements.php:934
+msgid "Repeat horizontally"
+msgstr "Répéter horizontalement"
+
+#: includes/helpers/helpers-elements.php:935
+msgid "Repeat vertically"
+msgstr "Répéter verticalement"
+
+#: includes/helpers/helpers-elements.php:954
+msgid "Background position"
+msgstr "Position du fond"
+
+#: includes/helpers/helpers-elements.php:957
+msgid "Left top"
+msgstr "Topo esquerdo"
+
+#: includes/helpers/helpers-elements.php:958
+msgid "Left center"
+msgstr "Centro esquerdo"
+
+#: includes/helpers/helpers-elements.php:959
+msgid "Left bottom"
+msgstr "Fundo esquerdo"
+
+#: includes/helpers/helpers-elements.php:960
+msgid "Right top"
+msgstr "Topo direito"
+
+#: includes/helpers/helpers-elements.php:961
+msgid "Right center"
+msgstr "Centro direito"
+
+#: includes/helpers/helpers-elements.php:962
+msgid "Right bottom"
+msgstr "Fundo direito"
+
+#: includes/helpers/helpers-elements.php:963
+msgid "Center top"
+msgstr "Topo centralizado"
+
+#: includes/helpers/helpers-elements.php:964
+msgid "Center center"
+msgstr "Centralizado"
+
+#: includes/helpers/helpers-elements.php:965
+msgid "Center bottom"
+msgstr "Fundo centralizado"
+
+#: includes/helpers/helpers-elements.php:984
+msgid "Background size"
+msgstr "Taille du fond"
+
+#: includes/helpers/helpers-elements.php:987
+msgid "Auto"
+msgstr "Automático"
+
+#: includes/helpers/helpers-elements.php:988
+msgid "Cover"
+msgstr "Cobrir"
+
+#: includes/helpers/helpers-elements.php:989
+msgid "Contain"
+msgstr "Conter"
+
+#: includes/helpers/helpers-elements.php:1008
+msgid "Background attachment"
+msgstr "Comportamento do fundo"
+
+#: includes/helpers/helpers-elements.php:1011
+msgid "Scroll"
+msgstr "Rolar"
+
+#: includes/helpers/helpers-elements.php:1012
+msgid "Fixed"
+msgstr "Fixo"
+
+#: includes/helpers/helpers-elements.php:1028
+msgid "Background video"
+msgstr "Vídeo de fundo"
+
+#: includes/helpers/helpers-links.php:52 includes/helpers/helpers-links.php:125
+#: tailor.php:830
+#, php-format
+msgid "Tailor this %s"
+msgstr "Estilizar esta %s"
+
+#: includes/helpers/helpers-markup.php:192
+msgid ""
+"This life, which had been the tomb of his virtue and of his honour, is but a "
+"walking shadow; a poor player, that struts and frets his hour upon the "
+"stage, and then is heard no more: it is a tale told by an idiot, full of "
+"sound and fury, signifying nothing."
+msgstr ""
+"A vida é apenas uma sombra ambulante, um pobre cômico que se empavona e "
+"agita por uma hora no palco, sem que seja, após, ouvido; é uma história "
+"contada por idiotas, cheia de fúria e muita barulheira, que nada significa."
+
+#: includes/helpers/helpers-markup.php:193
+msgid ""
+"All the world's a stage, and all the men and women merely players: they have "
+"their exits and their entrances; and one man in his time plays many parts, "
+"his acts being seven ages."
+msgstr ""
+"O mundo é um palco; os homens e as mulheres, meros artistas, que entram nele "
+"e saem. Muitos papéis cada um tem no seu tempo; sete atos, sete idades."
+
+#: includes/helpers/helpers-markup.php:194
+msgid ""
+"There is a tide in the affairs of men, Which taken at the flood, leads on to "
+"fortune. Omitted, all the voyage of their life is bound in shallows and in "
+"miseries. On such a full sea are we now afloat. And we must take the current "
+"when it serves, or lose our ventures."
+msgstr ""
+"Existe uma maré nos assuntos dos homens que, tomadas com o dilúvio, leva à "
+"fortuna. Omitida, toda a viagem de sua vida é ligada nos baixios e misérias. "
+"Em um mar tão cheio estamos agora flutuando, e devemos pegar a corrente "
+"quando ela atende, ou perder nossas aventuras."
+
+#: includes/helpers/helpers-markup.php:195
+msgid ""
+"Some are born great, some achieve greatness, and some have greatness thrust "
+"upon them."
+msgstr ""
+"Alguns nascem grandes, alguns conseguem grandeza e, a alguns, a grandeza "
+"lhes é imposta."
+
+#: includes/helpers/helpers-markup.php:196
+msgid ""
+"Good night, good night! Parting is such sweet sorrow, that I shall say good "
+"night till it be morrow."
+msgstr ""
+"Boa noite, boa noite! Toda despedida é dor, tão doce todavia, que eu te "
+"diria boa noite até que amanhecesse o dia."
+
+#: includes/helpers/helpers-markup.php:197
+msgid ""
+"What a piece of work is a man, how noble in reason, how infinite in "
+"faculties, in form and moving how express and admirable, in action how like "
+"an angel, in apprehension how like a god."
+msgstr ""
+"Que obra de arte é o homem: tão nobre no raciocínio; tão vário na "
+"capacidade; em forma e movimento, tão precioso e admirável, na ação é como "
+"um anjo; no entendimento é como um Deus."
+
+#: includes/helpers/helpers-markup.php:198
+msgid ""
+"Sweet are the uses of adversity which, like the toad, ugly and venomous, "
+"wears yet a precious jewel in his head."
+msgstr ""
+"Também dá fruto doce a adversidade. É como o sapo feio de venenoso que "
+"ostenta rica jóia na cabeça."
+
+#: includes/helpers/helpers-settings.php:110
+msgid "Current user"
+msgstr "Usuário atual"
+
+#: includes/helpers/helpers-settings.php:230
+#, php-format
+msgid "All %s"
+msgstr "Todos %s"
+
+#: includes/helpers/helpers-settings.php:555
+msgid "Desktop"
+msgstr "Área de trabalho"
+
+#: includes/helpers/helpers-settings.php:560
+msgid "Tablet"
+msgstr "Tablet"
+
+#: includes/helpers/helpers-settings.php:565
+msgid "Mobile"
+msgstr "Celular"
+
+#: includes/helpers/helpers-settings.php:573
+msgid "All"
+msgstr "Tudo"
+
+#: includes/helpers/helpers-settings.php:627
+#, php-format
+msgid ""
+"%1$s is <strong>deprecated</strong> since Tailor version %2$s! Use %3$s "
+"instead."
+msgstr ""
+"%1$s is <strong>obsoleto</strong> desde a versão %2$s! do Tailor. Use %3$s "
+"no lugar."
+
+#: includes/helpers/helpers-settings.php:648
+msgid "Enter desktop preview mode"
+msgstr "Entrar no modo de pré-visualização para desktop"
+
+#: includes/helpers/helpers-settings.php:652
+msgid "Enter tablet preview mode"
+msgstr "Entrar no modo de visualização para tablets"
+
+#: includes/helpers/helpers-settings.php:655
+msgid "Enter mobile preview mode"
+msgstr "Entrar no modo de visualização para celulares"
+
+#: includes/settings/class-panel.php:226
+#: includes/settings/class-section.php:229
+msgid "Back"
+msgstr "Voltar"
+
+#: includes/settings/class-panel.php:238
+#: includes/settings/class-section.php:240
+#: partials/underscore/sidebar-home.php:21
+msgid "Help"
+msgstr "Ajuda"
+
+#: includes/settings/class-panel.php:299
+msgid "There are no sections to display"
+msgstr "Não há seções para mostrar"
+
+#: includes/settings/class-panel.php:334
+msgid "Search elements.."
+msgstr "Pesquisar elementos..."
+
+#: includes/settings/class-panel.php:399
+msgid "There are no elements to display."
+msgstr "Não há elementos para mostrar."
+
+#: includes/settings/class-panel.php:434
+msgid "Search templates.."
+msgstr "Procurar templates"
+
+#: includes/settings/class-panel.php:468
+msgid "Preview template"
+msgstr "Pré-visualizar modelo"
+
+#: includes/settings/class-panel.php:469
+msgid "Download template"
+msgstr "Baixar modelo"
+
+#: includes/settings/class-panel.php:470
+msgid "Delete template"
+msgstr "Excluir modelo"
+
+#: includes/settings/class-panel.php:498
+#: partials/admin/html/page-settings.php:27
+msgid "Getting started"
+msgstr "Começando"
+
+#: includes/settings/class-panel.php:500
+msgid ""
+"Select the element you wish to save.  If you do not select anything, the "
+"entire layout will be saved."
+msgstr ""
+"Selecione o elemento que você deseja salvar.  Se você não selecionar nada, "
+"todo o layout será salvo."
+
+#: includes/settings/class-panel.php:501
+msgid "Press the Save template button and enter a name for the template."
+msgstr "Pressione o botão Salvar Modelo e digite um nome para o modelo."
+
+#: includes/settings/class-panel.php:503
+msgid ""
+"Once you have one or more templates available, simply drag and drop them "
+"into the desired position on the page."
+msgstr ""
+"Quando você tiver um ou mais modelos disponíveis, basta arrastar e soltá-los "
+"na posição desejada na página."
+
+#: includes/settings/class-panel.php:525
+msgid "or"
+msgstr "ou"
+
+#: includes/settings/class-panel.php:604
+msgid "There are no history entries to display."
+msgstr "Não há nenhuma entrada de histórico para mostrar."
+
+#: includes/settings/class-section.php:234
+msgid "Tailor &#9656; "
+msgstr "Tailor &#9656; "
+
+#: includes/settings/class-section.php:290
+msgid "There are no controls to display"
+msgstr "Não há controles para mostrar"
+
+#: includes/shortcodes/shortcode-form.php:38
+msgid "Please select a contact form to display"
+msgstr "Selecione um formulário de contato para mostrar"
+
+#: includes/shortcodes/shortcode-form.php:45
+msgid "Please enable the Contact Form 7 plugin"
+msgstr "Habilite o plugin Contact Form 7"
+
+#: includes/shortcodes/shortcode-gallery.php:73
+msgid "Please select one or more images to display in this gallery"
+msgstr "Selecione uma ou mais imagens para exibir nesta galeria"
+
+#: includes/shortcodes/shortcode-jetpack-portfolio.php:100
+msgid "Please enable Jetpack and the Portfolio custom post type"
+msgstr "Ative o Jetpack e o tipo de post personalizado para portfólio"
+
+#: includes/shortcodes/shortcode-jetpack-testimonials.php:73
+msgid "Please enable Jetpack and the Testimonial custom post type"
+msgstr "Ative o Jetpack e o tipo de post personalizado para depoimentos"
+
+#: includes/shortcodes/shortcode-map.php:50
+msgid "Please create and add a Google Maps API key in the admin settings"
+msgstr ""
+"Crie e adicione uma chave de API do Google Maps nas configurações do admin"
+
+#: includes/shortcodes/shortcode-toggles.php:75
+msgctxt "Default toggle title"
+msgid "Toggle"
+msgstr "Barra de alternancia"
+
+#: includes/shortcodes/shortcode-widgets.php:35
+msgid "Please select a widget area to display"
+msgstr "Selecione uma área de widgets para exibir"
+
+#: includes/shortcodes/shortcode-widgets.php:43
+msgid "The selected widget area contains no widgets"
+msgstr "A área de widgets seleccionada não contém nenhum widget"
+
+#: partials/admin/field-checkbox.php:22 partials/admin/field-icon.php:25
+msgid "["
+msgstr "["
+
+#: partials/admin/field-icon.php:41
+msgid "Add kit"
+msgstr "Adicionar coleção"
+
+#: partials/admin/help-settings.php:13
+msgid ""
+"This page allows you to configure global settings for the Tailor plugin."
+msgstr ""
+"Esta página permite que você configure as configurações globais para o "
+"Tailor."
+
+#: partials/admin/help-settings.php:25
+msgid ""
+"1{Documentation} can be found on the Tailor website and you can ask "
+"questions on the 2{community forum} if you get stuck."
+msgstr ""
+"1{Documentação} pode ser encontrada no site do Tailor e você pode fazer "
+"perguntas no 2{fórum da comunidade} se você precisar de ajuda."
+
+#: partials/admin/html/notice-missing-rest-api.php:16
+#, php-format
+msgid "The Tailor REST API is dependent on the %1$sWordPress REST API v2%2$s."
+msgstr "A API REST do Tailor é dependente da %1$sWordPress API REST v2 %2$s."
+
+#: partials/admin/html/notice-missing-rest-api.php:22
+#: partials/admin/html/notice-tailored-content.php:27
+#: partials/admin/html/notice.php:17
+msgid "Dismiss this notice."
+msgstr "Descartar esse aviso."
+
+#: partials/admin/html/notice-tailored-content.php:20
+#, php-format
+msgid ""
+"Changes made to this %s within the editor will not be displayed in Tailor"
+msgstr ""
+"As alterações feitas a esta %s dentro do editor não serão exibidas no Tailor"
+
+#: partials/admin/html/page-settings.php:23
+#, php-format
+msgid "See what's new in %1$sversion %2$s%3$s"
+msgstr "Veja o que há de novo na %1$sversão %2$s%3$s"
+
+#: partials/admin/html/page-settings.php:25
+msgid "Resources"
+msgstr "Recursos"
+
+#: partials/admin/html/page-settings.php:28
+msgid "Extending"
+msgstr "Estendendo"
+
+#: partials/admin/html/page-settings.php:29
+msgid "Community"
+msgstr "Comunidade"
+
+#: partials/admin/html/page-settings.php:31
+#, php-format
+msgid "If you like Tailor, please consider %1$srating it!%2$s"
+msgstr "Se você gosta do Tailor, por favor %1$savalie! %2$s"
+
+#: partials/author-links.php:23
+#, php-format
+msgid "View %s's Facebook profile"
+msgstr "Veja o perfil do %s no Facebook"
+
+#: partials/author-links.php:30
+#, php-format
+msgid "View %s's Twitter page"
+msgstr "Veja o perfil do %s no Twitter"
+
+#: partials/author-links.php:37
+#, php-format
+msgid "View %s's Google Plus profile"
+msgstr "Veja o perfil do %s no Google Plus"
+
+#: partials/empty.php:15
+msgid "No entries were found matching your criteria."
+msgstr "Não foram encontrados resultados correspondentes aos seus critérios."
+
+#: partials/meta-author.php:28
+#, php-format
+msgid "Posts by %s"
+msgstr "Posts por %s"
+
+#: partials/meta-author.php:32
+msgid "By"
+msgstr "Por"
+
+#: partials/meta-comment-number.php:18
+msgid "Comment"
+msgstr "Comentário"
+
+#: partials/meta-comment-number.php:21
+msgid "Comments"
+msgstr "Comentários"
+
+#: partials/meta-comment-number.php:37
+#, php-format
+msgid "Leave a comment on: &ldquo;%s&rdquo;"
+msgstr "Deixe um comentário em: &ldquo;%s&rdquo;"
+
+#: partials/meta-excerpt.php:19
+msgid "There is no excerpt because this is a protected post."
+msgstr "Não existe resumo porque este é um post protegido."
+
+#: partials/meta-excerpt.php:33
+msgid "Continue reading &rsaquo;"
+msgstr "Continue lendo &rsaquo;"
+
+#: partials/pagination-links.php:17
+msgctxt "previous post"
+msgid "Previous"
+msgstr "Anterior"
+
+#: partials/pagination-links.php:18
+msgctxt "next post"
+msgid "Next"
+msgstr "Próximo"
+
+#: partials/pagination-links.php:26
+msgid "Posts pagination"
+msgstr "Paginação de posts"
+
+#: partials/sidebar/sidebar-frame.php:61
+msgid "Collapse Sidebar"
+msgstr "Recolher barra lateral"
+
+#: partials/sidebar/sidebar-frame.php:63
+msgid "Collapse"
+msgstr "Recolher"
+
+#: partials/underscore/dialog-import-template.php:15
+msgid "Select a valid .JSON template file to import."
+msgstr "Selecione um modelo JSON válido para importar."
+
+#: partials/underscore/dialog-save-template.php:15
+msgid "Enter the label to use for this template."
+msgstr "Digite o rótulo a ser usado para este modelo."
+
+#: partials/underscore/modal-empty.php:14
+msgid "No sections or controls have been defined for this element"
+msgstr "Não há seções ou controles definidos para esse elemento"
+
+#: partials/underscore/modal-layout.php:31
+msgid "Apply"
+msgstr "Aplicar"
+
+#: partials/underscore/sidebar-home-empty.php:14
+msgid "There are no panels to display"
+msgstr "Não há painéis para mostrar"
+
+#: partials/underscore/sidebar-home.php:17
+msgid "You are Tailoring"
+msgstr "Você está estilizando"
+
+#: partials/underscore/sidebar-home.php:25
+msgid ""
+"Create beautiful layouts for your content by simply dragging and dropping "
+"elements and templates on to the page."
+msgstr ""
+"Crie belíssimos layouts para o seu conteúdo simplesmente arrastando e "
+"soltando elementos e modelos para a página."
+
+#. Plugin URI of the plugin/theme
+msgid "http://www.gettailor.com"
+msgstr "http://www.gettailor.com"
+
+#. Description of the plugin/theme
+msgid ""
+"Build beautiful page layouts quickly and easily using your favourite theme."
+msgstr ""
+"Crie belíssimos layouts de página, de forma rápida e facil usando o seu tema "
+"favorito."
+
+#. Author of the plugin/theme
+msgid "Andrew Worsfold"
+msgstr "Andrew Worsfold"
+
+#. Author URI of the plugin/theme
+msgid "http://www.andrewworsfold.com"
+msgstr "http://www.andrewworsfold.com"
