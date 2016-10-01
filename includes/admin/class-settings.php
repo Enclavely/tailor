@@ -353,6 +353,24 @@ class Tailor_Settings {
 			)
 		);
 
+		$raw_shortcode_field_id = 'raw_shortcode';
+		$raw_shortcode_field_label = __( 'Save content as shortcode', 'tailor' );
+		add_settings_field(
+			$raw_shortcode_field_id,
+			$raw_shortcode_field_label,
+			array( $this, 'render_field' ),
+			$setting_id,
+			$setting_id . '_features',
+			array(
+				'type'              =>  'checkbox',
+				'name'              =>  $setting_id . '[' . $raw_shortcode_field_id . ']',
+				'value'             =>  tailor_get_setting( $raw_shortcode_field_id ),
+				'options'           =>  array(
+					'on'                =>  __( 'Save your content as shortcode tags instead of HTML.', 'tailor' )
+				),
+			)
+		);
+
 		/**
 		 * Fires after the admin setting sections and fields have been registered.
 		 *

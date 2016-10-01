@@ -574,6 +574,8 @@ if ( ! class_exists( 'Tailor_Models' ) ) {
 	    public function update_post_content( $post_id, $sanitized_models ) {
 		    $post = get_post( $post_id );
 		    $updated_post_content = '';
+	    	$settings = get_option( TAILOR_SETTING_ID );
+		    $setting_raw_shortcode = $settings['raw_shortcode']['on'];
 		    
 		    // Generate the page content using the model collection
 		    if ( ! empty( $sanitized_models ) ) {
@@ -590,7 +592,12 @@ if ( ! class_exists( 'Tailor_Models' ) ) {
 			    }
 			    
 			    $shortcode_tags = $dynamic_shortcodes;
-			    $updated_post_content = do_shortcode( $shortcodes );
+
+			    if ( $setting_raw_shortcode === 'on' ) {
+			    	$updated_post_content = $shortcodes;
+			    } else {
+			    	$updated_post_content = do_shortcode( $shortcodes );
+			    }
 		    }
 
 		    /**
