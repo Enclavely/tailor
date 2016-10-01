@@ -189,13 +189,13 @@ if ( ! function_exists( 'tailor_do_shakespeare' ) ) {
 	function tailor_do_shakespeare( $quote_index = 0 ) {
 
 		$quotes = array (
-			'This life, which had been the tomb of his virtue and of his honour, is but a walking shadow; a poor player, that struts and frets his hour upon the stage, and then is heard no more: it is a tale told by an idiot, full of sound and fury, signifying nothing.',
-			'All the world\'s a stage, and all the men and women merely players: they have their exits and their entrances; and one man in his time plays many parts, his acts being seven ages.',
-			'There is a tide in the affairs of men, Which taken at the flood, leads on to fortune. Omitted, all the voyage of their life is bound in shallows and in miseries. On such a full sea are we now afloat. And we must take the current when it serves, or lose our ventures.',
-			'Some are born great, some achieve greatness, and some have greatness thrust upon them.',
-			'Good night, good night! Parting is such sweet sorrow, that I shall say good night till it be morrow.',
-			'What a piece of work is a man, how noble in reason, how infinite in faculties, in form and moving how express and admirable, in action how like an angel, in apprehension how like a god.',
-			'Sweet are the uses of adversity which, like the toad, ugly and venomous, wears yet a precious jewel in his head.',
+			__( 'This life, which had been the tomb of his virtue and of his honour, is but a walking shadow; a poor player, that struts and frets his hour upon the stage, and then is heard no more: it is a tale told by an idiot, full of sound and fury, signifying nothing.', 'tailor'),
+			__( 'All the world\'s a stage, and all the men and women merely players: they have their exits and their entrances; and one man in his time plays many parts, his acts being seven ages.', 'tailor' ),
+			__( 'There is a tide in the affairs of men, Which taken at the flood, leads on to fortune. Omitted, all the voyage of their life is bound in shallows and in miseries. On such a full sea are we now afloat. And we must take the current when it serves, or lose our ventures.', 'tailor' ),
+			__( 'Some are born great, some achieve greatness, and some have greatness thrust upon them.', 'tailor' ),
+			__( 'Good night, good night! Parting is such sweet sorrow, that I shall say good night till it be morrow.', 'tailor' ),
+			__( 'What a piece of work is a man, how noble in reason, how infinite in faculties, in form and moving how express and admirable, in action how like an angel, in apprehension how like a god.', 'tailor' ),
+			__( 'Sweet are the uses of adversity which, like the toad, ugly and venomous, wears yet a precious jewel in his head.', 'tailor' ),
 		);
 
 		if ( array_key_exists( $quote_index, $quotes ) ) {
