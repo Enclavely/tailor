@@ -160,7 +160,6 @@ Yes, however, users should be directed to the WordPress plugin repository to ins
 * Added - Utility CSS class for full-width sections.
 * Improved - WordPress bundled version of imagesloaded is used, if available.
 * Improved - Delete selected element by pressing the Delete key.
-
 * Fixed - Scripts being loaded on archive pages.
 * Fixed - Undo and redo keyboard shortcuts (CTRL-Z and CTRL-Y, respectively).
 * Fixed - Missing textdomain strings
