@@ -125,310 +125,188 @@ Yes, however, users should be directed to the WordPress plugin repository to ins
 == Changelog ==
 
 = 1.5.7 =
-
-Added:
-* Translation for Brazilian Portuguese [GitHub PR #45](https://github.com/andrew-worsfold/tailor/pull/45).
-* Check for whether a Tailor layout exists for a given post [GitHub #43](https://github.com/andrew-worsfold/tailor/issues/43).
-* Filter to allow content to be saved as shortcodes instead of HTML.
-
-Improved:
-* Closing Tailor will return the user to their original location.
-* Allow HTMl within admin notices [GitHub PR #38](https://github.com/andrew-worsfold/tailor/pull/38).
-
-Fixed:
-* Global SCSS primary color variable not used for carousel navigation [GitHub PR #39](https://github.com/andrew-worsfold/tailor/pull/39).
-* It is possible to Customize and Tailor posts at the same time.
+* Added - Translation for Brazilian Portuguese [GitHub PR #45](https://github.com/andrew-worsfold/tailor/pull/45).
+* Added - Check for whether a Tailor layout exists for a given post [GitHub #43](https://github.com/andrew-worsfold/tailor/issues/43).
+* Added - Filter to allow content to be saved as shortcodes instead of HTML.
+* Improved - Closing Tailor will return the user to their original location.
+* Improved - Allow HTMl within admin notices [GitHub PR #38](https://github.com/andrew-worsfold/tailor/pull/38).
+* Fixed - Global SCSS primary color variable not used for carousel navigation [GitHub PR #39](https://github.com/andrew-worsfold/tailor/pull/39).
+* Fixed - It is possible to Customize and Tailor posts at the same time.
 
 = 1.5.6 =
-
-Added:
-* Support for input HTML tags in content.
-* Filter for control arguments by control type (e.g., colorpicker).
-
-Fixed:
-* Template custom post type is public [GitHub #37](https://github.com/andrew-worsfold/tailor/issues/37).
-* Frontend element initialization function is not globally accessible [GitHub #31](https://github.com/andrew-worsfold/tailor/issues/31).
-* Custom style formats defined by themes and plugins not being displayed in the editor.
-* Excerpts are displayed for password protected posts.
+* Added - Support for input HTML tags in content.
+* Added - Filter for control arguments by control type (e.g., colorpicker).
+* Fixed - Template custom post type is public [GitHub #37](https://github.com/andrew-worsfold/tailor/issues/37).
+* Fixed - Frontend element initialization function is not globally accessible [GitHub #31](https://github.com/andrew-worsfold/tailor/issues/31).
+* Fixed - Custom style formats defined by themes and plugins not being displayed in the editor.
+* Fixed - Excerpts are displayed for password protected posts.
 
 = 1.5.5 =
-
-Added:
-* Single function for the initialization of elements in the frontend [GitHub #31](https://github.com/andrew-worsfold/tailor/issues/31).
-* Filter for empty content placeholder text [GitHub #33](https://github.com/andrew-worsfold/tailor/issues/33).
-
-Fixed:
-* User permission check being called too early, resulting in a warning message [GitHub #30](https://github.com/andrew-worsfold/tailor/issues/30).
-* Fuzzy spinner image [GitHub #34](https://github.com/andrew-worsfold/tailor/issues/34).
+* Added - Single function for the initialization of elements in the frontend [GitHub #31](https://github.com/andrew-worsfold/tailor/issues/31).
+* Added - Filter for empty content placeholder text [GitHub #33](https://github.com/andrew-worsfold/tailor/issues/33).
+* Fixed - User permission check being called too early, resulting in a warning message [GitHub #30](https://github.com/andrew-worsfold/tailor/issues/30).
+* Fixed - Fuzzy spinner image [GitHub #34](https://github.com/andrew-worsfold/tailor/issues/34).
 
 = 1.5.4 =
-
-Added:
-* 'Tailor this ..' button above the content editor.
+* Added - 'Tailor this ..' button above the content editor.
 
 = 1.5.3 =
-
-Added:
-* French language translation.
+* Added - French language translation.
 
 = 1.5.2 =
-
-Fixed:
-* Map element controls not displaying.
+* Fixed - Map element controls not displaying.
 
 = 1.5.1 =
+* Added - Utility CSS class for full-width sections.
+* Improved - WordPress bundled version of imagesloaded is used, if available.
+* Improved - Delete selected element by pressing the Delete key.
 
-Added:
-* Utility CSS class for full-width sections.
-
-Improved:
-* WordPress bundled version of imagesloaded is used, if available.
-* Delete selected element by pressing the Delete key.
-
-Fixed:
-* Scripts being loaded on archive pages.
-* Undo and redo keyboard shortcuts (CTRL-Z and CTRL-Y, respectively).
-* Missing textdomain strings
+* Fixed - Scripts being loaded on archive pages.
+* Fixed - Undo and redo keyboard shortcuts (CTRL-Z and CTRL-Y, respectively).
+* Fixed - Missing textdomain strings
 
 = 1.5.0 =
-
-Added:
-* Link hover color control.
-* Option to handle setting changes via JavaScript instead of re-rendering the entire element.
-
-Improved:
-* Instant previewing of changes as they are made. Please refer to the associated upgrade notice.
-* Styling of Gallery thumbnails, when presented as a slideshow.
-* Carousel and slider arrows appear when the mouse hovers over the slider, instead of just the arrow.
-* Updated Backbone Marionette and Backbone Radio dependencies to latest versions.
-* Restructured JavaScript project source files.
-* Reduced the number of Modernizr tests.
-
-Fixed:
-* Responsive oEmbed functionality.
+* Added - Link hover color control.
+* Added - Option to handle setting changes via JavaScript instead of re-rendering the entire element.
+* Improved - Instant previewing of changes as they are made. Please refer to the associated upgrade notice.
+* Improved - Styling of Gallery thumbnails, when presented as a slideshow.
+* Improved - Carousel and slider arrows appear when the mouse hovers over the slider, instead of just the arrow.
+* Improved - Updated Backbone Marionette and Backbone Radio dependencies to latest versions.
+* Improved - Restructured JavaScript project source files.
+* Improved - Reduced the number of Modernizr tests.
+* Fixed - Responsive oEmbed functionality.
 
 = 1.4.3 =
-
-Fixed:
-* Responsive oEmbed functionality.
+* Fixed - Responsive oEmbed functionality.
 
 = 1.4.2 =
-
-Improved:
-* Styling of Posts pagination.
-* Initial position of Edit modal window.
-
-Fixed:
-* Posts pagination not working on Front page.
-* Custom element registration not working in accordance with documentation.
+* Improved - Styling of Posts pagination.
+* Improved - Initial position of Edit modal window.
+* Fixed - Posts pagination not working on Front page.
+* Fixed - Custom element registration not working in accordance with documentation.
 
 = 1.4.1 =
-
-Added:
-* Special character button to the toolbar of the Editor.
-* Post revision support for page settings.
-
-Improved:
-* UI and functionality of the Style control used for margin and padding settings.
+* Added - Special character button to the toolbar of the Editor.
+* Added - Post revision support for page settings.
+* Improved - UI and functionality of the Style control used for margin and padding settings.
 
 = 1.4.0 =
-
-Added:
-* REST API endpoints for elements, models and templates. Please refer to the associated upgrade notice.
-* Parallax background images for Sections.
-* "Fake parallax" (i.e., background-attachment:fixed option) for elements with background images.
-* A dismissible notice is displayed on the Edit page of a Tailored post to advise of the effect of modifying content in the WordPress Editor.
-
-Improved:
-* Post revisions are used to restore an earlier Tailor layouts or recover the original content.
-* Map element displays a notice when a Google Maps API key has not been added.
-* Order and grouping of settings on the Settings page.
-* Handling of Customizer, custom and dynamic element CSS.
-* Posts in the Trash cannot be Tailored.
-* Users that can modify options or edit the current post type can Tailor pages if they don't have a restricted role type.
-* Set default Card background color to transparent.
-* Added, changed and removed various [actions](https://github.com/andrew-worsfold/tailor/blob/master/actions.md) and [filters](https://github.com/andrew-worsfold/tailor/blob/master/filters.md) for consistency and to accommodate new REST API.
-
-Fixed:
-* Save button label indicates that the page will be published when Tailoring a draft post.
-* Errors displayed when the Jetpack Publicize module is active.
+* Added - REST API endpoints for elements, models and templates. Please refer to the associated upgrade notice.
+* Added - Parallax background images for Sections.
+* Added - "Fake parallax" (i.e., background-attachment:fixed option) for elements with background images.
+* Added - A dismissible notice is displayed on the Edit page of a Tailored post to advise of the effect of modifying content in the WordPress Editor.
+* Improved - Post revisions are used to restore an earlier Tailor layouts or recover the original content.
+* Improved - Map element displays a notice when a Google Maps API key has not been added.
+* Improved - Order and grouping of settings on the Settings page.
+* Improved - Handling of Customizer, custom and dynamic element CSS.
+* Improved - Posts in the Trash cannot be Tailored.
+* Improved - Users that can modify options or edit the current post type can Tailor pages if they don't have a restricted role type.
+* Improved - Set default Card background color to transparent.
+* Improved - Added, changed and removed various [actions](https://github.com/andrew-worsfold/tailor/blob/master/actions.md) and [filters](https://github.com/andrew-worsfold/tailor/blob/master/filters.md) for consistency and to accommodate new REST API.
+* Fixed - Save button label indicates that the page will be published when Tailoring a draft post.
+* Fixed - Errors displayed when the Jetpack Publicize module is active.
 
 = 1.3.7 =
-
-Improved:
-* Style for empty placeholder content.
-* Hover outline color for improved contrast on themes with grey backgrounds.
-* Various sidebar and canvas style tweaks.
-
-Fixed:
-* Reordering of Section elements not working correctly.
+* Improved - Style for empty placeholder content.
+* Improved - Hover outline color for improved contrast on themes with grey backgrounds.
+* Improved - Various sidebar and canvas style tweaks.
+* Fixed - Reordering of Section elements not working correctly.
 
 = 1.3.6 =
-
-Added:
-* Additional actions for adding/modifying/removing custom CSS rules associated with existing elements.
-
-Fixed:
-* Minor color inconsistency between sidebar and preview screen during loading.
+* Added - Additional actions for adding/modifying/removing custom CSS rules associated with existing elements.
+* Fixed - Minor color inconsistency between sidebar and preview screen during loading.
 
 = 1.3.5 =
-
-Added:
-* Jetpack Testimonials element.
-* Actions for modifying default element settings and controls. [Learn more about this change](https://medium.com/p/c9efb5cb3016).
-
-Fixed:
-* Singular post type labels not displayed in the "Tailor this.." link.
+* Added - Jetpack Testimonials element.
+* Added - Actions for modifying default element settings and controls. [Learn more about this change](https://medium.com/p/c9efb5cb3016).
+* Fixed - Singular post type labels not displayed in the "Tailor this.." link.
 
 = 1.3.4 =
-
-Added:
-* Jetpack Portfolio element. [Learn more about this change](https://medium.com/p/f8a1ff571f21).
-* Class for managing theme and plugin compatibility.
-* Initialization hooks for the Sidebar and Canvas.
-
-Fixed:
-* Column width Customizer setting not working.
-* Undefined variable warning in attachment partial template.
+* Added - Jetpack Portfolio element. [Learn more about this change](https://medium.com/p/f8a1ff571f21).
+* Added - Class for managing theme and plugin compatibility.
+* Added - Initialization hooks for the Sidebar and Canvas.
+* Fixed - Column width Customizer setting not working.
+* Fixed - Undefined variable warning in attachment partial template.
 
 = 1.3.3 =
-
-Added:
-* Error message if the page canvas is not properly initialized.
-
-Fixed:
-* Clicking links within the canvas causes the page to be redirected.
+* Added - Error message if the page canvas is not properly initialized.
+* Fixed - Clicking links within the canvas causes the page to be redirected.
 
 = 1.3.2 =
-
-Fixed:
-* Debug error message is displayed when no admin setting description is provided.
+* Fixed - Debug error message is displayed when no admin setting description is provided.
 
 = 1.3.1 =
-
-Improved:
-* Descriptions for some admin settings.
-* Sidebar and Canvas RTL compatibility.
-* Users with permission to manage options can Tailor pages.
-
-Fixed:
-* Inactive elements have hover effects and trigger notifications.
-
-Removed:
-* Separate RTL stylesheet for sidebar (now included within main stylesheet).
+* Improved - Descriptions for some admin settings.
+* Improved - Sidebar and Canvas RTL compatibility.
+* Improved - Users with permission to manage options can Tailor pages.
+* Fixed - Inactive elements have hover effects and trigger notifications.
+* Removed - Separate RTL stylesheet for sidebar (now included within main stylesheet).
 
 = 1.3.0 =
-
-Added:
-* Image link control to Gallery element.
-* Title attribute to history snapshots.
-* Compatibility for NextGen gallery plugin.
-* Compatibility for Thesis theme framework.
-
-Improved:
-* Button block style to be a style option instead of alignment option.
-* Open Sans to system fonts.
-* Vertical spacing for various elements, including rows and columns.
-* RTL compatibility for modals, notifications and carousels.
-
-Fixed:
-* Responsive settings for rows and grids are not being applied appropriately.
-* History snapshots are created when previewing changes to an element.
-* Page title is not updated correctly.
+* Added - Image link control to Gallery element.
+* Added - Title attribute to history snapshots.
+* Added - Compatibility for NextGen gallery plugin.
+* Added - Compatibility for Thesis theme framework.
+* Improved - Button block style to be a style option instead of alignment option.
+* Improved - Open Sans to system fonts.
+* Improved - Vertical spacing for various elements, including rows and columns.
+* Improved - RTL compatibility for modals, notifications and carousels.
+* Fixed - Responsive settings for rows and grids are not being applied appropriately.
+* Fixed - History snapshots are created when previewing changes to an element.
+* Fixed - Page title is not updated correctly.
 
 = 1.2.8 =
-
-Added:
-* Check to ensure post archives and the posts page cannot be Tailored.
+* Added - Check to ensure post archives and the posts page cannot be Tailored.
 
 = 1.2.7 =
-
-Added:
-* RTL support.
+* Added - RTL support.
 
 = 1.2.6 =
-
-Added:
-* Device-specific visibility setting to rows, columns, grids and grid items under General settings tab.
-
-Improved:
-* Background image/color settings.
-
-Fixed:
-* Image and gallery controls are breaking when adding small images (credit: dtbaker).
+* Added - Device-specific visibility setting to rows, columns, grids and grid items under General settings tab.
+* Improved - Background image/color settings.
+* Fixed - Image and gallery controls are breaking when adding small images (credit: dtbaker).
 
 = 1.2.5 =
-
-Added:
-* Compatibility for the Yoast SEO plugin.
+* Added - Compatibility for the Yoast SEO plugin.
 
 = 1.2.4 =
-
-Added:
-* Resource links to the admin settings page.
-* Google Maps API key setting.
-
-Improved:
-* CSS to ensure pseudo-elements use double colon notation.
+* Added - Resource links to the admin settings page.
+* Added - Google Maps API key setting.
+* Improved - CSS to ensure pseudo-elements use double colon notation.
 
 = 1.2.3 =
-
-Fixed:
-* Element drag-drop ghost images are disappearing when dragging on Chrome.
+* Fixed - Element drag-drop ghost images are disappearing when dragging on Chrome.
 
 = 1.2.2 =
-
-Improved:
-* Display of the 'Tailor this ..' Admin Bar link.
+* Improved - Display of the 'Tailor this ..' Admin Bar link.
 
 = 1.2.1 =
-
-Removed:
-* 'Tailor this ..' Admin Bar link from archive pages (credit: BinaryMoon).
+* Removed - 'Tailor this ..' Admin Bar link from archive pages (credit: BinaryMoon).
 
 = 1.2.0 =
-
-Improved:
-* Container behaviour so that they do not collapse when only one child element remains (excludes row/column layouts). [Learn more about this change](http://www.andrewworsfold.com/2016/06/26/working-with-containers/).
-
-Fixed:
-* Custom CSS is not appearing within template previews.
-* Tabs break after a tab is renamed.
+* Improved - Container behaviour so that they do not collapse when only one child element remains (excludes row/column layouts). [Learn more about this change](http://www.andrewworsfold.com/2016/06/26/working-with-containers/).
+* Fixed - Custom CSS is not appearing within template previews.
+* Fixed - Tabs break after a tab is renamed.
 
 = 1.1.3 =
-
-Improved:
-* Device preview and media query settings to be in line with the WordPress Customizer (i.e., Desktop, Tablet and Mobile sizes).  [Learn more about this change](http://www.andrewworsfold.com/2016/06/25/device-previews/).
+* Improved - Device preview and media query settings to be in line with the WordPress Customizer (i.e., Desktop, Tablet and Mobile sizes).  [Learn more about this change](http://www.andrewworsfold.com/2016/06/25/device-previews/).
 
 = 1.1.2 =
-
-Added:
-* Notification and UI styles to help instruct new users to drag elements and templates onto the page.
+* Added - Notification and UI styles to help instruct new users to drag elements and templates onto the page.
 
 = 1.1.1 =
-
-Added:
-* Additional filters for developers to disable panels and elements.
+* Added - Additional filters for developers to disable panels and elements.
 
 = 1.1 =
-
-Added:
-* Admin options for hiding the CSS and JavaScript editors.
-* Admin option for hiding the Attributes panel (contained within the Edit modal window).
-
-Improved:
-* Scripts and styles to only load on Tailored pages.
-
-Removed:
-* Dynamic text domain function.
+* Added - Admin options for hiding the CSS and JavaScript editors.
+* Added - Admin option for hiding the Attributes panel (contained within the Edit modal window).
+* Improved - Scripts and styles to only load on Tailored pages.
+* Removed - Dynamic text domain function.
 
 = 1.0.1 =
-
-Added:
-* Fallback functions for PHP 5.4.x.
+* Added - Fallback functions for PHP 5.4.x.
 
 = 1.0.0 =
-
 * Initial release.
 
 == Upgrade Notice ==
