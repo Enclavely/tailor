@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tailor 1.5.7\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/tailor\n"
-"POT-Creation-Date: 2016-10-06 05:45:49+00:00\n"
+"POT-Creation-Date: 2016-10-06 05:56:56+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -639,7 +639,7 @@ msgid "The changes you made will be lost if you navigate away from this page"
 msgstr ""
 
 #: includes/class-sidebar.php:307
-msgid "You have made changes to this element.  Would you like to save them?"
+msgid "You have made changes to this element. Would you like to save them?"
 msgstr ""
 
 #: includes/class-sidebar.php:309 partials/underscore/canvas-tools.php:13
