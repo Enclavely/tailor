@@ -29,8 +29,19 @@ defined( 'ABSPATH' ) or die(); ?>
 	        } ?>
 
 	        <span class="spinner"></span>
+	        
+	        <?php
+	        
+	        // Get the return link
+	        $referer = wp_get_referer();
+	        if ( $referer ) {
+		        $return_url = $referer;
+	        }
+	        else {
+		        $return_url = get_edit_post_link();
+	        } ?>
 
-	        <a class="tailor-sidebar__control" href="<?php echo esc_url_raw( get_edit_post_link() ); ?>" tabindex="0">
+	        <a class="tailor-sidebar__control" href="<?php echo esc_url_raw( $return_url ); ?>" tabindex="0">
 		        <?php echo tailor_screen_reader_text( __( 'Close', 'tailor' ) ); ?>
 	        </a>
         </div>

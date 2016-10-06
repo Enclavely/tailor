@@ -43,6 +43,7 @@
 | tailor_get_sanitized_models | Applies to the collection of sanitized models | array $sanitized_models <br> int $post_id |
 | tailor_sanitize_model | Applies to the a sanitized model | array $sanitized_model |
 | tailor_get_default_models | Applies to the collection of default models | array $default_models <br> int $post_id |
+| tailor_save_content_as_html | Allows developers to control whether content is saved as HTML or shortcodes | bool |
 
 ## Sidebar filters
 
@@ -82,7 +83,6 @@
 | tailor_custom_js_key | Applies to the key used to store custom JavaScript as post meta | string $key |
 | tailor_get_custom_js | Applies to the custom page JavaScript retrieved from post meta | string $custom_page_js <br> int $post_id |
 | tailor_enable_custom_js | Allow developers to prevent custom page JavaScript from being printed | bool |
-
 
 ## Template filters
 

@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the Tailor package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Tailor 1.5.5\n"
+"Project-Id-Version: Tailor 1.5.7\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/tailor\n"
-"POT-Creation-Date: 2016-09-12 10:56:43+00:00\n"
+"POT-Creation-Date: 2016-10-06 05:45:49+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -475,7 +475,7 @@ msgctxt "error message"
 msgid "No valid models were provided"
 msgstr ""
 
-#: includes/class-models.php:682
+#: includes/class-models.php:697
 msgid "%1$sThe element associated with shortcode %2$s could not be found.%3$s "
 msgstr ""
 
@@ -541,153 +541,153 @@ msgstr ""
 msgid "The amount of vertical space to display between elements."
 msgstr ""
 
-#: includes/class-sidebar.php:101
+#: includes/class-sidebar.php:105
 msgid "Tailoring: %s"
 msgstr ""
 
-#: includes/class-sidebar.php:282
+#: includes/class-sidebar.php:286
 msgid "Tailoring: "
 msgstr ""
 
-#: includes/class-sidebar.php:283 includes/controls/class-search.php:64
+#: includes/class-sidebar.php:287 includes/controls/class-search.php:64
 #: languages/tinymce-localization.php:28
 msgid "Select"
 msgstr ""
 
-#: includes/class-sidebar.php:284 includes/settings/class-panel.php:522
+#: includes/class-sidebar.php:288 includes/settings/class-panel.php:522
 msgid "Save template"
 msgstr ""
 
-#: includes/class-sidebar.php:285 partials/sidebar/sidebar-frame.php:28
+#: includes/class-sidebar.php:289 partials/sidebar/sidebar-frame.php:28
 msgid "Saved"
 msgstr ""
 
-#: includes/class-sidebar.php:286 partials/sidebar/sidebar-frame.php:21
+#: includes/class-sidebar.php:290 partials/sidebar/sidebar-frame.php:21
 msgid "Save & Publish"
 msgstr ""
 
-#: includes/class-sidebar.php:286 includes/class-sidebar.php:308
+#: includes/class-sidebar.php:290 includes/class-sidebar.php:312
 #: partials/sidebar/sidebar-frame.php:24
 msgid "Save"
 msgstr ""
 
-#: includes/class-sidebar.php:287
+#: includes/class-sidebar.php:291
 msgid "Import"
 msgstr ""
 
-#: includes/class-sidebar.php:288 includes/settings/class-panel.php:528
+#: includes/class-sidebar.php:292 includes/settings/class-panel.php:528
 msgid "Import template"
 msgstr ""
 
-#: includes/class-sidebar.php:289 includes/controls/class-list.php:120
-#: partials/sidebar/sidebar-frame.php:34
+#: includes/class-sidebar.php:293 includes/controls/class-list.php:120
+#: partials/sidebar/sidebar-frame.php:45
 #: partials/underscore/dialog-layout.php:19
 #: partials/underscore/modal-layout.php:18
 msgid "Close"
 msgstr ""
 
-#: includes/class-sidebar.php:290
+#: includes/class-sidebar.php:294
 msgid "An error occurred, please try again"
 msgstr ""
 
-#: includes/class-sidebar.php:291
+#: includes/class-sidebar.php:295
 msgid "The session has expired"
 msgstr ""
 
-#: includes/class-sidebar.php:292
+#: includes/class-sidebar.php:296
 msgid "The request made was invalid"
 msgstr ""
 
-#: includes/class-sidebar.php:293
+#: includes/class-sidebar.php:297
 msgid "%s saved successfully"
 msgstr ""
 
-#: includes/class-sidebar.php:294
+#: includes/class-sidebar.php:298
 msgid "History entry restored successfully"
 msgstr ""
 
-#: includes/class-sidebar.php:295
+#: includes/class-sidebar.php:299
 msgid "Element deleted successfully"
 msgstr ""
 
-#: includes/class-sidebar.php:296
+#: includes/class-sidebar.php:300
 msgid "Template saved successfully"
 msgstr ""
 
-#: includes/class-sidebar.php:297
+#: includes/class-sidebar.php:301
 msgid "Template imported successfully"
 msgstr ""
 
-#: includes/class-sidebar.php:298
+#: includes/class-sidebar.php:302
 msgid "Template added successfully"
 msgstr ""
 
-#: includes/class-sidebar.php:299
+#: includes/class-sidebar.php:303
 msgid "Template deleted successfully"
 msgstr ""
 
-#: includes/class-sidebar.php:300
+#: includes/class-sidebar.php:304
 msgid "To add an element, drag it into the desired position on the page"
 msgstr ""
 
-#: includes/class-sidebar.php:301
+#: includes/class-sidebar.php:305
 msgid "To add a template, drag it into the desired position on the page"
 msgstr ""
 
-#: includes/class-sidebar.php:302
+#: includes/class-sidebar.php:306
 msgid "The changes you made will be lost if you navigate away from this page"
 msgstr ""
 
-#: includes/class-sidebar.php:303
+#: includes/class-sidebar.php:307
 msgid "You have made changes to this element.  Would you like to save them?"
 msgstr ""
 
-#: includes/class-sidebar.php:305 partials/underscore/canvas-tools.php:13
+#: includes/class-sidebar.php:309 partials/underscore/canvas-tools.php:13
 msgid "Edit"
 msgstr ""
 
-#: includes/class-sidebar.php:306 includes/controls/class-list.php:119
+#: includes/class-sidebar.php:310 includes/controls/class-list.php:119
 #: partials/admin/field-icon.php:31 partials/underscore/canvas-tools.php:14
 msgid "Delete"
 msgstr ""
 
-#: includes/class-sidebar.php:307
+#: includes/class-sidebar.php:311
 msgid "Preview"
 msgstr ""
 
-#: includes/class-sidebar.php:309
+#: includes/class-sidebar.php:313
 msgid "Initialized"
 msgstr ""
 
-#: includes/class-sidebar.php:310
+#: includes/class-sidebar.php:314
 msgid "Added"
 msgstr ""
 
-#: includes/class-sidebar.php:311
+#: includes/class-sidebar.php:315
 msgid "Deleted"
 msgstr ""
 
-#: includes/class-sidebar.php:312
+#: includes/class-sidebar.php:316
 msgid "Edited"
 msgstr ""
 
-#: includes/class-sidebar.php:313
+#: includes/class-sidebar.php:317
 msgid "Copied"
 msgstr ""
 
-#: includes/class-sidebar.php:314
+#: includes/class-sidebar.php:318
 msgid "Moved"
 msgstr ""
 
-#: includes/class-sidebar.php:315
+#: includes/class-sidebar.php:319
 msgid "Resized"
 msgstr ""
 
-#: includes/class-sidebar.php:316
+#: includes/class-sidebar.php:320
 msgid "Reordered"
 msgstr ""
 
-#: includes/class-sidebar.php:317
+#: includes/class-sidebar.php:321
 msgid "Template"
 msgstr ""
 
@@ -1536,6 +1536,34 @@ msgstr ""
 msgid "Tailor this %s"
 msgstr ""
 
+#: includes/helpers/helpers-markup.php:192
+msgid "This life, which had been the tomb of his virtue and of his honour, is but a walking shadow; a poor player, that struts and frets his hour upon the stage, and then is heard no more: it is a tale told by an idiot, full of sound and fury, signifying nothing."
+msgstr ""
+
+#: includes/helpers/helpers-markup.php:193
+msgid "All the world's a stage, and all the men and women merely players: they have their exits and their entrances; and one man in his time plays many parts, his acts being seven ages."
+msgstr ""
+
+#: includes/helpers/helpers-markup.php:194
+msgid "There is a tide in the affairs of men, Which taken at the flood, leads on to fortune. Omitted, all the voyage of their life is bound in shallows and in miseries. On such a full sea are we now afloat. And we must take the current when it serves, or lose our ventures."
+msgstr ""
+
+#: includes/helpers/helpers-markup.php:195
+msgid "Some are born great, some achieve greatness, and some have greatness thrust upon them."
+msgstr ""
+
+#: includes/helpers/helpers-markup.php:196
+msgid "Good night, good night! Parting is such sweet sorrow, that I shall say good night till it be morrow."
+msgstr ""
+
+#: includes/helpers/helpers-markup.php:197
+msgid "What a piece of work is a man, how noble in reason, how infinite in faculties, in form and moving how express and admirable, in action how like an angel, in apprehension how like a god."
+msgstr ""
+
+#: includes/helpers/helpers-markup.php:198
+msgid "Sweet are the uses of adversity which, like the toad, ugly and venomous, wears yet a precious jewel in his head."
+msgstr ""
+
 #: includes/helpers/helpers-settings.php:110
 msgid "Current user"
 msgstr ""
@@ -1544,35 +1572,35 @@ msgstr ""
 msgid "All %s"
 msgstr ""
 
-#: includes/helpers/helpers-settings.php:518
+#: includes/helpers/helpers-settings.php:555
 msgid "Desktop"
 msgstr ""
 
-#: includes/helpers/helpers-settings.php:523
+#: includes/helpers/helpers-settings.php:560
 msgid "Tablet"
 msgstr ""
 
-#: includes/helpers/helpers-settings.php:528
+#: includes/helpers/helpers-settings.php:565
 msgid "Mobile"
 msgstr ""
 
-#: includes/helpers/helpers-settings.php:536
+#: includes/helpers/helpers-settings.php:573
 msgid "All"
 msgstr ""
 
-#: includes/helpers/helpers-settings.php:590
+#: includes/helpers/helpers-settings.php:627
 msgid "%1$s is <strong>deprecated</strong> since Tailor version %2$s! Use %3$s instead."
 msgstr ""
 
-#: includes/helpers/helpers-settings.php:611
+#: includes/helpers/helpers-settings.php:648
 msgid "Enter desktop preview mode"
 msgstr ""
 
-#: includes/helpers/helpers-settings.php:615
+#: includes/helpers/helpers-settings.php:652
 msgid "Enter tablet preview mode"
 msgstr ""
 
-#: includes/helpers/helpers-settings.php:618
+#: includes/helpers/helpers-settings.php:655
 msgid "Enter mobile preview mode"
 msgstr ""
 
@@ -1767,7 +1795,11 @@ msgstr ""
 msgid "Leave a comment on: &ldquo;%s&rdquo;"
 msgstr ""
 
-#: partials/meta-excerpt.php:20
+#: partials/meta-excerpt.php:19
+msgid "There is no excerpt because this is a protected post."
+msgstr ""
+
+#: partials/meta-excerpt.php:33
 msgid "Continue reading &rsaquo;"
 msgstr ""
 
@@ -1785,11 +1817,11 @@ msgstr ""
 msgid "Posts pagination"
 msgstr ""
 
-#: partials/sidebar/sidebar-frame.php:61
+#: partials/sidebar/sidebar-frame.php:72
 msgid "Collapse Sidebar"
 msgstr ""
 
-#: partials/sidebar/sidebar-frame.php:63
+#: partials/sidebar/sidebar-frame.php:74
 msgid "Collapse"
 msgstr ""
 

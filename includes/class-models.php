@@ -580,17 +580,32 @@ if ( ! class_exists( 'Tailor_Models' ) ) {
 			    $reordered_models = $this->order_models_by_parent( $sanitized_models );
 			    $shortcodes = $this->generate_shortcodes( '', $reordered_models );
 
-			    // Ensure that only shortcodes for dynamic content is left in the content
-			    global $shortcode_tags;
-			    $dynamic_shortcodes = array();
-			    foreach ( tailor_elements()->get_elements() as $element ) {
-				    if ( true != (bool) $element->dynamic ) {
-					    $dynamic_shortcodes[ $element->tag ] = $shortcode_tags[ $element->tag ];
+			    /**
+			     * Allows developers to control whether content is saved as HTML or shortcodes.
+			     *
+			     * @since 1.5.7
+			     *
+			     * @param bool
+			     */
+			    if ( apply_filters( 'tailor_save_content_as_html', true ) ) {
+
+				    // Ensure that only (non-dynamic) element shortcodes are processed
+				    global $shortcode_tags;
+				    $dynamic_shortcodes = array();
+				    foreach ( tailor_elements()->get_elements() as $element ) {
+					    if ( true != (bool) $element->dynamic ) {
+						    $dynamic_shortcodes[ $element->tag ] = $shortcode_tags[ $element->tag ];
+					    }
 				    }
+
+				    $shortcode_tags = $dynamic_shortcodes;
+				    $updated_post_content = do_shortcode( $shortcodes );
 			    }
-			    
-			    $shortcode_tags = $dynamic_shortcodes;
-			    $updated_post_content = do_shortcode( $shortcodes );
+			    else {
+
+				    // Save the raw shortcodes as the post content
+				    $updated_post_content = $shortcodes;
+			    }
 		    }
 
 		    /**

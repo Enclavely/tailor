@@ -69,7 +69,7 @@ if ( ! class_exists( 'Tailor_Sidebar' ) ) {
 
             add_action( 'wp_ajax_tailor_refresh_nonces', array( $this, 'refresh_nonces' ) );
         }
-
+	    
 	    /**
 	     * Renders a blank page.
 	     *
@@ -79,6 +79,10 @@ if ( ! class_exists( 'Tailor_Sidebar' ) ) {
 	     * @return bool|string
 	     */
         public function render_page( $template = '' ) {
+
+	        if ( is_customize_preview() ) {
+		        return $template;
+	        }
 	        
 	        if ( ! tailor()->check_user_role() || ! tailor()->check_post() ) {
 	            return $template;
@@ -197,7 +201,7 @@ if ( ! class_exists( 'Tailor_Sidebar' ) ) {
 	        tailor_partial( 'underscore/sidebar', 'home' );
 	        tailor_partial( 'underscore/sidebar', 'home-empty' );
         }
-
+	    
         /**
          * Enqueues styles for the Tailor Sidebar.
          *
