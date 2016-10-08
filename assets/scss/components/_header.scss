@@ -24,6 +24,18 @@
         padding-top: 1em;
         padding-bottom: 1em;
       }
+
+      &.is-light {
+        color: #fff;
+
+        a {
+          color: inherit;
+        }
+
+        svg {
+          fill: #fff;
+        }
+      }
     }
   }
 }

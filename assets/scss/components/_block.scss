@@ -5,11 +5,3 @@
 
   @extend %p-y-3;
 }
-
-@include media-breakpoint-down( sm ) {
-
-  .feature-text {
-    padding-left: 3em;
-    padding-right: 3em;
-  }
-}

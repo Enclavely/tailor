@@ -30,8 +30,9 @@
     $doc.ready( function( $ ) {
         var $header = $( '#header' );
         var $heroBlock = $( '.hero.block' );
+        var ticking = false;
 
-        function onScroll() {
+        function update() {
             var el = document.documentElement,
                 body = document.getElementsByTagName( 'body' )[0],
                 x = window.innerWidth || el.clientWidth || body.clientWidth,
@@ -50,12 +51,31 @@
                     opacity: Math.max( Math.min( ( heroHeight - wScrollTop ) / ( heroHeight ), 1 ), 0 )
                 } );
             }
+
+            var section = document.querySelector( '.features.dark-theme' );
+            if ( section ) {
+                $header.toggleClass( 'is-light', section.getBoundingClientRect().top < 40 );
+            }
+
+            ticking = false;
         }
 
-        onScroll();
+        function onScroll() {
+            requestTick();
+        }
+
+        function requestTick() {
+            if ( ! ticking ) {
+                requestAnimationFrame( update );
+            }
+            ticking = true;
+        }
 
         $win
            .scroll( onScroll )
            .resize( onScroll );
+
+        onScroll();
+
     } );
 } ) ( jQuery );
