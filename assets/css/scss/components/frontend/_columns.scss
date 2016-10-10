@@ -161,8 +161,6 @@ $column-sizer-width: 1rem !default;
 
 @media #{$tablet-up} {
 	@include row( tablet );
-
-	@include row( small ); // To provide backward compatibility for old media queries
 }
 
 @media #{$desktop} {

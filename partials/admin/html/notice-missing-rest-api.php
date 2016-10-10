@@ -18,7 +18,4 @@ defined( 'ABSPATH' ) or die(); ?>
 			'</a>'
 		); ?>
 	</p>
-	<button type="button" class="notice-dismiss">
-		<span class="screen-reader-text"><?php esc_html_e( 'Dismiss this notice.', 'tailor' ); ?></span>
-	</button>
 </div>

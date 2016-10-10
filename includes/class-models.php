@@ -686,7 +686,15 @@ if ( ! class_exists( 'Tailor_Models' ) ) {
 					    $unsanitized_model['atts'][ $setting->id ] = $setting->default;
 				    }
 
-				    $sanitized_atts[ $setting->id ] = $setting->sanitize( $unsanitized_model['atts'][ $setting->id ] );
+				    // Sanitize the attribute value
+				    $sanitized_attribute = $setting->sanitize( $unsanitized_model['atts'][ $setting->id ] );
+
+				    // Convert multi-dimensional data to JSON string
+				    if ( is_array( $sanitized_attribute ) ) {
+					    $sanitized_attribute = json_encode( $sanitized_attribute );
+				    }
+
+				    $sanitized_atts[ $setting->id ] = $sanitized_attribute;
 			    }
 		    }
 		    else {

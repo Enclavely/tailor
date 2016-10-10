@@ -120,6 +120,7 @@
     Tailor.Controls.Text =              require( './components/controls/text' );
     Tailor.Controls.Textarea =          require( './components/controls/textarea' );
     Tailor.Controls.Video =             require( './components/controls/video' );
+    Tailor.Controls.WidgetForm =        require( './components/controls/widget-form' );
     Tailor.Controls.Default =           require( './components/controls/text' );
 
     /**

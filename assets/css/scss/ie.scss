@@ -1,0 +1,23 @@
+@import "variables";
+
+//
+// Tools
+//
+@import "tools/clearfix";
+
+
+//
+// Exported selectors
+//
+.#{$global-class-prefix}ui {
+
+	.#{$global-class-prefix}column,
+	.#{$global-class-prefix}grid__item {
+		float: left;
+	}
+
+	.#{$global-class-prefix}section,
+	.#{$global-class-prefix}grid {
+		@include clearfix;
+	}
+}

@@ -21,6 +21,17 @@ $widgets-box-shadow: none !default;
 //
 .#{$global-class-prefix}ui {
 
+	.#{$widgets-class-prefix}widget {
+		padding: $widgets-padding;
+		margin-bottom: $widgets-spacing-vertical;
+		font-size: $widgets-font-size;
+		color: $widgets-color;
+		background-color: $widgets-background-color;
+		border: $widgets-border-width $widgets-border-style $widgets-border-color;
+		border-radius: $widgets-border-radius;
+		box-shadow: $widgets-box-shadow;
+	}
+
 	.#{$widgets-class-prefix}widget-area {
 		padding: $widgets-padding;
 		margin-bottom: $widgets-spacing-vertical;

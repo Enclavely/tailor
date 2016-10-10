@@ -219,6 +219,24 @@ class Tailor_Settings {
 			$setting_id
 		);
 
+		$api_field_id = 'enable_widgets';
+		$api_field_label = __( 'Widgets', 'tailor' );
+		add_settings_field(
+			$api_field_id,
+			$api_field_label,
+			array( $this, 'render_field' ),
+			$setting_id,
+			$setting_id . '_features',
+			array(
+				'type'              =>  'checkbox',
+				'name'              =>  $setting_id . '[' . $api_field_id . ']',
+				'value'             =>  tailor_get_setting( $api_field_id ),
+				'options'           =>  array(
+					'on'                =>  __( 'Enable WordPress and third-party widgets?', 'tailor' )
+				),
+			)
+		);
+
 		$api_field_id = 'enable_rest_api';
 		$api_field_label = __( 'REST API', 'tailor' );
 		add_settings_field(

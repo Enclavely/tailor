@@ -76,7 +76,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Section_Element
 	        );
 	        $color_control_arguments = array();
 	        tailor_control_presets( $this, $color_control_types, $color_control_arguments, $priority );
-
+	        
 	        $priority = 0;
 	        $attribute_control_types = array(
 		        'class',
@@ -173,7 +173,21 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Section_Element
 				        'condition'             =>  'not',
 				        'value'                 =>  '',
 			        ),
+			        'background_video'      => array(
+				        'condition'             =>  'equals',
+				        'value'                 =>  '',
+			        ),
 		        ),
+	        ) );
+
+	        $this->add_setting( 'background_video', array(
+		        'sanitize_callback'     =>  'tailor_sanitize_number',
+	        ) );
+	        $this->add_control( 'background_video', array(
+		        'label'                 =>  __( 'Background video', 'tailor' ),
+		        'type'                  =>  'video',
+		        'priority'              =>  $priority += 10,
+		        'section'               =>  'attributes',
 	        ) );
         }
 
@@ -209,44 +223,48 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Section_Element
 			    );
 		    }
 
-		    if ( ! empty( $atts['background_image'] ) && 1 == $atts['parallax'] ) {
-
-			    $excluded_control_types[] = 'background_image';
-			    $background_image_url = wp_get_attachment_image_url( $atts['background_image'], 'full' );
-
-			    if ( ! empty( $atts['background_color'] ) ) {
-
-				    // If an RGBA background color is used, "tint" the background image
-				    // @see: https://css-tricks.com/tinted-images-multiple-backgrounds/
-				    if ( false !== strpos( $atts['background_color'], 'rgba' ) ) {
-					    $css_rules[] = array(
-						    'selectors'    => array( '.tailor-section__background' ),
-						    'declarations' => array(
-							    'background' => esc_attr(
-								    "linear-gradient( {$atts['background_color']}, {$atts['background_color']} ), 
-								url({$background_image_url}) center center / cover no-repeat"
-							    ),
-						    ),
-					    );
-				    }
-				    else {
-
-					    // Image displayed over color
-					    $css_rules[] = array(
-						    'selectors'    => array( '.tailor-section__background' ),
-						    'declarations' => array(
-							    'background' => esc_attr(
-								    "{$atts['background_color']} url({$background_image_url}) center center / cover no-repeat"
-							    ),
-						    ),
-					    );
-				    }
-			    }
-			    else {
+		    // Background video
+		    if ( ! empty( $atts['background_video'] ) ) {
+			    if ( ! empty( $atts['overlay_color'] ) ) {
 				    $css_rules[] = array(
-					    'selectors'         =>  array( '.tailor-section__background' ),
+					    'selectors'         =>  array( '.tailor-video-overlay' ),
 					    'declarations'      =>  array(
-						    'background'        =>  "url('{$background_image_url}') center center / cover no-repeat",
+						    'background-color'  =>  esc_attr( $atts['overlay_color'] ),
+					    ),
+				    );
+			    }
+		    }
+
+		    // Parallax background image
+		    else if ( ! empty( $atts['background_image'] ) ) {
+			    if ( 1 == $atts['parallax'] && $background_image_url = wp_get_attachment_image_url( $atts['background_image'], 'full' ) ) {
+
+				    // Prevent default background image styles from being applied
+				    $excluded_control_types[] = 'background_image';
+
+				    // Parallax background image with color
+				    if ( ! empty( $atts['background_color'] ) ) {
+
+					    // Semi-transparent color over image
+					    if ( false !== strpos( $atts['background_color'], 'rgba' ) ) {
+						    $background = "linear-gradient( {$atts['background_color']}, {$atts['background_color']} ), url({$background_image_url}) center center / cover no-repeat";
+					    }
+
+					    // Image displayed over solid color
+					    else {
+						    $background = "{$atts['background_color']} url({$background_image_url}) center center / cover no-repeat";
+					    }
+				    }
+
+				    // Parallax background image with no color
+				    else {
+					    $background =  "url('{$background_image_url}') center center / cover no-repeat";
+				    }
+
+				    $css_rules[] = array(
+					    'selectors'    => array( '.tailor-section__background' ),
+					    'declarations' => array(
+						    'background' => esc_attr( $background ),
 					    ),
 				    );
 			    }

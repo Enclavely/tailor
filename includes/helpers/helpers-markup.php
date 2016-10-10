@@ -232,7 +232,7 @@ if ( ! function_exists( 'tailor_get_attributes' ) ) {
 	function tailor_get_attributes( $atts = array(), $prefix = '' ) {
 		$attributes = '';
 		foreach ( $atts as $key => $value ) {
-			if ( empty( $value ) ) {
+			if ( empty( $value ) || is_array( $value ) ) {
 				continue;
 			}
 			$attributes .= ' ' . $prefix . $key . '="' . $value . '"';

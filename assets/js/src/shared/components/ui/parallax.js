@@ -96,7 +96,9 @@ Parallax.prototype = {
 
 
 	/**
-	 * Adds the required event listeners
+	 * Adds the required event listeners.
+	 * 
+	 * @since 1.4.0
 	 */
 	addEventListeners : function() {
 		this.$win

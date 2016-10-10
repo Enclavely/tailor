@@ -5,13 +5,15 @@
  *
  * @augments Marionette.ItemView
  */
-var AbstractControl = require( './abstract-control' ),
+var $ = Backbone.$,
+    AbstractControl = require( './abstract-control' ),
     VideoControl;
 
 VideoControl = AbstractControl.extend( {
 
 	ui : {
         'select' : '.button--select',
+        'enterUrl' : '.button--enter',
         'change' : '.button--change',
 		'remove' : '.button--remove',
         'default' : '.js-default',
@@ -20,6 +22,7 @@ VideoControl = AbstractControl.extend( {
 
     events : {
         'click @ui.select' : 'openFrame',
+        'click @ui.enterUrl' : 'openDialog',
         'click @ui.change' : 'openFrame',
         'click @ui.remove' : 'removeVideo',
         'click @ui.default' : 'restoreDefaultValue'
@@ -56,7 +59,8 @@ VideoControl = AbstractControl.extend( {
     addEventListeners : function() {
         this.listenTo( this.model.setting, 'change', this.render );
         this.listenTo( this.model.setting.collection, 'change', this.checkDependencies );
-        this.listenTo( this.frame, 'select', this.selectVideo );
+
+        this.frame.on( 'select', this.selectVideo.bind( this ) );
     },
 
     /**
@@ -82,19 +86,67 @@ VideoControl = AbstractControl.extend( {
     },
 
     /**
-     * Updates the video preview.
+     * Opens the link selection dialog.
      *
      * @since 1.0.0
-     *
-     * @param attachment
      */
-    updatePreview : function( attachment ) {
-        var url = attachment.get( 'url' );
-        var mime = attachment.get( 'mime' );
+    openDialog : function() {
+        var control = this;
+        var options = {
+            title : 'Enter URL',
+            button : window._l10n.select,
 
-        this.ui.preview
-            .removeClass( 'is-loading' )
-            .html( '<video controls><source src="' + url + '" type="' + mime + '"></video>' );
+            /**
+             * Returns the content for the Select Content dialog.
+             *
+             * @since 1.0.0
+             *
+             * @returns {*}
+             */
+            content : function() {
+                return  '<div class="dialog__container">' +
+                            '<input class="search--content" type="search" role="search">' +
+                        '</div>';
+            },
+
+            /**
+             * Returns true if an item has been selected.
+             *
+             * @since 1.0.0
+             *
+             * @returns {*}
+             */
+            onValidate : function() {
+                var url = $( '.search--content' ).val();
+                return url && /^(ftp|http|https):\/\/[^ "]+$/.test( url );
+            },
+
+            /**
+             * Updates the setting value with the selected item URL.
+             *
+             * @since 1.0.0
+             */
+            onSave : function() {
+                var url = $( '.search--content' ).val();
+                control.setSettingValue( url );
+            },
+
+            /**
+             * Cleans up event listeners.
+             *
+             * @since 1.0.0
+             */
+            onClose : function() {
+                this.$el.find( '.search--content' ).off( 'input' );
+            }
+        };
+
+        /**
+         * Fires when the dialog window is opened.
+         *
+         * @since 1.0.0
+         */
+        app.channel.trigger( 'dialog:open', options );
     },
 
     /**
@@ -115,7 +167,7 @@ VideoControl = AbstractControl.extend( {
         var control = this;
         var id = this.getSettingValue();
 
-        if ( id ) {
+        if ( id && _.isNumber( id ) ) {
             var attachment = wp.media.attachment( id );
             if ( ! attachment.get( 'url' ) ) {
                 attachment.fetch( {
@@ -128,6 +180,22 @@ VideoControl = AbstractControl.extend( {
                 control.updatePreview( attachment );
             }
         }
+    },
+
+    /**
+     * Updates the video preview.
+     *
+     * @since 1.0.0
+     *
+     * @param attachment
+     */
+    updatePreview : function( attachment ) {
+        var url = attachment.get( 'url' );
+        var mime = attachment.get( 'mime' );
+
+        this.ui.preview
+            .removeClass( 'is-loading' )
+            .html( '<video controls><source src="' + url + '" type="' + mime + '"></video>' );
     },
 
     /**

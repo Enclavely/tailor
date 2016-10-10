@@ -13,8 +13,5 @@ defined( 'ABSPATH' ) or die(); ?>
 <script id="tmpl-tailor-notice" type="text/html">
 	<div class="error notice notice-error is-dismissible">
 		<p><%= message %></p>
-		<button type="button" class="notice-dismiss">
-			<span class="screen-reader-text"><?php _e( 'Dismiss this notice.', 'tailor' ); ?></span>
-		</button>
 	</div>
 </script>

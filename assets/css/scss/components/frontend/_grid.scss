@@ -161,8 +161,6 @@ $grid-column-number : 6 !default;
 
 @media #{$tablet-up} {
 	@include grid( tablet );
-
-	@include grid( small ); // To provide backward compatibility for old media queries
 }
 
 @media #{$desktop} {

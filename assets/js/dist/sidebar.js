@@ -2798,7 +2798,6 @@ ImageControl = AbstractControl.extend( {
     addEventListeners : function() {
         this.listenTo( this.model.setting, 'change', this.render );
         this.listenTo( this.model.setting.collection, 'change', this.checkDependencies );
-        //this.listenTo( this.frame, 'select', this.selectImage );
 
         this.frame.on( 'select', this.selectImage.bind( this ) );
     },
@@ -3698,6 +3697,43 @@ RangeControl = AbstractControl.extend( {
         'default' : '.js-default'
 	},
 
+    templateHelpers : {
+
+        /**
+         * Returns the attributes for the control.
+         *
+         * @since 1.6.0
+         *
+         * @returns {string}
+         */
+        inputAttrs : function() {
+            var atts = '';
+            _.each( this.attrs, function( value, attr ) {
+                atts += ( attr + '="' + value + '"' );
+            } );
+            return atts;
+        }
+    },
+
+    /**
+     * Provides the required information to the template rendering function.
+     *
+     * @since 1.6.0
+     *
+     * @returns {*}
+     */
+    serializeData : function() {
+        var data = Backbone.Marionette.ItemView.prototype.serializeData.apply( this, arguments );
+        var defaultValue = this.getDefaultValue();
+
+        data.value = this.getSettingValue();
+        data.showDefault = null != defaultValue && ( data.value != defaultValue );
+
+        data.attrs = this.model.get( 'input_attrs' );
+
+        return data;
+    },
+    
     events : {
         'input @ui.range' : 'onControlChange',
         'change @ui.input' : 'onControlChange',
@@ -4127,13 +4163,15 @@ module.exports = TextareaControl;
  *
  * @augments Marionette.ItemView
  */
-var AbstractControl = require( './abstract-control' ),
+var $ = Backbone.$,
+    AbstractControl = require( './abstract-control' ),
     VideoControl;
 
 VideoControl = AbstractControl.extend( {
 
 	ui : {
         'select' : '.button--select',
+        'enterUrl' : '.button--enter',
         'change' : '.button--change',
 		'remove' : '.button--remove',
         'default' : '.js-default',
@@ -4142,6 +4180,7 @@ VideoControl = AbstractControl.extend( {
 
     events : {
         'click @ui.select' : 'openFrame',
+        'click @ui.enterUrl' : 'openDialog',
         'click @ui.change' : 'openFrame',
         'click @ui.remove' : 'removeVideo',
         'click @ui.default' : 'restoreDefaultValue'
@@ -4178,7 +4217,8 @@ VideoControl = AbstractControl.extend( {
     addEventListeners : function() {
         this.listenTo( this.model.setting, 'change', this.render );
         this.listenTo( this.model.setting.collection, 'change', this.checkDependencies );
-        this.listenTo( this.frame, 'select', this.selectVideo );
+
+        this.frame.on( 'select', this.selectVideo.bind( this ) );
     },
 
     /**
@@ -4204,19 +4244,67 @@ VideoControl = AbstractControl.extend( {
     },
 
     /**
-     * Updates the video preview.
+     * Opens the link selection dialog.
      *
      * @since 1.0.0
-     *
-     * @param attachment
      */
-    updatePreview : function( attachment ) {
-        var url = attachment.get( 'url' );
-        var mime = attachment.get( 'mime' );
+    openDialog : function() {
+        var control = this;
+        var options = {
+            title : 'Enter URL',
+            button : window._l10n.select,
 
-        this.ui.preview
-            .removeClass( 'is-loading' )
-            .html( '<video controls><source src="' + url + '" type="' + mime + '"></video>' );
+            /**
+             * Returns the content for the Select Content dialog.
+             *
+             * @since 1.0.0
+             *
+             * @returns {*}
+             */
+            content : function() {
+                return  '<div class="dialog__container">' +
+                            '<input class="search--content" type="search" role="search">' +
+                        '</div>';
+            },
+
+            /**
+             * Returns true if an item has been selected.
+             *
+             * @since 1.0.0
+             *
+             * @returns {*}
+             */
+            onValidate : function() {
+                var url = $( '.search--content' ).val();
+                return url && /^(ftp|http|https):\/\/[^ "]+$/.test( url );
+            },
+
+            /**
+             * Updates the setting value with the selected item URL.
+             *
+             * @since 1.0.0
+             */
+            onSave : function() {
+                var url = $( '.search--content' ).val();
+                control.setSettingValue( url );
+            },
+
+            /**
+             * Cleans up event listeners.
+             *
+             * @since 1.0.0
+             */
+            onClose : function() {
+                this.$el.find( '.search--content' ).off( 'input' );
+            }
+        };
+
+        /**
+         * Fires when the dialog window is opened.
+         *
+         * @since 1.0.0
+         */
+        app.channel.trigger( 'dialog:open', options );
     },
 
     /**
@@ -4237,7 +4325,7 @@ VideoControl = AbstractControl.extend( {
         var control = this;
         var id = this.getSettingValue();
 
-        if ( id ) {
+        if ( id && _.isNumber( id ) ) {
             var attachment = wp.media.attachment( id );
             if ( ! attachment.get( 'url' ) ) {
                 attachment.fetch( {
@@ -4250,6 +4338,22 @@ VideoControl = AbstractControl.extend( {
                 control.updatePreview( attachment );
             }
         }
+    },
+
+    /**
+     * Updates the video preview.
+     *
+     * @since 1.0.0
+     *
+     * @param attachment
+     */
+    updatePreview : function( attachment ) {
+        var url = attachment.get( 'url' );
+        var mime = attachment.get( 'mime' );
+
+        this.ui.preview
+            .removeClass( 'is-loading' )
+            .html( '<video controls><source src="' + url + '" type="' + mime + '"></video>' );
     },
 
     /**
@@ -4287,6 +4391,145 @@ VideoControl = AbstractControl.extend( {
 module.exports = VideoControl;
 
 },{"./abstract-control":11}],33:[function(require,module,exports){
+/**
+ * Tailor.Controls.WidgetForm
+ *
+ * A widget form control.
+ *
+ * @augments Marionette.ItemView
+ */
+var $ = window.jQuery,
+    WidgetFormControl;
+
+WidgetFormControl = Marionette.ItemView.extend( {
+
+    tagName : 'li',
+
+    className : function() {
+        return 'control control--' + this.model.get( 'type' );
+    },
+
+    ui : {
+		'default' : '.js-default'
+	},
+
+    events : {
+        'input *' : 'onControlChange',
+        'change *' : 'onControlChange',
+        'click @ui.default' : 'restoreDefaultValue'
+    },
+
+    /**
+     * Returns the template ID.
+     *
+     * @since 1.6.0
+     */
+    getTemplateId : function() {
+        return 'tmpl-tailor-widget-form-' + this.model.get( 'widget_id_base' );
+    },
+
+    /**
+     * Returns the element template.
+     *
+     * @since 1.6.0
+     *
+     * @returns {string}
+     */
+    getTemplate : function() {
+        var el = document.getElementById( this.getTemplateId() );
+        var template = '';
+
+        if ( el ) {
+            template = _.template( el.innerHTML );
+        }
+        return template;
+    },
+
+    onRender: function() {
+
+        // Format the default WordPress widget label
+        this.$el.find( 'label' )
+            .addClass( 'control__title' )
+            .each( function() {
+                var $label = $( this );
+                $label.html( this.innerHTML.replace( ':', '' ) );
+            } );
+
+        var values = this.getSettingValue();
+
+        if ( ! _.isEmpty( values ) ) {
+            var $el = this.$el;
+            var idBase = this.model.get( 'widget_id_base' );
+
+            _.each( values, function( value, name ) {
+                var $field = $el.find( '[name="widget-' + idBase + '[__i__][' + name + ']"]' );
+                if ( $field.length ) {
+                    if ( 'checkbox' == $field[0].type || 'radio' == $field[0].type  ) {
+                        $field.attr( 'checked', 'true' );
+                    }
+                    else {
+                        $field.val( value );
+                    }
+                }
+            } );
+        }
+    },
+
+    /**
+     * Responds to a control change.
+     *
+     * @since 1.6.0
+     */
+    onControlChange : function( e ) {
+        var data = this.$el.find( 'input, select, radio, textarea' ).serializeArray();
+        var values = {};
+
+        $.each( data, function() {
+            var matches = this.name.match( /\[(.*?)\]/g );
+            var name = matches[1].substring( 1, matches[1].length - 1 );
+            
+            if ( 'undefined' != typeof values[ name ] ) {
+                if ( ! values[ name ].push ) {
+                    values[ name ] = [ values[ name ] ];
+                }
+                values[ name ].push( this.value || '' );
+            }
+            else {
+                values[ name ] = this.value || '';
+            }
+        } );
+        
+        this.setSettingValue( values );
+        
+        e.preventDefault();
+        e.stopImmediatePropagation();
+    },
+
+    /**
+     * Returns the setting value.
+     *
+     * @since 1.6.0
+     */
+    getSettingValue : function() {
+        return this.model.setting.get( 'value' );
+    },
+
+    /**
+     * Updates the setting value.
+     *
+     * @since 1.6.0
+     *
+     * @param value
+     */
+    setSettingValue : function( value ) {
+        this.model.setting.set( 'value', value );
+    }
+
+} );
+
+module.exports = WidgetFormControl;
+
+},{}],34:[function(require,module,exports){
 var DefaultPanel = Marionette.CompositeView.extend( {
 
     ui : {
@@ -4389,7 +4632,7 @@ var DefaultPanel = Marionette.CompositeView.extend( {
 
 module.exports = DefaultPanel;
 
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 var EmptyPanelView = Marionette.ItemView.extend( {
 
     className : 'empty',
@@ -4412,7 +4655,7 @@ var EmptyPanelView = Marionette.ItemView.extend( {
 } );
 
 module.exports = EmptyPanelView;
-},{}],35:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 var DefaultSection = Marionette.CompositeView.extend( {
 
     ui: {
@@ -4510,7 +4753,7 @@ var DefaultSection = Marionette.CompositeView.extend( {
 
 module.exports = DefaultSection;
 
-},{"./section-empty":36}],36:[function(require,module,exports){
+},{"./section-empty":37}],37:[function(require,module,exports){
 var EmptySectionView = Marionette.ItemView.extend( {
 
     className : 'empty',
@@ -4529,7 +4772,7 @@ var EmptySectionView = Marionette.ItemView.extend( {
 } );
 
 module.exports = EmptySectionView;
-},{}],37:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 var ControlCollection = Backbone.Collection.extend( {
 
 	model : require( '../models/control' ),
@@ -4575,7 +4818,7 @@ var ControlCollection = Backbone.Collection.extend( {
 
 module.exports = ControlCollection;
 
-},{"../models/control":45}],38:[function(require,module,exports){
+},{"../models/control":46}],39:[function(require,module,exports){
 var SearchableCollection = require( './searchable' ),
 	LibraryCollection;
 
@@ -4618,14 +4861,14 @@ LibraryCollection= SearchableCollection.extend( {
 } );
 
 module.exports = LibraryCollection;
-},{"./searchable":40}],39:[function(require,module,exports){
+},{"./searchable":41}],40:[function(require,module,exports){
 var PanelCollection = Backbone.Collection.extend( {
 	model : require( '../models/panel' )
 } );
 
 module.exports = PanelCollection;
 
-},{"../models/panel":49}],40:[function(require,module,exports){
+},{"../models/panel":50}],41:[function(require,module,exports){
 var $ = Backbone.$,
 	SearchableCollection;
 
@@ -4686,14 +4929,14 @@ SearchableCollection = Backbone.Collection.extend( {
 
 module.exports = SearchableCollection;
 
-},{}],41:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 var SectionCollection = Backbone.Collection.extend( {
 	model : require( '../models/section' )
 } );
 
 module.exports = SectionCollection;
 
-},{"../models/section":50}],42:[function(require,module,exports){
+},{"../models/section":51}],43:[function(require,module,exports){
 var SettingCollection = Backbone.Collection.extend( {
 
 	model : require( '../models/setting' ),
@@ -4736,7 +4979,7 @@ var SettingCollection = Backbone.Collection.extend( {
 
 module.exports = SettingCollection;
 
-},{"../models/setting":51}],43:[function(require,module,exports){
+},{"../models/setting":52}],44:[function(require,module,exports){
 var SnapshotCollection = Backbone.Collection.extend( {
 
     /**
@@ -4938,7 +5181,7 @@ var SnapshotCollection = Backbone.Collection.extend( {
 
 module.exports = SnapshotCollection;
 
-},{}],44:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 var SearchableCollection = require( './searchable' ),
 	TemplateCollection;
 
@@ -4967,7 +5210,7 @@ TemplateCollection = SearchableCollection.extend( {
 
 module.exports = TemplateCollection;
 
-},{"../models/template":52,"./searchable":40}],45:[function(require,module,exports){
+},{"../models/template":53,"./searchable":41}],46:[function(require,module,exports){
 var ControlModel = Backbone.Model.extend( {
 
     /**
@@ -4992,7 +5235,7 @@ var ControlModel = Backbone.Model.extend( {
 
 module.exports = ControlModel;
 
-},{}],46:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 var ContainerModel = Backbone.Model.extend( {
 
     /**
@@ -5178,7 +5421,7 @@ var ContainerModel = Backbone.Model.extend( {
 } );
 
 module.exports = ContainerModel;
-},{}],47:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 var WrapperModel = Backbone.Model.extend( {
 
     /**
@@ -5327,7 +5570,7 @@ var WrapperModel = Backbone.Model.extend( {
 } );
 
 module.exports = WrapperModel;
-},{}],48:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 var ElementModel = Backbone.Model.extend( {
 
     /**
@@ -5523,7 +5766,7 @@ var ElementModel = Backbone.Model.extend( {
 } );
 
 module.exports = ElementModel;
-},{}],49:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 var PanelModel = Backbone.Model.extend( {
 
     /**
@@ -5544,7 +5787,7 @@ var PanelModel = Backbone.Model.extend( {
 
 module.exports = PanelModel;
 
-},{}],50:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 var SectionModel = Backbone.Model.extend( {
 
     /**
@@ -5565,7 +5808,7 @@ var SectionModel = Backbone.Model.extend( {
 
 module.exports = SectionModel;
 
-},{}],51:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 var SettingModel = Backbone.Model.extend( {
 
     /**
@@ -5585,7 +5828,7 @@ var SettingModel = Backbone.Model.extend( {
 
 module.exports = SettingModel;
 
-},{}],52:[function(require,module,exports){
+},{}],53:[function(require,module,exports){
 var TemplateModel = Backbone.Model.extend( {
 
     /**
@@ -5736,7 +5979,7 @@ var TemplateModel = Backbone.Model.extend( {
 
 module.exports = TemplateModel;
 
-},{}],53:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 var DialogRegion = Backbone.Marionette.Region.extend( {
 
     /**
@@ -5776,7 +6019,7 @@ var DialogRegion = Backbone.Marionette.Region.extend( {
 
 module.exports = DialogRegion;
 
-},{}],54:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 var DialogView = require( './show/dialog' ),
 	DialogModule;
 
@@ -5817,7 +6060,7 @@ DialogModule = Marionette.Module.extend( {
 } );
 
 module.exports = DialogModule;
-},{"./show/dialog":55}],55:[function(require,module,exports){
+},{"./show/dialog":56}],56:[function(require,module,exports){
 /**
  * Dialog view for present growl-style notifications to the user.
  *
@@ -5965,7 +6208,7 @@ DialogView = Backbone.Marionette.ItemView.extend( {
 
 module.exports = DialogView;
 
-},{}],56:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 var SnapshotsCollection = require( '../../entities/collections/snapshots' ),
     SnapshotMenuItem = require( './show/snapshot-menu-item' ),
     HistoryModule;
@@ -6177,7 +6420,7 @@ HistoryModule = Marionette.Module.extend( {
 } );
 
 module.exports = HistoryModule;
-},{"../../entities/collections/snapshots":43,"./show/snapshot-menu-item":57}],57:[function(require,module,exports){
+},{"../../entities/collections/snapshots":44,"./show/snapshot-menu-item":58}],58:[function(require,module,exports){
 var $ = Backbone.$,
     HistoryItem;
 
@@ -6298,7 +6541,7 @@ HistoryItem = Marionette.ItemView.extend( {
 
 module.exports = HistoryItem;
 
-},{}],58:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 
 var LibraryCollection = require( '../../entities/collections/library' ),
     LibraryMenuItem = require( './show/library-menu-item' ),
@@ -6351,7 +6594,7 @@ LibraryModule = Marionette.Module.extend( {
 } );
 
 module.exports = LibraryModule;
-},{"../../entities/collections/library":38,"./show/library-menu-item":59}],59:[function(require,module,exports){
+},{"../../entities/collections/library":39,"./show/library-menu-item":60}],60:[function(require,module,exports){
 var $ = Backbone.$,
     ElementMenuItem;
 
@@ -6431,7 +6674,7 @@ ElementMenuItem = Marionette.ItemView.extend( {
 
 module.exports = ElementMenuItem;
 
-},{}],60:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 var ModalRegion = Backbone.Marionette.Region.extend( {
 
     /**
@@ -6519,7 +6762,7 @@ var ModalRegion = Backbone.Marionette.Region.extend( {
 } );
 
 module.exports = ModalRegion;
-},{}],61:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 var ModalView = require( './show/modal' ),
 	ModalModule;
 
@@ -6581,7 +6824,7 @@ ModalModule = Marionette.Module.extend( {
 } );
 
 module.exports = ModalModule;
-},{"./show/modal":64}],62:[function(require,module,exports){
+},{"./show/modal":65}],63:[function(require,module,exports){
 var EmptyModalView = Marionette.ItemView.extend( {
 
     className : 'empty',
@@ -6591,7 +6834,7 @@ var EmptyModalView = Marionette.ItemView.extend( {
 } );
 
 module.exports = EmptyModalView;
-},{}],63:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 var EmptySectionView = Marionette.ItemView.extend( {
 
     className : 'empty',
@@ -6601,7 +6844,7 @@ var EmptySectionView = Marionette.ItemView.extend( {
 } );
 
 module.exports = EmptySectionView;
-},{}],64:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 var SectionCollectionView = require( './sections' ),
     NavigationView = require( './tabs' ),
     ModalView;
@@ -6842,7 +7085,7 @@ ModalView = Marionette.LayoutView.extend( {
 } );
 
 module.exports = ModalView;
-},{"./sections":66,"./tabs":68}],65:[function(require,module,exports){
+},{"./sections":67,"./tabs":69}],66:[function(require,module,exports){
 var ControlCollectionView = Marionette.CollectionView.extend( {
 
 	tagName : 'ul',
@@ -6934,7 +7177,7 @@ var ControlCollectionView = Marionette.CollectionView.extend( {
 } );
 
 module.exports = ControlCollectionView;
-},{"./empty-section":63}],66:[function(require,module,exports){
+},{"./empty-section":64}],67:[function(require,module,exports){
 var SectionCollectionView = Marionette.CollectionView.extend( {
 
     childView : require( './section' ),
@@ -6967,7 +7210,7 @@ var SectionCollectionView = Marionette.CollectionView.extend( {
 } );
 
 module.exports = SectionCollectionView;
-},{"./empty-modal":62,"./section":65}],67:[function(require,module,exports){
+},{"./empty-modal":63,"./section":66}],68:[function(require,module,exports){
 var NavigationItemView = Marionette.ItemView.extend( {
 
     tagName : 'li',
@@ -7020,7 +7263,7 @@ var NavigationItemView = Marionette.ItemView.extend( {
 } );
 
 module.exports = NavigationItemView;
-},{}],68:[function(require,module,exports){
+},{}],69:[function(require,module,exports){
 var NavigationItemView = require( './tab' ),
     NavigationView;
 
@@ -7063,7 +7306,7 @@ NavigationView = Marionette.CollectionView.extend( {
 } );
 
 module.exports = NavigationView;
-},{"./tab":67}],69:[function(require,module,exports){
+},{"./tab":68}],70:[function(require,module,exports){
 var Notify = window.Tailor.Notify,
     NotificationsModule;
 
@@ -7135,7 +7378,7 @@ NotificationsModule = Marionette.Module.extend( {
 
 module.exports = NotificationsModule;
 
-},{}],70:[function(require,module,exports){
+},{}],71:[function(require,module,exports){
 var PanelCollection = require( '../../entities/collections/panels' ),
     PanelLayoutView = require( './show/layout' ),
     PanelMenuItem = require( './show/panel-menu-item' ),
@@ -7199,7 +7442,7 @@ PanelsModule = Marionette.Module.extend( {
 
 module.exports = PanelsModule;
 
-},{"../../entities/collections/panels":39,"./show/layout":71,"./show/panel-menu-item":72}],71:[function(require,module,exports){
+},{"../../entities/collections/panels":40,"./show/layout":72,"./show/panel-menu-item":73}],72:[function(require,module,exports){
 var PanelsView = require( './panels' ),
     PanelLayoutView;
 
@@ -7325,7 +7568,7 @@ PanelLayoutView = Marionette.LayoutView.extend( {
 
 module.exports = PanelLayoutView;
 
-},{"./panels":74}],72:[function(require,module,exports){
+},{"./panels":75}],73:[function(require,module,exports){
 var $ = Backbone.$,
 	PanelItem;
 
@@ -7392,7 +7635,7 @@ PanelItem = Marionette.ItemView.extend( {
 
 module.exports = PanelItem;
 
-},{}],73:[function(require,module,exports){
+},{}],74:[function(require,module,exports){
 var EmptyPanelView = Marionette.ItemView.extend( {
 
     className : 'empty',
@@ -7402,7 +7645,7 @@ var EmptyPanelView = Marionette.ItemView.extend( {
 } );
 
 module.exports = EmptyPanelView;
-},{}],74:[function(require,module,exports){
+},{}],75:[function(require,module,exports){
 var PanelsView = Marionette.CompositeView.extend( {
 
     getChildView : function() {
@@ -7428,7 +7671,7 @@ var PanelsView = Marionette.CompositeView.extend( {
 } );
 
 module.exports = PanelsView;
-},{"./panels-empty":73}],75:[function(require,module,exports){
+},{"./panels-empty":74}],76:[function(require,module,exports){
 
 var SectionCollection = require( '../../entities/collections/sections' ),
     DefaultMenuItem = require( './show/default-menu-item' ),
@@ -7501,7 +7744,7 @@ SectionsModule = Marionette.Module.extend( {
 } );
 
 module.exports = SectionsModule;
-},{"../../entities/collections/sections":41,"./show/default-menu-item":76}],76:[function(require,module,exports){
+},{"../../entities/collections/sections":42,"./show/default-menu-item":77}],77:[function(require,module,exports){
 var $ = Backbone.$,
     DefaultItem;
 
@@ -7573,7 +7816,7 @@ DefaultItem = Marionette.ItemView.extend( {
 
 module.exports = DefaultItem;
 
-},{}],77:[function(require,module,exports){
+},{}],78:[function(require,module,exports){
 
 var SettingCollection = require( '../../entities/collections/settings' ),
     ControlCollection = require( '../../entities/collections/controls' ),
@@ -7707,7 +7950,7 @@ SettingsModule = Marionette.Module.extend( {
 } );
 
 module.exports = SettingsModule;
-},{"../../entities/collections/controls":37,"../../entities/collections/settings":42}],78:[function(require,module,exports){
+},{"../../entities/collections/controls":38,"../../entities/collections/settings":43}],79:[function(require,module,exports){
 var $ = Backbone.$,
     l10n = window._l10n,
     TemplateMenuItem;
@@ -7906,7 +8149,7 @@ TemplateMenuItem = Marionette.ItemView.extend( {
 } );
 
 module.exports = TemplateMenuItem;
-},{}],79:[function(require,module,exports){
+},{}],80:[function(require,module,exports){
 var l10n = window._l10n,
     TemplatesPanel;
 
@@ -8216,7 +8459,7 @@ TemplatesPanel = Marionette.CompositeView.extend( {
 } );
 
 module.exports = TemplatesPanel;
-},{}],80:[function(require,module,exports){
+},{}],81:[function(require,module,exports){
 
 var TemplateCollection = require( '../../entities/collections/templates' ),
 	TemplatesPanel = require( './show/templates-panel' ),
@@ -8268,7 +8511,7 @@ TemplatesModule = Marionette.Module.extend( {
 } );
 
 module.exports = TemplatesModule;
-},{"../../entities/collections/templates":44,"./show/template-menu-item":78,"./show/templates-panel":79}],81:[function(require,module,exports){
+},{"../../entities/collections/templates":45,"./show/template-menu-item":79,"./show/templates-panel":80}],82:[function(require,module,exports){
 /* window._l10n, window._mediaQueries */
 
 var $ = jQuery;
@@ -8319,7 +8562,7 @@ $buttons
 
     } )
     .first().click();
-},{}],82:[function(require,module,exports){
+},{}],83:[function(require,module,exports){
 
 ( function( window, $ ) {
     
@@ -8442,6 +8685,7 @@ $buttons
     Tailor.Controls.Text =              require( './components/controls/text' );
     Tailor.Controls.Textarea =          require( './components/controls/textarea' );
     Tailor.Controls.Video =             require( './components/controls/video' );
+    Tailor.Controls.WidgetForm =        require( './components/controls/widget-form' );
     Tailor.Controls.Default =           require( './components/controls/text' );
 
     /**
@@ -8568,4 +8812,4 @@ $buttons
     } );
     
 } ( window, Backbone.$ ) );
-},{"../shared/components/api/setting":1,"../shared/components/behaviors/draggable":2,"../shared/utility/ajax":3,"../shared/utility/notify":4,"../shared/utility/polyfills/classlist":5,"../shared/utility/polyfills/raf":6,"../shared/utility/polyfills/transitions":7,"./app":8,"./components/behaviors/panel":9,"./components/behaviors/resizable":10,"./components/controls/button-group":12,"./components/controls/checkbox":13,"./components/controls/code":14,"./components/controls/colorpicker":15,"./components/controls/editor":16,"./components/controls/gallery":17,"./components/controls/icon":18,"./components/controls/image":19,"./components/controls/link":20,"./components/controls/list":23,"./components/controls/radio":24,"./components/controls/range":25,"./components/controls/select":27,"./components/controls/select-multi":26,"./components/controls/style":28,"./components/controls/switch":29,"./components/controls/text":30,"./components/controls/textarea":31,"./components/controls/video":32,"./components/panels/panel-default":33,"./components/panels/panel-empty":34,"./components/sections/section-default":35,"./entities/models/element":48,"./entities/models/element-container":46,"./entities/models/element-wrapper":47,"./modules/dialog/dialog":54,"./modules/dialog/dialog-region":53,"./modules/history/history":56,"./modules/library/library":58,"./modules/modal/modal":61,"./modules/modal/modal-region":60,"./modules/notifications/notifications":69,"./modules/panels/panels":70,"./modules/sections/sections":75,"./modules/settings/settings":77,"./modules/templates/templates":80,"./preview":81}]},{},[82]);
+},{"../shared/components/api/setting":1,"../shared/components/behaviors/draggable":2,"../shared/utility/ajax":3,"../shared/utility/notify":4,"../shared/utility/polyfills/classlist":5,"../shared/utility/polyfills/raf":6,"../shared/utility/polyfills/transitions":7,"./app":8,"./components/behaviors/panel":9,"./components/behaviors/resizable":10,"./components/controls/button-group":12,"./components/controls/checkbox":13,"./components/controls/code":14,"./components/controls/colorpicker":15,"./components/controls/editor":16,"./components/controls/gallery":17,"./components/controls/icon":18,"./components/controls/image":19,"./components/controls/link":20,"./components/controls/list":23,"./components/controls/radio":24,"./components/controls/range":25,"./components/controls/select":27,"./components/controls/select-multi":26,"./components/controls/style":28,"./components/controls/switch":29,"./components/controls/text":30,"./components/controls/textarea":31,"./components/controls/video":32,"./components/controls/widget-form":33,"./components/panels/panel-default":34,"./components/panels/panel-empty":35,"./components/sections/section-default":36,"./entities/models/element":49,"./entities/models/element-container":47,"./entities/models/element-wrapper":48,"./modules/dialog/dialog":55,"./modules/dialog/dialog-region":54,"./modules/history/history":57,"./modules/library/library":59,"./modules/modal/modal":62,"./modules/modal/modal-region":61,"./modules/notifications/notifications":70,"./modules/panels/panels":71,"./modules/sections/sections":76,"./modules/settings/settings":78,"./modules/templates/templates":81,"./preview":82}]},{},[83]);

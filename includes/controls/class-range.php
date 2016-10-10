@@ -36,7 +36,7 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Range_Control' 
          */
         public function to_json() {
             $array = parent::to_json();
-            $array['input_attrs'] = $this->input_attrs;
+            $array['input_attrs'] = $this->get_sanitized_input_attrs();
             return $array;
         }
 
@@ -53,22 +53,24 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Range_Control' 
          */
         protected function render_template() { ?>
 
-            <input type="range" value="<%= value %>" <?php $this->input_attrs(); ?>/>
+            <input type="<%= type %>" value="<%= value %>" <%= inputAttrs() %> />
             <input type="text" value="<%= value %>" />
 
             <?php
         }
 
         /**
-         * Returns the custom attributes for the control's input element.
+         * Returns the sanitized attributes for use in the front end.
          *
          * @since 1.0.0
          * @access protected
          */
-        protected function input_attrs() {
+        protected function get_sanitized_input_attrs() {
+            $attrs = array();
             foreach ( $this->input_attrs as $attr => $value ) {
-                echo $attr . '="' . esc_attr( $value ) . '" ';
+                $attrs[ esc_attr( $attr ) ] = esc_attr( $value );
             }
+            return $attrs;
         }
     }
 }

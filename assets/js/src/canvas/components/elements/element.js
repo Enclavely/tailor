@@ -264,6 +264,13 @@ ElementView = Marionette.ItemView.extend( {
 		
 		this.$el.imagesLoaded( function() {
 			view._isReady = true;
+			
+			if ( 0 == view.$el.children().innerHeight() ) {
+				var el = document.querySelector( '#tmpl-tailor-element-empty' );
+				if ( el ) {
+					view.$el.html( el.innerHTML );
+				}
+			}
 
 			/**
 			 * Fires when the element is rendered and all images have been loaded.

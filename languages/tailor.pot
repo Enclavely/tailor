@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the Tailor package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Tailor 1.5.7\n"
+"Project-Id-Version: Tailor 1.6.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/tailor\n"
-"POT-Creation-Date: 2016-10-06 05:56:56+00:00\n"
+"POT-Creation-Date: 2016-10-10 10:34:46+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -51,7 +51,7 @@ msgstr ""
 #: includes/elements/class-section.php:31 includes/elements/class-tab.php:31
 #: includes/elements/class-tabs.php:31 includes/elements/class-toggle.php:31
 #: includes/elements/class-toggles.php:31 includes/elements/class-user.php:29
-#: includes/elements/class-widgets.php:29
+#: includes/elements/class-widget.php:50 includes/elements/class-widgets.php:29
 msgid "General"
 msgstr ""
 
@@ -99,63 +99,71 @@ msgstr ""
 msgid "Features"
 msgstr ""
 
-#: includes/admin/class-settings.php:223
-msgid "REST API"
+#: includes/admin/class-settings.php:223 includes/class-elements.php:242
+msgid "Widgets"
 msgstr ""
 
 #: includes/admin/class-settings.php:235
-msgid "Enable the Tailor REST API?"
+msgid "Enable WordPress and third-party widgets?"
 msgstr ""
 
-#: includes/admin/class-settings.php:241 includes/class-panels.php:139
-msgid "Custom CSS"
+#: includes/admin/class-settings.php:241
+msgid "REST API"
 msgstr ""
 
 #: includes/admin/class-settings.php:253
-msgid "Hide the custom CSS editor?"
+msgid "Enable the Tailor REST API?"
 msgstr ""
 
-#: includes/admin/class-settings.php:259 includes/class-panels.php:152
-msgid "Custom JavaScript"
+#: includes/admin/class-settings.php:259 includes/class-panels.php:139
+msgid "Custom CSS"
 msgstr ""
 
 #: includes/admin/class-settings.php:271
-msgid "Hide the custom JavaScript editor?"
+msgid "Hide the custom CSS editor?"
 msgstr ""
 
-#: includes/admin/class-settings.php:277
-msgid "Styles and scripts"
+#: includes/admin/class-settings.php:277 includes/class-panels.php:152
+msgid "Custom JavaScript"
 msgstr ""
 
 #: includes/admin/class-settings.php:289
-msgid "Load CSS and JavaScript on pages that have not been Tailored?"
+msgid "Hide the custom JavaScript editor?"
 msgstr ""
 
 #: includes/admin/class-settings.php:295
+msgid "Styles and scripts"
+msgstr ""
+
+#: includes/admin/class-settings.php:307
+msgid "Load CSS and JavaScript on pages that have not been Tailored?"
+msgstr ""
+
+#: includes/admin/class-settings.php:313
 msgid "Google Maps API key"
 msgstr ""
 
-#: includes/admin/class-settings.php:305
+#: includes/admin/class-settings.php:323
 msgid "%1$sLearn more%2$s about creating your own Google Maps API key"
 msgstr ""
 
-#: includes/admin/class-settings.php:315
+#: includes/admin/class-settings.php:333
 msgid "Advanced settings"
 msgstr ""
 
-#: includes/admin/class-settings.php:327
+#: includes/admin/class-settings.php:345
 msgid "Hide the Attributes panel when editing elements?"
 msgstr ""
 
-#: includes/admin/class-settings.php:333
+#: includes/admin/class-settings.php:351
 msgid "Icon kits"
 msgstr ""
 
-#: includes/admin/class-settings.php:343
+#: includes/admin/class-settings.php:361
 msgid "Select an existing icon kit from your Media Library or %1$screate%2$s and upload the %3$s.zip%4$s file containing one."
 msgstr ""
 
-#: includes/admin/class-settings.php:450
+#: includes/admin/class-settings.php:468
 msgid "Select kit"
 msgstr ""
 
@@ -400,10 +408,6 @@ msgstr ""
 msgid "Display content inside a box."
 msgstr ""
 
-#: includes/class-elements.php:242
-msgid "Widgets"
-msgstr ""
-
 #: includes/class-elements.php:243
 msgid "A widget area from your site."
 msgstr ""
@@ -441,11 +445,11 @@ msgstr ""
 msgid "Your site's testimonials."
 msgstr ""
 
-#: includes/class-elements.php:529
+#: includes/class-elements.php:530
 msgid "Valid models were not provided"
 msgstr ""
 
-#: includes/class-elements.php:563
+#: includes/class-elements.php:564
 msgid "A valid model was not provided"
 msgstr ""
 
@@ -475,7 +479,7 @@ msgctxt "error message"
 msgid "No valid models were provided"
 msgstr ""
 
-#: includes/class-models.php:697
+#: includes/class-models.php:705
 msgid "%1$sThe element associated with shortcode %2$s could not be found.%3$s "
 msgstr ""
 
@@ -554,7 +558,7 @@ msgstr ""
 msgid "Select"
 msgstr ""
 
-#: includes/class-sidebar.php:288 includes/settings/class-panel.php:522
+#: includes/class-sidebar.php:288 includes/settings/class-panel.php:521
 msgid "Save template"
 msgstr ""
 
@@ -575,7 +579,7 @@ msgstr ""
 msgid "Import"
 msgstr ""
 
-#: includes/class-sidebar.php:292 includes/settings/class-panel.php:528
+#: includes/class-sidebar.php:292 includes/settings/class-panel.php:527
 msgid "Import template"
 msgstr ""
 
@@ -731,6 +735,14 @@ msgstr ""
 msgid "Pullquote Right"
 msgstr ""
 
+#: includes/class-widgets.php:59
+msgid "Widget"
+msgstr ""
+
+#: includes/class-widgets.php:128 partials/underscore/element-empty.php:17
+msgid "Please configure this element as there is currently nothing to display"
+msgstr ""
+
 #: includes/controls/abstract-control.php:249
 #: includes/controls/class-colorpicker.php:81
 #: includes/controls/class-list.php:51 includes/controls/class-list.php:56
@@ -834,14 +846,18 @@ msgid "No video selected"
 msgstr ""
 
 #: includes/controls/class-video.php:47
+msgid "Enter URL"
+msgstr ""
+
+#: includes/controls/class-video.php:48
 msgid "Select Video"
 msgstr ""
 
-#: includes/controls/class-video.php:54
+#: includes/controls/class-video.php:55 includes/controls/class-video.php:63
 msgid "Remove Video"
 msgstr ""
 
-#: includes/controls/class-video.php:55
+#: includes/controls/class-video.php:56
 msgid "Change Video"
 msgstr ""
 
@@ -862,7 +878,8 @@ msgstr ""
 #: includes/elements/class-row.php:36 includes/elements/class-section.php:36
 #: includes/elements/class-tab.php:36 includes/elements/class-tabs.php:36
 #: includes/elements/class-toggle.php:36 includes/elements/class-toggles.php:36
-#: includes/elements/class-user.php:34 includes/elements/class-widgets.php:34
+#: includes/elements/class-user.php:34 includes/elements/class-widget.php:55
+#: includes/elements/class-widgets.php:34
 msgid "Colors"
 msgstr ""
 
@@ -883,7 +900,8 @@ msgstr ""
 #: includes/elements/class-row.php:41 includes/elements/class-section.php:41
 #: includes/elements/class-tab.php:41 includes/elements/class-tabs.php:41
 #: includes/elements/class-toggle.php:41 includes/elements/class-toggles.php:41
-#: includes/elements/class-user.php:39 includes/elements/class-widgets.php:39
+#: includes/elements/class-user.php:39 includes/elements/class-widget.php:60
+#: includes/elements/class-widgets.php:39
 msgid "Attributes"
 msgstr ""
 
@@ -1071,6 +1089,11 @@ msgstr ""
 msgid "Enable parallax?"
 msgstr ""
 
+#: includes/elements/class-section.php:187
+#: includes/helpers/helpers-elements.php:1027
+msgid "Background video"
+msgstr ""
+
 #: includes/elements/class-tabs.php:51
 msgid "Tabs position"
 msgstr ""
@@ -1108,6 +1131,10 @@ msgstr ""
 
 #: includes/elements/class-toggles.php:51
 msgid "Accordion"
+msgstr ""
+
+#: includes/elements/class-widget.php:68
+msgid "Widget settings"
 msgstr ""
 
 #: includes/elements/class-widgets.php:49
@@ -1435,104 +1462,100 @@ msgstr ""
 msgid "Shadow "
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:916
+#: includes/helpers/helpers-elements.php:915
 msgid "Background image"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:929
+#: includes/helpers/helpers-elements.php:928
 msgid "Background repeat"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:932
+#: includes/helpers/helpers-elements.php:931
 msgid "No repeat"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:933
+#: includes/helpers/helpers-elements.php:932
 msgid "Repeat"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:934
+#: includes/helpers/helpers-elements.php:933
 msgid "Repeat horizontally"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:935
+#: includes/helpers/helpers-elements.php:934
 msgid "Repeat vertically"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:954
+#: includes/helpers/helpers-elements.php:953
 msgid "Background position"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:957
+#: includes/helpers/helpers-elements.php:956
 msgid "Left top"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:958
+#: includes/helpers/helpers-elements.php:957
 msgid "Left center"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:959
+#: includes/helpers/helpers-elements.php:958
 msgid "Left bottom"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:960
+#: includes/helpers/helpers-elements.php:959
 msgid "Right top"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:961
+#: includes/helpers/helpers-elements.php:960
 msgid "Right center"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:962
+#: includes/helpers/helpers-elements.php:961
 msgid "Right bottom"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:963
+#: includes/helpers/helpers-elements.php:962
 msgid "Center top"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:964
+#: includes/helpers/helpers-elements.php:963
 msgid "Center center"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:965
+#: includes/helpers/helpers-elements.php:964
 msgid "Center bottom"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:984
+#: includes/helpers/helpers-elements.php:983
 msgid "Background size"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:987
+#: includes/helpers/helpers-elements.php:986
 msgid "Auto"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:988
+#: includes/helpers/helpers-elements.php:987
 msgid "Cover"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:989
+#: includes/helpers/helpers-elements.php:988
 msgid "Contain"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:1008
+#: includes/helpers/helpers-elements.php:1007
 msgid "Background attachment"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:1011
+#: includes/helpers/helpers-elements.php:1010
 msgid "Scroll"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:1012
+#: includes/helpers/helpers-elements.php:1011
 msgid "Fixed"
 msgstr ""
 
-#: includes/helpers/helpers-elements.php:1028
-msgid "Background video"
-msgstr ""
-
 #: includes/helpers/helpers-links.php:52 includes/helpers/helpers-links.php:125
-#: tailor.php:830
+#: tailor.php:845
 msgid "Tailor this %s"
 msgstr ""
 
@@ -1568,39 +1591,39 @@ msgstr ""
 msgid "Current user"
 msgstr ""
 
-#: includes/helpers/helpers-settings.php:230
+#: includes/helpers/helpers-settings.php:261
 msgid "All %s"
 msgstr ""
 
-#: includes/helpers/helpers-settings.php:555
+#: includes/helpers/helpers-settings.php:586
 msgid "Desktop"
 msgstr ""
 
-#: includes/helpers/helpers-settings.php:560
+#: includes/helpers/helpers-settings.php:591
 msgid "Tablet"
 msgstr ""
 
-#: includes/helpers/helpers-settings.php:565
+#: includes/helpers/helpers-settings.php:596
 msgid "Mobile"
 msgstr ""
 
-#: includes/helpers/helpers-settings.php:573
+#: includes/helpers/helpers-settings.php:604
 msgid "All"
 msgstr ""
 
-#: includes/helpers/helpers-settings.php:627
+#: includes/helpers/helpers-settings.php:658
 msgid "%1$s is <strong>deprecated</strong> since Tailor version %2$s! Use %3$s instead."
 msgstr ""
 
-#: includes/helpers/helpers-settings.php:648
+#: includes/helpers/helpers-settings.php:679
 msgid "Enter desktop preview mode"
 msgstr ""
 
-#: includes/helpers/helpers-settings.php:652
+#: includes/helpers/helpers-settings.php:683
 msgid "Enter tablet preview mode"
 msgstr ""
 
-#: includes/helpers/helpers-settings.php:655
+#: includes/helpers/helpers-settings.php:686
 msgid "Enter mobile preview mode"
 msgstr ""
 
@@ -1623,48 +1646,48 @@ msgstr ""
 msgid "Search elements.."
 msgstr ""
 
-#: includes/settings/class-panel.php:399
+#: includes/settings/class-panel.php:398
 msgid "There are no elements to display."
 msgstr ""
 
-#: includes/settings/class-panel.php:434
+#: includes/settings/class-panel.php:433
 msgid "Search templates.."
 msgstr ""
 
-#: includes/settings/class-panel.php:468
+#: includes/settings/class-panel.php:467
 msgid "Preview template"
 msgstr ""
 
-#: includes/settings/class-panel.php:469
+#: includes/settings/class-panel.php:468
 msgid "Download template"
 msgstr ""
 
-#: includes/settings/class-panel.php:470
+#: includes/settings/class-panel.php:469
 msgid "Delete template"
 msgstr ""
 
-#: includes/settings/class-panel.php:498
+#: includes/settings/class-panel.php:497
 #: partials/admin/html/page-settings.php:27
 msgid "Getting started"
 msgstr ""
 
-#: includes/settings/class-panel.php:500
+#: includes/settings/class-panel.php:499
 msgid "Select the element you wish to save.  If you do not select anything, the entire layout will be saved."
 msgstr ""
 
-#: includes/settings/class-panel.php:501
+#: includes/settings/class-panel.php:500
 msgid "Press the Save template button and enter a name for the template."
 msgstr ""
 
-#: includes/settings/class-panel.php:503
+#: includes/settings/class-panel.php:502
 msgid "Once you have one or more templates available, simply drag and drop them into the desired position on the page."
 msgstr ""
 
-#: includes/settings/class-panel.php:525
+#: includes/settings/class-panel.php:524
 msgid "or"
 msgstr ""
 
-#: includes/settings/class-panel.php:604
+#: includes/settings/class-panel.php:603
 msgid "There are no history entries to display."
 msgstr ""
 
@@ -1729,12 +1752,6 @@ msgstr ""
 msgid "The Tailor REST API is dependent on the %1$sWordPress REST API v2%2$s."
 msgstr ""
 
-#: partials/admin/html/notice-missing-rest-api.php:22
-#: partials/admin/html/notice-tailored-content.php:27
-#: partials/admin/html/notice.php:17
-msgid "Dismiss this notice."
-msgstr ""
-
 #: partials/admin/html/notice-tailored-content.php:20
 msgid "Changes made to this %s within the editor will not be displayed in Tailor"
 msgstr ""
@@ -1772,7 +1789,7 @@ msgid "View %s's Google Plus profile"
 msgstr ""
 
 #: partials/empty.php:15
-msgid "No entries were found matching your criteria."
+msgid "No entries were found matching your criteria"
 msgstr ""
 
 #: partials/meta-author.php:28

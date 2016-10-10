@@ -266,6 +266,8 @@ if ( ! class_exists( 'Tailor_Canvas' ) ) {
 	     */
 	    function print_templates() {
 		    tailor_partial( 'underscore/canvas', 'tools' );
+		    
+		    tailor_partial( 'underscore/element', 'empty' );
 	    }
     }
 }

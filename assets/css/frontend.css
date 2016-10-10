@@ -428,50 +428,6 @@ html {
       .tailor-ui .tablet-columns .tailor-column.columns-11 {
         width: 91.66667%; }
       .tailor-ui .tablet-columns .tailor-column.columns-12 {
-        width: 100%; }
-
-  .tailor-ui .small-columns {
-    margin-left: -1rem;
-    margin-right: -1rem;
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    display: flex; }
-    .tailor-ui .small-columns .tailor-column {
-      padding-left: 1rem;
-      padding-right: 1rem;
-      display: -webkit-flex;
-      display: -ms-flexbox;
-      display: flex;
-      flex-direction: column; }
-      .tailor-ui .small-columns .tailor-column__helper {
-        display: block; }
-      .tailor-ui .small-columns .tailor-column > :last-child {
-        margin-bottom: 0; }
-      .tailor-ui .small-columns .tailor-column:last-of-type .tailor-column__helper {
-        display: none; }
-      .tailor-ui .small-columns .tailor-column.columns-1 {
-        width: 8.33333%; }
-      .tailor-ui .small-columns .tailor-column.columns-2 {
-        width: 16.66667%; }
-      .tailor-ui .small-columns .tailor-column.columns-3 {
-        width: 25%; }
-      .tailor-ui .small-columns .tailor-column.columns-4 {
-        width: 33.33333%; }
-      .tailor-ui .small-columns .tailor-column.columns-5 {
-        width: 41.66667%; }
-      .tailor-ui .small-columns .tailor-column.columns-6 {
-        width: 50%; }
-      .tailor-ui .small-columns .tailor-column.columns-7 {
-        width: 58.33333%; }
-      .tailor-ui .small-columns .tailor-column.columns-8 {
-        width: 66.66667%; }
-      .tailor-ui .small-columns .tailor-column.columns-9 {
-        width: 75%; }
-      .tailor-ui .small-columns .tailor-column.columns-10 {
-        width: 83.33333%; }
-      .tailor-ui .small-columns .tailor-column.columns-11 {
-        width: 91.66667%; }
-      .tailor-ui .small-columns .tailor-column.columns-12 {
         width: 100%; } }
 @media only screen and (min-width: 721px) {
   .tailor-ui .desktop-columns {
@@ -770,72 +726,6 @@ html {
     border-left-style: none;
     border-top-style: none;
     border-right-style: solid;
-    border-bottom-style: solid; }
-
-  .tailor-ui .tailor-grid--small .tailor-grid__item {
-    padding: 1em; }
-  .tailor-ui .tailor-grid--small.tailor-grid--1 > .tailor-grid__item {
-    width: 100%; }
-    .tailor-ui .tailor-grid--small.tailor-grid--1 > .tailor-grid__item:nth-child(1n + 2) {
-      clear: left; }
-  .tailor-ui .tailor-grid--small.tailor-grid--bordered.tailor-grid--1 > .tailor-grid__item:nth-child(-n + 1) {
-    border-top-style: solid; }
-  .tailor-ui .tailor-grid--small.tailor-grid--bordered.tailor-grid--1 > .tailor-grid__item:nth-child(1n + 1) {
-    border-left-style: solid; }
-  .tailor-ui .tailor-grid--small.tailor-grid--2 > .tailor-grid__item {
-    width: 50%; }
-    .tailor-ui .tailor-grid--small.tailor-grid--2 > .tailor-grid__item:nth-child(2n + 3) {
-      clear: left; }
-  .tailor-ui .tailor-grid--small.tailor-grid--bordered.tailor-grid--2 > .tailor-grid__item:nth-child(-n + 2) {
-    border-top-style: solid; }
-  .tailor-ui .tailor-grid--small.tailor-grid--bordered.tailor-grid--2 > .tailor-grid__item:nth-child(2n + 1) {
-    border-left-style: solid; }
-  .tailor-ui .tailor-grid--small.tailor-grid--3 > .tailor-grid__item {
-    width: 33.33333%; }
-    .tailor-ui .tailor-grid--small.tailor-grid--3 > .tailor-grid__item:nth-child(3n + 4) {
-      clear: left; }
-  .tailor-ui .tailor-grid--small.tailor-grid--bordered.tailor-grid--3 > .tailor-grid__item:nth-child(-n + 3) {
-    border-top-style: solid; }
-  .tailor-ui .tailor-grid--small.tailor-grid--bordered.tailor-grid--3 > .tailor-grid__item:nth-child(3n + 1) {
-    border-left-style: solid; }
-  .tailor-ui .tailor-grid--small.tailor-grid--4 > .tailor-grid__item {
-    width: 25%; }
-    .tailor-ui .tailor-grid--small.tailor-grid--4 > .tailor-grid__item:nth-child(4n + 5) {
-      clear: left; }
-  .tailor-ui .tailor-grid--small.tailor-grid--bordered.tailor-grid--4 > .tailor-grid__item:nth-child(-n + 4) {
-    border-top-style: solid; }
-  .tailor-ui .tailor-grid--small.tailor-grid--bordered.tailor-grid--4 > .tailor-grid__item:nth-child(4n + 1) {
-    border-left-style: solid; }
-  .tailor-ui .tailor-grid--small.tailor-grid--5 > .tailor-grid__item {
-    width: 20%; }
-    .tailor-ui .tailor-grid--small.tailor-grid--5 > .tailor-grid__item:nth-child(5n + 6) {
-      clear: left; }
-  .tailor-ui .tailor-grid--small.tailor-grid--bordered.tailor-grid--5 > .tailor-grid__item:nth-child(-n + 5) {
-    border-top-style: solid; }
-  .tailor-ui .tailor-grid--small.tailor-grid--bordered.tailor-grid--5 > .tailor-grid__item:nth-child(5n + 1) {
-    border-left-style: solid; }
-  .tailor-ui .tailor-grid--small.tailor-grid--6 > .tailor-grid__item {
-    width: 16.66667%; }
-    .tailor-ui .tailor-grid--small.tailor-grid--6 > .tailor-grid__item:nth-child(6n + 7) {
-      clear: left; }
-  .tailor-ui .tailor-grid--small.tailor-grid--bordered.tailor-grid--6 > .tailor-grid__item:nth-child(-n + 6) {
-    border-top-style: solid; }
-  .tailor-ui .tailor-grid--small.tailor-grid--bordered.tailor-grid--6 > .tailor-grid__item:nth-child(6n + 1) {
-    border-left-style: solid; }
-  .tailor-ui .tailor-grid--small:not(.tailor-grid--masonry) {
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    display: flex;
-    flex-wrap: wrap; }
-    .tailor-ui .tailor-grid--small:not(.tailor-grid--masonry) > .tailor-grid__item {
-      display: -webkit-flex;
-      display: -ms-flexbox;
-      display: flex;
-      flex-direction: column; }
-  .tailor-ui .tailor-grid--small.tailor-grid--bordered > .tailor-grid__item {
-    border-left-style: none;
-    border-top-style: none;
-    border-right-style: solid;
     border-bottom-style: solid; } }
 @media only screen and (min-width: 721px) {
   .tailor-ui .tailor-grid--desktop .tailor-grid__item {
@@ -1121,6 +1011,15 @@ html {
     .tailor-ui .tailor-section.is-skewed .tailor-section__content {
       transform: skew(0deg, 3deg); }
 
+.tailor-ui .tailor-widget {
+  padding: 0;
+  margin-bottom: 1rem;
+  font-size: 1em;
+  color: inherit;
+  background-color: transparent;
+  border: 0 solid #efefef;
+  border-radius: 0;
+  box-shadow: none; }
 .tailor-ui .tailor-widget-area {
   padding: 0;
   margin-bottom: 1rem;
