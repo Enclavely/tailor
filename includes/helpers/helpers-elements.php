@@ -907,7 +907,6 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'section'               =>  'attributes',
 				),
 			),
-
 			'background_image'      =>  array(
 				'setting'               =>  array(
 					'sanitize_callback'     =>  'tailor_sanitize_number',

@@ -60,6 +60,13 @@ $control-body-max-width: 350px !default;
 		}
 	}
 
+	input ~ .control {
+
+		&__title {
+			display: inline;
+		}
+	}
+
 	@import "controls/button-group";
 	@import "controls/checkbox";
 	@import "controls/colorpicker";
@@ -96,5 +103,61 @@ $control-body-max-width: 350px !default;
 				}
 			}
 		}
+	}
+}
+
+// Icons
+.#{$global-class-prefix}icon {
+
+	&::before {
+		display: inline-block;
+		width: 20px;
+		height: 20px;
+		font-size: 20px;
+		font-family: dashicons;
+		text-decoration: inherit;
+		font-weight: normal;
+		font-style: normal;
+		vertical-align: top;
+		text-align: center;
+		-webkit-transition: color .1s ease-in 0;
+		transition: color .1s ease-in 0;
+		-webkit-font-smoothing: antialiased;
+	}
+}
+
+.#{$global-class-prefix}align-center,
+.#{$global-class-prefix}align-middle {
+
+	&::before {
+		content: "\f134";
+	}
+}
+
+.#{$global-class-prefix}align-left,
+.#{$global-class-prefix}align-top {
+
+	&::before {
+		content: "\f135";
+	}
+}
+
+
+.#{$global-class-prefix}align-right,
+.#{$global-class-prefix}align-bottom {
+
+	&::before {
+		content: "\f136";
+	}
+}
+
+.#{$global-class-prefix}align-top,
+.#{$global-class-prefix}align-middle,
+.#{$global-class-prefix}align-bottom {
+
+	&::before {
+		transform: rotate( 90deg );
+		vertical-align: middle;
+		line-height: 1;
 	}
 }

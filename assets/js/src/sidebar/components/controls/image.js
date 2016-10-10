@@ -59,7 +59,6 @@ ImageControl = AbstractControl.extend( {
     addEventListeners : function() {
         this.listenTo( this.model.setting, 'change', this.render );
         this.listenTo( this.model.setting.collection, 'change', this.checkDependencies );
-        //this.listenTo( this.frame, 'select', this.selectImage );
 
         this.frame.on( 'select', this.selectImage.bind( this ) );
     },

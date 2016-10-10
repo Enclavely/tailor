@@ -268,6 +268,7 @@ if ( ! class_exists( 'Tailor_Elements' ) ) {
 		        'active_callback'   =>  'is_jetpack_testimonials_active',
 		        'dynamic'           =>  true,
 	        ) );
+
 	        
 	        /**
 	         * Fires after default elements have been registered.
@@ -562,7 +563,7 @@ if ( ! class_exists( 'Tailor_Elements' ) ) {
 	            wp_send_json_error( array(
 		            'message'           =>  __( 'A valid model was not provided', 'tailor' )
 	            ) );
-            }
+            } 
 
 	        $sanitized_model = tailor_models()->sanitize_model( $unsanitized_model );
 	        $element = $this->get_element( $sanitized_model['tag'] );
@@ -586,15 +587,15 @@ if ( ! class_exists( 'Tailor_Elements' ) ) {
 	     * @return string
 	     */
 	    protected function get_oembed_content( &$atts = array() ) {
-
+		    
 		    if ( ! array_key_exists( 'content', $atts ) ) {
 			    return '';
 		    }
-		    
-		    global $wp_embed;
 
+		    global $wp_embed;
 		    $wp_embed->post_ID = 1;
 		    $content = $wp_embed->autoembed( $atts['content'] );
+
 		    unset( $atts['content'] );
 
 		    return $content;

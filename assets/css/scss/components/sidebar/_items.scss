@@ -127,6 +127,10 @@
 		white-space: nowrap;
 		text-overflow: ellipsis;
 	}
+
+	.element__badge + .list__label {
+		max-width: 170px;
+	}
 }
 
 .list {

@@ -184,6 +184,37 @@ if ( ! function_exists( 'tailor_get_image_sizes' ) ) {
 	}
 }
 
+if ( ! function_exists( 'tailor_get_post_types' ) ) {
+
+	/**
+	 * Returns an array containing the names of registered post types.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array $defaults
+	 *
+	 * @return array
+	 */
+	function tailor_get_post_types( $defaults = array( 'page' => 'page', 'post' => 'post' ), $args = array() ) {
+
+		$args = wp_parse_args( $args, array(
+			'_builtin'              =>  false,
+			'public'                =>  true,
+			'show_ui'               =>  true,
+			'exclude_from_search'   =>  false,
+		) );
+
+		$types = array_merge( $defaults, get_post_types( $args ) );
+
+		foreach ( $types as $type_id => $type ) {
+			$type_object = get_post_type_object( $type_id );
+			$types[ $type_id ] = $type_object->label;
+		}
+
+		return $types;
+	}
+}
+
 if ( ! function_exists( 'tailor_get_terms' ) ) {
 
 	/**

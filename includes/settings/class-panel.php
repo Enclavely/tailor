@@ -373,11 +373,10 @@ if ( ! class_exists( 'Tailor_Elements_Panel' ) ) {
 			<% } %>
 
 				<div class="element__wrap">
+					<% if ( badge ) { %><span class="element__badge"><%= badge %></span><% } %>
 					<h3 class="list__label">
 						<%= label %>
-						<% if ( badge ) { %><span class="element__badge"><%= badge %></span><% } %>
 					</h3>
-
 					<div class="element__description"><%= description %></div>
 				</div>
 			</li>

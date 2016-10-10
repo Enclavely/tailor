@@ -2,9 +2,9 @@
 Contributors: andrew.worsfold
 Donate link: http://gettailor.com/donate/
 Tags: page, layout, builder, frontend, content, page builder, drag and drop builder, home page builder, landing page builder, layout builder, frontend builder, frontend editor, responsive, visual composer, beaver builder
-Stable tag: 1.5.7
+Stable tag: 1.6.0
 Requires at least: 4.3
-Tested up to: 4.6
+Tested up to: 4.6.2
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl.html
 
@@ -19,7 +19,9 @@ Build beautiful layouts for your content faster and easier than ever before usin
 To get started:
 
 - [Read the user documentation](support.gettailor.com/hc/en-us/categories/202586427).
-- [View instructional videos on YouTube](https://www.youtube.com/channel/UCiFGt6qqPwN1ruuEnjlVOqA).
+- [Read the overview of features and elements](https://github.com/andrew-worsfold/tailor/blob/master/readme.md)
+- [Keep up-to-date with the blog](https://medium.com/@tailorwp).
+- [Watch videos on YouTube](https://www.youtube.com/channel/UCiFGt6qqPwN1ruuEnjlVOqA).
 
 = Easy to use =
 
@@ -32,6 +34,9 @@ To get started:
 - Control global layout settings in the Customizer.
 - Control page specific layout settings and add custom CSS and JavaScript.
 - Preview your layouts on different device sizes and manage responsive behavior.
+- Supports WordPress features (multimedia, shortcodes and more).
+- Supports built-in and third-party widgets.
+- Supports multi-language and RTL layouts.
 
 Because Tailor works with any theme, choosing one that you like is now the hardest part of creating a website.
 
@@ -44,12 +49,16 @@ Tailor is open source and built based on WordPress' coding standards and best pr
 - An API for adding, changing or removing settings and controls.
 - A [REST API](https://github.com/andrew-worsfold/tailor/blob/master/api.md) to manage elements, templates and models.
 
+There are currently two free extensions, with more to come!
+
+- [Portfolio](https://wordpress.org/plugins/tailor-portfolio/) for the creative types.
+- [WooCommerce](https://wordpress.org/plugins/tailor-woocommerce/) for those running an online store.
+
 For more information:
 
 - Check out our example of how to extend Tailor [using a theme](https://github.com/andrew-worsfold/tailor-sample-theme).
 - Check out our example of how to extend Tailor [using a plugin](https://github.com/andrew-worsfold/tailor-sample-extension).
 - [Read the developer documentation](support.gettailor.com/hc/en-us/categories/202586427).
-- Check out the free [Portfolio](https://wordpress.org/plugins/tailor-portfolio/) and [WooCommerce](https://wordpress.org/plugins/tailor-woocommerce/) extensions.
 - Get involved in the [GitHub project](https://github.com/andrew-worsfold/tailor).
 
 If you like the plugin, please consider [rating it](https://wordpress.org/support/view/plugin-reviews/tailor?rate=5#postform) or providing your feedback and suggestions through [Facebook](https://www.facebook.com/tailorwp/), [Twitter](https://twitter.com/tailorwp) or the [Community Forum](support.gettailor.com/hc/en-us/community/topics).
@@ -123,6 +132,14 @@ Yes.  Tailored pages can be migrated like any other type of page using the [dupl
 Yes, however, users should be directed to the WordPress plugin repository to install the latest version of the plugin.  Consider using a tool like [TGM Plugin Activation](http://tgmpluginactivation.com/) to guide users through the installation process.
 
 == Changelog ==
+
+= 1.6.0 =
+* Added - Native support for WordPress and third-party widgets.  Please refer to the associated upgrade notice.
+* Improved - Support for IE9 browser.
+* Improved - Added external URL option to video control.
+* Fixed - Range controls do not respect input attributes.
+* Removed - Custom icon font used for alignments (replaced with built-in WordPress icons).
+* Removed - Deprecated column and grid styles.
 
 = 1.5.7 =
 * Added - Translation for Brazilian Portuguese [GitHub PR #45](https://github.com/andrew-worsfold/tailor/pull/45).
@@ -309,6 +326,12 @@ Yes, however, users should be directed to the WordPress plugin repository to ins
 * Initial release.
 
 == Upgrade Notice ==
+
+= 1.6.0 =
+
+This is a major version change which introduces native widget support.  Please enable this feature on the Settings page.
+
+If you are upgrading from version 1.1.2 or earlier, please ensure that you update your columns and grid within Tailor as the original, deprecated styles for these elements have now been removed.
 
 = 1.5.0 =
 
