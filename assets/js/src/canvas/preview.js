@@ -413,10 +413,16 @@ var $ = Backbone.$,
 		// Class name
 		SettingAPI.onChange( 'element:class', function( to, from, model ) {
 			if ( ! _.isEmpty( from ) ) {
-				this.el.classList.remove( from );
+				var froms = from.trim().split(/\s+(?!$)/g); // prevent multiple whitespace and whitespace at the end of string.
+				for ( var key in froms ) {
+					this.el.classList.remove( froms[key] );
+				}
 			}
 			if ( ! _.isEmpty( to ) ) {
-				this.el.classList.add( to );
+				var tos = to.trim().split(/\s+(?!$)/g);
+				for ( var key in tos ) {
+					this.el.classList.add( tos[key] );
+				}
 			}
 		} );
 
