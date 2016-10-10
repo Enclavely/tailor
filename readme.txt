@@ -19,7 +19,7 @@ Build beautiful layouts for your content faster and easier than ever before usin
 To get started:
 
 - [Read the user documentation](support.gettailor.com/hc/en-us/categories/202586427).
-- [Read the overview of features and elements](https://github.com/andrew-worsfold/tailor/blob/master/readme.md)
+- [Read the overview of features and elements](https://github.com/andrew-worsfold/tailor/blob/master/readme.md).
 - [Keep up-to-date with the blog](https://medium.com/@tailorwp).
 - [Watch videos on YouTube](https://www.youtube.com/channel/UCiFGt6qqPwN1ruuEnjlVOqA).
 
