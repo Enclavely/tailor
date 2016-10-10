@@ -93,16 +93,19 @@ WidgetFormControl = Marionette.ItemView.extend( {
 
         $.each( data, function() {
             var matches = this.name.match( /\[(.*?)\]/g );
-            var name = matches[1].substring( 1, matches[1].length - 1 );
+
+            if (matches) {
+                var name = matches[1].substring( 1, matches[1].length - 1 );
             
-            if ( 'undefined' != typeof values[ name ] ) {
-                if ( ! values[ name ].push ) {
-                    values[ name ] = [ values[ name ] ];
+                if ( 'undefined' != typeof values[ name ] ) {
+                    if ( ! values[ name ].push ) {
+                        values[ name ] = [ values[ name ] ];
+                    }
+                    values[ name ].push( this.value || '' );
                 }
-                values[ name ].push( this.value || '' );
-            }
-            else {
-                values[ name ] = this.value || '';
+                else {
+                    values[ name ] = this.value || '';
+                }
             }
         } );
         
