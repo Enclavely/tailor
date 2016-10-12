@@ -105,10 +105,22 @@ SelectMenuView = Marionette.CompositeView.extend( {
     },
 
 	/**
-	 * Copies the target element and creates a duplicate immediately
+	 * Copies the target element and creates a duplicate immediately below it.
+     *
+     * @since 1.6.2
      */
     copyElement : function() {
+
         this.model.copyAfter( this._view, this._view );
+
+        /**
+         * Fires when an element is copied.
+         *
+         * @since 1.6.2
+         *
+         * @param this.model
+         */
+        app.channel.trigger( 'element:copy', this.model );
     },
 
     /**

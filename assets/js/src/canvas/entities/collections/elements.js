@@ -364,7 +364,11 @@ var ElementCollection = Backbone.Collection.extend( {
      * @returns {*}
      */
     applyDefaults : function( model ) {
-        
+
+        if ( _.isNull( model ) ) {
+            return model;
+        }
+
         if ( model instanceof Backbone.Model ) {
             model = model.toJSON();
         }
