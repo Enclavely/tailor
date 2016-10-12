@@ -11,11 +11,13 @@ SelectMenuView = Marionette.CompositeView.extend( {
 
 	ui : {
 		'edit' : '.js-edit',
+		'copy' : '.js-copy',
 		'delete' : '.js-delete'
 	},
 
     events : {
         'click @ui.edit' : 'editElement',
+        'click @ui.copy' : 'copyElement',
         'click @ui.delete' : 'deleteElement'
     },
 
@@ -100,6 +102,13 @@ SelectMenuView = Marionette.CompositeView.extend( {
          * @since 1.0.0
          */
         app.channel.trigger( 'modal:open', this.model );
+    },
+
+	/**
+	 * Copies the target element and creates a duplicate immediately
+     */
+    copyElement : function() {
+        this.model.copyAfter( this._view, this._view );
     },
 
     /**

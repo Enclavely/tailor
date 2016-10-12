@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the Tailor package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Tailor 1.6.1\n"
+"Project-Id-Version: Tailor 1.6.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/tailor\n"
-"POT-Creation-Date: 2016-10-11 09:44:52+00:00\n"
+"POT-Creation-Date: 2016-10-12 11:44:40+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -332,7 +332,7 @@ msgstr ""
 msgid "Display content in toggles."
 msgstr ""
 
-#: includes/class-elements.php:196
+#: includes/class-elements.php:195
 msgid "Toggle"
 msgstr ""
 
@@ -469,17 +469,17 @@ msgstr ""
 msgid "Icon kit is invalid"
 msgstr ""
 
-#: includes/class-models.php:534
+#: includes/class-models.php:528
 msgctxt "error message"
 msgid "The post with the given ID could not be found"
 msgstr ""
 
-#: includes/class-models.php:543
+#: includes/class-models.php:537
 msgctxt "error message"
 msgid "No valid models were provided"
 msgstr ""
 
-#: includes/class-models.php:706
+#: includes/class-models.php:700
 msgid "%1$sThe element associated with shortcode %2$s could not be found.%3$s "
 msgstr ""
 
@@ -562,16 +562,16 @@ msgstr ""
 msgid "Save template"
 msgstr ""
 
-#: includes/class-sidebar.php:289 partials/sidebar/sidebar-frame.php:28
+#: includes/class-sidebar.php:289 partials/sidebar/sidebar-frame.php:30
 msgid "Saved"
 msgstr ""
 
-#: includes/class-sidebar.php:290 partials/sidebar/sidebar-frame.php:21
+#: includes/class-sidebar.php:290 partials/sidebar/sidebar-frame.php:22
 msgid "Save & Publish"
 msgstr ""
 
 #: includes/class-sidebar.php:290 includes/class-sidebar.php:312
-#: partials/sidebar/sidebar-frame.php:24
+#: partials/sidebar/sidebar-frame.php:25
 msgid "Save"
 msgstr ""
 
@@ -584,7 +584,7 @@ msgid "Import template"
 msgstr ""
 
 #: includes/class-sidebar.php:293 includes/controls/class-list.php:120
-#: partials/sidebar/sidebar-frame.php:45
+#: partials/sidebar/sidebar-frame.php:49
 #: partials/underscore/dialog-layout.php:19
 #: partials/underscore/modal-layout.php:18
 msgid "Close"
@@ -651,7 +651,7 @@ msgid "Edit"
 msgstr ""
 
 #: includes/class-sidebar.php:310 includes/controls/class-list.php:119
-#: partials/admin/field-icon.php:31 partials/underscore/canvas-tools.php:14
+#: partials/admin/field-icon.php:31 partials/underscore/canvas-tools.php:15
 msgid "Delete"
 msgstr ""
 
@@ -1834,12 +1834,16 @@ msgstr ""
 msgid "Posts pagination"
 msgstr ""
 
-#: partials/sidebar/sidebar-frame.php:72
+#: partials/sidebar/sidebar-frame.php:76
 msgid "Collapse Sidebar"
 msgstr ""
 
-#: partials/sidebar/sidebar-frame.php:74
+#: partials/sidebar/sidebar-frame.php:78
 msgid "Collapse"
+msgstr ""
+
+#: partials/underscore/canvas-tools.php:14
+msgid "Copy"
 msgstr ""
 
 #: partials/underscore/dialog-import-template.php:15

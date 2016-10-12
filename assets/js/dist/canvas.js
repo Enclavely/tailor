@@ -3542,9 +3542,22 @@ var ElementCollection = Backbone.Collection.extend( {
 		}
 	},
 
-    add: function( models, options ) {
-
-        _.each( models, this.applyDefaults.bind( this ) );
+	/**
+     * Adds a model to the collection.
+     * 
+     * @since 1.6.1
+     * 
+     * @param models
+     * @param options
+     * @returns {*}
+     */
+    add : function( models, options ) {
+        if ( _.isArray( models ) ) {
+            _.each( models, this.applyDefaults.bind( this ) );
+        }
+        else {
+            this.applyDefaults( models );
+        }
 
         return this.set( models, _.extend( { merge: false }, options, { add: true, remove: false } ) );
     },
@@ -3584,6 +3597,11 @@ var ElementCollection = Backbone.Collection.extend( {
      * @returns {*}
      */
     applyDefaults : function( model ) {
+        
+        if ( model instanceof Backbone.Model ) {
+            model = model.toJSON();
+        }
+        
         var item = this.getElementDefinitions().findWhere( { tag : model.tag } );
         var defaults = {
             label : item.get( 'label' ),
@@ -6179,11 +6197,13 @@ SelectMenuView = Marionette.CompositeView.extend( {
 
 	ui : {
 		'edit' : '.js-edit',
+		'copy' : '.js-copy',
 		'delete' : '.js-delete'
 	},
 
     events : {
         'click @ui.edit' : 'editElement',
+        'click @ui.copy' : 'copyElement',
         'click @ui.delete' : 'deleteElement'
     },
 
@@ -6268,6 +6288,13 @@ SelectMenuView = Marionette.CompositeView.extend( {
          * @since 1.0.0
          */
         app.channel.trigger( 'modal:open', this.model );
+    },
+
+	/**
+	 * Copies the target element and creates a duplicate immediately
+     */
+    copyElement : function() {
+        this.model.copyAfter( this._view, this._view );
     },
 
     /**
