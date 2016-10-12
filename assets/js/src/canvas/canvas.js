@@ -77,13 +77,8 @@
 
         // Load views
         Tailor.Views.Section =              require( './components/elements/wrappers/section' );
-        Tailor.Views.Box =                  require( './components/elements/wrappers/box' );
-        Tailor.Views.Card =                 require( './components/elements/wrappers/card' );
-        Tailor.Views.Hero =                 require( './components/elements/wrappers/hero' );
         Tailor.Views.Column =               require( './components/elements/children/column' );
         Tailor.Views.Tab =                  require( './components/elements/children/tab' );
-        Tailor.Views.Toggle =               require( './components/elements/children/toggle' );
-        Tailor.Views.ListItem =             require( './components/elements/children/list-item' );
         Tailor.Views.CarouselItem =         require( './components/elements/children/carousel-item' );
         Tailor.Views.Tabs =                 require( './components/elements/containers/tabs' );
         Tailor.Views.Carousel =             require( './components/elements/containers/carousel' );

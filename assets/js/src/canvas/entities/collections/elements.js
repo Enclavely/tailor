@@ -143,7 +143,7 @@ var ElementCollection = Backbone.Collection.extend( {
 	onAdd : function( model, collection, options ) {
 
 	    //console.log( '\n Added ' + model.get( 'id' ) + ' at ' + model.get( 'order' ) );
-
+        
 		if ( 'tailor_column' == model.get( 'tag' ) && options.rebalance ) {
 			this._reBalanceColumns( this.get( model.get( 'parent' ) ) );
 		}
@@ -190,6 +190,9 @@ var ElementCollection = Backbone.Collection.extend( {
         if ( 0 === this.length ) {
             this.onEmpty();
         }
+        //else {
+        //    this.each( this.applyDefaults.bind( this ) );
+        //}
     },
 
     /**
@@ -306,6 +309,13 @@ var ElementCollection = Backbone.Collection.extend( {
 		}
 	},
 
+    add: function( models, options ) {
+
+        _.each( models, this.applyDefaults.bind( this ) );
+
+        return this.set( models, _.extend( { merge: false }, options, { add: true, remove: false } ) );
+    },
+
     /**
      * Creates and returns an element model.
      *
@@ -317,13 +327,6 @@ var ElementCollection = Backbone.Collection.extend( {
      */
     create : function( models, options ) {
         options = options || {};
-
-        if (_.isArray( models ) ) {
-            models = _.each( models, this.applyDefaults, this );
-        }
-        else {
-            models = this.applyDefaults( models );
-        }
 
         return this.add( models, options );
     },
@@ -349,18 +352,20 @@ var ElementCollection = Backbone.Collection.extend( {
      */
     applyDefaults : function( model ) {
         var item = this.getElementDefinitions().findWhere( { tag : model.tag } );
-        var label = item.get( 'label' );
         var defaults = {
             label : item.get( 'label' ),
             type : item.get( 'type' ),
-            child : item.get( 'child' )
+            child : item.get( 'child' ),
+            child_container : item.get( 'child_container' )
         };
 
         model.atts = model.atts || {};
 
         _.each( item.get( 'settings' ), function( setting ) {
-            model.atts[ setting['id'] ] = model.atts[ setting['id'] ] || setting['value'];
-        }, this );
+            if ( ! _.isNull( setting['value'] ) && ! _.isEmpty( setting['id'] ) ) {
+                model.atts[ setting['id'] ] = setting['value'];
+            }
+        } );
 
         return _.extend( model, defaults );
     },

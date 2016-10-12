@@ -8,8 +8,8 @@ This is the official GitHub repository for the Tailor page builder WordPress plu
 * Drag and drop templates.
 * History snapshots and undo/redo.
 * [Device previews](http://andrewworsfold.com/2016/06/25/device-previews/) for mobile, tablet and desktop screen sizes.
-* Native support for built-in and third-party widgets.
-* Native support for WordPress features (multimedia, shortcodes and more). 
+* Support for built-in and third-party widgets.
+* Support for WordPress features (multimedia, shortcodes and more). 
 * Simple yet comprehensive configuration options.
 * Global layout settings (using the Customizer).
 * Page-specific layout settings.
@@ -44,7 +44,7 @@ This is the official GitHub repository for the Tailor page builder WordPress plu
 * [Jetpack portfolio](https://medium.com/@tailorwp/using-icons-in-your-content-5985fb0209bc#.1ky71l1gn) (Jetpack portfolio must be activated).
 * Jetpack testimonials (Jetpack testimonials must be activated).
 
-The editor provided supports the features you know and love from WordPress:
+The editor provided supports the features you know and love from WordPress, including:
 * [Video and audio embeds](https://codex.wordpress.org/Embeds).
 * Adding and editing images, videos and galleries using the Media Library.
 * WordPress and third-party shortcodes.
@@ -72,11 +72,7 @@ The following elements are available through the free [WooCommerce extension](ht
 
 ### Advanced elements
 
-The following elements are available through the free [Advanced Features extension](https://github.com/andrew-worsfold/tailor-advanced):
-
-* Video section
-* Restricted content
-* Call-to-action
+The upcoming free Advanced Features extension will provide additional elements as well as exciting new functionality.  Get in touch if you have a feature that you'd like to see added!
 
 ### Custom elements
 

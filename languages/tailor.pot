@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the Tailor package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Tailor 1.6.0\n"
+"Project-Id-Version: Tailor 1.6.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/tailor\n"
-"POT-Creation-Date: 2016-10-10 10:34:46+00:00\n"
+"POT-Creation-Date: 2016-10-11 09:44:52+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -99,7 +99,7 @@ msgstr ""
 msgid "Features"
 msgstr ""
 
-#: includes/admin/class-settings.php:223 includes/class-elements.php:242
+#: includes/admin/class-settings.php:223 includes/class-elements.php:268
 msgid "Widgets"
 msgstr ""
 
@@ -253,203 +253,203 @@ msgstr ""
 msgid "Tailor requires at least WordPress version 4.3. You are running version %s. Please upgrade and try again."
 msgstr ""
 
-#: includes/class-elements.php:107
-msgid "Section"
-msgstr ""
-
-#: includes/class-elements.php:108
-msgid "Group and style content."
-msgstr ""
-
-#: includes/class-elements.php:113
-msgid "Tabs"
-msgstr ""
-
-#: includes/class-elements.php:114
-msgid "Display content in tabs."
-msgstr ""
-
-#: includes/class-elements.php:120
-msgid "Toggles"
-msgstr ""
-
-#: includes/class-elements.php:121
-msgid "Display content in toggles."
-msgstr ""
-
-#: includes/class-elements.php:127 includes/elements/class-gallery.php:79
+#: includes/class-elements.php:113 includes/elements/class-gallery.php:79
 #: includes/elements/class-posts.php:84
 msgid "Carousel"
 msgstr ""
 
-#: includes/class-elements.php:128
+#: includes/class-elements.php:114
 msgid "Display content in a carousel."
 msgstr ""
 
-#: includes/class-elements.php:134 includes/elements/class-gallery.php:77
-#: includes/elements/class-posts.php:82
-msgid "List"
+#: includes/class-elements.php:121
+msgid "Carousel item"
 msgstr ""
 
-#: includes/class-elements.php:136
-msgid "Display content in list items."
-msgstr ""
-
-#: includes/class-elements.php:141 includes/elements/class-gallery.php:78
+#: includes/class-elements.php:126 includes/elements/class-gallery.php:78
 #: includes/elements/class-posts.php:83
 msgid "Grid"
 msgstr ""
 
-#: includes/class-elements.php:142
+#: includes/class-elements.php:127
 msgid "Display content in a grid."
 msgstr ""
 
-#: includes/class-elements.php:148
-msgid "Row"
-msgstr ""
-
-#: includes/class-elements.php:154
-msgid "Map"
-msgstr ""
-
-#: includes/class-elements.php:155
-msgid "A Google map."
-msgstr ""
-
-#: includes/class-elements.php:161
-msgid "Column"
-msgstr ""
-
-#: includes/class-elements.php:166 includes/shortcodes/shortcode-tabs.php:83
-msgid "Tab"
-msgstr ""
-
-#: includes/class-elements.php:171
-msgid "Toggle"
-msgstr ""
-
-#: includes/class-elements.php:176
-msgid "Carousel item"
-msgstr ""
-
-#: includes/class-elements.php:181
-msgid "Map marker"
-msgstr ""
-
-#: includes/class-elements.php:187
-msgid "List item"
-msgstr ""
-
-#: includes/class-elements.php:192
+#: includes/class-elements.php:133
 msgid "Grid item"
 msgstr ""
 
-#: includes/class-elements.php:197
-msgid "Posts"
+#: includes/class-elements.php:138 includes/elements/class-gallery.php:77
+#: includes/elements/class-posts.php:82
+msgid "List"
 msgstr ""
 
-#: includes/class-elements.php:198
-msgid "Your site's posts."
+#: includes/class-elements.php:140
+msgid "Display content in list items."
 msgstr ""
 
-#: includes/class-elements.php:203
-msgid "Gallery"
+#: includes/class-elements.php:146
+msgid "List item"
 msgstr ""
 
-#: includes/class-elements.php:204
-msgid "A flexible image gallery."
+#: includes/class-elements.php:151
+msgid "Map"
 msgstr ""
 
-#: includes/class-elements.php:209
-msgid "Button"
+#: includes/class-elements.php:152
+msgid "A Google map."
 msgstr ""
 
-#: includes/class-elements.php:210
-msgid "A simple button."
+#: includes/class-elements.php:158
+msgid "Map marker"
 msgstr ""
 
-#: includes/class-elements.php:214 includes/elements/class-map-marker.php:76
-msgid "Content"
+#: includes/class-elements.php:164
+msgid "Row"
 msgstr ""
 
-#: includes/class-elements.php:215
-msgid "HTML and multimedia content."
+#: includes/class-elements.php:170
+msgid "Column"
 msgstr ""
 
-#: includes/class-elements.php:219 includes/elements/class-user.php:49
-msgid "User"
+#: includes/class-elements.php:175
+msgid "Tabs"
 msgstr ""
 
-#: includes/class-elements.php:220
-msgid "A user profile box."
+#: includes/class-elements.php:176
+msgid "Display content in tabs."
 msgstr ""
 
-#: includes/class-elements.php:224
+#: includes/class-elements.php:183 includes/shortcodes/shortcode-tabs.php:83
+msgid "Tab"
+msgstr ""
+
+#: includes/class-elements.php:188
+msgid "Toggles"
+msgstr ""
+
+#: includes/class-elements.php:189
+msgid "Display content in toggles."
+msgstr ""
+
+#: includes/class-elements.php:196
+msgid "Toggle"
+msgstr ""
+
+#: includes/class-elements.php:207
+msgid "Section"
+msgstr ""
+
+#: includes/class-elements.php:208
+msgid "Group and style content."
+msgstr ""
+
+#: includes/class-elements.php:214
 msgid "Card"
 msgstr ""
 
-#: includes/class-elements.php:225
+#: includes/class-elements.php:215
 msgid "Display content inside a card."
 msgstr ""
 
-#: includes/class-elements.php:230
+#: includes/class-elements.php:221
 msgid "Hero"
 msgstr ""
 
-#: includes/class-elements.php:231
+#: includes/class-elements.php:222
 msgid "Emphasize content in a hero pane."
 msgstr ""
 
-#: includes/class-elements.php:236
+#: includes/class-elements.php:228
 msgid "Box"
 msgstr ""
 
-#: includes/class-elements.php:237
+#: includes/class-elements.php:229
 msgid "Display content inside a box."
 msgstr ""
 
-#: includes/class-elements.php:243
+#: includes/class-elements.php:241
+msgid "Posts"
+msgstr ""
+
+#: includes/class-elements.php:242
+msgid "Your site's posts."
+msgstr ""
+
+#: includes/class-elements.php:247
+msgid "Gallery"
+msgstr ""
+
+#: includes/class-elements.php:248
+msgid "A flexible image gallery."
+msgstr ""
+
+#: includes/class-elements.php:253
+msgid "Button"
+msgstr ""
+
+#: includes/class-elements.php:254
+msgid "A simple button."
+msgstr ""
+
+#: includes/class-elements.php:258 includes/elements/class-map-marker.php:76
+msgid "Content"
+msgstr ""
+
+#: includes/class-elements.php:259
+msgid "HTML and multimedia content."
+msgstr ""
+
+#: includes/class-elements.php:263 includes/elements/class-user.php:49
+msgid "User"
+msgstr ""
+
+#: includes/class-elements.php:264
+msgid "A user profile box."
+msgstr ""
+
+#: includes/class-elements.php:269
 msgid "A widget area from your site."
 msgstr ""
 
-#: includes/class-elements.php:249
+#: includes/class-elements.php:280
 #: includes/elements/class-contact-form-7.php:56
 msgid "Contact form"
 msgstr ""
 
-#: includes/class-elements.php:250
+#: includes/class-elements.php:281
 msgid "A contact form."
 msgstr ""
 
-#: includes/class-elements.php:251
+#: includes/class-elements.php:282
 msgid "Contact Form 7"
 msgstr ""
 
-#: includes/class-elements.php:257
+#: includes/class-elements.php:288
 msgid "Portfolio"
 msgstr ""
 
-#: includes/class-elements.php:258
+#: includes/class-elements.php:289
 msgid "Your site's projects."
 msgstr ""
 
-#: includes/class-elements.php:259 includes/class-elements.php:267
+#: includes/class-elements.php:290 includes/class-elements.php:298
 msgid "Jetpack"
 msgstr ""
 
-#: includes/class-elements.php:265
+#: includes/class-elements.php:296
 msgid "Testimonals"
 msgstr ""
 
-#: includes/class-elements.php:266
+#: includes/class-elements.php:297
 msgid "Your site's testimonials."
 msgstr ""
 
-#: includes/class-elements.php:530
+#: includes/class-elements.php:561
 msgid "Valid models were not provided"
 msgstr ""
 
-#: includes/class-elements.php:564
+#: includes/class-elements.php:595
 msgid "A valid model was not provided"
 msgstr ""
 
@@ -469,17 +469,17 @@ msgstr ""
 msgid "Icon kit is invalid"
 msgstr ""
 
-#: includes/class-models.php:533
+#: includes/class-models.php:534
 msgctxt "error message"
 msgid "The post with the given ID could not be found"
 msgstr ""
 
-#: includes/class-models.php:542
+#: includes/class-models.php:543
 msgctxt "error message"
 msgid "No valid models were provided"
 msgstr ""
 
-#: includes/class-models.php:705
+#: includes/class-models.php:706
 msgid "%1$sThe element associated with shortcode %2$s could not be found.%3$s "
 msgstr ""
 

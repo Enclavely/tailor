@@ -93,10 +93,8 @@ WidgetFormControl = Marionette.ItemView.extend( {
 
         $.each( data, function() {
             var matches = this.name.match( /\[(.*?)\]/g );
-
-            if (matches) {
+            if ( matches && 2 == matches.length ) { // Expecting name in format: widget-{type}[__i__][{field_id}]
                 var name = matches[1].substring( 1, matches[1].length - 1 );
-            
                 if ( 'undefined' != typeof values[ name ] ) {
                     if ( ! values[ name ].push ) {
                         values[ name ] = [ values[ name ] ];

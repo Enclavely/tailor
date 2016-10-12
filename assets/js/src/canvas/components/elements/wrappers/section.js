@@ -12,9 +12,7 @@ SectionView = ContainerView.extend( {
         'change:order' : 'onChangeOrder',
         'change:setting' : 'onChangeSetting'
     },
-
-    childViewContainer : '.tailor-section__content',
-
+	
 	onChangeOrder : function() {
 		jQuery( window ).trigger( 'resize' );
 	}

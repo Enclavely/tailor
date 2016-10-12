@@ -7,9 +7,7 @@ TabsView = ContainerView.extend( {
     ui : {
         navigation : '.tailor-tabs__navigation'
     },
-
-    childViewContainer : '.tailor-tabs__content',
-
+	
     events : {
         'element:change:order' : 'onReorderElement'
     },

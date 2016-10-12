@@ -256,13 +256,8 @@ module.exports = CanvasApplication;
 
         // Load views
         Tailor.Views.Section =              require( './components/elements/wrappers/section' );
-        Tailor.Views.Box =                  require( './components/elements/wrappers/box' );
-        Tailor.Views.Card =                 require( './components/elements/wrappers/card' );
-        Tailor.Views.Hero =                 require( './components/elements/wrappers/hero' );
         Tailor.Views.Column =               require( './components/elements/children/column' );
         Tailor.Views.Tab =                  require( './components/elements/children/tab' );
-        Tailor.Views.Toggle =               require( './components/elements/children/toggle' );
-        Tailor.Views.ListItem =             require( './components/elements/children/list-item' );
         Tailor.Views.CarouselItem =         require( './components/elements/children/carousel-item' );
         Tailor.Views.Tabs =                 require( './components/elements/containers/tabs' );
         Tailor.Views.Carousel =             require( './components/elements/containers/carousel' );
@@ -353,7 +348,7 @@ module.exports = CanvasApplication;
 } ( window, Backbone.$ ) );
 
 //require( './utility/debug' );
-},{"../shared/components/api/setting":53,"../shared/components/behaviors/draggable":54,"../shared/components/ui/lightbox":55,"../shared/components/ui/map":56,"../shared/components/ui/masonry":57,"../shared/components/ui/parallax":58,"../shared/components/ui/slideshow":59,"../shared/components/ui/tabs":60,"../shared/components/ui/toggles":61,"../shared/utility/ajax":62,"../shared/utility/css":63,"../shared/utility/polyfills/classlist":64,"../shared/utility/polyfills/raf":65,"../shared/utility/polyfills/transitions":66,"./app":1,"./components/api/element":3,"./components/behaviors/container":4,"./components/behaviors/droppable":5,"./components/behaviors/editable":6,"./components/behaviors/movable":7,"./components/elements/children/carousel-item":8,"./components/elements/children/column":9,"./components/elements/children/list-item":10,"./components/elements/children/tab":11,"./components/elements/children/toggle":12,"./components/elements/containers/carousel":13,"./components/elements/containers/tabs":18,"./components/elements/element":20,"./components/elements/element-container":19,"./components/elements/wrappers/box":21,"./components/elements/wrappers/card":22,"./components/elements/wrappers/hero":23,"./components/elements/wrappers/section":24,"./components/ui/carousel":26,"./components/ui/carousel-simple":25,"./entities/models/children/column":28,"./entities/models/children/grid-item":29,"./entities/models/containers/carousel":30,"./entities/models/containers/row":31,"./entities/models/containers/tabs":32,"./entities/models/element":38,"./entities/models/element-child":34,"./entities/models/element-container":36,"./entities/models/element-wrapper":37,"./entities/models/wrappers/section":39,"./modules/canvas/canvas":41,"./modules/canvas/canvas-region":40,"./modules/css/css":43,"./modules/elements/elements":45,"./modules/templates/templates":46,"./modules/tools/select-region":47,"./modules/tools/tools":51,"./preview":52}],3:[function(require,module,exports){
+},{"../shared/components/api/setting":48,"../shared/components/behaviors/draggable":49,"../shared/components/ui/lightbox":50,"../shared/components/ui/map":51,"../shared/components/ui/masonry":52,"../shared/components/ui/parallax":53,"../shared/components/ui/slideshow":54,"../shared/components/ui/tabs":55,"../shared/components/ui/toggles":56,"../shared/utility/ajax":57,"../shared/utility/css":58,"../shared/utility/polyfills/classlist":59,"../shared/utility/polyfills/raf":60,"../shared/utility/polyfills/transitions":61,"./app":1,"./components/api/element":3,"./components/behaviors/container":4,"./components/behaviors/droppable":5,"./components/behaviors/editable":6,"./components/behaviors/movable":7,"./components/elements/children/carousel-item":8,"./components/elements/children/column":9,"./components/elements/children/tab":10,"./components/elements/containers/carousel":11,"./components/elements/containers/tabs":16,"./components/elements/element":18,"./components/elements/element-container":17,"./components/elements/wrappers/section":19,"./components/ui/carousel":21,"./components/ui/carousel-simple":20,"./entities/models/children/column":23,"./entities/models/children/grid-item":24,"./entities/models/containers/carousel":25,"./entities/models/containers/row":26,"./entities/models/containers/tabs":27,"./entities/models/element":33,"./entities/models/element-child":29,"./entities/models/element-container":31,"./entities/models/element-wrapper":32,"./entities/models/wrappers/section":34,"./modules/canvas/canvas":36,"./modules/canvas/canvas-region":35,"./modules/css/css":38,"./modules/elements/elements":40,"./modules/templates/templates":41,"./modules/tools/select-region":42,"./modules/tools/tools":46,"./preview":47}],3:[function(require,module,exports){
 var callbacks = {
     'render' : [],
     'destroy' : []
@@ -830,7 +825,7 @@ CarouselItemView = ContainerView.extend( {
 } );
 
 module.exports = CarouselItemView;
-},{"./../element-container":19}],9:[function(require,module,exports){
+},{"./../element-container":17}],9:[function(require,module,exports){
 var ContainerView = require( './../element-container' ),
 	ColumnView;
 
@@ -989,16 +984,7 @@ ColumnView = ContainerView.extend( {
 } );
 
 module.exports = ColumnView;
-},{"./../element-container":19}],10:[function(require,module,exports){
-var ContainerView = require( './../element-container' ),
-    ListItemView;
-
-ListItemView = ContainerView.extend( {
-    childViewContainer : '.tailor-list__content'
-} );
-
-module.exports = ListItemView;
-},{"./../element-container":19}],11:[function(require,module,exports){
+},{"./../element-container":17}],10:[function(require,module,exports){
 var ContainerView = require( './../element-container' ),
     TabView;
 
@@ -1017,24 +1003,13 @@ TabView = ContainerView.extend( {
 } );
 
 module.exports = TabView;
-},{"./../element-container":19}],12:[function(require,module,exports){
-var ContainerView = require( './../element-container' ),
-    ToggleView;
-
-ToggleView = ContainerView.extend( {
-    childViewContainer : '.tailor-toggle__body'
-} );
-
-module.exports = ToggleView;
-},{"./../element-container":19}],13:[function(require,module,exports){
+},{"./../element-container":17}],11:[function(require,module,exports){
 var ContainerView = require( './../element-container' ),
 	CarouselNavigationView = require( './navigation/carousel-navigation' ),
 	CarouselView;
 
 CarouselView = ContainerView.extend( {
-
-    childViewContainer : '.tailor-carousel__wrap',
-
+	
     events : {
         'element:change:order' : 'onReorderElement'
     },
@@ -1119,7 +1094,7 @@ CarouselView = ContainerView.extend( {
 } );
 
 module.exports = CarouselView;
-},{"./../element-container":19,"./navigation/carousel-navigation":15}],14:[function(require,module,exports){
+},{"./../element-container":17,"./navigation/carousel-navigation":13}],12:[function(require,module,exports){
 module.exports = Marionette.ItemView.extend( {
 
     tagName : 'li',
@@ -1143,7 +1118,7 @@ module.exports = Marionette.ItemView.extend( {
 
 } );
 
-},{}],15:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 module.exports = Marionette.CollectionView.extend( {
 
     tagName : 'ul',
@@ -1262,7 +1237,7 @@ module.exports = Marionette.CollectionView.extend( {
 	}
 
 } );
-},{"./carousel-navigation-item":14}],16:[function(require,module,exports){
+},{"./carousel-navigation-item":12}],14:[function(require,module,exports){
 module.exports = Marionette.ItemView.extend( {
 
     tagName : 'li',
@@ -1328,7 +1303,7 @@ module.exports = Marionette.ItemView.extend( {
 
 } );
 
-},{}],17:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 module.exports = Marionette.CollectionView.extend( {
 
 	childView : require( './tabs-navigation-item' ),
@@ -1435,7 +1410,7 @@ module.exports = Marionette.CollectionView.extend( {
     }
 
 } );
-},{"./tabs-navigation-item":16}],18:[function(require,module,exports){
+},{"./tabs-navigation-item":14}],16:[function(require,module,exports){
 var ContainerView = require( './../element-container' ), 
 	TabsNavigationView = require( './navigation/tabs-navigation' ),
 	TabsView;
@@ -1445,9 +1420,7 @@ TabsView = ContainerView.extend( {
     ui : {
         navigation : '.tailor-tabs__navigation'
     },
-
-    childViewContainer : '.tailor-tabs__content',
-
+	
     events : {
         'element:change:order' : 'onReorderElement'
     },
@@ -1547,7 +1520,7 @@ TabsView = ContainerView.extend( {
 } );
 
 module.exports = TabsView;
-},{"./../element-container":19,"./navigation/tabs-navigation":17}],19:[function(require,module,exports){
+},{"./../element-container":17,"./navigation/tabs-navigation":15}],17:[function(require,module,exports){
 var CompositeView = Marionette.CompositeView.extend( {
 
     behaviors : {
@@ -1592,7 +1565,7 @@ var CompositeView = Marionette.CompositeView.extend( {
 		'before:element:destroy' : 'beforeChildElementDestroyed',
 		'element:destroy' : 'childElementDestroyed'
 	},
-	
+
     /**
      * Initializes the view.
      *
@@ -1602,6 +1575,9 @@ var CompositeView = Marionette.CompositeView.extend( {
         this._isReady = false;
         this._isBeingDestroyed = false;
 
+	    // Set the child view container option (if specified)
+	    this.options.childViewContainer = this.model.get( 'child_container' ) || null;
+	    
         this.addEventListeners();
     },
 
@@ -2247,7 +2223,7 @@ var CompositeView = Marionette.CompositeView.extend( {
 } );
 
 module.exports = CompositeView;
-},{}],20:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 var $ = window.jQuery,
 	ElementView;
 
@@ -2514,8 +2490,9 @@ ElementView = Marionette.ItemView.extend( {
 		
 		this.$el.imagesLoaded( function() {
 			view._isReady = true;
-			
-			if ( 0 == view.$el.children().innerHeight() ) {
+
+			// Display the empty element message for widgets that do not produce any visible content
+			if ( view.el.classList.contains( 'tailor-widget' ) && 0 == view.$el.children().innerHeight() ) {
 				var el = document.querySelector( '#tmpl-tailor-element-empty' );
 				if ( el ) {
 					view.$el.html( el.innerHTML );
@@ -2575,34 +2552,7 @@ ElementView = Marionette.ItemView.extend( {
 } );
 
 module.exports = ElementView;
-},{}],21:[function(require,module,exports){
-var ContainerView = require( './../element-container' ),
-    BoxView;
-
-BoxView = ContainerView.extend( {
-    childViewContainer : '.tailor-box__content'
-} );
-
-module.exports = BoxView;
-},{"./../element-container":19}],22:[function(require,module,exports){
-var ContainerView = require( './../element-container' ),
-    CardView;
-
-CardView = ContainerView.extend( {
-    childViewContainer : '.tailor-card__content'
-} );
-
-module.exports = CardView;
-},{"./../element-container":19}],23:[function(require,module,exports){
-var ContainerView = require( './../element-container' ),
-    HeroView;
-
-HeroView = ContainerView.extend( {
-    childViewContainer : '.tailor-hero__content'
-} );
-
-module.exports = HeroView;
-},{"./../element-container":19}],24:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 var ContainerView = require( './../element-container' ),
 	SectionView;
 
@@ -2617,9 +2567,7 @@ SectionView = ContainerView.extend( {
         'change:order' : 'onChangeOrder',
         'change:setting' : 'onChangeSetting'
     },
-
-    childViewContainer : '.tailor-section__content',
-
+	
 	onChangeOrder : function() {
 		jQuery( window ).trigger( 'resize' );
 	}
@@ -2627,7 +2575,7 @@ SectionView = ContainerView.extend( {
 } );
 
 module.exports = SectionView;
-},{"./../element-container":19}],25:[function(require,module,exports){
+},{"./../element-container":17}],20:[function(require,module,exports){
 var $ = window.jQuery,
     Carousel;
 
@@ -2850,7 +2798,7 @@ $.fn.tailorSimpleCarousel = function( options, callbacks ) {
         }
     } );
 };
-},{}],26:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 var $ = window.jQuery,
     Carousel;
 
@@ -3282,7 +3230,7 @@ $.fn.tailorCarousel = function( options, callbacks ) {
         }
     } );
 };
-},{}],27:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 var ElementCollection = Backbone.Collection.extend( {
 
     /**
@@ -3428,7 +3376,7 @@ var ElementCollection = Backbone.Collection.extend( {
 	onAdd : function( model, collection, options ) {
 
 	    //console.log( '\n Added ' + model.get( 'id' ) + ' at ' + model.get( 'order' ) );
-
+        
 		if ( 'tailor_column' == model.get( 'tag' ) && options.rebalance ) {
 			this._reBalanceColumns( this.get( model.get( 'parent' ) ) );
 		}
@@ -3475,6 +3423,9 @@ var ElementCollection = Backbone.Collection.extend( {
         if ( 0 === this.length ) {
             this.onEmpty();
         }
+        //else {
+        //    this.each( this.applyDefaults.bind( this ) );
+        //}
     },
 
     /**
@@ -3591,6 +3542,13 @@ var ElementCollection = Backbone.Collection.extend( {
 		}
 	},
 
+    add: function( models, options ) {
+
+        _.each( models, this.applyDefaults.bind( this ) );
+
+        return this.set( models, _.extend( { merge: false }, options, { add: true, remove: false } ) );
+    },
+
     /**
      * Creates and returns an element model.
      *
@@ -3602,13 +3560,6 @@ var ElementCollection = Backbone.Collection.extend( {
      */
     create : function( models, options ) {
         options = options || {};
-
-        if (_.isArray( models ) ) {
-            models = _.each( models, this.applyDefaults, this );
-        }
-        else {
-            models = this.applyDefaults( models );
-        }
 
         return this.add( models, options );
     },
@@ -3634,18 +3585,20 @@ var ElementCollection = Backbone.Collection.extend( {
      */
     applyDefaults : function( model ) {
         var item = this.getElementDefinitions().findWhere( { tag : model.tag } );
-        var label = item.get( 'label' );
         var defaults = {
             label : item.get( 'label' ),
             type : item.get( 'type' ),
-            child : item.get( 'child' )
+            child : item.get( 'child' ),
+            child_container : item.get( 'child_container' )
         };
 
         model.atts = model.atts || {};
 
         _.each( item.get( 'settings' ), function( setting ) {
-            model.atts[ setting['id'] ] = model.atts[ setting['id'] ] || setting['value'];
-        }, this );
+            if ( ! _.isNull( setting['value'] ) && ! _.isEmpty( setting['id'] ) ) {
+                model.atts[ setting['id'] ] = setting['value'];
+            }
+        } );
 
         return _.extend( model, defaults );
     },
@@ -3838,7 +3791,7 @@ var ElementCollection = Backbone.Collection.extend( {
 
 module.exports = ElementCollection;
 
-},{}],28:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 var ChildModel = require( './../element-child' ),
     ColumnModel;
 
@@ -3868,7 +3821,7 @@ ColumnModel = ChildModel.extend( {
 } );
 
 module.exports = ColumnModel;
-},{"./../element-child":34}],29:[function(require,module,exports){
+},{"./../element-child":29}],24:[function(require,module,exports){
 var ChildModel = require( './../element-child' ),
     GridItemModel;
 
@@ -3898,7 +3851,7 @@ GridItemModel = ChildModel.extend( {
 } );
 
 module.exports = GridItemModel;
-},{"./../element-child":34}],30:[function(require,module,exports){
+},{"./../element-child":29}],25:[function(require,module,exports){
 var ContainerModel = require( './../element-container' ),
 	CarouselModel;
 
@@ -3936,7 +3889,7 @@ CarouselModel = ContainerModel.extend( {
 } );
 
 module.exports = CarouselModel;
-},{"./../element-container":36}],31:[function(require,module,exports){
+},{"./../element-container":31}],26:[function(require,module,exports){
 var ContainerModel = require( './../element-container' ),
     RowModel;
 
@@ -3961,7 +3914,7 @@ RowModel = ContainerModel.extend( {
 } );
 
 module.exports = RowModel;
-},{"./../element-container":36}],32:[function(require,module,exports){
+},{"./../element-container":31}],27:[function(require,module,exports){
 var ContainerModel = require( './../element-container' ),
     TabsModel;
 
@@ -4000,7 +3953,7 @@ TabsModel = ContainerModel.extend( {
 } );
 
 module.exports = TabsModel;
-},{"./../element-container":36}],33:[function(require,module,exports){
+},{"./../element-container":31}],28:[function(require,module,exports){
 var Model;
 
 /**
@@ -4323,7 +4276,7 @@ Model = Backbone.Model.extend( {
 
 module.exports = Model;
 
-},{}],34:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 var CompositeModel = require( './element-composite' ),
     ChildModel;
 
@@ -4379,7 +4332,7 @@ ChildModel = CompositeModel.extend( {
 } );
 
 module.exports = ChildModel;
-},{"./element-composite":35}],35:[function(require,module,exports){
+},{"./element-composite":30}],30:[function(require,module,exports){
 var BaseModel = require( './element-base' ),
     CompositeModel;
 
@@ -4546,7 +4499,7 @@ CompositeModel = BaseModel.extend( {
 } );
 
 module.exports = CompositeModel;
-},{"./element-base":33}],36:[function(require,module,exports){
+},{"./element-base":28}],31:[function(require,module,exports){
 var CompositeModel = require( './element-composite' ),
     ContainerModel;
 
@@ -4613,7 +4566,7 @@ ContainerModel = CompositeModel.extend( {
 } );
 
 module.exports = ContainerModel;
-},{"./element-composite":35}],37:[function(require,module,exports){
+},{"./element-composite":30}],32:[function(require,module,exports){
 var CompositeModel = require( './element-composite' ),
     WrapperModel;
 
@@ -4712,7 +4665,7 @@ WrapperModel = CompositeModel.extend( {
 } );
 
 module.exports = WrapperModel;
-},{"./element-composite":35}],38:[function(require,module,exports){
+},{"./element-composite":30}],33:[function(require,module,exports){
 var BaseModel = require( './element-base' ),
 	ElementModel;
 
@@ -4952,7 +4905,7 @@ ElementModel = BaseModel.extend( {
 } );
 
 module.exports = ElementModel;
-},{"./element-base":33}],39:[function(require,module,exports){
+},{"./element-base":28}],34:[function(require,module,exports){
 var WrapperModel = require( './../element-wrapper' ),
     SectionModel;
 
@@ -4973,7 +4926,7 @@ SectionModel = WrapperModel.extend( {
 } );
 
 module.exports = SectionModel;
-},{"./../element-wrapper":37}],40:[function(require,module,exports){
+},{"./../element-wrapper":32}],35:[function(require,module,exports){
 var CanvasRegion = Backbone.Marionette.Region.extend( {
 
 	/**
@@ -5015,7 +4968,7 @@ var CanvasRegion = Backbone.Marionette.Region.extend( {
 } );
 
 module.exports = CanvasRegion;
-},{}],41:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 var $ = Backbone.$,
     $win = $( window ),
     $doc = $( document ),
@@ -5301,7 +5254,7 @@ CanvasModule = Marionette.Module.extend( {
 } );
 
 module.exports = CanvasModule;
-},{"./show/canvas-view":42}],42:[function(require,module,exports){
+},{"./show/canvas-view":37}],37:[function(require,module,exports){
 module.exports = Marionette.CollectionView.extend( {
 
 	behaviors : {
@@ -5407,7 +5360,7 @@ module.exports = Marionette.CollectionView.extend( {
 
 } );
 
-},{}],43:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 var Stylesheet = require( './stylesheet' ),
 	CSSModule;
 
@@ -5641,7 +5594,7 @@ CSSModule = Marionette.Module.extend( {
 } );
 
 module.exports = CSSModule;
-},{"./stylesheet":44}],44:[function(require,module,exports){
+},{"./stylesheet":39}],39:[function(require,module,exports){
 /**
  * Stylesheet object for managing CSS.
  *
@@ -5819,7 +5772,7 @@ Stylesheet.prototype = {
 };
 
 module.exports = Stylesheet;
-},{}],45:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 var $ = Backbone.$,
     $body = $( 'body' ),
     $win = $( window ),
@@ -5970,7 +5923,7 @@ ElementModule = Marionette.Module.extend( {
 } );
 
 module.exports = ElementModule;
-},{"../../entities/collections/elements":27}],46:[function(require,module,exports){
+},{"../../entities/collections/elements":22}],41:[function(require,module,exports){
 var $ = Backbone.$,
     $body = $( 'body' ),
     $win = $( window ),
@@ -6092,7 +6045,7 @@ TemplateModule = Marionette.Module.extend( {
 } );
 
 module.exports = TemplateModule;
-},{}],47:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 var SelectRegion = Backbone.Marionette.Region.extend( {
 
     /**
@@ -6124,7 +6077,7 @@ var SelectRegion = Backbone.Marionette.Region.extend( {
 } );
 
 module.exports = SelectRegion;
-},{}],48:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 var GuideView = Marionette.ItemView.extend( {
 
 	template : false,
@@ -6164,7 +6117,7 @@ var GuideView = Marionette.ItemView.extend( {
 } );
 
 module.exports = GuideView;
-},{}],49:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 var SelectMenuItemView = Marionette.ItemView.extend( {
 
     tagName : 'a',
@@ -6212,7 +6165,7 @@ var SelectMenuItemView = Marionette.ItemView.extend( {
 } );
 
 module.exports = SelectMenuItemView;
-},{}],50:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 var SelectMenuItemView = require( './select-menu-item' ),
     SelectMenuView;
 
@@ -6351,7 +6304,7 @@ SelectMenuView = Marionette.CompositeView.extend( {
 } );
 
 module.exports = SelectMenuView;
-},{"./select-menu-item":49}],51:[function(require,module,exports){
+},{"./select-menu-item":44}],46:[function(require,module,exports){
 var GuideView = require( './show/guide' ),
     SelectorView = require( './show/select-menu' ),
     ToolsModule;
@@ -6440,7 +6393,7 @@ ToolsModule = Marionette.Module.extend( {
 } );
 
 module.exports = ToolsModule;
-},{"./show/guide":48,"./show/select-menu":50}],52:[function(require,module,exports){
+},{"./show/guide":43,"./show/select-menu":45}],47:[function(require,module,exports){
 var $ = Backbone.$,
 	$win = $( window );
 
@@ -6743,7 +6696,7 @@ var $ = Backbone.$,
 		_.each( ids, function( settingId ) {
 			SettingAPI.onChange( 'element:' + settingId, function( to, from, model ) {
 				var rule = {
-					selectors: 'tailor_button' == model.get( 'tag' ) ? [ 'a.tailor-button__inner' ] : [],
+					selectors: 'tailor_button' == model.get( 'tag' ) ? [ '.tailor-button__inner' ] : [],
 					declarations: {}
 				};
 				rule.declarations[ settingId.replace( '_', '-' ) ] = to;
@@ -6855,16 +6808,18 @@ var $ = Backbone.$,
 
 		// Class name
 		SettingAPI.onChange( 'element:class', function( to, from, model ) {
+			var classNames;
+
 			if ( ! _.isEmpty( from ) ) {
-				var froms = from.trim().split(/\s+(?!$)/g); // prevent multiple whitespace and whitespace at the end of string.
-				for ( var key in froms ) {
-					this.el.classList.remove( froms[key] );
+				classNames = from.trim().split( /\s+(?!$)/g ); // Prevent multiple whitespace and whitespace at the end of string.
+				for ( var i in classNames ) {
+					this.el.classList.remove( classNames[ i ] );
 				}
 			}
 			if ( ! _.isEmpty( to ) ) {
-				var tos = to.trim().split(/\s+(?!$)/g);
-				for ( var key in tos ) {
-					this.el.classList.add( tos[key] );
+				classNames = to.trim().split( /\s+(?!$)/g );
+				for ( var j in classNames ) {
+					this.el.classList.add( classNames[ j ] );
 				}
 			}
 		} );
@@ -6874,7 +6829,7 @@ var $ = Backbone.$,
 			var rules = [];
 			if ( 1 == to ) {
 				rules.push( {
-					selectors: [],
+					selectors: 'tailor_button' == model.get( 'tag' ) ? [ '.tailor-button__inner' ] : [ '' ],
 					declarations: { 'box-shadow' : '0 2px 6px rgba(0, 0, 0, 0.1)' }
 				} );
 			}
@@ -6915,7 +6870,7 @@ var $ = Backbone.$,
 			SettingAPI.onChange( 'element:' + settingId, function( to, from, model ) {
 				var rules = [];
 				var rule = {
-					selectors: [],
+					selectors: 'tailor_button' == model.get( 'tag' ) ? [ '.tailor-button__inner' ] : [],
 					declarations: {}
 				};
 
@@ -6953,7 +6908,7 @@ var $ = Backbone.$,
 		SettingAPI.onChange( 'element:border_width', function( to, from, model ) {
 			var rules = [];
 			var rule = {
-				selectors: [],
+				selectors: 'tailor_button' == model.get( 'tag' ) ? [ '.tailor-button__inner' ] : [ '' ],
 				declarations: {}
 			};
 
@@ -6988,7 +6943,7 @@ var $ = Backbone.$,
 
 	} );
 } ( window.app, window.Tailor.Api.Setting ) );
-},{}],53:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 
 var app = window.app,
     cssModule,
@@ -7128,7 +7083,7 @@ module.exports = {
         }
     }
 };
-},{}],54:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 var DraggableBehaviors = Marionette.Behavior.extend( {
 
 	events : {
@@ -7173,7 +7128,7 @@ var DraggableBehaviors = Marionette.Behavior.extend( {
 } );
 
 module.exports = DraggableBehaviors;
-},{}],55:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 /**
  * Tailor.Objects.Lightbox
  *
@@ -7311,7 +7266,7 @@ $.fn.tailorLightbox = function( options, callbacks ) {
     } );
 };
 
-},{}],56:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 /**
  * Tailor.Objects.Map
  *
@@ -7636,7 +7591,7 @@ $.fn.tailorGoogleMap = function( options, callbacks ) {
 
 module.exports = Map;
 
-},{}],57:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 /**
  * Tailor.Objects.Masonry
  *
@@ -7848,7 +7803,7 @@ $.fn.tailorMasonry = function( options, callbacks ) {
 
 module.exports = Masonry;
 
-},{}],58:[function(require,module,exports){
+},{}],53:[function(require,module,exports){
 /**
  * Tailor.Objects.Parallax
  *
@@ -8119,7 +8074,7 @@ $.fn.tailorParallax = function( options, callbacks ) {
 
 module.exports = Parallax;
 
-},{}],59:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 /**
  * Tailor.Objects.Slideshow
  *
@@ -8345,7 +8300,7 @@ $.fn.tailorSlideshow = function( options, callbacks ) {
     } );
 };
 
-},{}],60:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 /**
  * Tailor.Objects.Tabs
  *
@@ -8637,7 +8592,7 @@ $.fn.tailorTabs = function( options, callbacks ) {
 
 module.exports = Tabs;
 
-},{}],61:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 /**
  * Tailor.Objects.Toggles
  *
@@ -8884,7 +8839,7 @@ $.fn.tailorToggles = function( options, callbacks ) {
 
 module.exports = Toggles;
 
-},{}],62:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 /**
  * window.ajax
  *
@@ -9006,7 +8961,7 @@ Ajax = {
 window.ajax = Ajax;
 
 module.exports = Ajax;
-},{}],63:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 /**
  * Tailor.CSS
  *
@@ -9114,7 +9069,7 @@ var CSS = {
 };
 
 module.exports = CSS;
-},{}],64:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 /**
  * classList Polyfill
  *
@@ -9204,7 +9159,7 @@ module.exports = CSS;
 
 } )();
 
-},{}],65:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 /**
  * requestAnimationFrame polyfill.
  *
@@ -9243,7 +9198,7 @@ module.exports = CSS;
 
 } ) ( window );
 
-},{}],66:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 /**
  * Makes animation and transition support status and end names available as global variables.
  */

@@ -42,7 +42,7 @@ var CompositeView = Marionette.CompositeView.extend( {
 		'before:element:destroy' : 'beforeChildElementDestroyed',
 		'element:destroy' : 'childElementDestroyed'
 	},
-	
+
     /**
      * Initializes the view.
      *
@@ -52,6 +52,9 @@ var CompositeView = Marionette.CompositeView.extend( {
         this._isReady = false;
         this._isBeingDestroyed = false;
 
+	    // Set the child view container option (if specified)
+	    this.options.childViewContainer = this.model.get( 'child_container' ) || null;
+	    
         this.addEventListeners();
     },
 

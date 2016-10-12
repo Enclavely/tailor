@@ -2,7 +2,7 @@
 Contributors: andrew.worsfold
 Donate link: http://gettailor.com/donate/
 Tags: page, layout, builder, frontend, content, page builder, drag and drop builder, home page builder, landing page builder, layout builder, frontend builder, frontend editor, responsive, visual composer, beaver builder
-Stable tag: 1.6.0
+Stable tag: 1.6.1
 Requires at least: 4.3
 Tested up to: 4.6.2
 License: GPLv3 or later
@@ -132,6 +132,13 @@ Yes.  Tailored pages can be migrated like any other type of page using the [dupl
 Yes, however, users should be directed to the WordPress plugin repository to install the latest version of the plugin.  Consider using a tool like [TGM Plugin Activation](http://tgmpluginactivation.com/) to guide users through the installation process.
 
 == Changelog ==
+
+= 1.6.1 =
+* Improved - Reduced the amount of layout meta information saved to the post.
+* Improved - The selector for element child containers can now be specified when registering the element.
+* Fixed - Live updates to Button do not target correct DOM node [GitHub #50](https://github.com/andrew-worsfold/tailor/issues/50).
+* Fixed - Cannot add multiple custom class names to an element [GitHub PR #51](https://github.com/andrew-worsfold/tailor/pull/51).
+* Fixed - Fields added to the widget form by third-party plugins are not handled correctly [GitHub PR #52](https://github.com/andrew-worsfold/tailor/pull/52).
 
 = 1.6.0 =
 * Added - Native support for WordPress and third-party widgets.  Please refer to the associated upgrade notice.

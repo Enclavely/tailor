@@ -3,9 +3,7 @@ var ContainerView = require( './../element-container' ),
 	CarouselView;
 
 CarouselView = ContainerView.extend( {
-
-    childViewContainer : '.tailor-carousel__wrap',
-
+	
     events : {
         'element:change:order' : 'onReorderElement'
     },

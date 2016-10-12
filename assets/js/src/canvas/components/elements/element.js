@@ -264,8 +264,9 @@ ElementView = Marionette.ItemView.extend( {
 		
 		this.$el.imagesLoaded( function() {
 			view._isReady = true;
-			
-			if ( 0 == view.$el.children().innerHeight() ) {
+
+			// Display the empty element message for widgets that do not produce any visible content
+			if ( view.el.classList.contains( 'tailor-widget' ) && 0 == view.$el.children().innerHeight() ) {
 				var el = document.querySelector( '#tmpl-tailor-element-empty' );
 				if ( el ) {
 					view.$el.html( el.innerHTML );

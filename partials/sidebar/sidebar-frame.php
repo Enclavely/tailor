@@ -17,12 +17,14 @@ defined( 'ABSPATH' ) or die(); ?>
 	        <?php
 	        $post = get_post();
 	        if ( false == get_post_meta( $post->ID, '_tailor_layout', true ) ) {
+		        echo '<button class="button button-primary save" id="tailor-save">';
 		        if ( 'publish' == get_post_status( $post->ID ) ) {
-			        echo '<button class="button button-primary save" id="tailor-save">' . __( 'Save & Publish', 'tailor' ) . '</button>';
+			        _e( 'Save & Publish', 'tailor' );
 		        }
 		        else {
-			        echo '<button class="button button-primary save" id="tailor-save">' . __( 'Save', 'tailor' ) . '</button>';
+			        _e( 'Save', 'tailor' );
 		        }
+		        echo '</button>';
 	        }
 	        else {
 		        echo '<button class="button button-primary save" id="tailor-save" disabled >' . __( 'Saved', 'tailor' ) . '</button>';
@@ -34,7 +36,9 @@ defined( 'ABSPATH' ) or die(); ?>
 	        
 	        // Get the return link
 	        $referer = wp_get_referer();
-	        if ( $referer ) {
+	        $excluded_referer_basenames = array( 'customize.php', 'wp-login.php' );
+
+	        if ( $referer && ! in_array( basename( parse_url( $referer, PHP_URL_PATH ) ), $excluded_referer_basenames, true ) ) {
 		        $return_url = $referer;
 	        }
 	        else {

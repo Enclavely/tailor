@@ -68,6 +68,14 @@ if ( class_exists( 'Tailor_Setting_Manager' ) && ! class_exists( 'Tailor_Element
 	    public $child;
 
 	    /**
+	     * The child view container, if any.
+	     *
+	     * @since 1.6.1
+	     * @var string
+	     */
+	    public $child_container;
+
+	    /**
 	     * True if the element content is dynamically-generated.
 	     *
 	     * Dynamically generated elements will be represented as shortcodes in the editor.
@@ -156,6 +164,10 @@ if ( class_exists( 'Tailor_Setting_Manager' ) && ! class_exists( 'Tailor_Element
 
 		    if ( isset( $this->child ) ) {
 			    $properties['child'] = $this->child;
+		    }
+
+		    if ( isset( $this->child_container ) ) {
+			    $properties['child_container'] = $this->child_container;
 		    }
 
 		    $properties['active'] = $this->active();

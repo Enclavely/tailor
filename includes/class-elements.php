@@ -103,38 +103,23 @@ if ( ! class_exists( 'Tailor_Elements' ) ) {
          */
         public function register_elements() {
 
-            $this->add_element( 'tailor_section', array(
-                'label'             =>  __( 'Section', 'tailor' ),
-                'description'       =>  __( 'Group and style content.', 'tailor' ),
-                'type'              =>  'wrapper',
-            ) );
-
-	        $this->add_element( 'tailor_tabs', array(
-		        'label'             =>  __( 'Tabs', 'tailor' ),
-		        'description'       =>  __( 'Display content in tabs.', 'tailor' ),
-		        'type'              =>  'container',
-		        'child'             =>  'tailor_tab',
-	        ) );
-
-	        $this->add_element( 'tailor_toggles', array(
-		        'label'             =>  __( 'Toggles', 'tailor' ),
-		        'description'       =>  __( 'Display content in toggles.', 'tailor' ),
-		        'type'              =>  'container',
-		        'child'             =>  'tailor_toggle',
-	        ) );
-
+	        /**
+	         * Container and child elements.
+	         *
+	         * These have a parent-child relationship (e.g., a tabs container can contain one or more tabs). Child
+	         * elements, in turn, can contain a combination of wrapper and content elements.
+	         */
 	        $this->add_element( 'tailor_carousel', array(
 		        'label'             =>  __( 'Carousel', 'tailor' ),
 		        'description'       =>  __( 'Display content in a carousel.', 'tailor' ),
 		        'type'              =>  'container',
 		        'child'             =>  'tailor_carousel_item',
+		        'child_container'   =>  '.tailor-carousel__wrap',
 	        ) );
 
-	        $this->add_element( 'tailor_list', array(
-		        'label'             =>  __( 'List', 'tailor' ),
-		        'type'              =>  'container',
-		        'description'       =>  __( 'Display content in list items.', 'tailor' ),
-		        'child'             =>  'tailor_list_item',
+	        $this->add_element( 'tailor_carousel_item', array(
+		        'label'             =>  __( 'Carousel item', 'tailor' ),
+		        'type'              =>  'child',
 	        ) );
 
 	        $this->add_element( 'tailor_grid', array(
@@ -144,11 +129,23 @@ if ( ! class_exists( 'Tailor_Elements' ) ) {
 		        'child'             =>  'tailor_grid_item',
 	        ) );
 
-	        $this->add_element( 'tailor_row', array(
-                'label'             =>  __( 'Row', 'tailor' ),
-                'type'              =>  'container',
-                'child'             =>  'tailor_column',
-            ) );
+	        $this->add_element( 'tailor_grid_item', array(
+		        'label'             =>  __( 'Grid item', 'tailor' ),
+		        'type'              =>  'child',
+	        ) );
+
+	        $this->add_element( 'tailor_list', array(
+		        'label'             =>  __( 'List', 'tailor' ),
+		        'type'              =>  'container',
+		        'description'       =>  __( 'Display content in list items.', 'tailor' ),
+		        'child'             =>  'tailor_list_item',
+		        'child_container'   =>  '.tailor-list__content',
+	        ) );
+
+	        $this->add_element( 'tailor_list_item', array(
+		        'label'             =>  __( 'List item', 'tailor' ),
+		        'type'              =>  'child',
+	        ) );
 
 	        $this->add_element( 'tailor_map', array(
 		        'label'             =>  __( 'Map', 'tailor' ),
@@ -157,42 +154,89 @@ if ( ! class_exists( 'Tailor_Elements' ) ) {
 		        'dynamic'           =>  true,
 	        ) );
 
-	        $this->add_element( 'tailor_column', array(
-                'label'             =>  __( 'Column', 'tailor' ),
-                'type'              =>  'child',
-            ) );
-
-	        $this->add_element( 'tailor_tab', array(
-                'label'             =>  __( 'Tab', 'tailor' ),
-                'type'              =>  'child',
-            ) );
-
-            $this->add_element( 'tailor_toggle', array(
-                'label'             =>  __( 'Toggle', 'tailor' ),
-                'type'              =>  'child',
-            ) );
-
-	        $this->add_element( 'tailor_carousel_item', array(
-		        'label'             =>  __( 'Carousel item', 'tailor' ),
-		        'type'              =>  'child',
-	        ) );
-
 	        $this->add_element( 'tailor_map_marker', array(
 		        'label'             =>  __( 'Map marker', 'tailor' ),
 		        'type'              =>  'child',
 		        'dynamic'           =>  true,
 	        ) );
 
-	        $this->add_element( 'tailor_list_item', array(
-                'label'             =>  __( 'List item', 'tailor' ),
-                'type'              =>  'child',
-            ) );
+	        $this->add_element( 'tailor_row', array(
+		        'label'             =>  __( 'Row', 'tailor' ),
+		        'type'              =>  'container',
+		        'child'             =>  'tailor_column',
+	        ) );
 
-	        $this->add_element( 'tailor_grid_item', array(
-		        'label'             =>  __( 'Grid item', 'tailor' ),
+	        $this->add_element( 'tailor_column', array(
+		        'label'             =>  __( 'Column', 'tailor' ),
 		        'type'              =>  'child',
 	        ) );
 
+	        $this->add_element( 'tailor_tabs', array(
+		        'label'             =>  __( 'Tabs', 'tailor' ),
+		        'description'       =>  __( 'Display content in tabs.', 'tailor' ),
+		        'type'              =>  'container',
+		        'child'             =>  'tailor_tab',
+		        'child_container'   =>  '.tailor-tabs__content',
+	        ) );
+
+	        $this->add_element( 'tailor_tab', array(
+		        'label'             =>  __( 'Tab', 'tailor' ),
+		        'type'              =>  'child',
+	        ) );
+
+	        $this->add_element( 'tailor_toggles', array(
+		        'label'             =>  __( 'Toggles', 'tailor' ),
+		        'description'       =>  __( 'Display content in toggles.', 'tailor' ),
+		        'type'              =>  'container',
+		        'child'             =>  'tailor_toggle',
+	        ) );
+
+	        $this->add_element( 'tailor_toggle', array(
+		        'label'             =>  __( 'Toggle', 'tailor' ),
+		        'type'              =>  'child',
+		        'child_container'   =>  '.tailor-toggle__body',
+	        ) );
+
+
+	        /**
+	         * Wrapper elements.
+	         *
+	         * These contain one or more content elements.
+	         */
+	        $this->add_element( 'tailor_section', array(
+		        'label'             =>  __( 'Section', 'tailor' ),
+		        'description'       =>  __( 'Group and style content.', 'tailor' ),
+		        'type'              =>  'wrapper',
+		        'child_container'   =>  '.tailor-section__content',
+	        ) );
+
+	        $this->add_element( 'tailor_card', array(
+		        'label'             =>  __( 'Card', 'tailor' ),
+		        'description'       =>  __( 'Display content inside a card.', 'tailor' ),
+		        'type'              =>  'wrapper',
+		        'child_container'   =>  '.tailor-card__content',
+	        ) );
+
+	        $this->add_element( 'tailor_hero', array(
+		        'label'             =>  __( 'Hero', 'tailor' ),
+		        'description'       =>  __( 'Emphasize content in a hero pane.', 'tailor' ),
+		        'type'              =>  'wrapper',
+		        'child_container'   =>  '.tailor-hero__content',
+	        ) );
+
+	        $this->add_element( 'tailor_box', array(
+		        'label'             =>  __( 'Box', 'tailor' ),
+		        'description'       =>  __( 'Display content inside a box.', 'tailor' ),
+		        'type'              =>  'wrapper',
+		        'child_container'   =>  '.tailor-box__content',
+	        ) );
+
+
+	        /**
+	         * Content elements.
+	         *
+	         * These are responsible for rendering content and do not contain child elements.
+	         */
 	        $this->add_element( 'tailor_posts', array(
 		        'label'             =>  __( 'Posts', 'tailor' ),
 		        'description'   =>  __( 'Your site\'s posts.', 'tailor' ),
@@ -220,31 +264,18 @@ if ( ! class_exists( 'Tailor_Elements' ) ) {
 		        'description'       =>  __( 'A user profile box.', 'tailor' ),
 	        ) );
 
-	        $this->add_element( 'tailor_card', array(
-		        'label'             =>  __( 'Card', 'tailor' ),
-		        'description'       =>  __( 'Display content inside a card.', 'tailor' ),
-		        'type'              =>  'wrapper',
-	        ) );
-
-	        $this->add_element( 'tailor_hero', array(
-		        'label'             =>  __( 'Hero', 'tailor' ),
-		        'description'       =>  __( 'Emphasize content in a hero pane.', 'tailor' ),
-		        'type'              =>  'wrapper',
-	        ) );
-
-	        $this->add_element( 'tailor_box', array(
-		        'label'             =>  __( 'Box', 'tailor' ),
-		        'description'       =>  __( 'Display content inside a box.', 'tailor' ),
-		        'type'              =>  'wrapper',
-	        ) );
-
 	        $this->add_element( 'tailor_widgets', array(
 		        'label'             =>  __( 'Widgets', 'tailor' ),
 		        'description'       =>  __( 'A widget area from your site.', 'tailor' ),
 		        'dynamic'           =>  true,
 	        ) );
-	        
-	        // Third-party plugin elements
+
+
+	        /**
+	         * Plugin dependent elements.
+	         *
+	         * These will only become active when the plugin on which they depend is active.
+	         */
 	        $this->add_element( 'tailor_form_cf7', array(
 		        'label'             =>  __( 'Contact form', 'tailor' ),
 		        'description'       =>  __( 'A contact form.', 'tailor' ),

@@ -224,22 +224,17 @@ if ( ! class_exists( 'Tailor_Models' ) ) {
 		    $content_element = tailor_elements()->get_element( 'tailor_content' );
 		    $default_models = array(
 			    array(
-				    'id'            =>  'section-element-1',
-				    'tag'           =>  $section_element->tag,
-				    'label'         =>  $section_element->label,
-				    'atts'          =>  array(),
-				    'parent'        =>  '',
-				    'order'         =>  0,
+				    'id'                    =>  'section-element-1',
+				    'tag'                   =>  $section_element->tag,
+				    'atts'                  =>  array(),
 			    ),
 			    array(
-				    'id'            =>  'content-element-1',
-				    'tag'           =>  $content_element->tag,
-				    'label'         =>  $content_element->label,
-				    'atts'          =>  array(
-					    'content'       =>  wpautop( get_the_content() ),
+				    'id'                    =>  'content-element-1',
+				    'tag'                   =>  $content_element->tag,
+				    'atts'                  =>  array(
+					    'content'               =>  wpautop( get_the_content() ),
 				    ),
-				    'parent'        =>  'section-element-1',
-				    'order'         =>  0,
+				    'parent'                =>  'section-element-1',
 			    ),
 		    );
 
@@ -704,7 +699,7 @@ if ( ! class_exists( 'Tailor_Models' ) ) {
 			    $sanitized_atts['content'] = sprintf(
 				    __( '%1$sThe element associated with shortcode %2$s could not be found.%3$s ', 'tailor' ),
 				    '<p class="error">',
-				    '<code>'  . esc_attr( $unsanitized_model['tag'] ) . '</code>',
+				        '<code>'  . esc_attr( $unsanitized_model['tag'] ) . '</code>',
 				    '</p>'
 			    );
 		    }
@@ -712,7 +707,6 @@ if ( ! class_exists( 'Tailor_Models' ) ) {
 		    $sanitized_model = array(
 			    'id'            =>  $unsanitized_model['id'],
 			    'tag'           =>  $element->tag,
-			    'label'         =>  $element->label,
 			    'atts'          =>  $sanitized_atts,
 			    'parent'        =>  $unsanitized_model['parent'],
 			    'order'         =>  $unsanitized_model['order'],

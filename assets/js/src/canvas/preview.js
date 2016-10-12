@@ -300,7 +300,7 @@ var $ = Backbone.$,
 		_.each( ids, function( settingId ) {
 			SettingAPI.onChange( 'element:' + settingId, function( to, from, model ) {
 				var rule = {
-					selectors: 'tailor_button' == model.get( 'tag' ) ? [ 'a.tailor-button__inner' ] : [],
+					selectors: 'tailor_button' == model.get( 'tag' ) ? [ '.tailor-button__inner' ] : [],
 					declarations: {}
 				};
 				rule.declarations[ settingId.replace( '_', '-' ) ] = to;
@@ -412,16 +412,18 @@ var $ = Backbone.$,
 
 		// Class name
 		SettingAPI.onChange( 'element:class', function( to, from, model ) {
+			var classNames;
+
 			if ( ! _.isEmpty( from ) ) {
-				var froms = from.trim().split(/\s+(?!$)/g); // prevent multiple whitespace and whitespace at the end of string.
-				for ( var key in froms ) {
-					this.el.classList.remove( froms[key] );
+				classNames = from.trim().split( /\s+(?!$)/g ); // Prevent multiple whitespace and whitespace at the end of string.
+				for ( var i in classNames ) {
+					this.el.classList.remove( classNames[ i ] );
 				}
 			}
 			if ( ! _.isEmpty( to ) ) {
-				var tos = to.trim().split(/\s+(?!$)/g);
-				for ( var key in tos ) {
-					this.el.classList.add( tos[key] );
+				classNames = to.trim().split( /\s+(?!$)/g );
+				for ( var j in classNames ) {
+					this.el.classList.add( classNames[ j ] );
 				}
 			}
 		} );
@@ -431,7 +433,7 @@ var $ = Backbone.$,
 			var rules = [];
 			if ( 1 == to ) {
 				rules.push( {
-					selectors: [],
+					selectors: 'tailor_button' == model.get( 'tag' ) ? [ '.tailor-button__inner' ] : [ '' ],
 					declarations: { 'box-shadow' : '0 2px 6px rgba(0, 0, 0, 0.1)' }
 				} );
 			}
@@ -472,7 +474,7 @@ var $ = Backbone.$,
 			SettingAPI.onChange( 'element:' + settingId, function( to, from, model ) {
 				var rules = [];
 				var rule = {
-					selectors: [],
+					selectors: 'tailor_button' == model.get( 'tag' ) ? [ '.tailor-button__inner' ] : [],
 					declarations: {}
 				};
 
@@ -510,7 +512,7 @@ var $ = Backbone.$,
 		SettingAPI.onChange( 'element:border_width', function( to, from, model ) {
 			var rules = [];
 			var rule = {
-				selectors: [],
+				selectors: 'tailor_button' == model.get( 'tag' ) ? [ '.tailor-button__inner' ] : [ '' ],
 				declarations: {}
 			};
 
