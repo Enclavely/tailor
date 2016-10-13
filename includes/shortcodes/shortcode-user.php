@@ -36,16 +36,29 @@ if ( ! function_exists( 'tailor_shortcode_user' ) ) {
 	    if ( is_numeric( $atts['image'] ) ) {
 		    $class .= ' has-header-image';
 	    }
-
-	    $html = "<div {$id} class=\"{$class}\">";
-
+	    
 	    ob_start();
 
 	    tailor_partial( 'author', 'box', array(
 		    'author_id'         =>  $atts['author_id'],
 	    ) );
+	    
+	    $outer_html = '<div ' . trim( "{$id} class=\"{$class}\"" ) . '>%s</div>';
 
-	    return $html . ob_get_clean() . '</div>';
+	    $inner_html = ob_get_clean();
+
+	    /**
+	     * Filter the HTML for the element.
+	     *
+	     * @since 1.6.3
+	     *
+	     * @param string $outer_html
+	     * @param string $inner_html
+	     * @param array $atts
+	     */
+	    $html = apply_filters( 'tailor_shortcode_user_html', sprintf( $outer_html, $inner_html ), $outer_html, $inner_html, $atts );
+
+	    return $html;
     }
 
     add_shortcode( 'tailor_user', 'tailor_shortcode_user' );

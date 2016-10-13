@@ -35,9 +35,22 @@ if ( ! function_exists( 'tailor_shortcode_content' ) ) {
 		    $content = tailor_get_setting( 'content_placeholder', tailor_do_shakespeare() );
 	    }
 
-	    return  '<div ' . trim( "{$id} class=\"{$class}\"" ) . '>' .
-	                do_shortcode( wpautop( $content ) ) .
-	            '</div>';
+	    $outer_html = '<div ' . trim( "{$id} class=\"{$class}\"" ) . '>%s</div>';
+
+	    $inner_html = do_shortcode( wpautop( $content ) );
+
+	    /**
+	     * Filter the HTML for the element.
+	     *
+	     * @since 1.6.3
+	     *
+	     * @param string $outer_html
+	     * @param string $inner_html
+	     * @param array $atts
+	     */
+	    $html = apply_filters( 'tailor_shortcode_content_html', sprintf( $outer_html, $inner_html ), $outer_html, $inner_html, $atts );
+
+	    return $html;
     }
 
     add_shortcode( 'tailor_content', 'tailor_shortcode_content' );

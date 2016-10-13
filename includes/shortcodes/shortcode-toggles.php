@@ -39,9 +39,22 @@ if ( ! function_exists( 'tailor_shortcode_toggles' ) ) {
 		    'data-'
 	    );
 
-	    return  '<div ' . trim( "{$id} class=\"{$class}\"" ) . esc_attr( $data ) . '>' .
-	                do_shortcode( $content ) .
-	            '</div>';
+	    $outer_html = '<div ' . trim( "{$id} class=\"{$class}\" {$data}" ) . '>%s</div>';
+
+	    $inner_html = do_shortcode( $content );
+
+	    /**
+	     * Filter the HTML for the element.
+	     *
+	     * @since 1.6.3
+	     *
+	     * @param string $outer_html
+	     * @param string $inner_html
+	     * @param array $atts
+	     */
+	    $html = apply_filters( 'tailor_shortcode_toggles_html', sprintf( $outer_html, $inner_html ), $outer_html, $inner_html, $atts );
+
+	    return $html;
     }
 
     add_shortcode( 'tailor_toggles', 'tailor_shortcode_toggles' );
@@ -77,11 +90,23 @@ if ( ! function_exists( 'tailor_shortcode_toggle' ) ) {
 
 		$icon = empty( $atts['icon'] ) ? '' : sprintf( '<i class="' . esc_attr( $atts['icon' ] ) . '"></i>' );
 
-		return  '<div ' . trim( "{$id} class=\"{$class}\"" ) . '>' .
-		            '<h3 class="tailor-toggle__title">' . $icon . esc_attr( $atts['title'] ) . '</h3>' .
-		            '<div class="tailor-toggle__body">' . do_shortcode( $content ) . '</div>' .
-		        '</div>';
+		$outer_html = '<div ' . trim( "{$id} class=\"{$class}\"" ) . '>%s</div>';
 
+		$inner_html = '<h3 class="tailor-toggle__title">' . $icon . esc_attr( $atts['title'] ) . '</h3>' .
+		              '<div class="tailor-toggle__body">' . do_shortcode( $content ) . '</div>';
+
+		/**
+		 * Filter the HTML for the element.
+		 *
+		 * @since 1.6.3
+		 *
+		 * @param string $outer_html
+		 * @param string $inner_html
+		 * @param array $atts
+		 */
+		$html = apply_filters( 'tailor_shortcode_toggle_html', sprintf( $outer_html, $inner_html ), $outer_html, $inner_html, $atts );
+
+		return $html;
 	}
 
 	add_shortcode( 'tailor_toggle', 'tailor_shortcode_toggle' );

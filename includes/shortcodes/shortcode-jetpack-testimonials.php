@@ -64,16 +64,30 @@ if ( ! function_exists( 'tailor_shortcode_jetpack_testimonials' ) ) {
 	    $attr_string = trim( esc_attr( $attr_string ) );
 
 	    // Generate the HTML
-	    $html = '<div ' . trim( "{$id} class=\"{$class}\"" ) . '>';
+	    $outer_html = '<div ' . trim( "{$id} class=\"{$class}\"" ) . '>%s</div>';
 
 	    if ( is_jetpack_testimonials_active() ) {
-		    $content = do_shortcode( "[testimonials {$attr_string}][/testimonials]" );
+		    $inner_html = do_shortcode( "[testimonials {$attr_string}][/testimonials]" );
 	    }
 	    else {
-		    $content = sprintf( '<p class="tailor-notification tailor-notification--warning">%s</p>', __( 'Please enable Jetpack and the Testimonial custom post type', 'tailor' ) );
+		    $inner_html = sprintf(
+			    '<p class="tailor-notification tailor-notification--warning">%s</p>',
+			    __( 'Please enable Jetpack and the Testimonial custom post type', 'tailor' )
+		    );
 	    }
 
-	    return $html . $content . '</div>';
+	    /**
+	     * Filter the HTML for the element.
+	     *
+	     * @since 1.6.3
+	     *
+	     * @param string $outer_html
+	     * @param string $inner_html
+	     * @param array $atts
+	     */
+	    $html = apply_filters( 'tailor_shortcode_jetpack_testimonials_html', sprintf( $outer_html, $inner_html ), $outer_html, $inner_html, $atts );
+
+	    return $html;
     }
 
     add_shortcode( 'tailor_jetpack_testimonials', 'tailor_shortcode_jetpack_testimonials' );

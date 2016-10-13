@@ -54,7 +54,7 @@ var CompositeView = Marionette.CompositeView.extend( {
 
 	    // Set the child view container option (if specified)
 	    this.options.childViewContainer = this.model.get( 'child_container' ) || null;
-	    
+
         this.addEventListeners();
     },
 

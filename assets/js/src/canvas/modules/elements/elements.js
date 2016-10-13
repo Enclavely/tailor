@@ -107,7 +107,6 @@ ElementModule = Marionette.Module.extend( {
                             app.channel.trigger( 'before:elements:restore' );
                             app.channel.trigger( 'canvas:reset' );
 
-                            module.collection.reset( null );
                             module.collection.reset( models );
 
                             /**

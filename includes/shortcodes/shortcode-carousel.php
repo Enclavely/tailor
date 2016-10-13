@@ -48,11 +48,22 @@ if ( ! function_exists( 'tailor_shortcode_carousel' ) ) {
 		    'data-'
 	    );
 
-	    return  '<div ' . trim( "{$id} class=\"{$class}\"" ) . " {$data}>" .
-	                '<div class="tailor-carousel__wrap">' .
-	                    do_shortcode( $content ) .
-	                '</div>' .
-	            '</div>';
+	    $outer_html = '<div ' . trim( "{$id} class=\"{$class}\" {$data}" ) . '>%s</div>';
+
+	    $inner_html = '<div class="tailor-carousel__wrap">' . do_shortcode( $content ) . '</div>';
+
+	    /**
+	     * Filter the HTML for the element.
+	     *
+	     * @since 1.6.3
+	     *
+	     * @param string $outer_html
+	     * @param string $inner_html
+	     * @param array $atts
+	     */
+	    $html = apply_filters( 'tailor_shortcode_carousel_html', sprintf( $outer_html, $inner_html ), $outer_html, $inner_html, $atts );
+	    
+	    return $html;
     }
 
     add_shortcode( 'tailor_carousel', 'tailor_shortcode_carousel' );
@@ -90,9 +101,22 @@ if ( ! function_exists( 'tailor_shortcode_carousel_item' ) ) {
 			$class .= " has-custom-height u-align-{$atts['vertical_alignment']}";
 		}
 
-		return  '<div ' . trim( "{$id} class=\"{$class}\"" ) . '>' .
-		            do_shortcode( $content ) .
-		        '</div>';
+		$outer_html = '<div ' . trim( "{$id} class=\"{$class}\"" ) . '>%s</div>';
+
+		$inner_html = do_shortcode( $content );
+
+		/**
+		 * Filter the HTML for the element.
+		 *
+		 * @since 1.6.3
+		 *
+		 * @param string $outer_html
+		 * @param string $inner_html
+		 * @param array $atts
+		 */
+		$html = apply_filters( 'tailor_shortcode_carousel_item_html', sprintf( $outer_html, $inner_html ), $outer_html, $inner_html, $atts );
+
+		return $html;
 	}
 
 	add_shortcode( 'tailor_carousel_item', 'tailor_shortcode_carousel_item' );

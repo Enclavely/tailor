@@ -85,9 +85,7 @@ if ( ! function_exists( 'tailor_shortcode_posts' ) ) {
 	    }
 
 	    $q = new WP_Query( $query_args );
-
-	    $html = '<div ' . trim( "{$id} class=\"{$class}\"" ) . " {$data}>";
-
+	    
 	    ob_start();
 
 	    tailor_partial( 'loop', $atts['layout'], array(
@@ -106,7 +104,22 @@ if ( ! function_exists( 'tailor_shortcode_posts' ) ) {
 		    ),
 	    ) );
 
-	    return $html . ob_get_clean() . '</div>';
+	    $outer_html = '<div ' . trim( "{$id} class=\"{$class}\" {$data}" ) . '>%s</div>';
+
+	    $inner_html = ob_get_clean();
+
+	    /**
+	     * Filter the HTML for the element.
+	     *
+	     * @since 1.6.3
+	     *
+	     * @param string $outer_html
+	     * @param string $inner_html
+	     * @param array $atts
+	     */
+	    $html = apply_filters( 'tailor_shortcode_posts_html', sprintf( $outer_html, $inner_html ), $outer_html, $inner_html, $atts );
+
+	    return $html;
     }
 
     add_shortcode( 'tailor_posts', 'tailor_shortcode_posts' );

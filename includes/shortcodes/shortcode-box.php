@@ -30,7 +30,6 @@ if ( ! function_exists( 'tailor_shortcode_box' ) ) {
 	        'graphic_type'              =>  'icon',
             'icon'                      =>  'dashicons dashicons-wordpress',
             'image'                     =>  '',
-
         ), $atts, $tag );
 
 		$id = ( '' !== $atts['id'] ) ? 'id="' . esc_attr( $atts['id'] ) . '"' : '';
@@ -54,11 +53,24 @@ if ( ! function_exists( 'tailor_shortcode_box' ) ) {
 			$graphic = sprintf( '<span class="' . esc_attr( $atts['icon' ] ) . '"></span>' );
 		}
 
-        return  '<div ' . trim( "{$id} class=\"{$class}\"" ) . '>' .
-                    '<div class="tailor-box__graphic">' . $graphic . '</div>' .
-                    $title .
-                    '<div class="tailor-box__content">' . do_shortcode( $content ) . '</div>' .
-                '</div>';
+		$outer_html = '<div ' . trim( "{$id} class=\"{$class}\"" ) . '>%s</div>';
+		
+		$inner_html = '<div class="tailor-box__graphic">' . $graphic . '</div>' .
+		              $title .
+		              '<div class="tailor-box__content">' . do_shortcode( $content ) . '</div>';
+		
+		/**
+		 * Filter the HTML for the element.
+		 *
+		 * @since 1.6.3
+		 *
+		 * @param string $outer_html
+		 * @param string $inner_html
+		 * @param array $atts
+		 */
+		$html = apply_filters( 'tailor_shortcode_box_html', sprintf( $outer_html, $inner_html ), $outer_html, $inner_html, $atts );
+
+		return $html;
 	}
 
 	add_shortcode( 'tailor_box', 'tailor_shortcode_box' );

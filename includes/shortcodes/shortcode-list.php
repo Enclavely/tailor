@@ -33,9 +33,22 @@ if ( ! function_exists( 'tailor_shortcode_list' ) ) {
 	    $class = trim( esc_attr( "tailor-element tailor-list tailor-list--{$atts['type']} tailor-list--{$atts['style']} {$atts['class']}" ) );
 
 
-	    return  '<ul ' . trim( "{$id} class=\"{$class}\"" ) . '>' .
-	                do_shortcode( $content ) .
-	            '</ul>';
+	    $outer_html = '<div ' . trim( "{$id} class=\"{$class}\"" ) . '>%s</div>';
+
+	    $inner_html = do_shortcode( $content );
+
+	    /**
+	     * Filter the HTML for the element.
+	     *
+	     * @since 1.6.3
+	     *
+	     * @param string $outer_html
+	     * @param string $inner_html
+	     * @param array $atts
+	     */
+	    $html = apply_filters( 'tailor_shortcode_list_html', sprintf( $outer_html, $inner_html ), $outer_html, $inner_html, $atts );
+
+	    return $html;
     }
 
     add_shortcode( 'tailor_list', 'tailor_shortcode_list' );
@@ -88,13 +101,26 @@ if ( ! function_exists( 'tailor_shortcode_list_item' ) ) {
 			$graphic = sprintf( '<span class="' . esc_attr( $atts['icon' ] ) . '"></span>' );
 		}
 
-        return  '<li ' . trim( "{$id} class=\"{$class}\"" ) . '>' .
-                    '<div class="tailor-list__graphic">' . $graphic . '</div>' .
-                    '<div class="tailor-list__body">' .
-                        $title .
-                        '<div class="tailor-list__content">' . do_shortcode( $content ) . '</div>' .
-                    '</div>' .
-                '</li>';
+		$outer_html = '<div ' . trim( "{$id} class=\"{$class}\"" ) . '>%s</div>';
+
+		$inner_html = '<div class="tailor-list__graphic">' . $graphic . '</div>' .
+		              '<div class="tailor-list__body">' .
+		                $title .
+		                '<div class="tailor-list__content">' . do_shortcode( $content ) . '</div>' .
+		              '</div>';
+
+		/**
+		 * Filter the HTML for the element.
+		 *
+		 * @since 1.6.3
+		 *
+		 * @param string $outer_html
+		 * @param string $inner_html
+		 * @param array $atts
+		 */
+		$html = apply_filters( 'tailor_shortcode_list_item_html', sprintf( $outer_html, $inner_html ), $outer_html, $inner_html, $atts );
+
+		return $html;
 	}
 
 	add_shortcode( 'tailor_list_item', 'tailor_shortcode_list_item' );

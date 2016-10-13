@@ -53,9 +53,22 @@ if ( ! function_exists( 'tailor_shortcode_map' ) ) {
 		    $content = '<div class="tailor-map__canvas"></div>' . do_shortcode( $content );
 	    }
 
-	    return  '<div ' . trim( "{$id} class=\"{$class}\"" ) . ' ' . $data . '>' .
-	                $content .
-	            '</div>';
+	    $outer_html = '<div ' . trim( "{$id} class=\"{$class}\" {$data}" ) . '>%s</div>';
+
+	    $inner_html = $content;
+
+	    /**
+	     * Filter the HTML for the element.
+	     *
+	     * @since 1.6.3
+	     *
+	     * @param string $outer_html
+	     * @param string $inner_html
+	     * @param array $atts
+	     */
+	    $html = apply_filters( 'tailor_shortcode_map_html', sprintf( $outer_html, $inner_html ), $outer_html, $inner_html, $atts );
+
+	    return $html;
     }
 
     add_shortcode( 'tailor_map', 'tailor_shortcode_map' );
@@ -82,9 +95,26 @@ if ( ! function_exists( 'tailor_shortcode_map_marker' ) ) {
 			'longitude'         =>  '',
 		), $atts, $tag );
 
-		return  '<div class="tailor-map__marker" ' . tailor_get_attributes( $atts, 'data-' ) . '>' .
-		            do_shortcode( wpautop( $content ) ) .
-		        '</div>';
+		$class = 'tailor-map__marker';
+		
+		$data = tailor_get_attributes( $atts, 'data-' );
+		
+		$outer_html = '<div ' . trim( "class=\"{$class}\" {$data}" ) . '>%s</div>';
+
+		$inner_html = do_shortcode( wpautop( $content ) );
+
+		/**
+		 * Filter the HTML for the element.
+		 *
+		 * @since 1.6.3
+		 *
+		 * @param string $outer_html
+		 * @param string $inner_html
+		 * @param array $atts
+		 */
+		$html = apply_filters( 'tailor_shortcode_map_marker_html', sprintf( $outer_html, $inner_html ), $outer_html, $inner_html, $atts );
+
+		return $html;
 	}
 
 	add_shortcode( 'tailor_map_marker', 'tailor_shortcode_map_marker' );

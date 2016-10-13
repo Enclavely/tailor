@@ -1577,7 +1577,7 @@ var CompositeView = Marionette.CompositeView.extend( {
 
 	    // Set the child view container option (if specified)
 	    this.options.childViewContainer = this.model.get( 'child_container' ) || null;
-	    
+
         this.addEventListeners();
     },
 
@@ -3423,9 +3423,6 @@ var ElementCollection = Backbone.Collection.extend( {
         if ( 0 === this.length ) {
             this.onEmpty();
         }
-        //else {
-        //    this.each( this.applyDefaults.bind( this ) );
-        //}
     },
 
     /**
@@ -3597,15 +3594,11 @@ var ElementCollection = Backbone.Collection.extend( {
      * @returns {*}
      */
     applyDefaults : function( model ) {
-
-        if ( _.isNull( model ) ) {
-            return model;
-        }
-
+        
         if ( model instanceof Backbone.Model ) {
             model = model.toJSON();
         }
-        
+
         var item = this.getElementDefinitions().findWhere( { tag : model.tag } );
         var defaults = {
             label : item.get( 'label' ),
@@ -3636,7 +3629,6 @@ var ElementCollection = Backbone.Collection.extend( {
     createSection : function( order ) {
         return _.first( this.create( [ {
             tag : 'tailor_section',
-            label : this.getElementDefinitions().findWhere( { tag : 'tailor_section' } ).get( 'label' ),
             order : order
         } ], {
             at : order
@@ -3743,17 +3735,12 @@ var ElementCollection = Backbone.Collection.extend( {
         } ) );
 
         var childTag = model.get( 'child' );
-        var childLabel = this.getElementDefinitions().findWhere( { tag : childTag } ).get( 'label' );
         var children = this.create( [ {
             tag : childTag,
-            label : childLabel,
-            atts : {},
             parent : container.get( 'id' ),
             order : 0
         }, {
             tag : childTag,
-            label : childLabel,
-            atts : {},
             parent : container.get( 'id' ),
             order : 1
 
@@ -3792,7 +3779,6 @@ var ElementCollection = Backbone.Collection.extend( {
         if ( 'undefined' == typeof child ) {
             this.create( [ {
                 tag : 'tailor_content',
-                atts : {},
                 parent : wrapper.get( 'id' ),
                 order : 0
             } ], {
@@ -5904,7 +5890,6 @@ ElementModule = Marionette.Module.extend( {
                             app.channel.trigger( 'before:elements:restore' );
                             app.channel.trigger( 'canvas:reset' );
 
-                            module.collection.reset( null );
                             module.collection.reset( models );
 
                             /**

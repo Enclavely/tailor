@@ -42,11 +42,23 @@ if ( ! function_exists( 'tailor_shortcode_card' ) ) {
 
 	    $title = ! empty( $atts['title'] ) ? '<h3 class="tailor-card__title">' . esc_html( (string) $atts['title'] ) . '</h3>' : '';
 
-	    return  '<div ' . trim( "{$id} class=\"{$class}\"" ) . '>' .
-	                '<header class="tailor-card__header">' . $title . '</header>' .
-	                '<div class="tailor-card__content">' . do_shortcode( $content ) . '</div>' .
-	            '</div>';
+	    $outer_html = '<div ' . trim( "{$id} class=\"{$class}\"" ) . '>%s</div>';
 
+	    $inner_html = '<header class="tailor-card__header">' . $title . '</header>' .
+	                  '<div class="tailor-card__content">' . do_shortcode( $content ) . '</div>';
+
+	    /**
+	     * Filter the HTML for the element.
+	     *
+	     * @since 1.6.3
+	     *
+	     * @param string $outer_html
+	     * @param string $inner_html
+	     * @param array $atts
+	     */
+	    $html = apply_filters( 'tailor_shortcode_card_html', sprintf( $outer_html, $inner_html ), $outer_html, $inner_html, $atts );
+
+	    return $html;
     }
 
     add_shortcode( 'tailor_card', 'tailor_shortcode_card' );

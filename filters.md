@@ -34,6 +34,7 @@
 | tailor_enable_element\_control\_**{$id}** | Allow developers to prevent an element control from being displayed | bool |
 | tailor_element_active | Allow developers to prevent an element from being displayed as active | bool $active <br> Tailor_Element $element |
 | tailor_excerpt_length | Applies to the entry excerpt length | int $excerpt_length |
+| tailor_shortcode_{type}_html | Applies to the HTML returned by the shortcode rendering function | string $html <br> string $outer_html <br> string $inner_html <br> array $atts |
 
 ## Model filters
 

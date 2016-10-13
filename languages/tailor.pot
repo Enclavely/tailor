@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the Tailor package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Tailor 1.6.2\n"
+"Project-Id-Version: Tailor 1.6.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/tailor\n"
-"POT-Creation-Date: 2016-10-12 11:44:40+00:00\n"
+"POT-Creation-Date: 2016-10-13 11:05:04+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -288,7 +288,7 @@ msgstr ""
 msgid "Display content in list items."
 msgstr ""
 
-#: includes/class-elements.php:146
+#: includes/class-elements.php:145
 msgid "List item"
 msgstr ""
 
@@ -320,7 +320,7 @@ msgstr ""
 msgid "Display content in tabs."
 msgstr ""
 
-#: includes/class-elements.php:183 includes/shortcodes/shortcode-tabs.php:83
+#: includes/class-elements.php:183 includes/shortcodes/shortcode-tabs.php:94
 msgid "Tab"
 msgstr ""
 
@@ -739,7 +739,7 @@ msgstr ""
 msgid "Widget"
 msgstr ""
 
-#: includes/class-widgets.php:128 partials/underscore/element-empty.php:17
+#: includes/class-widgets.php:130 partials/underscore/element-empty.php:17
 msgid "Please configure this element as there is currently nothing to display"
 msgstr ""
 
@@ -1699,23 +1699,23 @@ msgstr ""
 msgid "There are no controls to display"
 msgstr ""
 
-#: includes/shortcodes/shortcode-form.php:38
+#: includes/shortcodes/shortcode-form.php:40
 msgid "Please select a contact form to display"
 msgstr ""
 
-#: includes/shortcodes/shortcode-form.php:45
+#: includes/shortcodes/shortcode-form.php:50
 msgid "Please enable the Contact Form 7 plugin"
 msgstr ""
 
-#: includes/shortcodes/shortcode-gallery.php:73
+#: includes/shortcodes/shortcode-gallery.php:53
 msgid "Please select one or more images to display in this gallery"
 msgstr ""
 
-#: includes/shortcodes/shortcode-jetpack-portfolio.php:100
+#: includes/shortcodes/shortcode-jetpack-portfolio.php:102
 msgid "Please enable Jetpack and the Portfolio custom post type"
 msgstr ""
 
-#: includes/shortcodes/shortcode-jetpack-testimonials.php:73
+#: includes/shortcodes/shortcode-jetpack-testimonials.php:75
 msgid "Please enable Jetpack and the Testimonial custom post type"
 msgstr ""
 
@@ -1723,16 +1723,16 @@ msgstr ""
 msgid "Please create and add a Google Maps API key in the admin settings"
 msgstr ""
 
-#: includes/shortcodes/shortcode-toggles.php:75
+#: includes/shortcodes/shortcode-toggles.php:88
 msgctxt "Default toggle title"
 msgid "Toggle"
 msgstr ""
 
-#: includes/shortcodes/shortcode-widgets.php:35
+#: includes/shortcodes/shortcode-widgets.php:37
 msgid "Please select a widget area to display"
 msgstr ""
 
-#: includes/shortcodes/shortcode-widgets.php:43
+#: includes/shortcodes/shortcode-widgets.php:48
 msgid "The selected widget area contains no widgets"
 msgstr ""
 

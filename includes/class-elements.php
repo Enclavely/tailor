@@ -139,12 +139,12 @@ if ( ! class_exists( 'Tailor_Elements' ) ) {
 		        'type'              =>  'container',
 		        'description'       =>  __( 'Display content in list items.', 'tailor' ),
 		        'child'             =>  'tailor_list_item',
-		        'child_container'   =>  '.tailor-list__content',
 	        ) );
 
 	        $this->add_element( 'tailor_list_item', array(
 		        'label'             =>  __( 'List item', 'tailor' ),
 		        'type'              =>  'child',
+		        'child_container'   =>  '.tailor-list__content',
 	        ) );
 
 	        $this->add_element( 'tailor_map', array(

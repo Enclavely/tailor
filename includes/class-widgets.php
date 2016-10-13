@@ -110,26 +110,41 @@ if ( ! class_exists( 'Tailor_Widgets' ) ) {
 		    
 		    $id = ( '' !== $atts['id'] ) ? 'id="' . esc_attr( $atts['id'] ) . '"' : '';
 		    $class = trim( esc_attr( "tailor-element tailor-widget {$atts['class']}" ) );
-		    $html = '';
+
+		    // Generate the widget HTML
+		    $inner_html = '';
 
 		    global $wp_widget_factory;
 		    foreach ( $wp_widget_factory->widgets as $widget_class_name => $wp_widget ) {
 			    if ( $wp_widget->id_base == $atts['widget_id_base'] ) {
 				    ob_start();
 				    @the_widget( $widget_class_name, $widget_atts );
-				    $html .= ob_get_clean();
+				    $inner_html .= ob_get_clean();
 			    }
 		    }
 
 		    // Check if any content is returned by the widget
-		    if ( empty( $html ) ) {
-			    $html = sprintf(
+		    if ( empty( $inner_html ) ) {
+			    $inner_html = sprintf(
 				    '<p class="tailor-notification tailor-notification--warning">%s</p>',
 				    __( 'Please configure this element as there is currently nothing to display', 'tailor' )
 			    );
 		    }
 
-		    return '<div ' . trim( "{$id} class=\"{$class}\"" ) . '>' . $html .'</div>';
+		    $outer_html = '<div ' . trim( "{$id} class=\"{$class}\"" ) . '>%s</div>';
+
+		    /**
+		     * Filter the HTML for the element.
+		     *
+		     * @since 1.6.3
+		     *
+		     * @param string $outer_html
+		     * @param string $inner_html
+		     * @param array $atts
+		     */
+		    $html = apply_filters( "tailor_shortcode_widget_{$atts['widget_id_base']}_html", sprintf( $outer_html, $inner_html ), $outer_html, $inner_html, $atts );
+
+		    return $html;
 	    }
 
 	    /**

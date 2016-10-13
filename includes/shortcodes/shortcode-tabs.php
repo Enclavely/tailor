@@ -43,10 +43,23 @@ if ( ! function_exists( 'tailor_shortcode_tabs' ) ) {
 		                            '</li>';
 	    }
 
-	    return  '<div ' . trim( "{$id} class=\"{$class}\"" ) . '>' .
-	                '<ul class="tailor-tabs__navigation">' . $navigation_items . '</ul>' .
-	                '<div class="tailor-tabs__content">' . $tabs . '</div>' .
-	            '</div>';
+	    $outer_html = '<div ' . trim( "{$id} class=\"{$class}\"" ) . '>%s</div>';
+
+	    $inner_html = '<ul class="tailor-tabs__navigation">' . $navigation_items . '</ul>' .
+	                  '<div class="tailor-tabs__content">' . $tabs . '</div>';
+
+	    /**
+	     * Filter the HTML for the element.
+	     *
+	     * @since 1.6.3
+	     *
+	     * @param string $outer_html
+	     * @param string $inner_html
+	     * @param array $atts
+	     */
+	    $html = apply_filters( 'tailor_shortcode_tabs_html', sprintf( $outer_html, $inner_html ), $outer_html, $inner_html, $atts );
+
+	    return $html;
     }
 
     add_shortcode( 'tailor_tabs', 'tailor_shortcode_tabs' );
@@ -74,14 +87,27 @@ if ( ! function_exists( 'tailor_shortcode_tab' ) ) {
 
 		$id = esc_attr( $atts['id'] );
 		$class = trim( esc_attr( "tailor-tab {$atts['class']}" ) );
-
-		$html = "<div id=\"{$id}\" class=\"{$class}\">" . do_shortcode( $content ) . '</div>';
-
+		
 		global $tailor_tab_navigation;
 		$tailor_tab_navigation[ $id ] = array(
 			'class'         =>  $atts['class'],
 			'title'         =>  empty( $atts['title'] ) ? __( 'Tab', 'tailor' ) : $atts['title'],
 		);
+
+		$outer_html = '<div ' . trim( "{$id} class=\"{$class}\"" ) . '>%s</div>';
+
+		$inner_html = do_shortcode( $content );
+
+		/**
+		 * Filter the HTML for the element.
+		 *
+		 * @since 1.6.3
+		 *
+		 * @param string $outer_html
+		 * @param string $inner_html
+		 * @param array $atts
+		 */
+		$html = apply_filters( 'tailor_shortcode_tab_html', sprintf( $outer_html, $inner_html ), $outer_html, $inner_html, $atts );
 
 		return $html;
 	}

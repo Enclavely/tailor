@@ -62,10 +62,23 @@ if ( ! function_exists( 'tailor_shortcode_button' ) ) {
 	    else {
 		    $href = '';
 	    }
+	    
+	    $outer_html = '<div ' . trim( "{$id} class=\"{$class}\"" ) . '>%s</div>';
 
-        return '<div ' . trim( "{$id} class=\"{$class}\"" ) . '>' .
-                    "<a class=\"tailor-button__inner\" {$href}>{$content}</a>" .
-                '</div>';
+	    $inner_html = "<a class=\"tailor-button__inner\" {$href}>{$content}</a>";
+	    
+	    /**
+	     * Filter the HTML for the element.
+	     *
+	     * @since 1.6.3
+	     *
+	     * @param string $outer_html
+	     * @param string $inner_html
+	     * @param array $atts
+	     */
+	    $html = apply_filters( 'tailor_shortcode_button_html', sprintf( $outer_html, $inner_html ), $outer_html, $inner_html, $atts );
+
+	    return $html;
     }
 
     add_shortcode( 'tailor_button', 'tailor_shortcode_button' );
