@@ -62,7 +62,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Widget_Element'
 	        ) );
 
 	        $this->add_setting( 'content', array(
-		        //'sanitize_callback'     =>  'tailor_sanitize_text',
+		        'sanitize_callback'     =>  'tailor_to_json',
 	        ) );
 	        $this->add_control( 'content', array(
 		        'label'                 =>  __( 'Widget settings', 'tailor' ),

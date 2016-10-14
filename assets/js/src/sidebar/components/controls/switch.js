@@ -25,7 +25,7 @@ SwitchControl = AbstractControl.extend( {
          * @returns {string}
          */
         checked : function() {
-            return ! this.value ? '' : 'checked';
+            return 1 == parseInt( this.value, 10 ) ? 'checked' : '';
         }
     },
 
@@ -35,7 +35,7 @@ SwitchControl = AbstractControl.extend( {
      * @since 1.0.0
      */
     onControlChange : function( e ) {
-        this.setSettingValue( this.ui.input.get(0).checked ? 1 : '' );
+        this.setSettingValue( this.ui.input.get( 0 ).checked ? '1' : '0' );
     },
 
     /**

@@ -288,6 +288,24 @@ if ( ! function_exists( 'tailor_sanitize_text' ) ) {
 	}
 }
 
+if ( ! function_exists( 'tailor_to_json' ) ) {
+
+	/**
+	 * Converts an array to a JSON string.
+	 *
+	 * @since 1.6.4
+	 *
+	 * @param mixed $value
+	 * @return string
+	 */
+	function tailor_to_json( $value ) {
+		if ( is_array( $value ) ) {
+			$value = json_encode( $value );
+		}
+		return $value;
+	}
+}
+
 if ( ! function_exists( 'tailor_kses_allowed_html' ) ) {
 
 	/**

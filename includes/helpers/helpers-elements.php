@@ -178,7 +178,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 			),
 			'autoplay'              =>  array(
 				'setting'               =>  array(
-					'sanitize_callback'     =>  'tailor_sanitize_number',
+					'sanitize_callback'     =>  'tailor_sanitize_text',
 				),
 				'control'               =>  array(
 					'label'                 =>  __( 'Autoplay', 'tailor' ),
@@ -188,7 +188,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 			),
 			'fade'                  =>  array(
 				'setting'               =>  array(
-					'sanitize_callback'     =>  'tailor_sanitize_number',
+					'sanitize_callback'     =>  'tailor_sanitize_text',
 				),
 				'control'               =>  array(
 					'label'                 =>  __( 'Fade', 'tailor' ),
@@ -198,7 +198,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 			),
 			'arrows'                =>  array(
 				'setting'               =>  array(
-					'sanitize_callback'     =>  'tailor_sanitize_number',
+					'sanitize_callback'     =>  'tailor_sanitize_text',
 				),
 				'control'               =>  array(
 					'label'                 =>  __( 'Arrows', 'tailor' ),
@@ -208,7 +208,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 			),
 			'dots'                  =>  array(
 				'setting'               =>  array(
-					'sanitize_callback'     =>  'tailor_sanitize_number',
+					'sanitize_callback'     =>  'tailor_sanitize_text',
 					'default'               =>  '1',
 				),
 				'control'               =>  array(
@@ -219,7 +219,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 			),
             'thumbnails'            =>  array(
                 'setting'               =>  array(
-                    'sanitize_callback'     =>  'tailor_sanitize_number',
+                    'sanitize_callback'     =>  'tailor_sanitize_text',
                     'default'               =>  '1',
                 ),
                 'control'               =>  array(
@@ -253,7 +253,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
             ),
 			'lightbox'              =>  array(
 				'setting'               =>  array(
-					'sanitize_callback'     =>  'tailor_sanitize_number',
+					'sanitize_callback'     =>  'tailor_sanitize_text',
 				),
 				'control'               =>  array(
 					'label'                 =>  __( 'Lightbox', 'tailor' ),
@@ -433,7 +433,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 			),
 			'stretch'               =>  array(
 				'setting'               =>  array(
-					'sanitize_callback'     =>  'tailor_sanitize_number',
+					'sanitize_callback'     =>  'tailor_sanitize_text',
 				),
 				'control'               =>  array(
 					'label'                 =>  __( 'Stretch-to-fit image', 'tailor' ),
@@ -443,7 +443,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 			),
 			'caption'               =>  array(
 				'setting'               =>  array(
-					'sanitize_callback'     =>  'tailor_sanitize_number',
+					'sanitize_callback'     =>  'tailor_sanitize_text',
 				),
 				'control'               =>  array(
 					'label'                 =>  __( 'Caption', 'tailor' ),

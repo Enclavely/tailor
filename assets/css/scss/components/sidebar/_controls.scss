@@ -29,6 +29,13 @@ $control-body-max-width: 350px !default;
 				margin-left: 6px;
 				font-weight: 400;
 			}
+
+			// Fix for some widget forms
+			input,
+			select,
+			textarea {
+				font-weight: normal;
+			}
 		}
 
 		&__description {

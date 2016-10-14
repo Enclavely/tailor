@@ -648,12 +648,12 @@ if ( ! class_exists( 'Tailor_Models' ) ) {
 
 		    foreach ( $unsanitized_models as $unsanitized_model ) {
 			    $sanitized_model = $this->sanitize_model( $unsanitized_model );
-			    $element = tailor_elements()->get_element( $sanitized_model['tag'] );
 
-			    $sanitized_model['type'] = $element->type;
-			    if ( property_exists( $element, 'child' ) && ! empty( $element->child ) ) {
-				    $sanitized_model['child'] = $element->child;
-			    }
+			    //$element = tailor_elements()->get_element( $sanitized_model['tag'] );
+			    //$sanitized_model['type'] = $element->type;
+			    //if ( property_exists( $element, 'child' ) && ! empty( $element->child ) ) {
+				//    $sanitized_model['child'] = $element->child;
+			    //}
 
 			    $sanitized_models[] = $sanitized_model;
 		    }
@@ -677,19 +677,18 @@ if ( ! class_exists( 'Tailor_Models' ) ) {
 		    if ( $element = tailor_elements()->get_element( $unsanitized_model['tag'] ) ) {
 			    foreach ( $element->settings() as $setting ) { /* @var $setting Tailor_Setting */
 
+				    // Apply default
 				    if ( ! array_key_exists( $setting->id, $unsanitized_model['atts'] ) ) {
 					    $unsanitized_model['atts'][ $setting->id ] = $setting->default;
 				    }
 
-				    // Sanitize the attribute value
-				    $sanitized_attribute = $setting->sanitize( $unsanitized_model['atts'][ $setting->id ] );
-
-				    // Convert multi-dimensional data to JSON string
-				    if ( is_array( $sanitized_attribute ) ) {
-					    $sanitized_attribute = json_encode( $sanitized_attribute );
+				    // Sanitize value
+				    $sanitized_value = $setting->sanitize( $unsanitized_model['atts'][ $setting->id ] );
+				    if ( is_array( $sanitized_value ) ) {
+					    continue;
 				    }
-
-				    $sanitized_atts[ $setting->id ] = $sanitized_attribute;
+				    
+				    $sanitized_atts[ $setting->id ] = $sanitized_value;
 			    }
 		    }
 		    else {

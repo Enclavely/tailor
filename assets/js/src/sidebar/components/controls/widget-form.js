@@ -62,7 +62,7 @@ WidgetFormControl = Marionette.ItemView.extend( {
                 $label.html( this.innerHTML.replace( ':', '' ) );
             } );
 
-        var values = this.getSettingValue();
+        var values = JSON.parse( this.getSettingValue() );
 
         if ( ! _.isEmpty( values ) ) {
             var $el = this.$el;
@@ -107,7 +107,7 @@ WidgetFormControl = Marionette.ItemView.extend( {
             }
         } );
         
-        this.setSettingValue( values );
+        this.setSettingValue( JSON.stringify( values ) );
         
         e.preventDefault();
         e.stopImmediatePropagation();

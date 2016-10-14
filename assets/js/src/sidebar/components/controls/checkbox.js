@@ -52,7 +52,7 @@ CheckboxControl = AbstractControl.extend( {
 
         _.each( this.ui.input, function( input ) {
             if ( input.checked ) {
-                value.push( input.value );
+                value.push( input.value || 0 );
             }
         } );
 

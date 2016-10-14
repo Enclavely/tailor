@@ -3602,15 +3602,22 @@ var ElementCollection = Backbone.Collection.extend( {
         var item = this.getElementDefinitions().findWhere( { tag : model.tag } );
         var defaults = {
             label : item.get( 'label' ),
-            type : item.get( 'type' ),
-            child : item.get( 'child' ),
-            child_container : item.get( 'child_container' )
+            type : item.get( 'type' )
         };
 
-        model.atts = model.atts || {};
+        var child = item.get( 'child' );
+        if ( child ) {
+            defaults.child = child;
+        }
 
+        var childViewContainer = item.get( 'child_container' );
+        if ( childViewContainer ) {
+            defaults.child_container = childViewContainer;
+        }
+
+        model.atts = model.atts || {};
         _.each( item.get( 'settings' ), function( setting ) {
-            if ( ! _.isNull( setting['value'] ) && ! _.isEmpty( setting['id'] ) ) {
+            if ( ! _.isEmpty( setting['value'] ) && ! model.atts.hasOwnProperty( setting['id'] ) ) {
                 model.atts[ setting['id'] ] = setting['value'];
             }
         } );
@@ -5796,8 +5803,8 @@ ElementModule = Marionette.Module.extend( {
      */
 	onBeforeStart : function( options ) {
         var module = this;
-
-        this.collection = new ElementCollection( options.elements, { silent: false } );
+        
+        this.collection = new ElementCollection( options.elements );
 
         var api = {
 

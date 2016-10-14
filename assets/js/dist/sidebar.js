@@ -1722,7 +1722,7 @@ CheckboxControl = AbstractControl.extend( {
 
         _.each( this.ui.input, function( input ) {
             if ( input.checked ) {
-                value.push( input.value );
+                value.push( input.value || 0 );
             }
         } );
 
@@ -4037,7 +4037,7 @@ SwitchControl = AbstractControl.extend( {
          * @returns {string}
          */
         checked : function() {
-            return ! this.value ? '' : 'checked';
+            return 1 == parseInt( this.value, 10 ) ? 'checked' : '';
         }
     },
 
@@ -4047,7 +4047,7 @@ SwitchControl = AbstractControl.extend( {
      * @since 1.0.0
      */
     onControlChange : function( e ) {
-        this.setSettingValue( this.ui.input.get(0).checked ? 1 : '' );
+        this.setSettingValue( this.ui.input.get( 0 ).checked ? '1' : '0' );
     },
 
     /**
@@ -4455,7 +4455,7 @@ WidgetFormControl = Marionette.ItemView.extend( {
                 $label.html( this.innerHTML.replace( ':', '' ) );
             } );
 
-        var values = this.getSettingValue();
+        var values = JSON.parse( this.getSettingValue() );
 
         if ( ! _.isEmpty( values ) ) {
             var $el = this.$el;
@@ -4500,7 +4500,7 @@ WidgetFormControl = Marionette.ItemView.extend( {
             }
         } );
         
-        this.setSettingValue( values );
+        this.setSettingValue( JSON.stringify( values ) );
         
         e.preventDefault();
         e.stopImmediatePropagation();

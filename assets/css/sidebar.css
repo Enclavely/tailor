@@ -945,6 +945,10 @@ ul {
     .tailor-ui .control__title .button-small {
       margin-left: 6px;
       font-weight: 400; }
+    .tailor-ui .control__title input,
+    .tailor-ui .control__title select,
+    .tailor-ui .control__title textarea {
+      font-weight: normal; }
   .tailor-ui .control__description {
     display: block;
     margin-bottom: 5px;
@@ -1250,7 +1254,7 @@ ul {
     border-radius: 50%;
     width: 6px;
     height: 6px;
-    margin: 4px;
+    margin: 1px -1px;
     background-color: #1e8cbe;
     float: left; }
 .tailor-ui .control--range input {
