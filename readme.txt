@@ -2,7 +2,7 @@
 Contributors: andrew.worsfold
 Donate link: http://gettailor.com/donate/
 Tags: page, layout, builder, frontend, content, page builder, drag and drop builder, home page builder, landing page builder, layout builder, frontend builder, frontend editor, responsive, visual composer, beaver builder
-Stable tag: 1.6.4
+Stable tag: 1.6.5
 Requires at least: 4.3
 Tested up to: 4.6.2
 License: GPLv3 or later
@@ -132,6 +132,10 @@ Yes.  Tailored pages can be migrated like any other type of page using the [dupl
 Yes, however, users should be directed to the WordPress plugin repository to install the latest version of the plugin.  Consider using a tool like [TGM Plugin Activation](http://tgmpluginactivation.com/) to guide users through the installation process.
 
 == Changelog ==
+
+= 1.6.5 =
+* Improved - Allow select control to contain option groups.
+* Fixed - Tabs element is not working correctly on the frontend.
 
 = 1.6.4 =
 * Fixed - Default value is incorrectly applied to elements.

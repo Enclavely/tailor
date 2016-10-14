@@ -122,6 +122,7 @@
     Tailor.Controls.Video =             require( './components/controls/video' );
     Tailor.Controls.WidgetForm =        require( './components/controls/widget-form' );
     Tailor.Controls.Default =           require( './components/controls/text' );
+    Tailor.Controls.Abstract =          require( './components/controls/abstract-control' );
 
     /**
      * Returns the element name (in title case) based on the tag or type.

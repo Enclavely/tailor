@@ -15,6 +15,21 @@ SelectControl = AbstractControl.extend( {
         'default' : '.js-default'
     },
 
+    templateHelpers : {
+
+        /**
+         * Returns "selected" if the current choice is the selected one.
+         *
+         * @since 1.0.0
+         *
+         * @param choice
+         * @returns {string}
+         */
+        selected : function( choice ) {
+            return -1 !== this.value.indexOf( choice ) ? 'selected' : '';
+        }
+    },
+
     /**
      * Adds the required event listeners.
      *

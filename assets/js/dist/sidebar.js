@@ -3874,6 +3874,21 @@ SelectControl = AbstractControl.extend( {
         'default' : '.js-default'
     },
 
+    templateHelpers : {
+
+        /**
+         * Returns "selected" if the current choice is the selected one.
+         *
+         * @since 1.0.0
+         *
+         * @param choice
+         * @returns {string}
+         */
+        selected : function( choice ) {
+            return -1 !== this.value.indexOf( choice ) ? 'selected' : '';
+        }
+    },
+
     /**
      * Adds the required event listeners.
      *
@@ -8688,6 +8703,7 @@ $buttons
     Tailor.Controls.Video =             require( './components/controls/video' );
     Tailor.Controls.WidgetForm =        require( './components/controls/widget-form' );
     Tailor.Controls.Default =           require( './components/controls/text' );
+    Tailor.Controls.Abstract =          require( './components/controls/abstract-control' );
 
     /**
      * Returns the element name (in title case) based on the tag or type.
@@ -8813,4 +8829,4 @@ $buttons
     } );
     
 } ( window, Backbone.$ ) );
-},{"../shared/components/api/setting":1,"../shared/components/behaviors/draggable":2,"../shared/utility/ajax":3,"../shared/utility/notify":4,"../shared/utility/polyfills/classlist":5,"../shared/utility/polyfills/raf":6,"../shared/utility/polyfills/transitions":7,"./app":8,"./components/behaviors/panel":9,"./components/behaviors/resizable":10,"./components/controls/button-group":12,"./components/controls/checkbox":13,"./components/controls/code":14,"./components/controls/colorpicker":15,"./components/controls/editor":16,"./components/controls/gallery":17,"./components/controls/icon":18,"./components/controls/image":19,"./components/controls/link":20,"./components/controls/list":23,"./components/controls/radio":24,"./components/controls/range":25,"./components/controls/select":27,"./components/controls/select-multi":26,"./components/controls/style":28,"./components/controls/switch":29,"./components/controls/text":30,"./components/controls/textarea":31,"./components/controls/video":32,"./components/controls/widget-form":33,"./components/panels/panel-default":34,"./components/panels/panel-empty":35,"./components/sections/section-default":36,"./entities/models/element":49,"./entities/models/element-container":47,"./entities/models/element-wrapper":48,"./modules/dialog/dialog":55,"./modules/dialog/dialog-region":54,"./modules/history/history":57,"./modules/library/library":59,"./modules/modal/modal":62,"./modules/modal/modal-region":61,"./modules/notifications/notifications":70,"./modules/panels/panels":71,"./modules/sections/sections":76,"./modules/settings/settings":78,"./modules/templates/templates":81,"./preview":82}]},{},[83]);
+},{"../shared/components/api/setting":1,"../shared/components/behaviors/draggable":2,"../shared/utility/ajax":3,"../shared/utility/notify":4,"../shared/utility/polyfills/classlist":5,"../shared/utility/polyfills/raf":6,"../shared/utility/polyfills/transitions":7,"./app":8,"./components/behaviors/panel":9,"./components/behaviors/resizable":10,"./components/controls/abstract-control":11,"./components/controls/button-group":12,"./components/controls/checkbox":13,"./components/controls/code":14,"./components/controls/colorpicker":15,"./components/controls/editor":16,"./components/controls/gallery":17,"./components/controls/icon":18,"./components/controls/image":19,"./components/controls/link":20,"./components/controls/list":23,"./components/controls/radio":24,"./components/controls/range":25,"./components/controls/select":27,"./components/controls/select-multi":26,"./components/controls/style":28,"./components/controls/switch":29,"./components/controls/text":30,"./components/controls/textarea":31,"./components/controls/video":32,"./components/controls/widget-form":33,"./components/panels/panel-default":34,"./components/panels/panel-empty":35,"./components/sections/section-default":36,"./entities/models/element":49,"./entities/models/element-container":47,"./entities/models/element-wrapper":48,"./modules/dialog/dialog":55,"./modules/dialog/dialog-region":54,"./modules/history/history":57,"./modules/library/library":59,"./modules/modal/modal":62,"./modules/modal/modal-region":61,"./modules/notifications/notifications":70,"./modules/panels/panels":71,"./modules/sections/sections":76,"./modules/settings/settings":78,"./modules/templates/templates":81,"./preview":82}]},{},[83]);

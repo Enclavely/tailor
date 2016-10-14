@@ -85,11 +85,11 @@ if ( ! function_exists( 'tailor_shortcode_tab' ) ) {
 			'title'             =>  '',
 		), $atts, $tag );
 
-		$id = esc_attr( $atts['id'] );
+		$id = 'id="' . esc_attr( $atts['id'] ) . '"';
 		$class = trim( esc_attr( "tailor-tab {$atts['class']}" ) );
 		
 		global $tailor_tab_navigation;
-		$tailor_tab_navigation[ $id ] = array(
+		$tailor_tab_navigation[ $atts['id'] ] = array(
 			'class'         =>  $atts['class'],
 			'title'         =>  empty( $atts['title'] ) ? __( 'Tab', 'tailor' ) : $atts['title'],
 		);

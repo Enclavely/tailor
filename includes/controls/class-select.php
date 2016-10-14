@@ -54,11 +54,17 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Select_Control'
         protected function render_template() { ?>
 
             <select>
-                <% for ( var choice in choices ) { %>
-                <option value="<%= choice %>" <% if ( choice === value ) { %>selected="selected"<% } %>>
-                    <%= choices[ choice ] %>
-                </option>
+                <% _.each( choices, function( choice, index ) { %>
+                <% if ( ! _.isString( choice ) ) { %>
+                <optgroup label="<%= index %>">
+                    <% _.each( choice, function( groupChoice, index ) { %>
+                    <option value="<%= index %>" <%= selected( index ) %>><%= groupChoice %></option>
+                    <% } ) %>
+                </optgroup>
+                <% } else { %>
+                <option value="<%= index %>" <%= selected( index ) %>><%= choice %></option>
                 <% } %>
+                <% } ) %>
             </select>
 
             <?php
