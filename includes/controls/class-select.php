@@ -55,7 +55,7 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Select_Control'
 
             <select>
                 <% _.each( choices, function( choice, index ) { %>
-                <% if ( _.isArray( choice ) ) { %>
+                <% if ( _.isObject( choice ) ) { %>
                 <optgroup label="<%= index %>">
                     <% _.each( choice, function( groupChoice, index ) { %>
                     <option value="<%= index %>" <%= selected( index ) %>><%= groupChoice %></option>
