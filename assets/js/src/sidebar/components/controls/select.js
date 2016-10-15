@@ -26,7 +26,7 @@ SelectControl = AbstractControl.extend( {
          * @returns {string}
          */
         selected : function( choice ) {
-            return -1 !== this.value.indexOf( choice ) ? 'selected' : '';
+            return this.value == choice ? 'selected' : '';
         }
     },
 
