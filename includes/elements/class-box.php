@@ -59,6 +59,9 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Box_Element' ) 
 			        ),
 		        ),
 		        'graphic_type'          =>  array(
+			        'setting'               =>  array(
+				        'default'               =>  'icon',
+			        ),
 			        'control'               =>  array(
 				        'choices'               =>  array(
 					        'icon'                  =>  __( 'Icon', 'tailor' ),
@@ -67,6 +70,9 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Box_Element' ) 
 			        ),
 		        ),
 		        'icon'                  =>  array(
+			        'setting'               =>  array(
+				        'default'               =>  'dashicons dashicons-wordpress',
+			        ),
                     'control'               =>  array(
                         'dependencies'          =>  array(
                             'graphic_type'          =>  array(
@@ -164,7 +170,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Box_Element' ) 
 	        $attribute_control_arguments = array();
 	        tailor_control_presets( $this, $attribute_control_types, $attribute_control_arguments, $priority );
         }
-
+	    
 	    /**
 	     * Returns custom CSS rules for the element.
 	     *

@@ -66,6 +66,9 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_List_Item_Eleme
 			        ),
 		        ),
 		        'graphic_type'          =>  array(
+			        'setting'               =>  array(
+				        'default'               =>  'icon',
+			        ),
 			        'control'               =>  array(
 				        'choices'               =>  array(
 					        'icon'                  =>  __( 'Icon', 'tailor' ),
@@ -75,6 +78,9 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_List_Item_Eleme
 			        ),
 		        ),
 		        'icon'                  =>  array(
+			        'setting'               =>  array(
+				        'default'               =>  'dashicons dashicons-wordpress',
+			        ),
 			        'control'               =>  array(
 				        'dependencies'          =>  array(
 					        'graphic_type'          =>  array(

@@ -4470,9 +4470,12 @@ WidgetFormControl = Marionette.ItemView.extend( {
                 $label.html( this.innerHTML.replace( ':', '' ) );
             } );
 
-        var values = JSON.parse( this.getSettingValue() );
+        var values = this.getSettingValue();
 
         if ( ! _.isEmpty( values ) ) {
+
+            values = JSON.parse( values );
+
             var $el = this.$el;
             var idBase = this.model.get( 'widget_id_base' );
 

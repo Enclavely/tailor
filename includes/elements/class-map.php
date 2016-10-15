@@ -45,7 +45,8 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Map_Element' ) 
 	        $priority = 0;
 
             $this->add_setting( 'address', array(
-                'sanitize_callback'     =>  'tailor_sanitize_text',
+	            'sanitize_callback'     =>  'tailor_sanitize_text',
+	            'default'               =>  'Melbourne, Australia',
             ) );
             $this->add_control( 'address', array(
                 'label'                 =>  __( 'Address', 'tailor' ),
@@ -76,6 +77,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Map_Element' ) 
 
 	        $this->add_setting( 'zoom', array(
 		        'sanitize_callback'     =>  'tailor_sanitize_text',
+		        'default'               =>  '13',
 	        ) );
 	        $this->add_control( 'zoom', array(
 		        'label'                 =>  __( 'Zoom level', 'tailor' ),
@@ -86,6 +88,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Map_Element' ) 
 
 	        $this->add_setting( 'controls', array(
 		        'sanitize_callback'     =>  'tailor_sanitize_number',
+		        'default'               =>  '0',
 	        ) );
 	        $this->add_control( 'controls', array(
 		        'label'                 =>  __( 'Show controls', 'tailor' ),
@@ -130,7 +133,10 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Map_Element' ) 
 		        'section'               =>  'colors',
 	        ) );
 
-	        $this->add_setting( 'saturation', array() );
+	        $this->add_setting( 'saturation', array(
+		        'sanitize_callback'     =>  'tailor_sanitize_text',
+		        'default'               =>  '-50',
+	        ) );
 	        $this->add_control( 'saturation', array(
 		        'label'                 =>  __( 'Saturation', 'tailor' ),
 		        'type'                  =>  'number',

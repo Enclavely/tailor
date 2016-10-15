@@ -80,7 +80,19 @@ window.Tailor.initElements = function() {
 	} );
 
 	// Lightboxes
-	$( '.is-lightbox-gallery' ).tailorLightbox();
+	$( '.is-lightbox-gallery' ).each( function() {
+		var $el = $( this );
+
+		if ( $el.hasClass( 'tailor-carousel' ) ) {
+			$el.tailorLightbox( {
+				delegate : '.slick-slide:not( .slick-cloned ) .is-lightbox-image'
+			} );
+		}
+		else {
+			$el.tailorLightbox();
+		}
+	} );
+
 };
 
 // Initialize elements when the document is ready

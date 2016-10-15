@@ -46,6 +46,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Tabs_Element' )
 
 	        $this->add_setting( 'position', array(
 		        'sanitize_callback'     =>  'tailor_sanitize_text',
+		        'default'               =>  'top',
 	        ) );
 	        $this->add_control( 'position', array(
 		        'label'                 =>  __( 'Tabs position', 'tailor' ),

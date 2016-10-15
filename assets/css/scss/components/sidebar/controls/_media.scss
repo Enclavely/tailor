@@ -49,6 +49,10 @@
 	&.is-loading {
 		background: url( ../img/spinner.gif ) no-repeat center;
 
+		img {
+			width: 100%;
+		}
+
 		> * {
 			visibility: hidden;
 		}

@@ -22,12 +22,15 @@ if ( ! function_exists( 'tailor_shortcode_grid' ) ) {
      */
     function tailor_shortcode_grid( $atts, $content = null, $tag ) {
 
-        $atts = shortcode_atts( array(
-            'id'                        =>  '',
-            'class'                     =>  '',
-            'items_per_row'             =>  2,
-            'collapse'                  =>  'tablet',
-        ), $atts, $tag );
+	    /**
+	     * Filter the default shortcode attributes.
+	     *
+	     * @since 1.6.6
+	     *
+	     * @param array
+	     */
+	    $default_atts = apply_filters( 'tailor_shortcode_default_atts_' . $tag, array() );
+	    $atts = shortcode_atts( $default_atts, $atts, $tag );
 
 	    $id = ( '' !== $atts['id'] ) ? 'id="' . esc_attr( $atts['id'] ) . '"' : '';
 	    $class = trim( esc_attr( "tailor-element tailor-grid tailor-grid--{$atts['collapse']} tailor-grid--{$atts['items_per_row']} tailor-grid--bordered {$atts['class']}" ) );
@@ -66,13 +69,16 @@ if ( ! function_exists( 'tailor_shortcode_grid_item' ) ) {
 	 * @return string
 	 */
 	function tailor_shortcode_grid_item( $atts, $content = null, $tag ) {
-
-        $atts = shortcode_atts( array(
-            'id'                        =>  '',
-            'class'                     =>  '',
-            'horizontal_alignment'      =>  '',
-            'vertical_alignment'        =>  '',
-        ), $atts, $tag );
+		
+		/**
+		 * Filter the default shortcode attributes.
+		 *
+		 * @since 1.6.6
+		 *
+		 * @param array
+		 */
+		$default_atts = apply_filters( 'tailor_shortcode_default_atts_' . $tag, array() );
+		$atts = shortcode_atts( $default_atts, $atts, $tag );
 
 		$id = ( '' !== $atts['id'] ) ? 'id="' . esc_attr( $atts['id'] ) . '"' : '';
 		$class = trim( esc_attr( "tailor-grid__item {$atts['class']}" ) );

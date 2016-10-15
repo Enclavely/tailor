@@ -219,7 +219,22 @@ window.Tailor.initElements = function() {
 	} );
 
 	// Lightboxes
-	$( '.is-lightbox-gallery' ).tailorLightbox();
+	$( '.is-lightbox-gallery' ).each( function() {
+		var $el = $( this );
+
+		if ( $el.hasClass( 'tailor-carousel' ) ) {
+
+			console.log( 'carousel' );
+
+			$el.tailorLightbox( {
+				delegate : '.slick-slide:not( .slick-cloned ) .is-lightbox-image'
+			} );
+		}
+		else {
+			$el.tailorLightbox();
+		}
+	} );
+
 };
 
 // Initialize elements when the document is ready
@@ -788,7 +803,9 @@ Parallax.prototype = {
 
 
 	/**
-	 * Adds the required event listeners
+	 * Adds the required event listeners.
+	 * 
+	 * @since 1.4.0
 	 */
 	addEventListeners : function() {
 		this.$win
@@ -1513,7 +1530,7 @@ Toggles.prototype = {
         toggles : '.tailor-toggle__title',
         content : '.tailor-toggle__body',
         accordion : false,
-        initial : -1,
+        initial : 0,
         speed : 150
     },
 
@@ -1543,10 +1560,10 @@ Toggles.prototype = {
         this.querySelectors();
         this.addEventListeners();
 
-        var initial = ( this.options.initial - 1 );
-        if ( this.$toggles[ initial ] ) {
-            this.activate( this.$toggles[ initial ] );
-        }
+	    var initial = this.options.initial - 1;
+	    if ( initial >= 0 && this.$toggles.length > initial ) {
+		    this.activate( this.$toggles[ initial ] );
+	    }
 
 	    if ( 'function' == typeof this.callbacks.onInitialize ) {
 		    this.callbacks.onInitialize.call( this );
@@ -1583,7 +1600,7 @@ Toggles.prototype = {
      * @since 1.0.0
      */
     querySelectors : function() {
-        this.$content = this.$el.find( this.options.content );
+        this.$content = this.$el.find( this.options.content ).hide();
         this.$toggles = this.$el
             .find( this.options.toggles )
             .off()

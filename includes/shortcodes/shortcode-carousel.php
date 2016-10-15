@@ -22,16 +22,15 @@ if ( ! function_exists( 'tailor_shortcode_carousel' ) ) {
      */
     function tailor_shortcode_carousel( $atts, $content = null, $tag ) {
 
-        $atts = shortcode_atts( array(
-            'id'                        =>  '',
-            'class'                     =>  '',
-            'style'                     =>  'default',
-            'items_per_row'             =>  '1',
-            'autoplay'                  =>  '',
-            'fade'                      =>  '',
-            'arrows'                    =>  '',
-            'dots'                      =>  '',
-        ), $atts, $tag );
+	    /**
+	     * Filter the default shortcode attributes.
+	     *
+	     * @since 1.6.6
+	     *
+	     * @param array
+	     */
+	    $default_atts = apply_filters( 'tailor_shortcode_default_atts_' . $tag, array() );
+	    $atts = shortcode_atts( $default_atts, $atts, $tag );
 
         $id = ( '' !== $atts['id'] ) ? 'id="' . esc_attr( $atts['id'] ) . '"' : '';
         $class = trim( esc_attr( "tailor-element tailor-carousel tailor-carousel--{$atts['style']} tailor-carousel--outline {$atts['class']}" ) );
@@ -83,12 +82,15 @@ if ( ! function_exists( 'tailor_shortcode_carousel_item' ) ) {
 	 */
 	function tailor_shortcode_carousel_item( $atts, $content = null, $tag ) {
 
-		$atts = shortcode_atts( array(
-			'id'                        =>  '',
-			'class'                     =>  '',
-			'horizontal_alignment'      =>  'left',
-			'vertical_alignment'        =>  '',
-		), $atts, $tag );
+		/**
+		 * Filter the default shortcode attributes.
+		 *
+		 * @since 1.6.6
+		 *
+		 * @param array
+		 */
+		$default_atts = apply_filters( 'tailor_shortcode_default_atts_' . $tag, array() );
+		$atts = shortcode_atts( $default_atts, $atts, $tag );
 
 		$id = ( '' !== $atts['id'] ) ? 'id="' . esc_attr( $atts['id'] ) . '"' : '';
 		$class = trim( esc_attr( "tailor-carousel__item {$atts['class']}" ) );

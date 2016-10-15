@@ -101,13 +101,16 @@ if ( ! class_exists( 'Tailor_Widgets' ) ) {
 			    }
 		    }
 
-		    // Process element attributes
-		    $atts = shortcode_atts( array(
-			    'id'                =>  '',
-			    'class'             =>  '',
-			    'widget_id_base'    =>  '',
-		    ), $atts, $tag );
-		    
+		    /**
+		     * Filter the default shortcode attributes.
+		     *
+		     * @since 1.6.6
+		     *
+		     * @param array
+		     */
+		    $default_atts = apply_filters( 'tailor_shortcode_default_atts_' . $tag, array( 'widget_id_base' => '' ) );
+		    $atts = shortcode_atts( $default_atts, $atts, $tag );
+
 		    $id = ( '' !== $atts['id'] ) ? 'id="' . esc_attr( $atts['id'] ) . '"' : '';
 		    $class = trim( esc_attr( "tailor-element tailor-widget {$atts['class']}" ) );
 

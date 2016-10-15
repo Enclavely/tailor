@@ -29,6 +29,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Column_Element'
 
 		    $this->add_setting( 'width', array(
 			    'sanitize_callback'     =>  'tailor_sanitize_number',
+			    'default'               =>  '6',
 		    ) );
 
 		    $this->add_section( 'general', array(

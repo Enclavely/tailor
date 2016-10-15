@@ -22,17 +22,15 @@ if ( ! function_exists( 'tailor_shortcode_map' ) ) {
      */
     function tailor_shortcode_map( $atts, $content = null, $tag ) {
 
-        $atts = shortcode_atts( array(
-            'id'                        =>  '',
-            'class'                     =>  '',
-            'address'                   =>  'Melbourne, Australia',
-            'latitude'                  =>  '',
-            'longitude'                 =>  '',
-	        'controls'                  =>  0,
-            'zoom'                      =>  '13',
-            'saturation'                =>  '-50',
-            'hue'                       =>  '',
-        ), $atts, $tag );
+	    /**
+	     * Filter the default shortcode attributes.
+	     *
+	     * @since 1.6.6
+	     *
+	     * @param array
+	     */
+	    $default_atts = apply_filters( 'tailor_shortcode_default_atts_' . $tag, array() );
+	    $atts = shortcode_atts( $default_atts, $atts, $tag );
 
 	    $id = ( '' !== $atts['id'] ) ? 'id="' . esc_attr( $atts['id'] ) . '"' : '';
 	    $class = trim( esc_attr( "tailor-element tailor-map {$atts['class']}" ) );
@@ -88,12 +86,15 @@ if ( ! function_exists( 'tailor_shortcode_map_marker' ) ) {
 	 */
 	function tailor_shortcode_map_marker( $atts, $content = null, $tag ) {
 
-		$atts = shortcode_atts( array(
-			'title'             =>  '',
-			'address'           =>  '',
-			'latitude'          =>  '',
-			'longitude'         =>  '',
-		), $atts, $tag );
+		/**
+		 * Filter the default shortcode attributes.
+		 *
+		 * @since 1.6.6
+		 *
+		 * @param array
+		 */
+		$default_atts = apply_filters( 'tailor_shortcode_default_atts_' . $tag, array() );
+		$atts = shortcode_atts( $default_atts, $atts, $tag );
 
 		$class = 'tailor-map__marker';
 		

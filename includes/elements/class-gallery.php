@@ -72,6 +72,9 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Gallery_Element
 	        );
 	        $general_control_arguments = array(
 		        'layout'                =>  array(
+			        'setting'               =>  array(
+				        'default'               =>  'list',
+			        ),
                     'control'               =>  array(
                         'choices'               =>  array(
                             'list'                  =>  __( 'List', 'tailor' ),
@@ -170,6 +173,16 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Gallery_Element
 						        'value'                 =>  '2',
 					        ),
 				        ),
+			        ),
+		        ),
+		        'image_link'            =>  array(
+			        'setting'               =>  array(
+				        'default'               =>  'none',
+			        ),
+		        ),
+		        'image_size'            =>  array(
+			        'setting'               =>  array(
+				        'default'               =>  'large',
 			        ),
 		        ),
 	        );

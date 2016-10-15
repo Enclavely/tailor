@@ -22,15 +22,15 @@ if ( ! function_exists( 'tailor_shortcode_box' ) ) {
 	 */
 	function tailor_shortcode_box( $atts, $content = null, $tag ) {
 
-        $atts = shortcode_atts( array(
-            'id'                        =>  '',
-            'class'                     =>  '',
-            'title'                     =>  '',
-            'horizontal_alignment'      =>  '',
-	        'graphic_type'              =>  'icon',
-            'icon'                      =>  'dashicons dashicons-wordpress',
-            'image'                     =>  '',
-        ), $atts, $tag );
+		/**
+		 * Filter the default shortcode attributes.
+		 * 
+		 * @since 1.6.6
+		 * 
+		 * @param array
+		 */
+		$default_atts = apply_filters( 'tailor_shortcode_default_atts_' . $tag, array() );
+		$atts = shortcode_atts( $default_atts, $atts, $tag );
 
 		$id = ( '' !== $atts['id'] ) ? 'id="' . esc_attr( $atts['id'] ) . '"' : '';
 		$class = trim( esc_attr( "tailor-element tailor-box tailor-box--{$atts['graphic_type']} {$atts['class']}" ) );

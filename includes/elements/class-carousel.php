@@ -63,11 +63,19 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Carousel_Elemen
 	        );
 	        $general_control_arguments = array(
 		        'style'                 =>  array(
+			        'setting'               =>  array(
+				        'default'               =>  'default'
+			        ),
 			        'control'               =>  array(
 				        'choices'               =>  array(
 					        'default'               =>  __( 'Default', 'tailor' ),
 					        'slider'                =>  __( 'Slider', 'tailor' ),
 				        ),
+			        ),
+		        ),
+		        'items_per_row'         =>  array(
+			        'setting'               =>  array(
+				        'default'               =>  '1'
 			        ),
 		        ),
 		        'autoplay'              =>  array(

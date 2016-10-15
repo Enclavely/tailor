@@ -44,8 +44,20 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Toggles_Element
 
 	        $priority = 0;
 
+	        $this->add_setting( 'initial', array(
+		        'sanitize_callback'     =>  'tailor_sanitize_number',
+	        ) );
+	        $this->add_control( 'initial', array(
+		        'label'                 =>  __( 'Open toggle', 'tailor' ),
+		        'description'           =>  __( 'The position of the toggle to open by default', 'tailor' ),
+		        'type'                  =>  'number',
+		        'priority'              =>  $priority += 10,
+		        'section'               =>  'general',
+	        ) );
+
 	        $this->add_setting( 'accordion', array(
 		        'sanitize_callback'     =>  'tailor_sanitize_number',
+		        'default'               =>  '0',
 	        ) );
 	        $this->add_control( 'accordion', array(
 		        'label'                 =>  __( 'Accordion', 'tailor' ),

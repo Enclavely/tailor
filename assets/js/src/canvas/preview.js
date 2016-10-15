@@ -359,8 +359,8 @@ var $ = Backbone.$,
 		// Minimum item height
 		SettingAPI.onChange( 'element:min_item_height', function( to, from, model ) {
 			return [ {
-				selectors: [ model.get( 'tag' ).replace( /_/gi, '-' ) + '__item' ],
-				declarations: { minHeight : to }
+				selectors: [ '.' + model.get( 'tag' ).replace( /_/gi, '-' ) + '__item' ],
+				declarations: { 'min-height' : to }
 			} ];
 		} );
 

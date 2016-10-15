@@ -23,13 +23,15 @@ if ( ! function_exists( 'tailor_shortcode_user' ) ) {
      */
     function tailor_shortcode_user( $atts, $content = null, $tag ) {
 
-        $atts = shortcode_atts( array(
-            'id'                        =>  '',
-            'class'                     =>  '',
-            'author_id'                 =>  '',
-            'image'                     =>  '',
-
-        ), $atts, $tag );
+	    /**
+	     * Filter the default shortcode attributes.
+	     *
+	     * @since 1.6.6
+	     *
+	     * @param array
+	     */
+	    $default_atts = apply_filters( 'tailor_shortcode_default_atts_' . $tag, array() );
+	    $atts = shortcode_atts( $default_atts, $atts, $tag );
 
 	    $id = ( '' !== $atts['id'] ) ? 'id="' . esc_attr( $atts['id'] ) . '"' : '';
 	    $class = trim( esc_attr( "tailor-element tailor-author {$atts['class']}" ) );

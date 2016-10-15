@@ -72,6 +72,11 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Jetpack_Portfol
 					    ),
 				    ),
 			    ),
+			    'posts_per_page'        =>  array(
+				    'setting'               =>  array(
+					    'default'               =>  '6',
+				    ),
+			    ),
 		    );
 		    tailor_control_presets( $this, $general_control_types, $general_control_arguments, $priority );
 
@@ -103,7 +108,18 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Jetpack_Portfol
 			    'order_by',
 			    'order',
 		    );
-		    $query_control_arguments = array();
+		    $query_control_arguments = array(
+			    'order_by'              =>  array(
+				    'setting'               =>  array(
+					    'default'               =>  'date',
+				    ),
+			    ),
+			    'order'                 =>  array(
+				    'setting'               =>  array(
+					    'default'               =>  'DESC',
+				    ),
+			    ),
+		    );
 		    tailor_control_presets( $this, $query_control_types, $query_control_arguments, $priority );
 
 		    $priority = 0;

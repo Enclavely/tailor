@@ -22,11 +22,15 @@ if ( ! function_exists( 'tailor_shortcode_form' ) ) {
      */
     function tailor_shortcode_form( $atts, $content = null, $tag ) {
 
-        $atts = shortcode_atts( array(
-            'id'                        =>  '',
-            'class'                     =>  '',
-	        'form'                      =>  '',
-        ), $atts, $tag );
+	    /**
+	     * Filter the default shortcode attributes.
+	     *
+	     * @since 1.6.6
+	     *
+	     * @param array
+	     */
+	    $default_atts = apply_filters( 'tailor_shortcode_default_atts_' . $tag, array() );
+	    $atts = shortcode_atts( $default_atts, $atts, $tag );
 
 	    $id = ( '' !== $atts['id'] ) ? 'id="' . esc_attr( $atts['id'] ) . '"' : '';
 	    $class = trim( esc_attr( "tailor-element tailor-form {$atts['class']}" ) );

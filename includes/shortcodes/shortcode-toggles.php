@@ -22,22 +22,22 @@ if ( ! function_exists( 'tailor_shortcode_toggles' ) ) {
      */
     function tailor_shortcode_toggles( $atts, $content = null, $tag ) {
 
-        $atts = shortcode_atts( array(
-            'id'                        =>  '',
-            'class'                     =>  '',
-            'initial'                   =>  0,
-            'accordion'                 =>  0,
-        ), $atts, $tag );
+	    /**
+	     * Filter the default shortcode attributes.
+	     *
+	     * @since 1.6.6
+	     *
+	     * @param array
+	     */
+	    $default_atts = apply_filters( 'tailor_shortcode_default_atts_' . $tag, array() );
+	    $atts = shortcode_atts( $default_atts, $atts, $tag );
 
 	    $id = ( '' !== $atts['id'] ) ? 'id="' . esc_attr( $atts['id'] ) . '"' : '';
 	    $class = trim( esc_attr( "tailor-element tailor-toggles {$atts['class']}" ) );
-	    $data = tailor_get_attributes(
-		    array(
-			    'accordion'         =>  boolval( $atts['accordion'] ),
-			    'initial'           =>  boolval( $atts['initial'] ),
-		    ),
-		    'data-'
-	    );
+	    $data = tailor_get_attributes( array(
+		    'accordion'         =>  boolval( $atts['accordion'] ),
+		    'initial'           =>  $atts['initial'],
+	    ), 'data-' );
 
 	    $outer_html = '<div ' . trim( "{$id} class=\"{$class}\" {$data}" ) . '>%s</div>';
 
@@ -74,12 +74,15 @@ if ( ! function_exists( 'tailor_shortcode_toggle' ) ) {
 	 */
 	function tailor_shortcode_toggle( $atts, $content = null, $tag ) {
 
-		$atts = shortcode_atts( array(
-			'id'                =>  '',
-			'class'             =>  '',
-			'title'             =>  '',
-			'icon'              =>  '',
-		), $atts, $tag );
+		/**
+		 * Filter the default shortcode attributes.
+		 *
+		 * @since 1.6.6
+		 *
+		 * @param array
+		 */
+		$default_atts = apply_filters( 'tailor_shortcode_default_atts_' . $tag, array() );
+		$atts = shortcode_atts( $default_atts, $atts, $tag );
 
 		$id = ( '' !== $atts['id'] ) ? 'id="' . esc_attr( $atts['id'] ) . '"' : '';
 		$class = trim( esc_attr( "tailor-toggle {$atts['class']}" ) );

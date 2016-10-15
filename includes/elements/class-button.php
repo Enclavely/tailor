@@ -65,6 +65,9 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Button_Element'
 		    );
 		    $general_control_arguments = array(
 			    'style'                 =>  array(
+				    'setting'               =>  array(
+					    'default'               =>  'default',
+				    ),
 				    'control'               =>  array(
 					    'choices'               =>  array(
 						    'default'               =>  __( 'Default', 'tailor' ),

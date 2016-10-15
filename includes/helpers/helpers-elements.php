@@ -166,9 +166,6 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 			'min_item_height'       =>  array(
 				'setting'               =>  array(
 					'sanitize_callback'     =>  'tailor_sanitize_text',
-					'refresh'               =>  array(
-						'method'                =>  'js',
-					),
 				),
 				'control'               =>  array(
 					'label'                 =>  __( 'Minimum item height', 'tailor' ),
@@ -276,8 +273,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 			),
 			'posts_per_page'        =>  array(
 				'setting'               =>  array(
-					'sanitize_callback'     =>  'tailor_sanitize_text',
-					'default'               =>  '4',
+					'sanitize_callback'     =>  'tailor_sanitize_number',
 				),
 				'control'               =>  array(
 					'label'                 =>  __( 'Posts per page', 'tailor' ),

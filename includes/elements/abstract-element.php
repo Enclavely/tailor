@@ -119,8 +119,44 @@ if ( class_exists( 'Tailor_Setting_Manager' ) && ! class_exists( 'Tailor_Element
 
 	        if ( $this->active() ) {
 		        $this->register_element_controls();
+		        $this->add_filters();
 	        }
         }
+
+	    /**
+	     * Regsiters the required filters hooks.
+	     * 
+	     * @since 1.6.6
+	     */
+	    protected function add_filters() {
+		    add_filter( 'tailor_shortcode_default_atts_' . $this->tag, array( $this, 'shortcode_default_atts' ) );
+	    }
+
+	    /**
+	     * Returns setting defaults for use with the shortcode rendering function.
+	     * 
+	     * @since 1.6.6
+	     * 
+	     * @param array $defaults
+	     *
+	     * @return array
+	     */
+	    public function shortcode_default_atts( $defaults = array() ) {
+		    
+		    foreach ( (array) $this->settings() as $setting ) { /* @var $setting Tailor_Setting */
+			    if ( ! array_key_exists( $setting->id, $defaults ) ) {
+				    $defaults[ $setting->id ] = $setting->default;
+			    }
+		    }
+
+		    if ( 'tailor_jetpack_portfolio' == $this->tag ) {
+			    echo 'filtering for ' . $this->tag;
+			    print_r( $this->settings() );
+			    print_r( $defaults );
+		    }
+		    
+		    return $defaults;
+	    }
 
 	    /**
 	     * Checks whether the element is active.
@@ -249,6 +285,11 @@ if ( class_exists( 'Tailor_Setting_Manager' ) && ! class_exists( 'Tailor_Element
 	     * @since 1.4.0
 	     */
 	    public function register_element_controls() {
+
+		    // ID setting for all elements
+		    $this->add_setting( 'id', array(
+			    'sanitize_callback'     =>  'tailor_sanitize_text',
+		    ) );
 
 		    $this->register_controls();
 

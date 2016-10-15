@@ -52,13 +52,22 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Grid_Element' )
             );
             $general_control_arguments = array(
                 'items_per_row'         =>  array(
+	                'setting'               =>  array(
+		                'default'               =>  '2',
+	                ),
                     'control'               =>  array(
                         'choices'               =>  tailor_get_range( 2, 6, 1 ),
                     ),
                 ),
+	            'min_item_height'       =>  array(
+		            'setting'               =>  array(
+			            'refresh'               =>  array(
+				            'method'                =>  'js',
+			            ),
+		            ),
+	            ),
             );
             $priority = tailor_control_presets( $this, $general_control_types, $general_control_arguments, $priority );
-
 	        
 	        $this->add_setting( 'collapse', array(
 		        'sanitize_callback'     =>  'tailor_sanitize_text',

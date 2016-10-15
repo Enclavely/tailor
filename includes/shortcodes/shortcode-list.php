@@ -22,16 +22,18 @@ if ( ! function_exists( 'tailor_shortcode_list' ) ) {
      */
     function tailor_shortcode_list( $atts, $content = null, $tag ) {
 
-        $atts = shortcode_atts( array(
-            'id'                        =>  '',
-            'class'                     =>  '',
-            'type'                      =>  'icon',
-            'style'                     =>  'default',
-        ), $atts, $tag );
-
+	    /**
+	     * Filter the default shortcode attributes.
+	     *
+	     * @since 1.6.6
+	     *
+	     * @param array
+	     */
+	    $default_atts = apply_filters( 'tailor_shortcode_default_atts_' . $tag, array() );
+	    $atts = shortcode_atts( $default_atts, $atts, $tag );
+	    
 	    $id = ( '' !== $atts['id'] ) ? 'id="' . esc_attr( $atts['id'] ) . '"' : '';
-	    $class = trim( esc_attr( "tailor-element tailor-list tailor-list--{$atts['type']} tailor-list--{$atts['style']} {$atts['class']}" ) );
-
+	    $class = trim( esc_attr( "tailor-element tailor-list {$atts['class']}" ) );
 
 	    $outer_html = '<div ' . trim( "{$id} class=\"{$class}\"" ) . '>%s</div>';
 
@@ -68,15 +70,15 @@ if ( ! function_exists( 'tailor_shortcode_list_item' ) ) {
 	 */
 	function tailor_shortcode_list_item( $atts, $content = null, $tag ) {
 
-        $atts = shortcode_atts( array(
-            'id'                        =>  '',
-            'class'                     =>  '',
-            'title'                     =>  '',
-            'horizontal_alignment'      =>  '',
-            'graphic_type'              =>  'icon',
-            'icon'                      =>  'dashicons dashicons-wordpress',
-            'image'                     =>  '',
-        ), $atts, $tag );
+		/**
+		 * Filter the default shortcode attributes.
+		 *
+		 * @since 1.6.6
+		 *
+		 * @param array
+		 */
+		$default_atts = apply_filters( 'tailor_shortcode_default_atts_' . $tag, array() );
+		$atts = shortcode_atts( $default_atts, $atts, $tag );
 
 		$id = ( '' !== $atts['id'] ) ? 'id="' . esc_attr( $atts['id'] ) . '"' : '';
 		$class = trim( esc_attr( "tailor-list__item tailor-list__item--{$atts['graphic_type']} {$atts['class']}" ) );

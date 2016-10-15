@@ -1212,6 +1212,9 @@ ul {
 .tailor-ui .thumbnails.is-loading,
 .tailor-ui .video-preview.is-loading {
   background: url(../img/spinner.gif) no-repeat center; }
+  .tailor-ui .thumbnails.is-loading img,
+  .tailor-ui .video-preview.is-loading img {
+    width: 100%; }
   .tailor-ui .thumbnails.is-loading > *,
   .tailor-ui .video-preview.is-loading > * {
     visibility: hidden; }

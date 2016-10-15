@@ -22,30 +22,15 @@ if ( ! function_exists( 'tailor_shortcode_posts' ) ) {
      */
     function tailor_shortcode_posts( $atts, $content = null, $tag ) {
 
-        $atts = shortcode_atts( array(
-            'id'                        =>  '',
-            'class'                     =>  '',
-	        'style'                     =>  'default',
-	        'layout'                    =>  'list',
-	        'items_per_row'             =>  1,
-	        'masonry'                   =>  false,
-            'meta'                      =>  'date,excerpt',
-            'posts_per_page'            =>  6,
-            'pagination'                =>  false,
-            'categories'                =>  '',
-            'tags'                      =>  '',
-            'order_by'                  =>  'date',
-            'order'                     =>  'DESC',
-	        'offset'                    =>  0,
-            'autoplay'                  =>  '',
-            'fade'                      =>  '',
-            'arrows'                    =>  '',
-            'dots'                      =>  '',
-            'image_link'                =>  '',
-            'image_size'                =>  '',
-            'aspect_ratio'              =>  '',
-            'stretch'                   =>  false,
-        ), $atts, $tag );
+	    /**
+	     * Filter the default shortcode attributes.
+	     *
+	     * @since 1.6.6
+	     *
+	     * @param array
+	     */
+	    $default_atts = apply_filters( 'tailor_shortcode_default_atts_' . $tag, array() );
+	    $atts = shortcode_atts( $default_atts, $atts, $tag );
 
 	    $id = ( '' !== $atts['id'] ) ? 'id="' . esc_attr( $atts['id'] ) . '"' : '';
 	    $class = trim( esc_attr( "tailor-element tailor-posts tailor-posts--{$atts['style']} tailor-{$atts['layout']} tailor-{$atts['layout']}--posts {$atts['class']}" ) );

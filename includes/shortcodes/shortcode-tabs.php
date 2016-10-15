@@ -22,11 +22,15 @@ if ( ! function_exists( 'tailor_shortcode_tabs' ) ) {
      */
     function tailor_shortcode_tabs( $atts, $content = null, $tag ) {
 
-	    $atts = shortcode_atts( array(
-		    'id'                        =>  '',
-		    'class'                     =>  '',
-		    'position'                  =>  'top',
-	    ), $atts, $tag );
+	    /**
+	     * Filter the default shortcode attributes.
+	     *
+	     * @since 1.6.6
+	     *
+	     * @param array
+	     */
+	    $default_atts = apply_filters( 'tailor_shortcode_default_atts_' . $tag, array() );
+	    $atts = shortcode_atts( $default_atts, $atts, $tag );
 
 	    $id = ( '' !== $atts['id'] ) ? 'id="' . esc_attr( $atts['id'] ) . '"' : '';
 	    $class = trim( esc_attr( "tailor-element tailor-tabs tailor-tabs--{$atts['position']} {$atts['class']}" ) );
@@ -79,17 +83,22 @@ if ( ! function_exists( 'tailor_shortcode_tab' ) ) {
 	 */
 	function tailor_shortcode_tab( $atts, $content = null, $tag ) {
 
-		$atts = shortcode_atts( array(
-			'id'                =>  'tab' . rand(),
-			'class'             =>  '',
-			'title'             =>  '',
-		), $atts, $tag );
+		/**
+		 * Filter the default shortcode attributes.
+		 *
+		 * @since 1.6.6
+		 *
+		 * @param array
+		 */
+		$default_atts = apply_filters( 'tailor_shortcode_default_atts_' . $tag, array() );
+		$atts = shortcode_atts( $default_atts, $atts, $tag );
 
-		$id = 'id="' . esc_attr( $atts['id'] ) . '"';
+		$tab_id = 'tab' . rand();
+		$id = "id=\"{$tab_id}\"";
 		$class = trim( esc_attr( "tailor-tab {$atts['class']}" ) );
 		
 		global $tailor_tab_navigation;
-		$tailor_tab_navigation[ $atts['id'] ] = array(
+		$tailor_tab_navigation[ $tab_id ] = array(
 			'class'         =>  $atts['class'],
 			'title'         =>  empty( $atts['title'] ) ? __( 'Tab', 'tailor' ) : $atts['title'],
 		);
