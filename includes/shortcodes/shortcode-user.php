@@ -33,32 +33,54 @@ if ( ! function_exists( 'tailor_shortcode_user' ) ) {
 	    $default_atts = apply_filters( 'tailor_shortcode_default_atts_' . $tag, array() );
 	    $atts = shortcode_atts( $default_atts, $atts, $tag );
 
-	    $id = ( '' !== $atts['id'] ) ? 'id="' . esc_attr( $atts['id'] ) . '"' : '';
-	    $class = trim( esc_attr( "tailor-element tailor-author {$atts['class']}" ) );
+		$class = explode( ' ', "tailor-element tailor-author {$atts['class']}" );
 	    if ( is_numeric( $atts['image'] ) ) {
-		    $class .= ' has-header-image';
+		    $class[] = 'has-header-image';
 	    }
 	    
-	    ob_start();
+	    $html_atts = array(
+		    'id'            =>  empty( $atts['id'] ) ? null : $atts['id'],
+		    'class'         =>  $class,
+		    'data'          =>  array(),
+	    );
 
+	    /**
+	     * Filter the HTML attributes for the element.
+	     *
+	     * @since 1.7.0
+	     *
+	     * @param array $html_attributes
+	     * @param array $atts
+	     * @param string $tag
+	     */
+	    $html_atts = apply_filters( 'tailor_shortcode_html_attributes', $html_atts, $atts, $tag );
+	    $html_atts['class'] = implode( ' ', (array) $html_atts['class'] );
+	    $html_atts = tailor_get_attributes( $html_atts );
+
+	    ob_start();
 	    tailor_partial( 'author', 'box', array(
 		    'author_id'         =>  $atts['author_id'],
 	    ) );
 	    
-	    $outer_html = '<div ' . trim( "{$id} class=\"{$class}\"" ) . '>%s</div>';
-
-	    $inner_html = ob_get_clean();
+	    $outer_html = "<div {$html_atts}>%s</div>";
+	    $inner_html = '%s';
+	    $content = ob_get_clean();
+	    $html = sprintf( $outer_html, sprintf( $inner_html, $content ) );
 
 	    /**
 	     * Filter the HTML for the element.
 	     *
-	     * @since 1.6.3
+	     * @since 1.7.0
 	     *
+	     * @param string $html
 	     * @param string $outer_html
 	     * @param string $inner_html
+	     * @param string $html_atts
 	     * @param array $atts
+	     * @param string $content
+	     * @param string $tag
 	     */
-	    $html = apply_filters( 'tailor_shortcode_user_html', sprintf( $outer_html, $inner_html ), $outer_html, $inner_html, $atts );
+	    $html = apply_filters( 'tailor_shortcode_html', $html, $outer_html, $inner_html, $html_atts, $atts, $content, $tag );
 
 	    return $html;
     }

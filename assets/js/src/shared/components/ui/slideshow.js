@@ -38,7 +38,7 @@ Slideshow.prototype = {
 
     defaults : {
         items : '.tailor-slideshow__slide',
-        prevArrow: '<button type="button" data-role="none" class="lick-prev" aria-label="Previous" tabindex="0" role="button"></button>',
+        prevArrow: '<button type="button" data-role="none" class="slick-prev" aria-label="Previous" tabindex="0" role="button"></button>',
         nextArrow: '<button type="button" data-role="none" class="slick-next" aria-label="Next" tabindex="0" role="button"></button>',
         adaptiveHeight : true,
         draggable : false,

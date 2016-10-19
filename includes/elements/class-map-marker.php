@@ -50,21 +50,21 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Map_Marker_Elem
             ) );
 
             $this->add_setting( 'latitude', array(
-                'sanitize_callback'     =>  'tailor_sanitize_text',
+                'sanitize_callback'     =>  'tailor_sanitize_number',
             ) );
             $this->add_control( 'latitude', array(
                 'label'                 =>  __( 'Latitude (optional)', 'tailor' ),
-                'type'                  =>  'text',
+                'type'                  =>  'number',
                 'priority'              =>  $priority += 10,
                 'section'               =>  'general',
             ) );
 
             $this->add_setting( 'longitude', array(
-                'sanitize_callback'     =>  'tailor_sanitize_text',
+                'sanitize_callback'     =>  'tailor_sanitize_number',
             ) );
             $this->add_control( 'longitude', array(
                 'label'                 =>  __( 'Longitude (optional)', 'tailor' ),
-                'type'                  =>  'text',
+                'type'                  =>  'number',
                 'priority'              =>  $priority += 10,
                 'section'               =>  'general',
             ) );

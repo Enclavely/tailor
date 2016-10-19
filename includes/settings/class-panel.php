@@ -223,7 +223,7 @@ if ( ! class_exists( 'Tailor_Panel' ) ) {
 		    <div class="header">
 
 			    <button class="back-button">
-				    <span class="screen-reader-text"><?php _e( 'Back', 'tailor' ); ?></span>
+				    <?php echo tailor_screen_reader_text( __( 'Back', 'tailor' ) ); ?>
 			    </button>
 
 			    <div class="title-block">
@@ -235,7 +235,7 @@ if ( ! class_exists( 'Tailor_Panel' ) ) {
 
 				    <% if ( description ) { %>
 				    <button class="help-button dashicons dashicons-editor-help">
-					    <span class="screen-reader-text"><?php _e( 'Help', 'tailor' ); ?></span>
+					    <?php echo tailor_screen_reader_text( __( 'Help', 'tailor' ) ); ?>
 				    </button>
 				    <% } %>
 			    </div>
@@ -335,7 +335,7 @@ if ( ! class_exists( 'Tailor_Elements_Panel' ) ) {
 
 			<% if ( items.length ) { %>
 			<div class="search-form">
-				<span class="screen-reader-text"><?php esc_html( $search_text ); ?></span>
+				<?php echo tailor_screen_reader_text( $search_text ); ?>
 				<input class="search" type="search" role="search" placeholder="<?php esc_attr_e( $search_text ); ?>">
 			</div>
 			<% } %>
@@ -434,7 +434,7 @@ if ( ! class_exists( 'Tailor_Templates_Panel' ) ) {
 
 			<% if ( items.length ) { %>
 			<div class="search-form">
-				<span class="screen-reader-text"><?php esc_html( $search_text ); ?></span>
+				<?php echo tailor_screen_reader_text( $search_text ); ?>
 				<input class="search" type="search" role="search" placeholder="<?php esc_attr_e( $search_text ); ?>">
 			</div>
 			<% } %>
@@ -469,13 +469,13 @@ if ( ! class_exists( 'Tailor_Templates_Panel' ) ) {
 					$delete_label = __( 'Delete template', 'tailor' ); ?>
 
 					<button class="not-a-button button--icon button--preview js-preview-template" title="<?php echo $preview_label; ?>">
-						<span class="screen-reader-text"><?php echo $preview_label; ?></span>
+						<?php echo tailor_screen_reader_text( $preview_label ); ?>
 					</button>
 					<button class="not-a-button button--icon button--download js-download-template" title="<?php echo $download_label; ?>">
-						<span class="screen-reader-text"><?php echo $download_label; ?></span>
+						<?php echo tailor_screen_reader_text( $download_label ); ?>
 					</button>
 					<button class="not-a-button button--icon button--delete js-delete-template" title="<?php echo $delete_label; ?>">
-						<span class="screen-reader-text"><?php echo $delete_label; ?></span>
+						<?php echo tailor_screen_reader_text( $delete_label ); ?>
 					</button>
 				</div>
 			</li>

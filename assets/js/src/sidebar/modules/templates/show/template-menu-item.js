@@ -171,7 +171,9 @@ TemplateMenuItem = Marionette.ItemView.extend( {
      * @since 1.0.0
      */
     preview : function() {
-        window.open( window._urls.view + '?template_preview=1&template_id=' + this.model.get( 'id' ), '_blank' );
+
+        window._urls.view += ( window._urls.view.split('?')[1] ? '&':'?') + 'template_preview=1&template_id=' + this.model.get( 'id' );
+        window.open( window._urls.view, '_blank' );
 
         /**
          * Fires when a template is previewed.

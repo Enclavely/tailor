@@ -1562,7 +1562,7 @@ var AbstractControl = Marionette.ItemView.extend( {
      * @since 1.0.0
      */
     getSettingValue : function() {
-        return this.model.setting.get( 'value' );
+        return this.model.setting.get( 'value' ) || '';
     },
 
     /**
@@ -1896,7 +1896,7 @@ var AbstractControl = require( './abstract-control' ),
     $.widget( 'wp.wpColorPicker', $.wp.wpColorPicker, {
 
         _create: function() {
-            // bail early for unsupported Iris.
+
             if ( ! $.support.iris ) {
                 return;
             }
@@ -1906,26 +1906,29 @@ var AbstractControl = require( './abstract-control' ),
 
             $.extend( self.options, el.data() );
 
-            // keep close bound so it can be attached to a body listener
             self.close = $.proxy( self.close, self );
-
             self.initialValue = el.val();
 
             // Set up HTML structure, hide things
             el.addClass( 'wp-color-picker' ).hide().wrap( _wrap );
             self.wrap = el.parent();
-            self.toggler = $( _before ).insertBefore( el ).css( { backgroundColor: self.initialValue } ).attr( 'title', wpColorPickerL10n.pick ).attr( 'data-current', wpColorPickerL10n.current );
+            self.toggler = $( _before )
+                .insertBefore( el )
+                .css( { backgroundColor: self.initialValue } )
+                .attr( 'title', wpColorPickerL10n.pick )
+                .attr( 'data-current', wpColorPickerL10n.current );
             self.pickerContainer = $( _after ).insertAfter( el );
             self.button = $( _button );
 
             if ( self.options.defaultColor ) {
                 self.button.addClass( 'wp-picker-default' ).val( wpColorPickerL10n.defaultString );
-            } else {
+            }
+            else {
                 self.button.addClass( 'wp-picker-clear' ).val( wpColorPickerL10n.clear );
             }
 
-            el.wrap( '<span class="wp-picker-input-wrap" />' ).after(self.button);
 
+            el.wrap( '<span class="wp-picker-input-wrap" />' ).after(self.button);
             el.iris( {
                 target: self.pickerContainer,
                 hide: self.options.hide,
@@ -1945,10 +1948,10 @@ var AbstractControl = require( './abstract-control' ),
                             'border-bottom-left-radius': '3px',
                             'background': ui.color.toString()
                         });
-                    } else {
+                    }
+                    else {
                         self.toggler.css( { backgroundColor: ui.color.toString() } );
                     }
-                    // check for a custom cb
                     if ( $.isFunction( self.options.change ) ) {
                         self.options.change.call( this, event, ui );
                     }
@@ -1965,7 +1968,6 @@ var AbstractControl = require( './abstract-control' ),
         _addListeners: function() {
             var self = this;
 
-            // prevent any clicks inside this widget from leaking to the top and closing it
             self.wrap.on( 'click.wpcolorpicker', function( event ) {
                 event.stopPropagation();
             });
@@ -1973,7 +1975,8 @@ var AbstractControl = require( './abstract-control' ),
             self.toggler.click( function(){
                 if ( self.toggler.hasClass( 'wp-picker-open' ) ) {
                     self.close();
-                } else {
+                }
+                else {
                     self.open();
                 }
             });
@@ -1981,22 +1984,22 @@ var AbstractControl = require( './abstract-control' ),
             self.element.change( function( event ) {
                 var me = $( this ),
                     val = me.val();
-                // Empty or Error = clear
+
                 if ( val === '' || self.element.hasClass('iris-error') ) {
                     if ( self.options.rgba ) {
                         self.toggler.removeAttr('style');
                         self.toggler.find('span').css( 'backgroundColor', '' );
-                    } else {
+                    }
+                    else {
                         self.toggler.css( 'backgroundColor', '' );
                     }
-                    // fire clear callback if we have one
+
                     if ( $.isFunction( self.options.clear ) ) {
                         self.options.clear.call( this, event );
                     }
                 }
             });
 
-            // open a keyboard-focused closed picker with space or enter
             self.toggler.on( 'keyup', function( event ) {
                 if ( event.keyCode === 13 || event.keyCode === 32 ) {
                     event.preventDefault();
@@ -2011,13 +2014,15 @@ var AbstractControl = require( './abstract-control' ),
                     if ( self.options.rgba ) {
                         self.toggler.removeAttr('style');
                         self.toggler.find('span').css( 'backgroundColor', '' );
-                    } else {
+                    }
+                    else {
                         self.toggler.css( 'backgroundColor', '' );
                     }
                     if ( $.isFunction( self.options.clear ) ) {
                         self.options.clear.call( this, event );
                     }
-                } else if ( me.hasClass( 'wp-picker-default' ) ) {
+                }
+                else if ( me.hasClass( 'wp-picker-default' ) ) {
                     self.element.val( self.options.defaultColor ).change();
                 }
             });
@@ -2028,13 +2033,11 @@ var AbstractControl = require( './abstract-control' ),
      * Overwrite iris
      */
     $.widget( 'a8c.iris', $.a8c.iris, {
+
         _create: function() {
             this._super();
 
-            // Global option for check is mode rbga is enabled
             this.options.rgba = this.element.data( 'rgba' ) || false;
-
-            // Is not input disabled
             if ( ! this.element.is( ':input' ) ) {
                 this.options.alpha = false;
             }
@@ -2065,13 +2068,11 @@ var AbstractControl = require( './abstract-control' ),
                     self.controls[v].width( stripsWidth ).css({ 'margin-left': stripsMargin + 'px' });
                 });
 
-                // Add new slider
                 self._initControls();
-
-                // For updated widget
                 self._change();
             }
         },
+
         _initControls: function() {
             this._super();
 
@@ -2086,13 +2087,13 @@ var AbstractControl = require( './abstract-control' ),
                     step: 1,
                     value: parseInt( self._color._alpha * 100 ),
                     slide: function( event, ui ) {
-                        // Update alpha value
                         self._color._alpha = parseFloat( ui.value/100 );
                         self._change.apply( self, arguments );
                     }
                 });
             }
         },
+
         _change: function() {
             this._super();
             var self = this,
@@ -2110,24 +2111,17 @@ var AbstractControl = require( './abstract-control' ),
                     customWidth = self.options.customWidth,
                     target = self.picker.closest('.wp-picker-container').find( '.wp-color-result' );
 
-                // Generate background slider alpha, only for CSS3 old browser fuck!! :)
                 controls.aContainer.css({ 'background': 'linear-gradient(to bottom, ' + gradient.join( ', ' ) + '), url(' + image + ')' });
 
                 if ( target.hasClass('wp-picker-open') ) {
-                    // Update alpha value
                     controls.aSlider.slider( 'value', alpha );
 
-                    /**
-                     * Disabled change opacity in default slider Saturation ( only is alpha enabled )
-                     * and change input width for view all value
-                     */
                     if ( self._color._alpha < 1 ) {
                         var style = controls.strip.attr( 'style' ).replace( /rgba\(([0-9]+,)(\s+)?([0-9]+,)(\s+)?([0-9]+)(,(\s+)?[0-9\.]+)\)/g, 'rgb($1$3$5)' );
-
                         controls.strip.attr( 'style', style );
-
                         el.width( parseInt( defaultWidth + customWidth ) );
-                    } else {
+                    }
+                    else {
                         el.width( defaultWidth );
                     }
                 }
@@ -2142,6 +2136,7 @@ var AbstractControl = require( './abstract-control' ),
                 });
             }
         },
+
         _addInputListeners: function( input ) {
             var self = this,
                 debounceTimeout = 100,
@@ -2150,15 +2145,13 @@ var AbstractControl = require( './abstract-control' ),
                         val = input.val();
 
                     input.removeClass( 'iris-error' );
-                    // we gave a bad color
                     if ( color.error ) {
-                        // don't error on an empty input
                         if ( val !== '' ) {
                             input.addClass( 'iris-error' );
                         }
-                    } else {
+                    }
+                    else {
                         if ( color.toString() !== self._color.toString() ) {
-                            // let's not do this on keyup for hex shortcodes
                             if ( ! ( event.type === 'keyup' && val.match( /^[0-9a-fA-F]{3}$/ ) ) ) {
                                 self._setOption( 'color', color.toString() );
                             }
@@ -2224,7 +2217,10 @@ ColorPickerControl = AbstractControl.extend( {
             defaultColor : control.getDefaultValue(),
 
             change : function() {
-                control.setSettingValue( control.ui.input.wpColorPicker( 'color' ) );
+                var color = control.ui.input.wpColorPicker( 'color' );
+                if ( control.getSettingValue() != color ) {
+                    control.setSettingValue( color );
+                }
             },
 
             clear : function() {
@@ -2904,6 +2900,102 @@ module.exports = ImageControl;
 
 },{"./abstract-control":11}],20:[function(require,module,exports){
 /**
+ * Tailor.Controls.InputGroup
+ *
+ * An input group control.
+ *
+ * @augments Marionette.ItemView
+ */
+var AbstractControl = require( './abstract-control' ),
+    InputGroup;
+
+InputGroup = AbstractControl.extend( {
+
+    ui : {
+        'input' : 'input',
+        'default' : '.js-default'
+    },
+
+    events : {
+        'input @ui.input' : 'onControlChange',
+        'change @ui.input' : 'onControlChange',
+        'click @ui.default' : 'restoreDefaultValue',
+        'click @ui.link' : 'onLinkChange'
+    },
+
+    /**
+     * Initializes the media frame for the control.
+     *
+     * @since 1.0.0
+     */
+    initialize : function( ) {
+        this.addEventListeners();
+        this.checkDependencies( this.model.setting );
+    },
+
+    /**
+     * Provides the required information to the template rendering function.
+     *
+     * @since 1.0.0
+     *
+     * @returns {*}
+     */
+    serializeData : function() {
+        var data = Backbone.Marionette.ItemView.prototype.serializeData.apply( this, arguments );
+        var defaultValue = this.getDefaultValue();
+
+        data.value = this.getSettingValue();
+        data.showDefault = null != defaultValue && ( data.value != defaultValue );
+        data.choices = [];
+        
+        var values;
+        if ( _.isString( data.value ) ) {
+            values = data.value.split( ',' );
+        }
+        
+        var choices = this.model.get( 'choices' );
+        for ( var choice in choices ) {
+            if ( choices.hasOwnProperty( choice ) ) {
+                data.choices[ choice ] = {};
+                data.choices[ choice ].label = choices[ choice ].label || '';
+                data.choices[ choice ].type = choices[ choice ].type || 'text';
+                data.choices[ choice ].unit = choices[ choice ].unit || '';
+                data.choices[ choice ].value = _.isArray( values ) ? values.shift() : null;
+            }
+        }
+
+        return data;
+    },
+
+    /**
+     * Responds to a control change.
+     *
+     * @since 1.0.0
+     */
+    onControlChange : function() {
+        var values = [];
+        _.each( this.ui.input, function( input ) {
+            values.push( input.value );
+        }, this );
+        this.setSettingValue( values.join( ',' ) );
+    },
+
+    /**
+     * Restores the default value for the setting.
+     *
+     * @since 1.0.0
+     */
+    restoreDefaultValue : function() {
+        this.setSettingValue( this.getDefaultValue() );
+        this.render();
+    }
+
+} );
+
+module.exports = InputGroup;
+
+},{"./abstract-control":11}],21:[function(require,module,exports){
+/**
  * Tailor.Controls.Link
  *
  * A link control.
@@ -3101,7 +3193,7 @@ LinkControl = AbstractControl.extend( {
 
 module.exports = LinkControl;
 
-},{"./abstract-control":11}],21:[function(require,module,exports){
+},{"./abstract-control":11}],22:[function(require,module,exports){
 /**
  * The empty-list view.
  *
@@ -3114,7 +3206,7 @@ var EmptyListView = Marionette.ItemView.extend( {
 } );
 
 module.exports = EmptyListView;
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 /**
  * Individual list item view.
  *
@@ -3314,7 +3406,7 @@ var ListItemControl = Marionette.CompositeView.extend( {
 
 module.exports = ListItemControl;
 
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 /**
  * Tailor.Controls.List
  *
@@ -3622,7 +3714,7 @@ var ListControl = Marionette.CompositeView.extend( {
 
 module.exports = ListControl;
 
-},{"./list-empty":21,"./list-item":22}],24:[function(require,module,exports){
+},{"./list-empty":22,"./list-item":23}],25:[function(require,module,exports){
 /**
  * Tailor.Controls.Radio
  *
@@ -3678,7 +3770,7 @@ RadioControl = AbstractControl.extend( {
 
 module.exports = RadioControl;
 
-},{"./abstract-control":11}],25:[function(require,module,exports){
+},{"./abstract-control":11}],26:[function(require,module,exports){
 /**
  * Tailor.Controls.Range
  *
@@ -3769,7 +3861,7 @@ RangeControl = AbstractControl.extend( {
 
 module.exports = RangeControl;
 
-},{"./abstract-control":11}],26:[function(require,module,exports){
+},{"./abstract-control":11}],27:[function(require,module,exports){
 /**
  * Tailor.Controls.SelectMulti
  *
@@ -3856,7 +3948,7 @@ SelectMultiControl = AbstractControl.extend( {
 
 module.exports = SelectMultiControl;
 
-},{"./abstract-control":11}],27:[function(require,module,exports){
+},{"./abstract-control":11}],28:[function(require,module,exports){
 /**
  * Tailor.Controls.Select
  *
@@ -3903,7 +3995,7 @@ SelectControl = AbstractControl.extend( {
 
 module.exports = SelectControl;
 
-},{"./abstract-control":11}],28:[function(require,module,exports){
+},{"./abstract-control":11}],29:[function(require,module,exports){
 /**
  * Tailor.Controls.Style
  *
@@ -3967,11 +4059,20 @@ StyleControl = AbstractControl.extend( {
         data.showDefault = null != defaultValue && ( data.value != defaultValue );
         data.choices = [];
 
-        var values = data.value.split( '-' );
+        var values;
+        if ( _.isString( data.value ) ) {
+            if ( -1 != data.value.indexOf( ',' ) ) {
+                values = data.value.split( ',' );
+            }
+            else {
+                values = data.value.split( '-' ); // Old format
+            }
+        }
+
         var choices = this.model.get( 'choices' );
         for ( var choice in choices ) {
             if ( choices.hasOwnProperty( choice ) ) {
-                data.choices[ choices[ choice ] ] = values.shift() || '';
+                data.choices[ choices[ choice ] ] = _.isArray( values ) ? values.shift() : null;
             }
         }
 
@@ -3984,9 +4085,7 @@ StyleControl = AbstractControl.extend( {
      * @since 1.0.0
      */
     onControlChange : function( e ) {
-
         var values;
-
         if ( this.linked ) {
 
             // Update the values
@@ -4005,7 +4104,7 @@ StyleControl = AbstractControl.extend( {
             }, this );
         }
 
-        this.setSettingValue( values.join( '-' ) );
+        this.setSettingValue( values.join( ',' ) );
     },
 
     /**
@@ -4024,7 +4123,7 @@ StyleControl = AbstractControl.extend( {
 
 module.exports = StyleControl;
 
-},{"./abstract-control":11}],29:[function(require,module,exports){
+},{"./abstract-control":11}],30:[function(require,module,exports){
 /**
  * Tailor.Controls.Switch
  *
@@ -4081,7 +4180,7 @@ SwitchControl = AbstractControl.extend( {
 
 module.exports = SwitchControl;
 
-},{"./abstract-control":11}],30:[function(require,module,exports){
+},{"./abstract-control":11}],31:[function(require,module,exports){
 /**
  * Tailor.Controls.Text
  *
@@ -4144,7 +4243,7 @@ TextControl = AbstractControl.extend( {
 
 module.exports = TextControl;
 
-},{"./abstract-control":11}],31:[function(require,module,exports){
+},{"./abstract-control":11}],32:[function(require,module,exports){
 /**
  * Tailor.Controls.Textarea
  *
@@ -4170,7 +4269,7 @@ TextareaControl = AbstractControl.extend( {
 
 module.exports = TextareaControl;
 
-},{"./abstract-control":11}],32:[function(require,module,exports){
+},{"./abstract-control":11}],33:[function(require,module,exports){
 /**
  * Tailor.Controls.Video
  *
@@ -4405,7 +4504,7 @@ VideoControl = AbstractControl.extend( {
 
 module.exports = VideoControl;
 
-},{"./abstract-control":11}],33:[function(require,module,exports){
+},{"./abstract-control":11}],34:[function(require,module,exports){
 /**
  * Tailor.Controls.WidgetForm
  *
@@ -4530,7 +4629,7 @@ WidgetFormControl = Marionette.ItemView.extend( {
      * @since 1.6.0
      */
     getSettingValue : function() {
-        return this.model.setting.get( 'value' );
+        return this.model.setting.get( 'value' ) || '';
     },
 
     /**
@@ -4548,7 +4647,7 @@ WidgetFormControl = Marionette.ItemView.extend( {
 
 module.exports = WidgetFormControl;
 
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 var DefaultPanel = Marionette.CompositeView.extend( {
 
     ui : {
@@ -4651,7 +4750,7 @@ var DefaultPanel = Marionette.CompositeView.extend( {
 
 module.exports = DefaultPanel;
 
-},{}],35:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 var EmptyPanelView = Marionette.ItemView.extend( {
 
     className : 'empty',
@@ -4674,7 +4773,7 @@ var EmptyPanelView = Marionette.ItemView.extend( {
 } );
 
 module.exports = EmptyPanelView;
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 var DefaultSection = Marionette.CompositeView.extend( {
 
     ui: {
@@ -4772,7 +4871,7 @@ var DefaultSection = Marionette.CompositeView.extend( {
 
 module.exports = DefaultSection;
 
-},{"./section-empty":37}],37:[function(require,module,exports){
+},{"./section-empty":38}],38:[function(require,module,exports){
 var EmptySectionView = Marionette.ItemView.extend( {
 
     className : 'empty',
@@ -4791,7 +4890,7 @@ var EmptySectionView = Marionette.ItemView.extend( {
 } );
 
 module.exports = EmptySectionView;
-},{}],38:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 var ControlCollection = Backbone.Collection.extend( {
 
 	model : require( '../models/control' ),
@@ -4837,7 +4936,7 @@ var ControlCollection = Backbone.Collection.extend( {
 
 module.exports = ControlCollection;
 
-},{"../models/control":46}],39:[function(require,module,exports){
+},{"../models/control":47}],40:[function(require,module,exports){
 var SearchableCollection = require( './searchable' ),
 	LibraryCollection;
 
@@ -4880,14 +4979,14 @@ LibraryCollection= SearchableCollection.extend( {
 } );
 
 module.exports = LibraryCollection;
-},{"./searchable":41}],40:[function(require,module,exports){
+},{"./searchable":42}],41:[function(require,module,exports){
 var PanelCollection = Backbone.Collection.extend( {
 	model : require( '../models/panel' )
 } );
 
 module.exports = PanelCollection;
 
-},{"../models/panel":50}],41:[function(require,module,exports){
+},{"../models/panel":51}],42:[function(require,module,exports){
 var $ = Backbone.$,
 	SearchableCollection;
 
@@ -4948,14 +5047,14 @@ SearchableCollection = Backbone.Collection.extend( {
 
 module.exports = SearchableCollection;
 
-},{}],42:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 var SectionCollection = Backbone.Collection.extend( {
 	model : require( '../models/section' )
 } );
 
 module.exports = SectionCollection;
 
-},{"../models/section":51}],43:[function(require,module,exports){
+},{"../models/section":52}],44:[function(require,module,exports){
 var SettingCollection = Backbone.Collection.extend( {
 
 	model : require( '../models/setting' ),
@@ -4990,7 +5089,7 @@ var SettingCollection = Backbone.Collection.extend( {
     load : function() {
         var atts = this.element.get( 'atts' );
         this.each( function( model ) {
-            model.set( 'value', atts[ model.get( 'id' ) ] || '' );
+            model.set( 'value', atts[ model.get( 'id' ) ] );
         }, this );
     }
 
@@ -4998,7 +5097,7 @@ var SettingCollection = Backbone.Collection.extend( {
 
 module.exports = SettingCollection;
 
-},{"../models/setting":52}],44:[function(require,module,exports){
+},{"../models/setting":53}],45:[function(require,module,exports){
 var SnapshotCollection = Backbone.Collection.extend( {
 
     /**
@@ -5200,7 +5299,7 @@ var SnapshotCollection = Backbone.Collection.extend( {
 
 module.exports = SnapshotCollection;
 
-},{}],45:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 var SearchableCollection = require( './searchable' ),
 	TemplateCollection;
 
@@ -5229,7 +5328,7 @@ TemplateCollection = SearchableCollection.extend( {
 
 module.exports = TemplateCollection;
 
-},{"../models/template":53,"./searchable":41}],46:[function(require,module,exports){
+},{"../models/template":54,"./searchable":42}],47:[function(require,module,exports){
 var ControlModel = Backbone.Model.extend( {
 
     /**
@@ -5247,14 +5346,13 @@ var ControlModel = Backbone.Model.extend( {
 		choices : {},
 		priority : 0,
 		setting : '',
-		value : null,
 		section : '' // Only used for controls on the Settings panel
 	}
 } );
 
 module.exports = ControlModel;
 
-},{}],47:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 var ContainerModel = Backbone.Model.extend( {
 
     /**
@@ -5440,7 +5538,7 @@ var ContainerModel = Backbone.Model.extend( {
 } );
 
 module.exports = ContainerModel;
-},{}],48:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 var WrapperModel = Backbone.Model.extend( {
 
     /**
@@ -5589,7 +5687,7 @@ var WrapperModel = Backbone.Model.extend( {
 } );
 
 module.exports = WrapperModel;
-},{}],49:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 var ElementModel = Backbone.Model.extend( {
 
     /**
@@ -5785,7 +5883,7 @@ var ElementModel = Backbone.Model.extend( {
 } );
 
 module.exports = ElementModel;
-},{}],50:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 var PanelModel = Backbone.Model.extend( {
 
     /**
@@ -5806,7 +5904,7 @@ var PanelModel = Backbone.Model.extend( {
 
 module.exports = PanelModel;
 
-},{}],51:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 var SectionModel = Backbone.Model.extend( {
 
     /**
@@ -5827,7 +5925,7 @@ var SectionModel = Backbone.Model.extend( {
 
 module.exports = SectionModel;
 
-},{}],52:[function(require,module,exports){
+},{}],53:[function(require,module,exports){
 var SettingModel = Backbone.Model.extend( {
 
     /**
@@ -5839,15 +5937,13 @@ var SettingModel = Backbone.Model.extend( {
      */
 	defaults: {
 		id : '',
-        type : '',
-		value : '',
-		default : null
-	}
+        type : ''
+    }
 } );
 
 module.exports = SettingModel;
 
-},{}],53:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 var TemplateModel = Backbone.Model.extend( {
 
     /**
@@ -5998,7 +6094,7 @@ var TemplateModel = Backbone.Model.extend( {
 
 module.exports = TemplateModel;
 
-},{}],54:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 var DialogRegion = Backbone.Marionette.Region.extend( {
 
     /**
@@ -6038,7 +6134,7 @@ var DialogRegion = Backbone.Marionette.Region.extend( {
 
 module.exports = DialogRegion;
 
-},{}],55:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 var DialogView = require( './show/dialog' ),
 	DialogModule;
 
@@ -6079,7 +6175,7 @@ DialogModule = Marionette.Module.extend( {
 } );
 
 module.exports = DialogModule;
-},{"./show/dialog":56}],56:[function(require,module,exports){
+},{"./show/dialog":57}],57:[function(require,module,exports){
 /**
  * Dialog view for present growl-style notifications to the user.
  *
@@ -6227,7 +6323,7 @@ DialogView = Backbone.Marionette.ItemView.extend( {
 
 module.exports = DialogView;
 
-},{}],57:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 var SnapshotsCollection = require( '../../entities/collections/snapshots' ),
     SnapshotMenuItem = require( './show/snapshot-menu-item' ),
     HistoryModule;
@@ -6439,7 +6535,7 @@ HistoryModule = Marionette.Module.extend( {
 } );
 
 module.exports = HistoryModule;
-},{"../../entities/collections/snapshots":44,"./show/snapshot-menu-item":58}],58:[function(require,module,exports){
+},{"../../entities/collections/snapshots":45,"./show/snapshot-menu-item":59}],59:[function(require,module,exports){
 var $ = Backbone.$,
     HistoryItem;
 
@@ -6560,7 +6656,7 @@ HistoryItem = Marionette.ItemView.extend( {
 
 module.exports = HistoryItem;
 
-},{}],59:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 
 var LibraryCollection = require( '../../entities/collections/library' ),
     LibraryMenuItem = require( './show/library-menu-item' ),
@@ -6613,7 +6709,7 @@ LibraryModule = Marionette.Module.extend( {
 } );
 
 module.exports = LibraryModule;
-},{"../../entities/collections/library":39,"./show/library-menu-item":60}],60:[function(require,module,exports){
+},{"../../entities/collections/library":40,"./show/library-menu-item":61}],61:[function(require,module,exports){
 var $ = Backbone.$,
     ElementMenuItem;
 
@@ -6693,7 +6789,7 @@ ElementMenuItem = Marionette.ItemView.extend( {
 
 module.exports = ElementMenuItem;
 
-},{}],61:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 var ModalRegion = Backbone.Marionette.Region.extend( {
 
     /**
@@ -6781,7 +6877,7 @@ var ModalRegion = Backbone.Marionette.Region.extend( {
 } );
 
 module.exports = ModalRegion;
-},{}],62:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 var ModalView = require( './show/modal' ),
 	ModalModule;
 
@@ -6843,7 +6939,7 @@ ModalModule = Marionette.Module.extend( {
 } );
 
 module.exports = ModalModule;
-},{"./show/modal":65}],63:[function(require,module,exports){
+},{"./show/modal":66}],64:[function(require,module,exports){
 var EmptyModalView = Marionette.ItemView.extend( {
 
     className : 'empty',
@@ -6853,7 +6949,7 @@ var EmptyModalView = Marionette.ItemView.extend( {
 } );
 
 module.exports = EmptyModalView;
-},{}],64:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 var EmptySectionView = Marionette.ItemView.extend( {
 
     className : 'empty',
@@ -6863,7 +6959,7 @@ var EmptySectionView = Marionette.ItemView.extend( {
 } );
 
 module.exports = EmptySectionView;
-},{}],65:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 var SectionCollectionView = require( './sections' ),
     NavigationView = require( './tabs' ),
     ModalView;
@@ -6937,7 +7033,7 @@ ModalView = Marionette.LayoutView.extend( {
         var model = this.model;
         var sections = app.channel.request( 'sidebar:sections', model );
         var controls = app.channel.request( 'sidebar:controls', model );
-
+        
         this.showChildView( 'sections', new SectionCollectionView( {
             element : model,
             collection : sections,
@@ -7096,7 +7192,10 @@ ModalView = Marionette.LayoutView.extend( {
     atts : function() {
         var atts = {};
         this.settings.each( function( setting ) {
-            atts[ setting.get( 'id' ) ] = setting.get( 'value' );
+            var value = setting.get( 'value' );
+            if ( null !== value ) {
+                atts[ setting.get( 'id' ) ] = value;
+            }
         }, this );
         return atts;
     }
@@ -7104,7 +7203,7 @@ ModalView = Marionette.LayoutView.extend( {
 } );
 
 module.exports = ModalView;
-},{"./sections":67,"./tabs":69}],66:[function(require,module,exports){
+},{"./sections":68,"./tabs":70}],67:[function(require,module,exports){
 var ControlCollectionView = Marionette.CollectionView.extend( {
 
 	tagName : 'ul',
@@ -7196,7 +7295,7 @@ var ControlCollectionView = Marionette.CollectionView.extend( {
 } );
 
 module.exports = ControlCollectionView;
-},{"./empty-section":64}],67:[function(require,module,exports){
+},{"./empty-section":65}],68:[function(require,module,exports){
 var SectionCollectionView = Marionette.CollectionView.extend( {
 
     childView : require( './section' ),
@@ -7229,7 +7328,7 @@ var SectionCollectionView = Marionette.CollectionView.extend( {
 } );
 
 module.exports = SectionCollectionView;
-},{"./empty-modal":63,"./section":66}],68:[function(require,module,exports){
+},{"./empty-modal":64,"./section":67}],69:[function(require,module,exports){
 var NavigationItemView = Marionette.ItemView.extend( {
 
     tagName : 'li',
@@ -7282,7 +7381,7 @@ var NavigationItemView = Marionette.ItemView.extend( {
 } );
 
 module.exports = NavigationItemView;
-},{}],69:[function(require,module,exports){
+},{}],70:[function(require,module,exports){
 var NavigationItemView = require( './tab' ),
     NavigationView;
 
@@ -7325,7 +7424,7 @@ NavigationView = Marionette.CollectionView.extend( {
 } );
 
 module.exports = NavigationView;
-},{"./tab":68}],70:[function(require,module,exports){
+},{"./tab":69}],71:[function(require,module,exports){
 var Notify = window.Tailor.Notify,
     NotificationsModule;
 
@@ -7397,7 +7496,7 @@ NotificationsModule = Marionette.Module.extend( {
 
 module.exports = NotificationsModule;
 
-},{}],71:[function(require,module,exports){
+},{}],72:[function(require,module,exports){
 var PanelCollection = require( '../../entities/collections/panels' ),
     PanelLayoutView = require( './show/layout' ),
     PanelMenuItem = require( './show/panel-menu-item' ),
@@ -7461,7 +7560,7 @@ PanelsModule = Marionette.Module.extend( {
 
 module.exports = PanelsModule;
 
-},{"../../entities/collections/panels":40,"./show/layout":72,"./show/panel-menu-item":73}],72:[function(require,module,exports){
+},{"../../entities/collections/panels":41,"./show/layout":73,"./show/panel-menu-item":74}],73:[function(require,module,exports){
 var PanelsView = require( './panels' ),
     PanelLayoutView;
 
@@ -7587,7 +7686,7 @@ PanelLayoutView = Marionette.LayoutView.extend( {
 
 module.exports = PanelLayoutView;
 
-},{"./panels":75}],73:[function(require,module,exports){
+},{"./panels":76}],74:[function(require,module,exports){
 var $ = Backbone.$,
 	PanelItem;
 
@@ -7654,7 +7753,7 @@ PanelItem = Marionette.ItemView.extend( {
 
 module.exports = PanelItem;
 
-},{}],74:[function(require,module,exports){
+},{}],75:[function(require,module,exports){
 var EmptyPanelView = Marionette.ItemView.extend( {
 
     className : 'empty',
@@ -7664,7 +7763,7 @@ var EmptyPanelView = Marionette.ItemView.extend( {
 } );
 
 module.exports = EmptyPanelView;
-},{}],75:[function(require,module,exports){
+},{}],76:[function(require,module,exports){
 var PanelsView = Marionette.CompositeView.extend( {
 
     getChildView : function() {
@@ -7690,7 +7789,7 @@ var PanelsView = Marionette.CompositeView.extend( {
 } );
 
 module.exports = PanelsView;
-},{"./panels-empty":74}],76:[function(require,module,exports){
+},{"./panels-empty":75}],77:[function(require,module,exports){
 
 var SectionCollection = require( '../../entities/collections/sections' ),
     DefaultMenuItem = require( './show/default-menu-item' ),
@@ -7763,7 +7862,7 @@ SectionsModule = Marionette.Module.extend( {
 } );
 
 module.exports = SectionsModule;
-},{"../../entities/collections/sections":42,"./show/default-menu-item":77}],77:[function(require,module,exports){
+},{"../../entities/collections/sections":43,"./show/default-menu-item":78}],78:[function(require,module,exports){
 var $ = Backbone.$,
     DefaultItem;
 
@@ -7835,7 +7934,7 @@ DefaultItem = Marionette.ItemView.extend( {
 
 module.exports = DefaultItem;
 
-},{}],78:[function(require,module,exports){
+},{}],79:[function(require,module,exports){
 
 var SettingCollection = require( '../../entities/collections/settings' ),
     ControlCollection = require( '../../entities/collections/controls' ),
@@ -7969,7 +8068,7 @@ SettingsModule = Marionette.Module.extend( {
 } );
 
 module.exports = SettingsModule;
-},{"../../entities/collections/controls":38,"../../entities/collections/settings":43}],79:[function(require,module,exports){
+},{"../../entities/collections/controls":39,"../../entities/collections/settings":44}],80:[function(require,module,exports){
 var $ = Backbone.$,
     l10n = window._l10n,
     TemplateMenuItem;
@@ -8143,7 +8242,9 @@ TemplateMenuItem = Marionette.ItemView.extend( {
      * @since 1.0.0
      */
     preview : function() {
-        window.open( window._urls.view + '?template_preview=1&template_id=' + this.model.get( 'id' ), '_blank' );
+
+        window._urls.view += ( window._urls.view.split('?')[1] ? '&':'?') + 'template_preview=1&template_id=' + this.model.get( 'id' );
+        window.open( window._urls.view, '_blank' );
 
         /**
          * Fires when a template is previewed.
@@ -8168,7 +8269,7 @@ TemplateMenuItem = Marionette.ItemView.extend( {
 } );
 
 module.exports = TemplateMenuItem;
-},{}],80:[function(require,module,exports){
+},{}],81:[function(require,module,exports){
 var l10n = window._l10n,
     TemplatesPanel;
 
@@ -8478,7 +8579,7 @@ TemplatesPanel = Marionette.CompositeView.extend( {
 } );
 
 module.exports = TemplatesPanel;
-},{}],81:[function(require,module,exports){
+},{}],82:[function(require,module,exports){
 
 var TemplateCollection = require( '../../entities/collections/templates' ),
 	TemplatesPanel = require( './show/templates-panel' ),
@@ -8530,7 +8631,7 @@ TemplatesModule = Marionette.Module.extend( {
 } );
 
 module.exports = TemplatesModule;
-},{"../../entities/collections/templates":45,"./show/template-menu-item":79,"./show/templates-panel":80}],82:[function(require,module,exports){
+},{"../../entities/collections/templates":46,"./show/template-menu-item":80,"./show/templates-panel":81}],83:[function(require,module,exports){
 /* window._l10n, window._mediaQueries */
 
 var $ = jQuery;
@@ -8581,8 +8682,7 @@ $buttons
 
     } )
     .first().click();
-},{}],83:[function(require,module,exports){
-
+},{}],84:[function(require,module,exports){
 ( function( window, $ ) {
     
     'use strict';
@@ -8634,6 +8734,9 @@ $buttons
              * @returns {*}
              */
             checkCondition : function( condition, actual, required ) {
+
+                actual = actual || '';
+                
                 switch ( condition ) {
                     case 'equals' : return actual === required;
 
@@ -8693,6 +8796,7 @@ $buttons
     Tailor.Controls.Gallery =           require( './components/controls/gallery' );
     Tailor.Controls.Icon =              require( './components/controls/icon' );
     Tailor.Controls.Image =             require( './components/controls/image' );
+    Tailor.Controls.InputGroup =        require( './components/controls/input-group' );
     Tailor.Controls.Link =              require( './components/controls/link' );
     Tailor.Controls.List =              require( './components/controls/list' );
     Tailor.Controls.Radio =             require( './components/controls/radio' );
@@ -8832,4 +8936,4 @@ $buttons
     } );
     
 } ( window, Backbone.$ ) );
-},{"../shared/components/api/setting":1,"../shared/components/behaviors/draggable":2,"../shared/utility/ajax":3,"../shared/utility/notify":4,"../shared/utility/polyfills/classlist":5,"../shared/utility/polyfills/raf":6,"../shared/utility/polyfills/transitions":7,"./app":8,"./components/behaviors/panel":9,"./components/behaviors/resizable":10,"./components/controls/abstract-control":11,"./components/controls/button-group":12,"./components/controls/checkbox":13,"./components/controls/code":14,"./components/controls/colorpicker":15,"./components/controls/editor":16,"./components/controls/gallery":17,"./components/controls/icon":18,"./components/controls/image":19,"./components/controls/link":20,"./components/controls/list":23,"./components/controls/radio":24,"./components/controls/range":25,"./components/controls/select":27,"./components/controls/select-multi":26,"./components/controls/style":28,"./components/controls/switch":29,"./components/controls/text":30,"./components/controls/textarea":31,"./components/controls/video":32,"./components/controls/widget-form":33,"./components/panels/panel-default":34,"./components/panels/panel-empty":35,"./components/sections/section-default":36,"./entities/models/element":49,"./entities/models/element-container":47,"./entities/models/element-wrapper":48,"./modules/dialog/dialog":55,"./modules/dialog/dialog-region":54,"./modules/history/history":57,"./modules/library/library":59,"./modules/modal/modal":62,"./modules/modal/modal-region":61,"./modules/notifications/notifications":70,"./modules/panels/panels":71,"./modules/sections/sections":76,"./modules/settings/settings":78,"./modules/templates/templates":81,"./preview":82}]},{},[83]);
+},{"../shared/components/api/setting":1,"../shared/components/behaviors/draggable":2,"../shared/utility/ajax":3,"../shared/utility/notify":4,"../shared/utility/polyfills/classlist":5,"../shared/utility/polyfills/raf":6,"../shared/utility/polyfills/transitions":7,"./app":8,"./components/behaviors/panel":9,"./components/behaviors/resizable":10,"./components/controls/abstract-control":11,"./components/controls/button-group":12,"./components/controls/checkbox":13,"./components/controls/code":14,"./components/controls/colorpicker":15,"./components/controls/editor":16,"./components/controls/gallery":17,"./components/controls/icon":18,"./components/controls/image":19,"./components/controls/input-group":20,"./components/controls/link":21,"./components/controls/list":24,"./components/controls/radio":25,"./components/controls/range":26,"./components/controls/select":28,"./components/controls/select-multi":27,"./components/controls/style":29,"./components/controls/switch":30,"./components/controls/text":31,"./components/controls/textarea":32,"./components/controls/video":33,"./components/controls/widget-form":34,"./components/panels/panel-default":35,"./components/panels/panel-empty":36,"./components/sections/section-default":37,"./entities/models/element":50,"./entities/models/element-container":48,"./entities/models/element-wrapper":49,"./modules/dialog/dialog":56,"./modules/dialog/dialog-region":55,"./modules/history/history":58,"./modules/library/library":60,"./modules/modal/modal":63,"./modules/modal/modal-region":62,"./modules/notifications/notifications":71,"./modules/panels/panels":72,"./modules/sections/sections":77,"./modules/settings/settings":79,"./modules/templates/templates":82,"./preview":83}]},{},[84]);

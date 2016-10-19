@@ -9,10 +9,8 @@ var SettingModel = Backbone.Model.extend( {
      */
 	defaults: {
 		id : '',
-        type : '',
-		value : '',
-		default : null
-	}
+        type : ''
+    }
 } );
 
 module.exports = SettingModel;

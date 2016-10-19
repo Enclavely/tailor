@@ -647,15 +647,7 @@ if ( ! class_exists( 'Tailor_Models' ) ) {
 		    }
 
 		    foreach ( $unsanitized_models as $unsanitized_model ) {
-			    $sanitized_model = $this->sanitize_model( $unsanitized_model );
-
-			    //$element = tailor_elements()->get_element( $sanitized_model['tag'] );
-			    //$sanitized_model['type'] = $element->type;
-			    //if ( property_exists( $element, 'child' ) && ! empty( $element->child ) ) {
-				//    $sanitized_model['child'] = $element->child;
-			    //}
-
-			    $sanitized_models[] = $sanitized_model;
+			    $sanitized_models[] = $this->sanitize_model( $unsanitized_model );
 		    }
 
 		    return $sanitized_models;
@@ -671,24 +663,41 @@ if ( ! class_exists( 'Tailor_Models' ) ) {
 	     * @return array|mixed|void
 	     */
 	    public function sanitize_model( $unsanitized_model ) {
-
 		    $sanitized_atts = array();
 
 		    if ( $element = tailor_elements()->get_element( $unsanitized_model['tag'] ) ) {
-			    foreach ( $element->settings() as $setting ) { /* @var $setting Tailor_Setting */
+			    if ( ! $element->active() ) {
+				    $original_label = $element->label;
 
-				    // Apply default
-				    if ( ! array_key_exists( $setting->id, $unsanitized_model['atts'] ) ) {
-					    $unsanitized_model['atts'][ $setting->id ] = $setting->default;
-				    }
+				    // Create a content element containing an error message
+				    $element = tailor_elements()->get_element( 'tailor_content' );
+				    $sanitized_atts['content'] = sprintf(
+					    __( '%1$sThe %2$s element is not active.%3$s ', 'tailor' ),
+					    '<p class="error">',
+					    '<code>'  . esc_attr( $original_label ) . '</code>',
+					    '</p>'
+				    );
+			    }
+			    else {
+				    foreach ( $element->settings() as $setting ) { /* @var $setting Tailor_Setting */
 
-				    // Sanitize value
-				    $sanitized_value = $setting->sanitize( $unsanitized_model['atts'][ $setting->id ] );
-				    if ( is_array( $sanitized_value ) ) {
-					    continue;
+					    // Apply default if a value has not been provided
+					    if ( ! array_key_exists( $setting->id, $unsanitized_model['atts'] ) ) {
+						    $unsanitized_model['atts'][ $setting->id ] = $setting->default;
+					    }
+
+					    if ( empty( $unsanitized_model['atts'][ $setting->id ] ) && empty( $setting->default ) ) {
+						    continue;
+					    }
+
+					    // Sanitize value
+					    $sanitized_value = $setting->sanitize( $unsanitized_model['atts'][ $setting->id ] );
+					    if ( is_array( $sanitized_value ) ) {
+						    continue;
+					    }
+
+					    $sanitized_atts[ $setting->id ] = $sanitized_value;
 				    }
-				    
-				    $sanitized_atts[ $setting->id ] = $sanitized_value;
 			    }
 		    }
 		    else {
@@ -696,9 +705,9 @@ if ( ! class_exists( 'Tailor_Models' ) ) {
 			    // Create a content element containing an error message
 			    $element = tailor_elements()->get_element( 'tailor_content' );
 			    $sanitized_atts['content'] = sprintf(
-				    __( '%1$sThe element associated with shortcode %2$s could not be found.%3$s ', 'tailor' ),
+				    __( '%1$sThe element associated with shortcode %2$s could not be found%3$s ', 'tailor' ),
 				    '<p class="error">',
-				        '<code>'  . esc_attr( $unsanitized_model['tag'] ) . '</code>',
+				    '<code>'  . esc_attr( $unsanitized_model['tag'] ) . '</code>',
 				    '</p>'
 			    );
 		    }

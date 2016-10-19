@@ -114,7 +114,7 @@ var AbstractControl = Marionette.ItemView.extend( {
      * @since 1.0.0
      */
     getSettingValue : function() {
-        return this.model.setting.get( 'value' );
+        return this.model.setting.get( 'value' ) || '';
     },
 
     /**

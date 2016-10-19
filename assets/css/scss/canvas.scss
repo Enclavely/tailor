@@ -26,5 +26,6 @@
 //
 // Trumps
 //
-@import "trumps/wordpress";
-@import "trumps/rtl-canvas";
+@import "trumps/canvas/rtl";
+@import "trumps/canvas/utility";
+@import "trumps/shared/wordpress";

@@ -133,7 +133,6 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Tab_Element' ) 
 				    'selectors'         =>  array( '&.tailor-tab' ),
 				    'declarations'      =>  array(
 					    'background'        =>  "url('{$background_image_src}') center center no-repeat",
-					    //'background-size'   =>  'cover',
 				    ),
 			    );
 		    }

@@ -70,7 +70,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Posts_Element' 
 	        $general_control_arguments = array(
 		        'style'                 =>  array(
 			        'setting'               =>  array(
-				        'default'               =>  'boxed',
+				        'default'               =>  'default',
 			        ),
 			        'control'               =>  array(
 				        'choices'               =>  array(

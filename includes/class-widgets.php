@@ -110,42 +110,62 @@ if ( ! class_exists( 'Tailor_Widgets' ) ) {
 		     */
 		    $default_atts = apply_filters( 'tailor_shortcode_default_atts_' . $tag, array( 'widget_id_base' => '' ) );
 		    $atts = shortcode_atts( $default_atts, $atts, $tag );
+		    $html_atts = array(
+			    'id'            =>  empty( $atts['id'] ) ? null : $atts['id'],
+			    'class'         =>  explode( ' ', "tailor-element tailor-widget {$atts['class']}" ),
+			    'data'          =>  array(),
+		    );
 
-		    $id = ( '' !== $atts['id'] ) ? 'id="' . esc_attr( $atts['id'] ) . '"' : '';
-		    $class = trim( esc_attr( "tailor-element tailor-widget {$atts['class']}" ) );
+		    /**
+		     * Filter the HTML attributes for the element.
+		     *
+		     * @since 1.7.0
+		     *
+		     * @param array $html_attributes
+		     * @param array $atts
+		     * @param string $tag
+		     */
+		    $html_atts = apply_filters( 'tailor_shortcode_html_attributes', $html_atts, $atts, $tag );
+		    $html_atts['class'] = implode( ' ', (array) $html_atts['class'] );
+		    $html_atts = tailor_get_attributes( $html_atts );
 
 		    // Generate the widget HTML
-		    $inner_html = '';
-
+		    $content = '';
 		    global $wp_widget_factory;
 		    foreach ( $wp_widget_factory->widgets as $widget_class_name => $wp_widget ) {
 			    if ( $wp_widget->id_base == $atts['widget_id_base'] ) {
 				    ob_start();
 				    @the_widget( $widget_class_name, $widget_atts );
-				    $inner_html .= ob_get_clean();
+				    $content .= ob_get_clean();
 			    }
 		    }
 
 		    // Check if any content is returned by the widget
-		    if ( empty( $inner_html ) ) {
-			    $inner_html = sprintf(
+		    if ( empty( $content ) ) {
+			    $content = sprintf(
 				    '<p class="tailor-notification tailor-notification--warning">%s</p>',
 				    __( 'Please configure this element as there is currently nothing to display', 'tailor' )
 			    );
 		    }
 
-		    $outer_html = '<div ' . trim( "{$id} class=\"{$class}\"" ) . '>%s</div>';
+		    $outer_html = "<div {$html_atts}>%s</div>";
+		    $inner_html = '%s';
+		    $html = sprintf( $outer_html, sprintf( $inner_html, $content ) );
 
 		    /**
 		     * Filter the HTML for the element.
 		     *
-		     * @since 1.6.3
+		     * @since 1.7.0
 		     *
+		     * @param string $html
 		     * @param string $outer_html
 		     * @param string $inner_html
+		     * @param string $html_atts
 		     * @param array $atts
+		     * @param string $content
+		     * @param string $tag
 		     */
-		    $html = apply_filters( "tailor_shortcode_widget_{$atts['widget_id_base']}_html", sprintf( $outer_html, $inner_html ), $outer_html, $inner_html, $atts );
+		    $html = apply_filters( 'tailor_shortcode_html', $html, $outer_html, $inner_html, $html_atts, $atts, $content, $tag );
 
 		    return $html;
 	    }

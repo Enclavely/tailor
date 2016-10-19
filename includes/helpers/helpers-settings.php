@@ -68,11 +68,9 @@ if ( ! function_exists( 'tailor_get_range' ) ) {
 	 * @return array
 	 */
 	function tailor_get_range( $from = 0, $to = 100, $increment = 1, $values = array() ) {
-
 		for ( $from ; $from <= $to ; $from += $increment ) {
 			$values[ $from ] = $from;
 		}
-
 		return $values;
 	}
 }
@@ -114,6 +112,33 @@ if ( ! function_exists( 'tailor_get_users' ) ) {
 		}
 
 		return $user_ids;
+	}
+}
+
+if ( ! function_exists( 'tailor_get_widget_areas' ) ) {
+
+	/**
+	 * Returns an array containing the registered widget areas.
+	 *
+	 * @since 1.0.0
+	 * @uses $wp_registered_sidebars
+	 *
+	 * @param array $widget_areas
+	 * @return array
+	 */
+	function tailor_get_widget_areas( $widget_areas = array() ) {
+
+		global $wp_registered_sidebars;
+
+		if ( empty( $wp_registered_sidebars ) ) {
+			$widget_areas = array( '' => tailor_empty_list( __( 'widget areas', 'tailor' ) ) );
+		}
+
+		foreach ( $wp_registered_sidebars as $sidebar ) {
+			$widget_areas[ $sidebar['id'] ] = $sidebar['name'];
+		}
+
+		return $widget_areas;
 	}
 }
 
@@ -196,7 +221,6 @@ if ( ! function_exists( 'tailor_get_post_types' ) ) {
 	 * @return array
 	 */
 	function tailor_get_post_types( $defaults = array( 'page' => 'page', 'post' => 'post' ), $args = array() ) {
-
 		$args = wp_parse_args( $args, array(
 			'_builtin'              =>  false,
 			'public'                =>  true,
@@ -317,7 +341,6 @@ if ( ! function_exists( 'tailor_kses_allowed_html' ) ) {
 	 * @return array $tags
 	 */
 	function tailor_kses_allowed_html( $tags, $context ) {
-
 		if ( ! array_key_exists( 'input', $tags ) ) {
 			$tags['input'] = array(
 				'autocomplete'      =>  1,
@@ -336,7 +359,6 @@ if ( ! function_exists( 'tailor_kses_allowed_html' ) ) {
 				'width'             =>  1,
 			);
 		}
-
 		return $tags;
 	}
 	
@@ -564,7 +586,6 @@ if ( ! function_exists( 'tailor_maybe_enable_scripts' ) ) {
 	 * @return bool
 	 */
 	function tailor_maybe_enable_scripts() {
-		
 		if ( ! is_singular() ) {
 			return false;
 		}
@@ -641,7 +662,6 @@ if ( ! function_exists( 'tailor_get_registered_media_queries' ) ) {
 	}
 }
 
-
 if ( ! function_exists( 'tailor_get_media_queries' ) ) {
 
 	/**
@@ -661,58 +681,53 @@ if ( ! function_exists( 'tailor_get_media_queries' ) ) {
 	}
 }
 
-if ( ! function_exists( 'tailor_get_preview_sizes' ) ) {
-
+if ( ! function_exists( 'tailor_get_previewable_devices' ) ) {
+	
 	/**
-	 * Returns the registered media queries.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @deprecated 1.1.3 Deprecated in favor of tailor_get_media_queries().
-	 */
-	function tailor_get_preview_sizes() {
-		trigger_error(
-			sprintf(
-				__( '%1$s is <strong>deprecated</strong> since Tailor version %2$s! Use %3$s instead.', 'tailor' ),
-				'tailor_get_preview_sizes',
-				'1.1.3',
-				'tailor_get_media_queries'
-			)
-		);
-
-		return tailor_get_registered_media_queries();
-	}
-}
-
-/**
- * Returns a list of devices to allow previewing.
- *
- * @since 1.1.3
- *
- * @return array|mixed|void
- */
-function tailor_get_previewable_devices() {
-	$devices = array(
-		'desktop' => array(
-			'label' => __( 'Enter desktop preview mode', 'tailor' ),
-			'default' => true,
-		),
-		'tablet' => array(
-			'label' => __( 'Enter tablet preview mode', 'tailor' ),
-		),
-		'mobile' => array(
-			'label' => __( 'Enter mobile preview mode', 'tailor' ),
-		),
-	);
-
-	/**
-	 * Filter the available devices to allow previewing in the Customizer.
+	 * Returns a list of devices to allow previewing.
 	 *
 	 * @since 1.1.3
 	 *
-	 * @param array $devices List of devices with labels and default setting.
+	 * @return array|mixed|void
 	 */
-	$devices = apply_filters( 'customize_previewable_devices', $devices );
+	function tailor_get_previewable_devices() {
+		$devices = array(
+			'desktop' => array(
+				'label' => __( 'Enter desktop preview mode', 'tailor' ),
+				'default' => true,
+			),
+			'tablet' => array(
+				'label' => __( 'Enter tablet preview mode', 'tailor' ),
+			),
+			'mobile' => array(
+				'label' => __( 'Enter mobile preview mode', 'tailor' ),
+			),
+		);
 
-	return $devices;
+		/**
+		 * Filter the available devices to allow previewing in the Customizer.
+		 *
+		 * @since 1.1.3
+		 *
+		 * @param array $devices List of devices with labels and default setting.
+		 */
+		$devices = apply_filters( 'customize_previewable_devices', $devices );
+
+		return $devices;
+	}
+}
+
+if ( ! function_exists( 'tailor_empty_list' ) ) {
+
+	/**
+	 * Returns a message to display when a list contains no items.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $list_type
+	 * @return string
+	 */
+	function tailor_empty_list( $list_type ) {
+		return sprintf( _x( 'No %1$s to display', 'expected item type', 'tailor' ), $list_type );
+	}
 }

@@ -32,36 +32,57 @@ if ( ! function_exists( 'tailor_shortcode_tabs' ) ) {
 	    $default_atts = apply_filters( 'tailor_shortcode_default_atts_' . $tag, array() );
 	    $atts = shortcode_atts( $default_atts, $atts, $tag );
 
-	    $id = ( '' !== $atts['id'] ) ? 'id="' . esc_attr( $atts['id'] ) . '"' : '';
-	    $class = trim( esc_attr( "tailor-element tailor-tabs tailor-tabs--{$atts['position']} {$atts['class']}" ) );
+	    $position = ! empty( $atts['position'] ) ? $atts['position'] : 'top';
+	    $class = explode( ' ', "tailor-element tailor-tabs tailor-tabs--{$position} {$atts['class']}" );
 
+	    $html_atts = array(
+		    'id'            =>  empty( $atts['id'] ) ? null : $atts['id'],
+		    'class'         =>  $class,
+		    'data'          =>  array(),
+	    );
+
+	    /**
+	     * Filter the HTML attributes for the element.
+	     *
+	     * @since 1.7.0
+	     *
+	     * @param array $html_attributes
+	     * @param array $atts
+	     * @param string $tag
+	     */
+	    $html_atts = apply_filters( 'tailor_shortcode_html_attributes', $html_atts, $atts, $tag );
+	    $html_atts['class'] = implode( ' ', (array) $html_atts['class'] );
+	    $html_atts = tailor_get_attributes( $html_atts );
+	    
 	    global $tailor_tab_navigation;
 	    $tailor_tab_navigation = array();
-
-        $tabs = do_shortcode( $content );
-
 	    $navigation_items = '';
+	    $content = do_shortcode( $content );
 	    foreach ( $tailor_tab_navigation as $navigation_item_id => $navigation_item ) {
 		    $navigation_items .=    '<li class="tailor-tabs__navigation-item ' . esc_attr( $navigation_item['class'] ). '" data-id="' . esc_attr( $navigation_item_id ) . '">' .
 		                                esc_attr( $navigation_item['title'] ) .
 		                            '</li>';
 	    }
 
-	    $outer_html = '<div ' . trim( "{$id} class=\"{$class}\"" ) . '>%s</div>';
-
+	    $outer_html = "<div {$html_atts}>%s</div>";
 	    $inner_html = '<ul class="tailor-tabs__navigation">' . $navigation_items . '</ul>' .
-	                  '<div class="tailor-tabs__content">' . $tabs . '</div>';
-
+	                  '<div class="tailor-tabs__content">%s</div>';
+	    $html = sprintf( $outer_html, sprintf( $inner_html, $content ) );
+	    
 	    /**
 	     * Filter the HTML for the element.
 	     *
-	     * @since 1.6.3
+	     * @since 1.7.0
 	     *
+	     * @param string $html
 	     * @param string $outer_html
 	     * @param string $inner_html
+	     * @param string $html_atts
 	     * @param array $atts
+	     * @param string $content
+	     * @param string $tag
 	     */
-	    $html = apply_filters( 'tailor_shortcode_tabs_html', sprintf( $outer_html, $inner_html ), $outer_html, $inner_html, $atts );
+	    $html = apply_filters( 'tailor_shortcode_html', $html, $outer_html, $inner_html, $html_atts, $atts, $content, $tag );
 
 	    return $html;
     }
@@ -94,29 +115,51 @@ if ( ! function_exists( 'tailor_shortcode_tab' ) ) {
 		$atts = shortcode_atts( $default_atts, $atts, $tag );
 
 		$tab_id = 'tab' . rand();
-		$id = "id=\"{$tab_id}\"";
-		$class = trim( esc_attr( "tailor-tab {$atts['class']}" ) );
-		
+
+		$html_atts = array(
+			'id'            =>  $tab_id,
+			'class'         =>  explode( ' ', "tailor-tab {$atts['class']}" ),
+			'data'          =>  array(),
+		);
+
+		/**
+		 * Filter the HTML attributes for the element.
+		 *
+		 * @since 1.7.0
+		 *
+		 * @param array $html_attributes
+		 * @param array $atts
+		 * @param string $tag
+		 */
+		$html_atts = apply_filters( 'tailor_shortcode_html_attributes', $html_atts, $atts, $tag );
+		$html_atts['class'] = implode( ' ', (array) $html_atts['class'] );
+		$html_atts = tailor_get_attributes( $html_atts );
+
 		global $tailor_tab_navigation;
 		$tailor_tab_navigation[ $tab_id ] = array(
 			'class'         =>  $atts['class'],
 			'title'         =>  empty( $atts['title'] ) ? __( 'Tab', 'tailor' ) : $atts['title'],
 		);
 
-		$outer_html = '<div ' . trim( "{$id} class=\"{$class}\"" ) . '>%s</div>';
-
-		$inner_html = do_shortcode( $content );
+		$outer_html = "<div {$html_atts}>%s</div>";
+		$inner_html = '%s';
+		$content = do_shortcode( $content );
+		$html = sprintf( $outer_html, sprintf( $inner_html, $content ) );
 
 		/**
 		 * Filter the HTML for the element.
 		 *
-		 * @since 1.6.3
+		 * @since 1.7.0
 		 *
+		 * @param string $html
 		 * @param string $outer_html
 		 * @param string $inner_html
+		 * @param string $html_atts
 		 * @param array $atts
+		 * @param string $content
+		 * @param string $tag
 		 */
-		$html = apply_filters( 'tailor_shortcode_tab_html', sprintf( $outer_html, $inner_html ), $outer_html, $inner_html, $atts );
+		$html = apply_filters( 'tailor_shortcode_html', $html, $outer_html, $inner_html, $html_atts, $atts, $content, $tag );
 
 		return $html;
 	}

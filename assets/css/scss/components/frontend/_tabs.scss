@@ -8,8 +8,8 @@ $tabs-spacing-vertical: $global-spacing-vertical !default;
 $tabs-padding: 0 !default;
 $tabs-font-size: $global-font-size !default;
 $tabs-color: inherit !default;
-$tabs-border-width: 0 !default;
-$tabs-border-style : $global-border-style !default;
+$tabs-border-width: $global-border-width !default;
+$tabs-border-style : none !default;
 $tabs-border-color: $global-border-color !default;
 $tabs-border-radius: 0 !default;
 $tabs-background-color: transparent !default;
@@ -17,7 +17,7 @@ $tabs-box-shadow: none !default;
 
 // Child specific
 $tabs-tab-padding: 1em !default;
-$tabs-tab-border-width: 1px !default;
+$tabs-tab-border-width: $global-border-width !default;
 $tabs-tab-border-style : $global-border-style !default;
 $tabs-tab-border-color: $global-border-color !default;
 $tabs-tab-background-color: $background-color !default;

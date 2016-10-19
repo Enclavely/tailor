@@ -611,15 +611,6 @@ var EditableBehaviors = Marionette.Behavior.extend( {
     },
 
     /**
-     * Adds helper text to the title of the element.
-     *
-     * @since 1.0.0
-     */
-    onRender : function() {
-        this.view.el.title = _strings.edit_element;
-    },
-
-    /**
      * Selects or edits the element when clicked, depending on whether the Shift button is pressed.
      *
      * @since 1.0.0
@@ -1648,8 +1639,12 @@ var CompositeView = Marionette.CompositeView.extend( {
 
         this.$el.replaceWith( $el );
         this.setElement( $el );
-        this.el.setAttribute( 'draggable', true );
+	    
+	    this.el.setAttribute( 'draggable', true );
 
+	    this.el.classList.add( 'tailor-' + this.model.cid );
+	    this.el.title = _strings.edit_element;
+	    
         return this;
     },
 
@@ -1775,10 +1770,7 @@ var CompositeView = Marionette.CompositeView.extend( {
 	 * @since 1.0.0
 	 */
 	onDomRefresh : function() {
-
 		this.$el
-			.addClass( 'tailor-' + this.model.get( 'id' ) )
-			.attr( { draggable: true } )
 			.find( 'a' )
 			.attr( { draggable : false, target : '_blank' } );
 
@@ -1819,7 +1811,7 @@ var CompositeView = Marionette.CompositeView.extend( {
 		
 		var view = this;
 		view.el.classList.add( 'is-rendering' );
-
+		
 		window.ajax.send( 'tailor_render', {
 			data : {
 				model : JSON.stringify( model ),
@@ -2316,6 +2308,11 @@ ElementView = Marionette.ItemView.extend( {
 		this.$el.replaceWith( el );
 		this.setElement( el );
 
+		this.el.setAttribute( 'draggable', true );
+
+		this.el.classList.add( 'tailor-' + this.model.cid );
+		this.el.title = _strings.edit_element;
+		
 		return this;
 	},
 
@@ -2359,7 +2356,7 @@ ElementView = Marionette.ItemView.extend( {
 		}
 		
 		view.el.classList.add( 'is-rendering' );
-
+		
 		window.ajax.send( 'tailor_render', {
 			data : {
 				model : JSON.stringify( model ),
@@ -2389,7 +2386,7 @@ ElementView = Marionette.ItemView.extend( {
 			 *
 			 * @since 1.0.0
 			 */
-			error : function() {
+			error : function( response ) {
 				view.updateTemplate( 'The template for ' + view.cid + ' could not be refreshed' );
 			},
 
@@ -2479,15 +2476,17 @@ ElementView = Marionette.ItemView.extend( {
 		var view = this;
 		
 		this.$el
-			.addClass( 'tailor-' + this.model.get( 'id' ) )
-			.attr( { draggable: true } )
 			.find( 'a' )
 			.attr( { draggable : false, target : '_blank' } );
 
 		this.$el
+			.find( '[onchange]' )
+			.removeAttr( 'onchange' );
+
+		this.$el
 			.find( 'img' )
 			.attr( { draggable : false } );
-		
+
 		this.$el.imagesLoaded( function() {
 			view._isReady = true;
 
@@ -5683,7 +5682,7 @@ Stylesheet.prototype = {
 					) {
 						var selectorString = Tailor.CSS.parseSelectors( ruleSet[ elementId ][ rule ]['selectors'], elementId );
 						var declarationString = Tailor.CSS.parseDeclarations( ruleSet[ elementId ][ rule ]['declarations'] );
-
+						
 						if ( ! _.isEmpty( declarationString ) ) {
 
 							// Add the rule to the stylesheet
@@ -6741,6 +6740,42 @@ var $ = Backbone.$,
 			} );
 		} );
 
+		// Tab-specific behavior
+		SettingAPI.onChange( 'element:background_color', function( to, from, model ) {
+			if ( 'tailor_tab' == model.get( 'tag' ) ) {
+				return [ {
+					selectors: [ '&.tailor-tabs__navigation-item', '&.tailor-tab' ],
+					declarations: {
+						'background-color' : to
+					}
+				} ];
+			}
+		} );
+
+		// Toggle-specific behavior
+		SettingAPI.onChange( 'element:title_color', function( to, from, model ) {
+			if ( 'tailor_toggle' == model.get( 'tag' ) ) {
+				return [ {
+					selectors: [ '.tailor-toggle__title' ],
+					declarations: {
+						'color' : to
+					}
+				} ];
+			}
+		} );
+
+		SettingAPI.onChange( 'element:title_background_color', function( to, from, model ) {
+			if ( 'tailor_toggle' == model.get( 'tag' ) ) {
+				return [ {
+					selectors: [ '.tailor-toggle__title' ],
+					declarations: {
+						'background-color' : to
+					}
+				} ];
+			}
+		} );
+
+
 		// Link color
 		SettingAPI.onChange( 'element:link_color', function( to, from, model ) {
 			return [ {
@@ -6752,7 +6787,7 @@ var $ = Backbone.$,
 		// Heading color
 		SettingAPI.onChange( 'element:heading_color', function( to, from, model ) {
 			return [ {
-				selectors: [ 'h1, h2, h3, h4, h5' ],
+				selectors: [ 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ],
 				declarations: { color : to }
 			} ];
 		} );
@@ -6909,10 +6944,32 @@ var $ = Backbone.$,
 					declarations: {}
 				};
 
-				// Process setting value
-				to = to.split( '-' );
+				if ( -1 != to.indexOf( ',' ) ) {
+					to = to.split( ',' );
+				}
+				else {
+					to = to.split( '-' ); // Old format
+				}
+
+				var map = [
+					"px",
+					"%",
+					"in",
+					"cm",
+					"mm",
+					"pt",
+					"pc",
+					"em",
+					"ex"
+				];
+
+				var unit = '';
 				if ( isIdentical( to ) ) {
-					rule.declarations[ settingId ] = to[0];
+					if ( ! new RegExp( map.join( "|" ) ).test( to[0] ) ) {
+						unit = 'px';
+					}
+
+					rule.declarations[ settingId ] = to[0] + unit;
 				}
 				else {
 					if ( 2 == to.length ) {
@@ -6926,7 +6983,13 @@ var $ = Backbone.$,
 					}
 					for ( var key in to ) {
 						if ( to.hasOwnProperty( key ) ) {
-							rule.declarations[ settingId + '-' + key ] = to[ key ];
+
+							unit = '';
+							if ( ! new RegExp( map.join( "|" ) ).test( to[ key ] ) ) {
+								unit = 'px';
+							}
+
+							rule.declarations[ settingId + '-' + key ] = to[ key ] + unit;
 						}
 					}
 				}
@@ -7328,8 +7391,8 @@ Map = function( el, options, callbacks ) {
     this.$el = $( el );
     this.$win = $( window );
 
-	this.options = $.extend( {}, this.defaults, this.$el.data(), options );
-	this.callbacks = $.extend( {}, this.callbacks, callbacks );
+	this.options = _.extend( {}, this.defaults, this.$el.data(), options );
+	this.callbacks = _.extend( {}, this.callbacks, callbacks );
 
     this.initialize();
 };
@@ -8150,7 +8213,7 @@ Slideshow.prototype = {
 
     defaults : {
         items : '.tailor-slideshow__slide',
-        prevArrow: '<button type="button" data-role="none" class="lick-prev" aria-label="Previous" tabindex="0" role="button"></button>',
+        prevArrow: '<button type="button" data-role="none" class="slick-prev" aria-label="Previous" tabindex="0" role="button"></button>',
         nextArrow: '<button type="button" data-role="none" class="slick-next" aria-label="Next" tabindex="0" role="button"></button>',
         adaptiveHeight : true,
         draggable : false,

@@ -157,7 +157,7 @@ html {
   font-size: 1em;
   color: inherit;
   background-color: transparent;
-  border: 0 solid #efefef;
+  border: 1px none #efefef;
   border-radius: 0;
   box-shadow: none; }
   .tailor-ui .tailor-content::after {
@@ -175,7 +175,7 @@ html {
   font-size: 1em;
   color: inherit;
   background-color: transparent;
-  border: 0 solid #efefef;
+  border: 1px none #efefef;
   border-radius: 0;
   box-shadow: none; }
 
@@ -185,7 +185,7 @@ html {
   font-size: 1em;
   color: inherit;
   background-color: transparent;
-  border: 0 solid #efefef;
+  border: 1px none #efefef;
   border-radius: 0;
   box-shadow: none; }
   .tailor-ui .tailor-tabs__navigation, .tailor-ui .tailor-tabs__content {
@@ -291,7 +291,7 @@ html {
   list-style: none; }
 .tailor-ui .tailor-carousel__item {
   padding: 1em 1.25em; }
-  .tailor-ui .tailor-carousel__item.has-custom-height {
+  .tailor-ui .tailor-carousel__item.u-align-top, .tailor-ui .tailor-carousel__item.u-align-middle, .tailor-ui .tailor-carousel__item.u-align-bottom {
     display: -webkit-flex;
     display: -ms-flexbox;
     display: flex;
@@ -304,7 +304,7 @@ html {
   font-size: 1em;
   color: inherit;
   background-color: transparent;
-  border: 0 solid #efefef;
+  border: 1px none #efefef;
   border-radius: 0;
   box-shadow: none; }
   .tailor-ui .tailor-row--full-height {
@@ -317,7 +317,7 @@ html {
   font-size: 1em;
   color: inherit;
   background-color: transparent;
-  border: 0 solid #efefef;
+  border: 1px none #efefef;
   border-radius: 0;
   box-shadow: none; }
   .tailor-ui .tailor-column__helper {
@@ -479,7 +479,7 @@ html {
   font-size: 1em;
   color: inherit;
   background-color: transparent;
-  border: 0 solid #efefef;
+  border: 1px none #efefef;
   border-radius: 0;
   box-shadow: none; }
 
@@ -489,7 +489,7 @@ html {
   font-size: 1em;
   color: inherit;
   background-color: transparent;
-  border: 0 solid #efefef;
+  border: 1px none #efefef;
   border-radius: 0;
   box-shadow: none; }
   .tailor-ui .tailor-jetpack-testimonials .testimonial-entry {
@@ -501,7 +501,7 @@ html {
   font-size: 1em;
   color: inherit;
   background-color: transparent;
-  border: 0 solid #efefef;
+  border: 1px none #efefef;
   border-radius: 0;
   box-shadow: none; }
   .tailor-ui .tailor-list__graphic {
@@ -573,7 +573,7 @@ html {
   font-size: 1em;
   color: inherit;
   background-color: transparent;
-  border: 0 solid #efefef;
+  border: 1px none #efefef;
   border-radius: 0;
   box-shadow: none; }
 
@@ -583,7 +583,7 @@ html {
   font-size: 1em;
   color: inherit;
   background-color: transparent;
-  border: 0 solid #efefef;
+  border: 1px none #efefef;
   border-radius: 0;
   box-shadow: none; }
   .tailor-ui .tailor-grid__item {
@@ -799,7 +799,7 @@ html {
   font-size: 1em;
   color: inherit;
   background-color: transparent;
-  border: 0 solid #efefef;
+  border: 1px none #efefef;
   border-radius: 0;
   box-shadow: none; }
   .tailor-ui .wpcf7 input,
@@ -928,7 +928,7 @@ html {
   font-size: 1em;
   color: inherit;
   background-color: transparent;
-  border: 0 solid #efefef;
+  border: 1px none #efefef;
   border-radius: 0;
   box-shadow: none; }
   .tailor-ui .tailor-posts .entry {
@@ -980,7 +980,7 @@ html {
   font-size: 1em;
   color: inherit;
   background-color: transparent;
-  border: 0 solid #efefef;
+  border: 1px none #efefef;
   border-radius: 0;
   box-shadow: none; }
   .tailor-ui .tailor-section__content {
@@ -1017,7 +1017,7 @@ html {
   font-size: 1em;
   color: inherit;
   background-color: transparent;
-  border: 0 solid #efefef;
+  border: 1px none #efefef;
   border-radius: 0;
   box-shadow: none; }
 .tailor-ui .tailor-widget-area {
@@ -1026,7 +1026,7 @@ html {
   font-size: 1em;
   color: inherit;
   background-color: transparent;
-  border: 0 solid #efefef;
+  border: 1px none #efefef;
   border-radius: 0;
   box-shadow: none; }
 
@@ -1819,26 +1819,6 @@ html {
   width: 100%;
   background-color: #efefef; }
 
-.tailor-ui .u-text-left {
-  text-align: left !important; }
-.tailor-ui .u-text-center {
-  text-align: center !important; }
-.tailor-ui .u-text-right {
-  text-align: right !important; }
-.tailor-ui .u-align-top {
-  align-items: flex-start;
-  justify-content: flex-start; }
-.tailor-ui .u-align-middle {
-  align-items: center;
-  justify-content: center; }
-.tailor-ui .u-align-bottom {
-  align-items: flex-end;
-  justify-content: flex-end; }
-.tailor-ui .u-full-width {
-  width: 100vw;
-  margin-left: calc( 50% - 50vw );
-  margin-right: calc( 50% - 50vw ); }
-
 .tailor-ui .error {
   padding: 0.5em 1em;
   margin-bottom: 0;
@@ -1883,6 +1863,35 @@ html {
     margin: 0 0 0 1.5em; }
   .tailor-ui .pullquote p:last-child {
     margin-bottom: 0; }
+
+.tailor-ui .u-text-left {
+  text-align: left !important; }
+.tailor-ui .u-text-center {
+  text-align: center !important; }
+.tailor-ui .u-text-right {
+  text-align: right !important; }
+.tailor-ui .u-align-top {
+  align-items: flex-start;
+  justify-content: flex-start; }
+.tailor-ui .u-align-middle {
+  align-items: center;
+  justify-content: center; }
+.tailor-ui .u-align-bottom {
+  align-items: flex-end;
+  justify-content: flex-end; }
+.tailor-ui .u-full-width {
+  width: 100vw;
+  margin-left: calc( 50% - 50vw );
+  margin-right: calc( 50% - 50vw ); }
+@media only screen and (max-width: 320px) {
+  .tailor-ui:not(.is-canvas) .u-hidden-mobile {
+    display: none !important; } }
+@media only screen and (min-width: 321px) and (max-width: 720px) {
+  .tailor-ui:not(.is-canvas) .u-hidden-tablet {
+    display: none !important; } }
+@media only screen and (min-width: 721px) {
+  .tailor-ui:not(.is-canvas) .u-hidden-desktop {
+    display: none !important; } }
 
 .tailor-ui .screen-reader-text {
   position: absolute;

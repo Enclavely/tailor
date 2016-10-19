@@ -69,7 +69,9 @@ $carousel-dot-color: $global-primary-color !default;
 		&__item {
 			padding: $carousel-padding ( $carousel-padding * 1.25 );
 
-			&.has-custom-height {
+			&.u-align-top,
+			&.u-align-middle,
+			&.u-align-bottom {
 				display: -webkit-flex;
 				display: -ms-flexbox;
 				display: flex;

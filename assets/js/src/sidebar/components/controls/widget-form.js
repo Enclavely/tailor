@@ -122,7 +122,7 @@ WidgetFormControl = Marionette.ItemView.extend( {
      * @since 1.6.0
      */
     getSettingValue : function() {
-        return this.model.setting.get( 'value' );
+        return this.model.setting.get( 'value' ) || '';
     },
 
     /**

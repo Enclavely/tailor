@@ -60,13 +60,13 @@ if ( ! class_exists( 'Tailor_Templates' ) ) {
 	        $this->post_name = apply_filters( 'tailor_templates_post_name', 'tailor_templates' );
 	        $this->register_post_type();
             $this->add_actions();
-
+	        
 	        if ( tailor()->is_template_preview() ) {
 
 		        // Hides the Admin Bar
 		        define( 'IFRAME_REQUEST', true );
 
-		        add_filter( 'the_content', array( $this, 'template_preview_content' ), -999999 );
+		        add_filter( 'the_content', array( $this, 'template_preview_content' ) );
 	        }
         }
 
@@ -167,10 +167,8 @@ if ( ! class_exists( 'Tailor_Templates' ) ) {
 		 * @return mixed|string|void
 		 */
 		protected function generate_template_id( $template_label ) {
-
 			$template_label = str_replace( ' ', '_', $template_label );
 			$existing_template_ids = $this->get_template_ids();
-
 			$template_id = sprintf( $this->post_name . '_%s', sanitize_key( str_replace( ' ', '_ ', $template_label ) ) );
 
 			// Ensure that the template ID is unique
@@ -500,7 +498,6 @@ if ( ! class_exists( 'Tailor_Templates' ) ) {
 		 * @return string
 		 */
 		public function template_preview_content( $content ) {
-
 			$template = $this->get_models( $_GET['template_id'] );
 			if ( false == $template ) {
 				return $content;

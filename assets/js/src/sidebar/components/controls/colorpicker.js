@@ -57,7 +57,7 @@ var AbstractControl = require( './abstract-control' ),
     $.widget( 'wp.wpColorPicker', $.wp.wpColorPicker, {
 
         _create: function() {
-            // bail early for unsupported Iris.
+
             if ( ! $.support.iris ) {
                 return;
             }
@@ -67,26 +67,29 @@ var AbstractControl = require( './abstract-control' ),
 
             $.extend( self.options, el.data() );
 
-            // keep close bound so it can be attached to a body listener
             self.close = $.proxy( self.close, self );
-
             self.initialValue = el.val();
 
             // Set up HTML structure, hide things
             el.addClass( 'wp-color-picker' ).hide().wrap( _wrap );
             self.wrap = el.parent();
-            self.toggler = $( _before ).insertBefore( el ).css( { backgroundColor: self.initialValue } ).attr( 'title', wpColorPickerL10n.pick ).attr( 'data-current', wpColorPickerL10n.current );
+            self.toggler = $( _before )
+                .insertBefore( el )
+                .css( { backgroundColor: self.initialValue } )
+                .attr( 'title', wpColorPickerL10n.pick )
+                .attr( 'data-current', wpColorPickerL10n.current );
             self.pickerContainer = $( _after ).insertAfter( el );
             self.button = $( _button );
 
             if ( self.options.defaultColor ) {
                 self.button.addClass( 'wp-picker-default' ).val( wpColorPickerL10n.defaultString );
-            } else {
+            }
+            else {
                 self.button.addClass( 'wp-picker-clear' ).val( wpColorPickerL10n.clear );
             }
 
-            el.wrap( '<span class="wp-picker-input-wrap" />' ).after(self.button);
 
+            el.wrap( '<span class="wp-picker-input-wrap" />' ).after(self.button);
             el.iris( {
                 target: self.pickerContainer,
                 hide: self.options.hide,
@@ -106,10 +109,10 @@ var AbstractControl = require( './abstract-control' ),
                             'border-bottom-left-radius': '3px',
                             'background': ui.color.toString()
                         });
-                    } else {
+                    }
+                    else {
                         self.toggler.css( { backgroundColor: ui.color.toString() } );
                     }
-                    // check for a custom cb
                     if ( $.isFunction( self.options.change ) ) {
                         self.options.change.call( this, event, ui );
                     }
@@ -126,7 +129,6 @@ var AbstractControl = require( './abstract-control' ),
         _addListeners: function() {
             var self = this;
 
-            // prevent any clicks inside this widget from leaking to the top and closing it
             self.wrap.on( 'click.wpcolorpicker', function( event ) {
                 event.stopPropagation();
             });
@@ -134,7 +136,8 @@ var AbstractControl = require( './abstract-control' ),
             self.toggler.click( function(){
                 if ( self.toggler.hasClass( 'wp-picker-open' ) ) {
                     self.close();
-                } else {
+                }
+                else {
                     self.open();
                 }
             });
@@ -142,22 +145,22 @@ var AbstractControl = require( './abstract-control' ),
             self.element.change( function( event ) {
                 var me = $( this ),
                     val = me.val();
-                // Empty or Error = clear
+
                 if ( val === '' || self.element.hasClass('iris-error') ) {
                     if ( self.options.rgba ) {
                         self.toggler.removeAttr('style');
                         self.toggler.find('span').css( 'backgroundColor', '' );
-                    } else {
+                    }
+                    else {
                         self.toggler.css( 'backgroundColor', '' );
                     }
-                    // fire clear callback if we have one
+
                     if ( $.isFunction( self.options.clear ) ) {
                         self.options.clear.call( this, event );
                     }
                 }
             });
 
-            // open a keyboard-focused closed picker with space or enter
             self.toggler.on( 'keyup', function( event ) {
                 if ( event.keyCode === 13 || event.keyCode === 32 ) {
                     event.preventDefault();
@@ -172,13 +175,15 @@ var AbstractControl = require( './abstract-control' ),
                     if ( self.options.rgba ) {
                         self.toggler.removeAttr('style');
                         self.toggler.find('span').css( 'backgroundColor', '' );
-                    } else {
+                    }
+                    else {
                         self.toggler.css( 'backgroundColor', '' );
                     }
                     if ( $.isFunction( self.options.clear ) ) {
                         self.options.clear.call( this, event );
                     }
-                } else if ( me.hasClass( 'wp-picker-default' ) ) {
+                }
+                else if ( me.hasClass( 'wp-picker-default' ) ) {
                     self.element.val( self.options.defaultColor ).change();
                 }
             });
@@ -189,13 +194,11 @@ var AbstractControl = require( './abstract-control' ),
      * Overwrite iris
      */
     $.widget( 'a8c.iris', $.a8c.iris, {
+
         _create: function() {
             this._super();
 
-            // Global option for check is mode rbga is enabled
             this.options.rgba = this.element.data( 'rgba' ) || false;
-
-            // Is not input disabled
             if ( ! this.element.is( ':input' ) ) {
                 this.options.alpha = false;
             }
@@ -226,13 +229,11 @@ var AbstractControl = require( './abstract-control' ),
                     self.controls[v].width( stripsWidth ).css({ 'margin-left': stripsMargin + 'px' });
                 });
 
-                // Add new slider
                 self._initControls();
-
-                // For updated widget
                 self._change();
             }
         },
+
         _initControls: function() {
             this._super();
 
@@ -247,13 +248,13 @@ var AbstractControl = require( './abstract-control' ),
                     step: 1,
                     value: parseInt( self._color._alpha * 100 ),
                     slide: function( event, ui ) {
-                        // Update alpha value
                         self._color._alpha = parseFloat( ui.value/100 );
                         self._change.apply( self, arguments );
                     }
                 });
             }
         },
+
         _change: function() {
             this._super();
             var self = this,
@@ -271,24 +272,17 @@ var AbstractControl = require( './abstract-control' ),
                     customWidth = self.options.customWidth,
                     target = self.picker.closest('.wp-picker-container').find( '.wp-color-result' );
 
-                // Generate background slider alpha, only for CSS3 old browser fuck!! :)
                 controls.aContainer.css({ 'background': 'linear-gradient(to bottom, ' + gradient.join( ', ' ) + '), url(' + image + ')' });
 
                 if ( target.hasClass('wp-picker-open') ) {
-                    // Update alpha value
                     controls.aSlider.slider( 'value', alpha );
 
-                    /**
-                     * Disabled change opacity in default slider Saturation ( only is alpha enabled )
-                     * and change input width for view all value
-                     */
                     if ( self._color._alpha < 1 ) {
                         var style = controls.strip.attr( 'style' ).replace( /rgba\(([0-9]+,)(\s+)?([0-9]+,)(\s+)?([0-9]+)(,(\s+)?[0-9\.]+)\)/g, 'rgb($1$3$5)' );
-
                         controls.strip.attr( 'style', style );
-
                         el.width( parseInt( defaultWidth + customWidth ) );
-                    } else {
+                    }
+                    else {
                         el.width( defaultWidth );
                     }
                 }
@@ -303,6 +297,7 @@ var AbstractControl = require( './abstract-control' ),
                 });
             }
         },
+
         _addInputListeners: function( input ) {
             var self = this,
                 debounceTimeout = 100,
@@ -311,15 +306,13 @@ var AbstractControl = require( './abstract-control' ),
                         val = input.val();
 
                     input.removeClass( 'iris-error' );
-                    // we gave a bad color
                     if ( color.error ) {
-                        // don't error on an empty input
                         if ( val !== '' ) {
                             input.addClass( 'iris-error' );
                         }
-                    } else {
+                    }
+                    else {
                         if ( color.toString() !== self._color.toString() ) {
-                            // let's not do this on keyup for hex shortcodes
                             if ( ! ( event.type === 'keyup' && val.match( /^[0-9a-fA-F]{3}$/ ) ) ) {
                                 self._setOption( 'color', color.toString() );
                             }
@@ -385,7 +378,10 @@ ColorPickerControl = AbstractControl.extend( {
             defaultColor : control.getDefaultValue(),
 
             change : function() {
-                control.setSettingValue( control.ui.input.wpColorPicker( 'color' ) );
+                var color = control.ui.input.wpColorPicker( 'color' );
+                if ( control.getSettingValue() != color ) {
+                    control.setSettingValue( color );
+                }
             },
 
             clear : function() {

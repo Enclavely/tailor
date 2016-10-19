@@ -310,6 +310,42 @@ var $ = Backbone.$,
 			} );
 		} );
 
+		// Tab-specific behavior
+		SettingAPI.onChange( 'element:background_color', function( to, from, model ) {
+			if ( 'tailor_tab' == model.get( 'tag' ) ) {
+				return [ {
+					selectors: [ '&.tailor-tabs__navigation-item', '&.tailor-tab' ],
+					declarations: {
+						'background-color' : to
+					}
+				} ];
+			}
+		} );
+
+		// Toggle-specific behavior
+		SettingAPI.onChange( 'element:title_color', function( to, from, model ) {
+			if ( 'tailor_toggle' == model.get( 'tag' ) ) {
+				return [ {
+					selectors: [ '.tailor-toggle__title' ],
+					declarations: {
+						'color' : to
+					}
+				} ];
+			}
+		} );
+
+		SettingAPI.onChange( 'element:title_background_color', function( to, from, model ) {
+			if ( 'tailor_toggle' == model.get( 'tag' ) ) {
+				return [ {
+					selectors: [ '.tailor-toggle__title' ],
+					declarations: {
+						'background-color' : to
+					}
+				} ];
+			}
+		} );
+
+
 		// Link color
 		SettingAPI.onChange( 'element:link_color', function( to, from, model ) {
 			return [ {
@@ -321,7 +357,7 @@ var $ = Backbone.$,
 		// Heading color
 		SettingAPI.onChange( 'element:heading_color', function( to, from, model ) {
 			return [ {
-				selectors: [ 'h1, h2, h3, h4, h5' ],
+				selectors: [ 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ],
 				declarations: { color : to }
 			} ];
 		} );
@@ -478,10 +514,32 @@ var $ = Backbone.$,
 					declarations: {}
 				};
 
-				// Process setting value
-				to = to.split( '-' );
+				if ( -1 != to.indexOf( ',' ) ) {
+					to = to.split( ',' );
+				}
+				else {
+					to = to.split( '-' ); // Old format
+				}
+
+				var map = [
+					"px",
+					"%",
+					"in",
+					"cm",
+					"mm",
+					"pt",
+					"pc",
+					"em",
+					"ex"
+				];
+
+				var unit = '';
 				if ( isIdentical( to ) ) {
-					rule.declarations[ settingId ] = to[0];
+					if ( ! new RegExp( map.join( "|" ) ).test( to[0] ) ) {
+						unit = 'px';
+					}
+
+					rule.declarations[ settingId ] = to[0] + unit;
 				}
 				else {
 					if ( 2 == to.length ) {
@@ -495,7 +553,13 @@ var $ = Backbone.$,
 					}
 					for ( var key in to ) {
 						if ( to.hasOwnProperty( key ) ) {
-							rule.declarations[ settingId + '-' + key ] = to[ key ];
+
+							unit = '';
+							if ( ! new RegExp( map.join( "|" ) ).test( to[ key ] ) ) {
+								unit = 'px';
+							}
+
+							rule.declarations[ settingId + '-' + key ] = to[ key ] + unit;
 						}
 					}
 				}

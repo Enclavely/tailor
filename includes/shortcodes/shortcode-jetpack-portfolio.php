@@ -33,86 +33,107 @@ if ( ! function_exists( 'tailor_shortcode_jetpack_portfolio' ) ) {
             'order_by'                  =>  'date',
             'order'                     =>  'DESC',
         ), $atts, $tag );
-
-	    $id = ( '' !== $atts['id'] ) ? 'id="' . esc_attr( $atts['id'] ) . '"' : '';
-	    $class = trim( esc_attr( "tailor-element tailor-jetpack-portfolio {$atts['class']}" ) );
-
-	    // Get the attribute string
-	    $attr_string = '';
-	    $items_per_row = $atts['items_per_row'];
-	    $posts_per_page = $atts['posts_per_page'];
-	    $meta = explode( ',', $atts['meta'] );
-
-	    /**
-	     * Portfolio shortcode arguments
-	     *
-	     * @see https://en.support.wordpress.com/portfolios/portfolio-shortcode/
-	     */
-	    $args = array(
-		    'display_types'             =>  tailor_bool_to_string( in_array( 'type', $meta ) ),
-		    'display_tags'              =>  tailor_bool_to_string( in_array( 'tag', $meta ) ),
-		    'display_content'           =>  tailor_bool_to_string( in_array( 'excerpt', $meta ) ),
-		    'columns'                   =>  $items_per_row,
-		    'showposts'                 =>  $posts_per_page,
-		    'order'                     =>  $atts['order'],
-		    'orderby'                   =>  $atts['order_by'],
+	    
+	    $html_atts = array(
+		    'id'            =>  empty( $atts['id'] ) ? null : $atts['id'],
+		    'class'         =>  explode( ' ', "tailor-element tailor-jetpack-portfolio {$atts['class']}" ),
+		    'data'          =>  array(),
 	    );
 
-	    $type_ids = explode( ',', $atts['types'] );
-	    $type_slugs = array();
-	    foreach ( $type_ids as $type_id ) {
-		    $term = get_term( $type_id, 'jetpack-portfolio-type' );
-		    if ( ! is_wp_error( $term ) ) {
-			    $type_slugs[] = $term->slug;
-		    }
-	    }
-
-	    $tag_ids = explode( ',', $atts['tags'] );
-	    $tag_slugs = array();
-	    foreach ( $tag_ids as $tag_id ) {
-		    $term = get_term( $tag_id, 'jetpack-portfolio-tag' );
-		    if ( ! is_wp_error( $term ) ) {
-			    $tag_slugs[] = $term->slug;
-		    }
-	    }
-
-	    if ( ! empty( $type_slugs ) ) {
-		    $args['include_type'] = implode( ',', $type_slugs );
-	    }
-
-	    if ( ! empty( $tag_slugs ) ) {
-		    $args['include_tag'] = implode( ',', $tag_slugs );
-	    }
-
-	    foreach ( $args as $key => $arg ) {
-		    $attr_string .= " {$key}={$arg}";
-	    }
-
-	    $attr_string = trim( esc_attr( $attr_string ) );
-
-	    // Generate the HTML
-	    $outer_html = '<div ' . trim( "{$id} class=\"{$class}\"" ) . '>%s</div>';
-
+	    /**
+	     * Filter the HTML attributes for the element.
+	     *
+	     * @since 1.7.0
+	     *
+	     * @param array $html_attributes
+	     * @param array $atts
+	     * @param string $tag
+	     */
+	    $html_atts = apply_filters( 'tailor_shortcode_html_attributes', $html_atts, $atts, $tag );
+	    $html_atts['class'] = implode( ' ', (array) $html_atts['class'] );
+	    $html_atts = tailor_get_attributes( $html_atts );
+	    
+	    // Generate the inner shortcode
 	    if ( is_jetpack_portfolio_active() ) {
-		    $inner_html = do_shortcode( "[portfolio {$attr_string}][/portfolio]" );
+		    $attr_string = '';
+		    $items_per_row = $atts['items_per_row'];
+		    $posts_per_page = $atts['posts_per_page'];
+		    $meta = explode( ',', $atts['meta'] );
+
+		    /**
+		     * Portfolio shortcode arguments
+		     *
+		     * @see https://en.support.wordpress.com/portfolios/portfolio-shortcode/
+		     */
+		    $args = array(
+			    'display_types'             =>  tailor_bool_to_string( in_array( 'type', $meta ) ),
+			    'display_tags'              =>  tailor_bool_to_string( in_array( 'tag', $meta ) ),
+			    'display_content'           =>  tailor_bool_to_string( in_array( 'excerpt', $meta ) ),
+			    'columns'                   =>  $items_per_row,
+			    'showposts'                 =>  $posts_per_page,
+			    'order'                     =>  $atts['order'],
+			    'orderby'                   =>  $atts['order_by'],
+		    );
+
+		    $type_ids = explode( ',', $atts['types'] );
+		    $type_slugs = array();
+		    foreach ( $type_ids as $type_id ) {
+			    $term = get_term( $type_id, 'jetpack-portfolio-type' );
+			    if ( ! is_wp_error( $term ) ) {
+				    $type_slugs[] = $term->slug;
+			    }
+		    }
+
+		    $tag_ids = explode( ',', $atts['tags'] );
+		    $tag_slugs = array();
+		    foreach ( $tag_ids as $tag_id ) {
+			    $term = get_term( $tag_id, 'jetpack-portfolio-tag' );
+			    if ( ! is_wp_error( $term ) ) {
+				    $tag_slugs[] = $term->slug;
+			    }
+		    }
+
+		    if ( ! empty( $type_slugs ) ) {
+			    $args['include_type'] = implode( ',', $type_slugs );
+		    }
+		    if ( ! empty( $tag_slugs ) ) {
+			    $args['include_tag'] = implode( ',', $tag_slugs );
+		    }
+
+		    foreach ( $args as $key => $arg ) {
+			    $attr_string .= " {$key}={$arg}";
+		    }
+
+		    $attr_string = trim( esc_attr( $attr_string ) );
+		    $content = do_shortcode( "[portfolio {$attr_string}][/portfolio]" );
 	    }
+	    
+	    // Display a notification
 	    else {
-		    $inner_html = sprintf(
+		    $content = sprintf(
 			    '<p class="tailor-notification tailor-notification--warning">%s</p>',
 			    __( 'Please enable Jetpack and the Portfolio custom post type', 'tailor' )
 		    );
 	    }
 
+	    $outer_html = "<div {$html_atts}>%s</div>";
+	    $inner_html = '%s';
+	    $html = sprintf( $outer_html, sprintf( $inner_html, $content ) );
+
 	    /**
 	     * Filter the HTML for the element.
 	     *
-	     * @since 1.6.3
+	     * @since 1.7.0
 	     *
+	     * @param string $html
 	     * @param string $outer_html
 	     * @param string $inner_html
+	     * @param string $html_atts
 	     * @param array $atts
+	     * @param string $content
+	     * @param string $tag
 	     */
-	    $html = apply_filters( 'tailor_shortcode_jetpack_portfolio_html', sprintf( $outer_html, $inner_html ), $outer_html, $inner_html, $atts );
+	    $html = apply_filters( 'tailor_shortcode_html', $html, $outer_html, $inner_html, $html_atts, $atts, $content, $tag );
 
 	    return $html;
     }

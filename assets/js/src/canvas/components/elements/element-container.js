@@ -125,8 +125,12 @@ var CompositeView = Marionette.CompositeView.extend( {
 
         this.$el.replaceWith( $el );
         this.setElement( $el );
-        this.el.setAttribute( 'draggable', true );
+	    
+	    this.el.setAttribute( 'draggable', true );
 
+	    this.el.classList.add( 'tailor-' + this.model.cid );
+	    this.el.title = _strings.edit_element;
+	    
         return this;
     },
 
@@ -252,10 +256,7 @@ var CompositeView = Marionette.CompositeView.extend( {
 	 * @since 1.0.0
 	 */
 	onDomRefresh : function() {
-
 		this.$el
-			.addClass( 'tailor-' + this.model.get( 'id' ) )
-			.attr( { draggable: true } )
 			.find( 'a' )
 			.attr( { draggable : false, target : '_blank' } );
 
@@ -296,7 +297,7 @@ var CompositeView = Marionette.CompositeView.extend( {
 		
 		var view = this;
 		view.el.classList.add( 'is-rendering' );
-
+		
 		window.ajax.send( 'tailor_render', {
 			data : {
 				model : JSON.stringify( model ),

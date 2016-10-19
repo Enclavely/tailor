@@ -97,16 +97,6 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Hero_Element' )
 				        ),
 			        ),
 		        ),
-		        'shadow'                =>  array(
-			        'control'               =>  array(
-				        'dependencies'          =>  array(
-					        'border_style'          =>  array(
-						        'condition'             =>  'not',
-						        'value'                 =>  array( '', 'none' ),
-					        ),
-				        ),
-			        ),
-		        ),
 	        );
 	        tailor_control_presets( $this, $attribute_control_types, $attribute_control_arguments, $priority );
         }

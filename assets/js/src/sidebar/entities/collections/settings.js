@@ -32,7 +32,7 @@ var SettingCollection = Backbone.Collection.extend( {
     load : function() {
         var atts = this.element.get( 'atts' );
         this.each( function( model ) {
-            model.set( 'value', atts[ model.get( 'id' ) ] || '' );
+            model.set( 'value', atts[ model.get( 'id' ) ] );
         }, this );
     }
 

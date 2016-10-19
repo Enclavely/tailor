@@ -2,7 +2,7 @@
 Contributors: andrew.worsfold
 Donate link: http://gettailor.com/donate/
 Tags: page, layout, builder, frontend, content, page builder, drag and drop builder, home page builder, landing page builder, layout builder, frontend builder, frontend editor, responsive, visual composer, beaver builder
-Stable tag: 1.6.7
+Stable tag: 1.7.0
 Requires at least: 4.3
 Tested up to: 4.6.2
 License: GPLv3 or later
@@ -133,8 +133,32 @@ Yes, however, users should be directed to the WordPress plugin repository to ins
 
 == Changelog ==
 
+= 1.7.0 =
+* Added - Filter for HTML attributes of default elements.
+* Added - Filter for the rendered HTML of default elements (replaces "tailor_shortcode_{type}_html").
+* Added - Input group control type.
+* Added - Option to select toggle to open by default.
+* Improved - Support for negative margin values.
+* Improved - Margin and padding values default to px, unless a unit is provided.
+* Improved - Various element templates now allow for empty setting values (e.g., boxes without titles and/or icons).
+* Improved - Appearance of Search button in Link control.
+* Improved - Appearance of hidden elements (based on screen size) in the preview window.
+* Improved - Toggle title color and background color settings now use live preview.
+* Changed - Default border style is now 'none', instead of a border width of 0px, for elements without default borders.
+* Changed - The box shadow option is no longer dependent on a border being applied.
+* Fixed - Parallax background images not displaying.
+* Fixed - Carousel item vertical positioning not applying correctly in live preview.
+* Fixed - Tab background color not applying correctly in live preview.
+* Fixed - Previous arrow in slideshow layouts not displaying correctly.
+* Fixed - Incorrect image count in lightbox galleries using the carousel layout.
+* Fixed - Template preview link when plain permalinks are used.
+* Removed - Deprecated tailor_get_preview_sizes() function.
+* Removed - French translation files (as the language pack is now available).
+
+To browse all available actions and filters, please refer to the published [action](https://github.com/andrew-worsfold/tailor/blob/master/actions.md) and [filter](https://github.com/andrew-worsfold/tailor/blob/master/filters.md) lists.
+
 = 1.6.7 =
-* Added - Filter to modify the default attributes of a given element while rendering.  Please refer to the element filters section in the [filter reference](https://github.com/andrew-worsfold/tailor/blob/master/filters.md).
+* Added - Filter to modify the default attributes of a given element while rendering.
 * Added - Setting to open a specific toggle by default.
 * Fixed - Incorrect image count for lightbox image galleries using the carousel layout.
 * Fixed - Live preview not applying minimum item height for Grid element.
@@ -156,7 +180,7 @@ Yes, however, users should be directed to the WordPress plugin repository to ins
 * Removed - Unused search control.
 
 = 1.6.3 =
-* Added - Filter to modify the rendered HTML of a given element.  Please refer to the element filters section in the [filter reference](https://github.com/andrew-worsfold/tailor/blob/master/filters.md).
+* Added - Filter to modify the rendered HTML of a given element.
 * Fixed - Incorrectly defined list item child view container causing error on pages with lists.
 * Removed - Unnecessary reset of element collection when restoring from a history snapshot.
 
@@ -363,6 +387,12 @@ Yes, however, users should be directed to the WordPress plugin repository to ins
 * Initial release.
 
 == Upgrade Notice ==
+
+= 1.7.0 =
+
+This is a major version change which improves the way that built-in elements are rendered.
+
+This version is required to use the Portfolio, WooCommerce and Advanced Features extensions.
 
 = 1.6.0 =
 

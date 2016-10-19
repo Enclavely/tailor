@@ -168,7 +168,7 @@ if ( ! class_exists( 'Tailor_TinyMCE' ) )  {
 
 			// Merge the style formats which any pre-existing ones
 			if ( ! empty( $settings['style_formats'] ) ) {
-				$style_formats = array_merge( json_decode( $settings['style_formats'] ), $style_formats );
+				$style_formats = array_merge( json_decode( $settings['style_formats'], true ), $style_formats );
 			}
 			$settings['style_formats'] = json_encode( $style_formats );
 

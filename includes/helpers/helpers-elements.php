@@ -8,48 +8,6 @@
  * @since 1.0.0
  */
 
-if ( ! function_exists( 'tailor_empty_list' ) ) {
-
-	/**
-	 * Returns a message to display when a list contains no items.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param string $list_type
-	 * @return string
-	 */
-	function tailor_empty_list( $list_type ) {
-		return sprintf( _x( 'No %1$s to display', 'expected item type', 'tailor' ), $list_type );
-	}
-}
-
-if ( ! function_exists( 'tailor_get_widget_areas' ) ) {
-
-	/**
-	 * Returns an array containing the registered widget areas.
-	 *
-	 * @since 1.0.0
-	 * @uses $wp_registered_sidebars
-	 *
-	 * @param array $widget_areas
-	 * @return array
-	 */
-	function tailor_get_widget_areas( $widget_areas = array() ) {
-
-		global $wp_registered_sidebars;
-
-		if ( empty( $wp_registered_sidebars ) ) {
-			$widget_areas = array( '' => tailor_empty_list( __( 'widget areas', 'tailor' ) ) );
-		}
-
-		foreach ( $wp_registered_sidebars as $sidebar ) {
-			$widget_areas[ $sidebar['id'] ] = $sidebar['name'];
-		}
-
-		return $widget_areas;
-	}
-}
-
 if ( ! function_exists( 'tailor_control_presets' ) ) {
 
 	/**
@@ -757,7 +715,6 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'section'               =>  'colors',
 				),
 			),
-
 			'class'                 =>  array(
 				'setting'               =>  array(
 					'sanitize_callback'     =>  'tailor_sanitize_text',
@@ -894,12 +851,6 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 				'control'               =>  array(
 					'label'                 =>  __( 'Shadow ', 'tailor' ),
 					'type'                  =>  'switch',
-					'dependencies'          =>  array(
-						'border_style'          =>  array(
-							'condition'             =>  'not',
-							'value'                 =>  array( '', 'none' ),
-						),
-					),
 					'section'               =>  'attributes',
 				),
 			),
@@ -1231,39 +1182,79 @@ if ( ! function_exists( 'tailor_css_presets' ) ) {
 				),
 			);
 		}
+		
+		$map = array(
+			"px",
+			"%",
+			"in",
+			"cm",
+			"mm",
+			"pt",
+			"pc",
+			"em",
+			"ex",
+		);
 
 		if ( ! empty( $atts['padding'] ) ) {
-			$padding = explode( '-', $atts['padding'] );
+			if ( false != strpos( $atts['padding'], ',' ) ) {
+				$padding = explode( ',', $atts['padding'] );
+			}
+			else {
+				$padding = explode( '-', $atts['padding'] ); // Old format
+			}
+
 			$positions = ( 2 == count( $padding ) ) ? array( 'top', 'bottom' ) : array( 'top', 'right', 'bottom', 'left' );
 			$padding_values = array_combine( $positions, $padding );
+			$declarations = array();
+
 			foreach ( $padding_values as $position => $padding_value ) {
 				if ( ! empty( $padding_value ) ) {
-					$css_rules[] = array(
-						'setting'               =>  'padding',
-						'selectors'             =>  array(),
-						'declarations'          =>  array(
-							"padding-{$position}"   =>  esc_attr( $padding_value ),
-						),
-					);
+					$unit = '';
+					if ( 1 !== preg_match( '/' .  implode( '|', $map ) . '/', $padding_value ) ) {
+						$unit = 'px';
+					}
+
+					$declarations[ "padding-{$position}" ] = esc_attr( $padding_value . $unit );
 				}
+			}
+
+			if ( ! empty( $declarations ) ) {
+				$css_rules[] = array(
+					'setting'               =>  'padding',
+					'selectors'             =>  array(),
+					'declarations'          =>  $declarations,
+				);
 			}
 		}
 
 		if ( ! empty( $atts['margin'] ) ) {
-			$margin = explode( '-', $atts['margin'] );
+			if ( false != strpos( $atts['margin'], ',' ) ) {
+				$margin = explode( ',', $atts['margin'] );
+			}
+			else {
+				$margin = explode( '-', $atts['margin'] ); // Old format
+			}
+
 			$positions = ( 2 == count( $margin ) ) ? array( 'top', 'bottom' ) : array( 'top', 'right', 'bottom', 'left' );
 			$margin_values = array_combine( $positions, $margin );
-
+			$declarations = array();
 			foreach ( $margin_values as $position => $margin_value ) {
 				if ( ! empty( $margin_value ) ) {
-					$css_rules[] = array(
-						'setting'               =>  'margin',
-						'selectors'             =>  array(),
-						'declarations'          =>  array(
-							"margin-{$position}"    =>  esc_attr( $margin_value ),
-						),
-					);
+					$unit = '';
+					if ( 1 !== preg_match( '/' .  implode( '|', $map ) . '/', $margin_value ) ) {
+						$unit = 'px';
+					}
+
+					$declarations[ "margin-{$position}" ] = esc_attr( $margin_value . $unit );
 				}
+			}
+
+			if ( ! empty( $declarations ) ) {
+				$css_rules[] = array(
+					'setting'               =>  'margin',
+					'selectors'             =>  array(),
+					'declarations'          =>  $declarations,
+				);
 			}
 		}
 
@@ -1425,44 +1416,7 @@ if ( ! function_exists( 'tailor_css_presets' ) ) {
 				),
 			);
 		}
-
-		if ( ! empty( $atts['hidden'] ) ) {
-			$preview_sizes = array_keys( tailor_get_registered_media_queries() );
-			$hidden_screen_sizes = explode( ',', $atts['hidden'] );
-
-			if ( count( array_intersect( $preview_sizes, $hidden_screen_sizes ) ) != count( $preview_sizes ) ) {
-				foreach ( (array) $hidden_screen_sizes as $hidden_screen_size ) {
-					if ( in_array( $hidden_screen_size, $preview_sizes ) ) {
-						$css_rules[] = array(
-							'setting'               =>  'hidden',
-							'media'                 =>  $hidden_screen_size,
-							'selectors'             =>  array(),
-							'declarations'          =>  array(
-								'display'           =>  'none!important',
-							),
-						);
-					}
-				}
-			}
-			else {
-				$css_rules[] = array(
-					'setting'               =>  'hidden',
-					'selectors'             =>  array(),
-					'declarations'          =>  array(
-						'display'               =>  'none',
-					),
-				);
-				$css_rules[] = array(
-					'setting'               =>  'hidden',
-					'selectors'             =>  array( '#canvas &' ),
-					'declarations'          =>  array(
-						'display'               =>  'block',
-						'background'            =>  'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAQElEQVQYV2NkIAKckTrzn5GQOpAik2cmjHgVwhSBDMOpEFkRToXoirAqxKYIQyEuRSgK8SmCKySkCKyQGEUghQD+Nia8BIDCEQAAAABJRU5ErkJggg==)',
-					),
-				);
-			}
-		}
-
+		
 		return $css_rules;
 	}
 }

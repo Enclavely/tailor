@@ -65,6 +65,6 @@ if ( ! function_exists( 'tailor_get_customizer_settings' ) ) {
 	     *
 	     * @param array $settings
 	     */
-        return apply_filters( 'tailor_get_customizer_settings', $settings );
+        return apply_filters( 'tailor_customizer_settings', $settings );
     }
 }

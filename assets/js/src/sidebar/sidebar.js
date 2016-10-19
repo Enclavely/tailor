@@ -1,4 +1,3 @@
-
 ( function( window, $ ) {
     
     'use strict';
@@ -50,6 +49,9 @@
              * @returns {*}
              */
             checkCondition : function( condition, actual, required ) {
+
+                actual = actual || '';
+                
                 switch ( condition ) {
                     case 'equals' : return actual === required;
 
@@ -109,6 +111,7 @@
     Tailor.Controls.Gallery =           require( './components/controls/gallery' );
     Tailor.Controls.Icon =              require( './components/controls/icon' );
     Tailor.Controls.Image =             require( './components/controls/image' );
+    Tailor.Controls.InputGroup =        require( './components/controls/input-group' );
     Tailor.Controls.Link =              require( './components/controls/link' );
     Tailor.Controls.List =              require( './components/controls/list' );
     Tailor.Controls.Radio =             require( './components/controls/radio' );

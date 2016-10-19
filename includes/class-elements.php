@@ -440,6 +440,10 @@ if ( ! class_exists( 'Tailor_Elements' ) ) {
 		    $default_element_html = '';
 
 		    foreach ( $this->get_elements() as $element ) { /* @var $element Tailor_Element */
+			    if ( ! $element->active() ) {
+				    continue;
+			    }
+
 			    $atts = array();
 			    $content = '';
 

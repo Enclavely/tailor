@@ -81,7 +81,10 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Link_Control' )
 			    $posts = get_posts( $parameters );
 
 			    if ( empty( $posts ) ) {
-				    $response .= sprintf( '<p class="query-notice">%s</p>', __( 'Nothing found matching your criteria. Showing recent items.', 'tailor' ) );
+				    $response .= sprintf(
+					    '<p class="query-notice">%s</p>',
+					    __( 'Nothing found matching your criteria. Showing recent items.', 'tailor' )
+				    );
 				    $parameters = array_merge( $defaults, array( 'posts_per_page' => 10 ) );
 				    $posts = get_posts( $parameters );
 			    }
@@ -113,9 +116,11 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Link_Control' )
          */
         protected function render_template() { ?>
 
-	        <input type="text" placeholder="<%= placeholder %>" value="<%= value %>"/>
-	        <div class="actions">
-		        <button type="button" class="button button--select"><?php _e( 'Select Content', 'tailor' ); ?></button>
+	        <div class="control__input-group">
+		        <input type="text" placeholder="<%= placeholder %>" value="<%= value %>"/>
+		        <button class="button button-small button--select" title="<?php echo esc_attr( __( 'Search', 'tailor' ) ); ?>">
+			        <i class="dashicons dashicons-search"></i>
+		        </button>
 	        </div>
 
             <?php

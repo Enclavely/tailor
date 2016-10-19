@@ -226,18 +226,16 @@ if ( ! class_exists( 'Tailor_Section' ) ) {
 
 		    <div class="header">
 			    <button class="back-button" tabindex="0">
-				    <span class="screen-reader-text"><?php _e( 'Back', 'tailor' ); ?></span>
+				    <?php echo tailor_screen_reader_text( __( 'Back', 'tailor' ) ); ?>
 			    </button>
 			    <div class="title-block">
-
 				    <h3 class="title">
 					    <span class="notice"> <?php _e( 'Tailor &#9656; ', 'tailor' ); ?> <%= panel %></span>
 					    <%= title %>
 				    </h3>
-
 				    <% if ( description ) { %>
 				    <button class="help-button dashicons dashicons-editor-help">
-					    <span class="screen-reader-text"><?php _e( 'Help', 'tailor' ); ?></span>
+					    <?php echo tailor_screen_reader_text( __( 'Help', 'tailor' ) ); ?>
 				    </button>
 				    <% } %>
 			    </div>

@@ -1,5 +1,23 @@
 .control--style {
 
+	.control__input-group {
+
+		.button {
+
+			i::before {
+				content: "\f225";
+			}
+
+			&.is-active {
+
+				i::before {
+					content: "\f103";
+				}
+			}
+		}
+	}
+
+	/*
 	ul {
 		display: flex;
 	}
@@ -39,5 +57,5 @@
 				}
 			}
 		}
-	}
+	} */
 }

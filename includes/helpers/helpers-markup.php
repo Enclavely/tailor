@@ -8,6 +8,51 @@
  * @since 1.0.0
  */
 
+if ( ! function_exists( 'tailor_filter_html_attributes' ) ) {
+
+	/**
+	 * Filter the HTML attributes passed to the shortcode rendering function.
+	 *
+	 * @since 1.7.0
+	 *
+	 * @param array $html_atts
+	 * @param array $atts
+	 * @param string $tag
+	 *
+	 * @return array $html_atts
+	 */
+	function tailor_filter_html_attributes( $html_atts, $atts, $tag  ) {
+
+		// Ensure that the ID contains no spaces
+		$html_atts['id'] = preg_replace( '/\s+/', '', $html_atts['id'] );
+		if ( empty( $html_atts['id'] ) ) {
+			unset( $html_atts['id'] );
+		}
+
+		// Add global utility class names
+		if ( ! empty( $atts['horizontal_alignment'] ) ) {
+			$html_atts['class'][] = "u-text-{$atts['horizontal_alignment']}";
+		}
+
+		if ( ! empty( $atts['vertical_alignment'] ) ) {
+			$html_atts['class'][] = "u-align-{$atts['vertical_alignment']}";
+		}
+
+		if ( ! empty( $atts['hidden'] ) ) {
+			$hidden_screen_sizes = explode( ',', $atts['hidden'] );
+			foreach ( $hidden_screen_sizes as $hidden_screen_size ) {
+				$html_atts['class'][] = "u-hidden-{$hidden_screen_size}";
+			}
+		}
+		
+		$html_atts['class'] = array_unique( $html_atts['class'] );
+
+		return $html_atts;
+	}
+
+	add_filter( 'tailor_shortcode_html_attributes', 'tailor_filter_html_attributes', 10, 3 );
+}
+
 if ( ! function_exists( 'tailor_filter_allowed_html' ) ) {
 
 	/**
@@ -232,10 +277,17 @@ if ( ! function_exists( 'tailor_get_attributes' ) ) {
 	function tailor_get_attributes( $atts = array(), $prefix = '' ) {
 		$attributes = '';
 		foreach ( $atts as $key => $value ) {
-			if ( empty( $value ) || is_array( $value ) ) {
+
+			if ( is_null( $value ) ) {
 				continue;
 			}
-			$attributes .= ' ' . $prefix . $key . '="' . $value . '"';
+
+			if ( is_array( $value ) ) {
+				$attributes .= tailor_get_attributes( $value, $key . '-' );
+			}
+			else {
+				$attributes .= ' ' . esc_attr( $prefix . $key ) . '="' . esc_attr( $value ). '"';
+			}
 		}
 		return $attributes;
 	}

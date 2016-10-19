@@ -90,6 +90,11 @@ ElementView = Marionette.ItemView.extend( {
 		this.$el.replaceWith( el );
 		this.setElement( el );
 
+		this.el.setAttribute( 'draggable', true );
+
+		this.el.classList.add( 'tailor-' + this.model.cid );
+		this.el.title = _strings.edit_element;
+		
 		return this;
 	},
 
@@ -133,7 +138,7 @@ ElementView = Marionette.ItemView.extend( {
 		}
 		
 		view.el.classList.add( 'is-rendering' );
-
+		
 		window.ajax.send( 'tailor_render', {
 			data : {
 				model : JSON.stringify( model ),
@@ -163,7 +168,7 @@ ElementView = Marionette.ItemView.extend( {
 			 *
 			 * @since 1.0.0
 			 */
-			error : function() {
+			error : function( response ) {
 				view.updateTemplate( 'The template for ' + view.cid + ' could not be refreshed' );
 			},
 
@@ -253,15 +258,17 @@ ElementView = Marionette.ItemView.extend( {
 		var view = this;
 		
 		this.$el
-			.addClass( 'tailor-' + this.model.get( 'id' ) )
-			.attr( { draggable: true } )
 			.find( 'a' )
 			.attr( { draggable : false, target : '_blank' } );
 
 		this.$el
+			.find( '[onchange]' )
+			.removeAttr( 'onchange' );
+
+		this.$el
 			.find( 'img' )
 			.attr( { draggable : false } );
-		
+
 		this.$el.imagesLoaded( function() {
 			view._isReady = true;
 

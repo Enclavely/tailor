@@ -24,8 +24,8 @@ Map = function( el, options, callbacks ) {
     this.$el = $( el );
     this.$win = $( window );
 
-	this.options = $.extend( {}, this.defaults, this.$el.data(), options );
-	this.callbacks = $.extend( {}, this.callbacks, callbacks );
+	this.options = _.extend( {}, this.defaults, this.$el.data(), options );
+	this.callbacks = _.extend( {}, this.callbacks, callbacks );
 
     this.initialize();
 };

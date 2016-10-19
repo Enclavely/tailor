@@ -71,7 +71,7 @@ Stylesheet.prototype = {
 					) {
 						var selectorString = Tailor.CSS.parseSelectors( ruleSet[ elementId ][ rule ]['selectors'], elementId );
 						var declarationString = Tailor.CSS.parseDeclarations( ruleSet[ elementId ][ rule ]['declarations'] );
-
+						
 						if ( ! _.isEmpty( declarationString ) ) {
 
 							// Add the rule to the stylesheet

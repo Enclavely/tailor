@@ -1,23 +1,23 @@
 <?php
 
 /**
- * Tailor Style Control class.
+ * Tailor Input Group Control class.
  *
- * @package Tailor
+ * @package Tailor Advanced
  * @subpackage Controls
  * @since 1.0.0
  */
 
 defined( 'ABSPATH' ) or die();
 
-if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Style_Control' ) ) {
+if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Input_Group_Control' ) ) {
 
     /**
-     * Tailor Style Control class.
+     * Tailor Input Group Control class.
      *
      * @since 1.0.0
      */
-    class Tailor_Style_Control extends Tailor_Control {
+    class Tailor_Input_Group_Control extends Tailor_Control {
 
         /**
          * Choices array for this control.
@@ -37,7 +37,7 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Style_Control' 
          */
         public function to_json() {
             $array = parent::to_json();
-            $array['choices'] = $this->choices;
+            $array['choices'] = (array) $this->choices;
             return $array;
         }
 
@@ -57,13 +57,17 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Style_Control' 
             <ul class="control__input-group">
                 <% for ( var choice in choices ) { %>
                 <li>
-                    <input type="text" value="<%= choices[ choice ] %>" />
-                    <span class="control__input-label"><%= choice %></span>
+                    <% if ( choices[ choice ].unit ) { %>
+                        <div class="control__input-group">
+                            <input type="<%= choices[ choice ].type %>" value="<%= choices[ choice ].value %>" />
+                            <span class="control__input-addon"><%= choices[ choice ].unit %></span>
+                        </div>
+                    <% } else { %>
+                        <input type="<%= choices[ choice ].type %>" value="<%= choices[ choice ].value %>" />
+                    <% } %>
+                    <span class="control__input-label"><%= choices[ choice ].label %></span>
                 </li>
                 <% } %>
-                <li>
-                    <button class="button button-small js-link"><i class="dashicons"></i></button>
-                </li>
             </ul>
 
             <?php

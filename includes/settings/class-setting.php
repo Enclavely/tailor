@@ -155,10 +155,10 @@ if ( ! class_exists( 'Tailor_Setting' ) ) {
 	    public function to_json() {
 		    $setting = array();
 		    $setting['id'] = $this->id;
-		    $setting['value'] =  $this->js_value();
 		    $setting['default'] = $this->default;
 		    $setting['refresh'] = $this->refresh;
-		    
+		    $setting['value'] = $this->js_value();
+
 		    return $setting;
 	    }
 

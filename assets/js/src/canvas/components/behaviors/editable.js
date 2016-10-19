@@ -15,15 +15,6 @@ var EditableBehaviors = Marionette.Behavior.extend( {
     },
 
     /**
-     * Adds helper text to the title of the element.
-     *
-     * @since 1.0.0
-     */
-    onRender : function() {
-        this.view.el.title = _strings.edit_element;
-    },
-
-    /**
      * Selects or edits the element when clicked, depending on whether the Shift button is pressed.
      *
      * @since 1.0.0

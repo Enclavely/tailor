@@ -52,6 +52,11 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Section_Element
 		        'hidden',
 	        );
 	        $general_control_arguments = array(
+		        'min_height'            =>  array(
+			        'setting'               =>  array(
+				        'refresh'               =>  array(),
+			        ),
+		        ),
 		        'vertical_alignment'    =>  array(
 			        'control'               =>  array(
 				        'dependencies'          =>  array(
@@ -110,7 +115,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Section_Element
 					        ),
 					        'parallax'              => array(
 						        'condition'             =>  'not',
-						        'value'                 =>  1,
+						        'value'                 =>  '1',
 					        ),
 				        ),
 			        ),
@@ -124,7 +129,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Section_Element
 					        ),
 					        'parallax'              => array(
 						        'condition'             =>  'not',
-						        'value'                 =>  1,
+						        'value'                 =>  '1',
 					        ),
 				        ),
 			        ),
@@ -138,7 +143,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Section_Element
 					        ),
 					        'parallax'              => array(
 						        'condition'             =>  'not',
-						        'value'                 =>  1,
+						        'value'                 =>  '1',
 					        ),
 				        ),
 			        ),
@@ -152,7 +157,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Section_Element
 					        ),
 					        'parallax'              => array(
 						        'condition'             =>  'not',
-						        'value'                 =>  1,
+						        'value'                 =>  '1',
 					        ),
 				        ),
 			        ),
@@ -258,7 +263,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Section_Element
 
 				    // Parallax background image with no color
 				    else {
-					    $background =  "url('{$background_image_url}') center center / cover no-repeat";
+					    $background =  "url({$background_image_url}) center center / cover no-repeat";
 				    }
 
 				    $css_rules[] = array(

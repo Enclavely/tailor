@@ -71,7 +71,7 @@ ModalView = Marionette.LayoutView.extend( {
         var model = this.model;
         var sections = app.channel.request( 'sidebar:sections', model );
         var controls = app.channel.request( 'sidebar:controls', model );
-
+        
         this.showChildView( 'sections', new SectionCollectionView( {
             element : model,
             collection : sections,
@@ -230,7 +230,10 @@ ModalView = Marionette.LayoutView.extend( {
     atts : function() {
         var atts = {};
         this.settings.each( function( setting ) {
-            atts[ setting.get( 'id' ) ] = setting.get( 'value' );
+            var value = setting.get( 'value' );
+            if ( null !== value ) {
+                atts[ setting.get( 'id' ) ] = value;
+            }
         }, this );
         return atts;
     }

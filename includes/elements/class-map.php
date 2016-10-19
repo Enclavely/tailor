@@ -56,32 +56,32 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Map_Element' ) 
             ) );
 
             $this->add_setting( 'latitude', array(
-                'sanitize_callback'     =>  'tailor_sanitize_text',
+                'sanitize_callback'     =>  'tailor_sanitize_number',
             ) );
             $this->add_control( 'latitude', array(
                 'label'                 =>  __( 'Latitude (optional)', 'tailor' ),
-                'type'                  =>  'text',
+                'type'                  =>  'number',
                 'priority'              =>  $priority += 10,
                 'section'               =>  'general',
             ) );
 
             $this->add_setting( 'longitude', array(
-                'sanitize_callback'     =>  'tailor_sanitize_text',
+                'sanitize_callback'     =>  'tailor_sanitize_number',
             ) );
             $this->add_control( 'longitude', array(
                 'label'                 =>  __( 'Longitude (optional)', 'tailor' ),
-                'type'                  =>  'text',
+                'type'                  =>  'number',
                 'priority'              =>  $priority += 10,
                 'section'               =>  'general',
             ) );
 
 	        $this->add_setting( 'zoom', array(
-		        'sanitize_callback'     =>  'tailor_sanitize_text',
+		        'sanitize_callback'     =>  'tailor_sanitize_number',
 		        'default'               =>  '13',
 	        ) );
 	        $this->add_control( 'zoom', array(
 		        'label'                 =>  __( 'Zoom level', 'tailor' ),
-		        'type'                  =>  'text',
+		        'type'                  =>  'number',
 		        'priority'              =>  $priority += 10,
 		        'section'               =>  'general',
 	        ) );
@@ -171,16 +171,6 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Map_Element' ) 
 			        ),
 		        ),
 		        'border_radius'         =>  array(
-			        'control'               =>  array(
-				        'dependencies'          =>  array(
-					        'border_style'          =>  array(
-						        'condition'             =>  'not',
-						        'value'                 =>  array( '', 'none' ),
-					        ),
-				        ),
-			        ),
-		        ),
-		        'shadow'                =>  array(
 			        'control'               =>  array(
 				        'dependencies'          =>  array(
 					        'border_style'          =>  array(

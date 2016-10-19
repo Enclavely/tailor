@@ -50,7 +50,9 @@ if ( ! class_exists( 'Tailor_Canvas' ) ) {
 	         * @since 1.3.4
 	         */
 	        do_action( 'tailor_canvas_init' );
-	        
+
+	        add_filter( 'body_class', array( $this, 'add_body_class' )  );
+
             add_action( 'wp_head', array( $this, 'canvas_head' ) );
 	        add_filter( 'the_content', array( $this, 'canvas_content' ), -1 );
 	        add_action( 'wp_footer', array( $this, 'canvas_footer' ) );
@@ -60,6 +62,20 @@ if ( ! class_exists( 'Tailor_Canvas' ) ) {
 	        
             add_action( 'tailor_canvas_footer', array( $this, 'print_templates' ) );
         }
+
+	    /**
+	     * Adds a custom body class to the preview window.
+	     * 
+	     * @since 1.7.0
+	     * 
+	     * @param $classes
+	     * 
+	     * @return $classes
+	     */
+	    public function add_body_class( $classes ) {
+		    $classes[] = 'is-canvas';
+		    return $classes;
+	    }
 
 	    /**
 	     * Fires the tailor_canvas_head action.

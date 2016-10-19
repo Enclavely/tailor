@@ -32,35 +32,53 @@ if ( ! function_exists( 'tailor_shortcode_carousel' ) ) {
 	    $default_atts = apply_filters( 'tailor_shortcode_default_atts_' . $tag, array() );
 	    $atts = shortcode_atts( $default_atts, $atts, $tag );
 
-        $id = ( '' !== $atts['id'] ) ? 'id="' . esc_attr( $atts['id'] ) . '"' : '';
-        $class = trim( esc_attr( "tailor-element tailor-carousel tailor-carousel--{$atts['style']} tailor-carousel--outline {$atts['class']}" ) );
-
 	    $items_per_row = (string) intval( $atts['items_per_row'] );
-	    $data = tailor_get_attributes(
-		    array(
-			    'slides'            =>  $items_per_row,
-			    'autoplay'          =>  boolval( $atts['autoplay'] ) ? 'true' : 'false',
-			    'arrows'            =>  boolval( $atts['arrows'] ) ? 'true' : 'false',
-			    'dots'              =>  boolval( $atts['dots'] ) ? 'true' : 'false',
-			    'fade'              =>  boolval( $atts['fade'] && '1' == $items_per_row ) ? 'true' : 'false',
-		    ),
-		    'data-'
+	    $data = array(
+		    'slides'            =>  $items_per_row,
+		    'autoplay'          =>  boolval( $atts['autoplay'] ) ? 'true' : 'false',
+		    'arrows'            =>  boolval( $atts['arrows'] ) ? 'true' : 'false',
+		    'dots'              =>  boolval( $atts['dots'] ) ? 'true' : 'false',
+		    'fade'              =>  boolval( $atts['fade'] && '1' == $items_per_row ) ? 'true' : 'false',
+	    );
+	    
+	    $html_atts = array(
+		    'id'            =>  empty( $atts['id'] ) ? null : $atts['id'],
+		    'class'         =>  explode( ' ', "tailor-element tailor-carousel tailor-carousel--{$atts['style']} tailor-carousel--outline {$atts['class']}" ),
+		    'data'          =>  array_filter( $data ),
 	    );
 
-	    $outer_html = '<div ' . trim( "{$id} class=\"{$class}\" {$data}" ) . '>%s</div>';
+	    /**
+	     * Filter the HTML attributes for the element.
+	     *
+	     * @since 1.7.0
+	     *
+	     * @param array $html_attributes
+	     * @param array $atts
+	     * @param string $tag
+	     */
+	    $html_atts = apply_filters( 'tailor_shortcode_html_attributes', $html_atts, $atts, $tag );
+	    $html_atts['class'] = implode( ' ', (array) $html_atts['class'] );
+	    $html_atts = tailor_get_attributes( $html_atts );
 
-	    $inner_html = '<div class="tailor-carousel__wrap">' . do_shortcode( $content ) . '</div>';
-
+	    $outer_html = "<div {$html_atts}>%s</div>";
+	    $inner_html = '<div class="tailor-carousel__wrap">%s</div>';
+	    $content = do_shortcode( $content );
+	    $html = sprintf( $outer_html, sprintf( $inner_html, $content ) );
+	    
 	    /**
 	     * Filter the HTML for the element.
 	     *
-	     * @since 1.6.3
+	     * @since 1.7.0
 	     *
+	     * @param string $html
 	     * @param string $outer_html
 	     * @param string $inner_html
+	     * @param string $html_atts
 	     * @param array $atts
+	     * @param string $content
+	     * @param string $tag
 	     */
-	    $html = apply_filters( 'tailor_shortcode_carousel_html', sprintf( $outer_html, $inner_html ), $outer_html, $inner_html, $atts );
+	    $html = apply_filters( 'tailor_shortcode_html', $html, $outer_html, $inner_html, $html_atts, $atts, $content, $tag );
 	    
 	    return $html;
     }
@@ -91,32 +109,44 @@ if ( ! function_exists( 'tailor_shortcode_carousel_item' ) ) {
 		 */
 		$default_atts = apply_filters( 'tailor_shortcode_default_atts_' . $tag, array() );
 		$atts = shortcode_atts( $default_atts, $atts, $tag );
-
-		$id = ( '' !== $atts['id'] ) ? 'id="' . esc_attr( $atts['id'] ) . '"' : '';
-		$class = trim( esc_attr( "tailor-carousel__item {$atts['class']}" ) );
+		$html_atts = array(
+			'id'            =>  empty( $atts['id'] ) ? null : $atts['id'],
+			'class'         =>  explode( ' ', "tailor-carousel__item {$atts['class']}" ),
+			'data'          =>  array(),
+		);
 		
-		if ( ! empty( $atts['horizontal_alignment'] ) ) {
-			$class .= esc_attr( " u-text-{$atts['horizontal_alignment']}" );
-		}
-		
-		if ( ! empty( $atts['vertical_alignment'] ) ) {
-			$class .= " has-custom-height u-align-{$atts['vertical_alignment']}";
-		}
+		/**
+		 * Filter the HTML attributes for the element.
+		 *
+		 * @since 1.7.0
+		 *
+		 * @param array $html_attributes
+		 * @param array $atts
+		 * @param string $tag
+		 */
+		$html_atts = apply_filters( 'tailor_shortcode_html_attributes', $html_atts, $atts, $tag );
+		$html_atts['class'] = implode( ' ', (array) $html_atts['class'] );
+		$html_atts = tailor_get_attributes( $html_atts );
 
-		$outer_html = '<div ' . trim( "{$id} class=\"{$class}\"" ) . '>%s</div>';
-
-		$inner_html = do_shortcode( $content );
+		$outer_html = "<div {$html_atts}>%s</div>";
+		$inner_html = '%s';
+		$content = do_shortcode( $content );
+		$html = sprintf( $outer_html, sprintf( $inner_html, $content ) );
 
 		/**
 		 * Filter the HTML for the element.
 		 *
-		 * @since 1.6.3
+		 * @since 1.7.0
 		 *
+		 * @param string $html
 		 * @param string $outer_html
 		 * @param string $inner_html
+		 * @param string $html_atts
 		 * @param array $atts
+		 * @param string $content
+		 * @param string $tag
 		 */
-		$html = apply_filters( 'tailor_shortcode_carousel_item_html', sprintf( $outer_html, $inner_html ), $outer_html, $inner_html, $atts );
+		$html = apply_filters( 'tailor_shortcode_html', $html, $outer_html, $inner_html, $html_atts, $atts, $content, $tag );
 
 		return $html;
 	}

@@ -71,6 +71,9 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Toggle_Element'
 
 		    $this->add_setting( 'title_color', array(
 			    'sanitize_callback'     =>  'tailor_sanitize_color',
+			    'refresh'               =>  array(
+				    'method'                =>  'js',
+			    ),
 		    ) );
 		    $this->add_control( 'title_color', array(
 			    'label'                 =>  __( 'Title color', 'tailor' ),
@@ -81,6 +84,9 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Toggle_Element'
 
 		    $this->add_setting( 'title_background_color', array(
 			    'sanitize_callback'     =>  'tailor_sanitize_color',
+			    'refresh'               =>  array(
+				    'method'                =>  'js',
+			    ),
 		    ) );
 		    $this->add_control( 'title_background_color', array(
 			    'label'                 =>  __( 'Title background color', 'tailor' ),

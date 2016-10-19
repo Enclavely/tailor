@@ -1,19 +1,18 @@
 /**
- * Tailor.Controls.Style
+ * Tailor.Controls.InputGroup
  *
- * A style control.
+ * An input group control.
  *
  * @augments Marionette.ItemView
  */
 var AbstractControl = require( './abstract-control' ),
-    StyleControl;
+    InputGroup;
 
-StyleControl = AbstractControl.extend( {
+InputGroup = AbstractControl.extend( {
 
     ui : {
         'input' : 'input',
-        'default' : '.js-default',
-        'link' : '.js-link'
+        'default' : '.js-default'
     },
 
     events : {
@@ -27,23 +26,10 @@ StyleControl = AbstractControl.extend( {
      * Initializes the media frame for the control.
      *
      * @since 1.0.0
-     *
-     * @param options
      */
-    initialize : function( options ) {
-        this.linked = true;
-
+    initialize : function( ) {
         this.addEventListeners();
         this.checkDependencies( this.model.setting );
-    },
-
-    onRender : function() {
-        this.ui.link.toggleClass( 'is-active', this.linked );
-    },
-    
-    onLinkChange: function() {
-        this.linked = ! this.linked;
-        this.ui.link.toggleClass( 'is-active', this.linked );
     },
 
     /**
@@ -60,21 +46,20 @@ StyleControl = AbstractControl.extend( {
         data.value = this.getSettingValue();
         data.showDefault = null != defaultValue && ( data.value != defaultValue );
         data.choices = [];
-
+        
         var values;
         if ( _.isString( data.value ) ) {
-            if ( -1 != data.value.indexOf( ',' ) ) {
-                values = data.value.split( ',' );
-            }
-            else {
-                values = data.value.split( '-' ); // Old format
-            }
+            values = data.value.split( ',' );
         }
-
+        
         var choices = this.model.get( 'choices' );
         for ( var choice in choices ) {
             if ( choices.hasOwnProperty( choice ) ) {
-                data.choices[ choices[ choice ] ] = _.isArray( values ) ? values.shift() : null;
+                data.choices[ choice ] = {};
+                data.choices[ choice ].label = choices[ choice ].label || '';
+                data.choices[ choice ].type = choices[ choice ].type || 'text';
+                data.choices[ choice ].unit = choices[ choice ].unit || '';
+                data.choices[ choice ].value = _.isArray( values ) ? values.shift() : null;
             }
         }
 
@@ -86,26 +71,11 @@ StyleControl = AbstractControl.extend( {
      *
      * @since 1.0.0
      */
-    onControlChange : function( e ) {
-        var values;
-        if ( this.linked ) {
-
-            // Update the values
-            values = Array( this.ui.input.length ).fill( e.currentTarget.value );
-
-            // Update the other inputs
-            var $inputs = this.ui.input.filter( function( i, el ) {
-                return el != e.currentTarget;
-            } );
-            $inputs.val( e.currentTarget.value );
-        }
-        else {
-            values = [];
-            _.each( this.ui.input, function( input, index ) {
-                values.push( input.value );
-            }, this );
-        }
-
+    onControlChange : function() {
+        var values = [];
+        _.each( this.ui.input, function( input ) {
+            values.push( input.value );
+        }, this );
         this.setSettingValue( values.join( ',' ) );
     },
 
@@ -113,14 +83,12 @@ StyleControl = AbstractControl.extend( {
      * Restores the default value for the setting.
      *
      * @since 1.0.0
-     *
-     * @param e
      */
-    restoreDefaultValue : function( e ) {
+    restoreDefaultValue : function() {
         this.setSettingValue( this.getDefaultValue() );
         this.render();
     }
 
 } );
 
-module.exports = StyleControl;
+module.exports = InputGroup;

@@ -50,7 +50,7 @@ $control-body-max-width: 350px !default;
 		}
 
 		&__message {
-			margin: $control-spacing-horizontal 0 ( $control-spacing-horizontal * 1.5 );
+			margin: ( $control-spacing-vertical * 2 ) 0 ( $control-spacing-vertical * 2 );
 			text-align: center;
 		}
 
@@ -64,6 +64,31 @@ $control-body-max-width: 350px !default;
 					margin-left: 2%;
 				}
 			}
+		}
+
+		&__input-group {
+			display: flex;
+
+			.button {
+				line-height: 20px;
+				height: 26px;
+				border: 1px solid #ddd;
+				border-left: none;
+				border-top-left-radius: 0;
+				border-bottom-left-radius: 0;
+				-webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.07);
+				box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.07);
+			}
+		}
+
+		&__input-addon {
+			padding: 0 10px 1px 4px;
+			line-height: 24px;
+		}
+
+		&__input-label {
+			margin-left: 2px;
+			color: #a0a5aa;
 		}
 	}
 

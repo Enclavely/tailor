@@ -15,7 +15,6 @@ var ControlModel = Backbone.Model.extend( {
 		choices : {},
 		priority : 0,
 		setting : '',
-		value : null,
 		section : '' // Only used for controls on the Settings panel
 	}
 } );

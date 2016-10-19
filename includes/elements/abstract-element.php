@@ -149,12 +149,6 @@ if ( class_exists( 'Tailor_Setting_Manager' ) && ! class_exists( 'Tailor_Element
 			    }
 		    }
 
-		    if ( 'tailor_jetpack_portfolio' == $this->tag ) {
-			    echo 'filtering for ' . $this->tag;
-			    print_r( $this->settings() );
-			    print_r( $defaults );
-		    }
-		    
 		    return $defaults;
 	    }
 
@@ -272,6 +266,7 @@ if ( class_exists( 'Tailor_Setting_Manager' ) && ! class_exists( 'Tailor_Element
 	        }
 
             $shortcode = '[' . $this->tag;
+
             if ( '' !== ( $attributes = tailor_get_attributes( $atts ) ) ) {
                 $shortcode .= " {$attributes}";
             }
@@ -285,11 +280,6 @@ if ( class_exists( 'Tailor_Setting_Manager' ) && ! class_exists( 'Tailor_Element
 	     * @since 1.4.0
 	     */
 	    public function register_element_controls() {
-
-		    // ID setting for all elements
-		    $this->add_setting( 'id', array(
-			    'sanitize_callback'     =>  'tailor_sanitize_text',
-		    ) );
 
 		    $this->register_controls();
 

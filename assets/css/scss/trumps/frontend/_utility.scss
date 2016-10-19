@@ -32,4 +32,28 @@
 		margin-left: calc( 50% - 50vw );
 		margin-right: calc( 50% - 50vw );
 	}
+
+	&:not( .is-canvas ) {
+
+		@media #{$mobile} {
+
+			.u-hidden-mobile {
+				display: none !important;
+			}
+		}
+
+		@media #{$tablet} {
+
+			.u-hidden-tablet {
+				display: none !important;
+			}
+		}
+
+		@media #{$desktop} {
+
+			.u-hidden-desktop {
+				display: none !important;
+			}
+		}
+	}
 }

@@ -59,9 +59,10 @@
 //
 // Trumps
 //
-@import "trumps/placeholder";
-@import "trumps/utility";
-@import "trumps/notifications";
-@import "trumps/icons";
-@import "trumps/formats";
-@import "trumps/wordpress";
+@import "trumps/frontend/placeholder";
+@import "trumps/frontend/notifications";
+@import "trumps/frontend/icons";
+@import "trumps/frontend/formats";
+@import "trumps/frontend/utility";
+
+@import "trumps/shared/wordpress";
