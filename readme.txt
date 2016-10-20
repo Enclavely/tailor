@@ -58,7 +58,7 @@ For more information:
 
 - Check out our example of how to extend Tailor [using a theme](https://github.com/andrew-worsfold/tailor-sample-theme).
 - Check out our example of how to extend Tailor [using a plugin](https://github.com/andrew-worsfold/tailor-sample-extension).
-- [Read the developer documentation](https://support.gettailor.com/hc/en-us/categories/202586427).
+- [Read the developer documentation](https://support.gettailor.com/hc/en-us/categories/203117247).
 - Get involved in the [GitHub project](https://github.com/andrew-worsfold/tailor).
 
 If you like the plugin, please consider [rating it](https://wordpress.org/support/view/plugin-reviews/tailor?rate=5#postform) or providing your feedback and suggestions through [Facebook](https://www.facebook.com/tailorwp/), [Twitter](https://twitter.com/tailorwp) or the [Community Forum](https://support.gettailor.com/hc/en-us/community/topics).
