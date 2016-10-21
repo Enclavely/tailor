@@ -216,6 +216,7 @@ if ( ! class_exists( 'Tailor_Panels' ) ) {
 
 		    // Prepare panels
 		    $panels = array();
+            $this->panels = array_reverse($this->panels);
 		    uasort( $this->panels, array( $this, '_cmp_priority' ) );
 		    foreach ( $this->panels as $panel ) {  /* @var $panel Tailor_Panel */
 
@@ -227,6 +228,7 @@ if ( ! class_exists( 'Tailor_Panels' ) ) {
 
 		    // Prepare sections
 		    $sections = array();
+            $this->sections = array_reverse($this->sections);
 		    uasort( $this->sections, array( $this, '_cmp_priority' ) );
 		    foreach ( $this->sections as $section ) {  /* @var $section Tailor_Section */
 
@@ -242,6 +244,7 @@ if ( ! class_exists( 'Tailor_Panels' ) ) {
 
 		    // Prepare controls
 		    $controls = array();
+            $this->controls = array_reverse($this->controls);
 		    uasort( $this->controls, array( $this, '_cmp_priority' ) );
 		    foreach ( $this->controls as $control ) {  /* @var $control Tailor_Control */
 
