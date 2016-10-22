@@ -303,6 +303,12 @@ var $ = Backbone.$,
 					selectors: 'tailor_button' == model.get( 'tag' ) ? [ '.tailor-button__inner' ] : [],
 					declarations: {}
 				};
+				var colors = ['color', 'background_color', 'border_color'];
+
+				if (colors.indexOf(settingId)) {
+				    to = to || 'initial';
+				}
+                
 				rule.declarations[ settingId.replace( '_', '-' ) ] = to;
 
 				// Return the rule(s)
@@ -581,9 +587,15 @@ var $ = Backbone.$,
 			};
 
 			// Process setting value
-			to = to.split( '-' );
+			if ( -1 != to.indexOf( ',' ) ) {
+				to = to.split( ',' );
+			}
+			else {
+				to = to.split( '-' ); // Old format
+			}
+
 			if ( isIdentical( to ) ) {
-				rule.declarations[ 'border-width' ] = to[0];
+				rule.declarations[ 'border-width' ] = to[0] || 0;
 			}
 			else {
 				if ( 2 == to.length ) {
@@ -597,7 +609,7 @@ var $ = Backbone.$,
 				}
 				for ( var key in to ) {
 					if ( to.hasOwnProperty( key ) ) {
-						rule.declarations[ 'border-' + key + '-width' ] = to[ key ];
+						rule.declarations[ 'border-' + key + '-width' ] = to[ key ] || 0;
 					}
 				}
 			}
