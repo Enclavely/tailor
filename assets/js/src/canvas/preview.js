@@ -303,6 +303,12 @@ var $ = Backbone.$,
 					selectors: 'tailor_button' == model.get( 'tag' ) ? [ '.tailor-button__inner' ] : [],
 					declarations: {}
 				};
+                var colors = ['color', 'background_color', 'border_color'];
+
+                if (colors.indexOf(settingId)) {
+                    to = to || 'initial';
+                }
+                
 				rule.declarations[ settingId.replace( '_', '-' ) ] = to;
 
 				// Return the rule(s)
@@ -587,7 +593,7 @@ var $ = Backbone.$,
 			else {
 				to = to.split( '-' ); // Old format
 			}
-			
+
 			if ( isIdentical( to ) ) {
 				rule.declarations[ 'border-width' ] = to[0];
 			}
