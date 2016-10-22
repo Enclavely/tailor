@@ -581,7 +581,13 @@ var $ = Backbone.$,
 			};
 
 			// Process setting value
-			to = to.split( '-' );
+			if ( -1 != to.indexOf( ',' ) ) {
+				to = to.split( ',' );
+			}
+			else {
+				to = to.split( '-' ); // Old format
+			}
+			
 			if ( isIdentical( to ) ) {
 				rule.declarations[ 'border-width' ] = to[0];
 			}
