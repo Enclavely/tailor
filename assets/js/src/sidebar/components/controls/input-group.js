@@ -10,83 +10,52 @@ var AbstractControl = require( './abstract-control' ),
 
 InputGroup = AbstractControl.extend( {
 
-    ui : {
-        'input' : 'input',
-        'default' : '.js-default'
-    },
-
-    events : {
-        'input @ui.input' : 'onControlChange',
-        'change @ui.input' : 'onControlChange',
-        'click @ui.default' : 'restoreDefaultValue',
-        'click @ui.link' : 'onLinkChange'
-    },
-
     /**
-     * Initializes the media frame for the control.
+     * Provides additional data to the template rendering function.
      *
-     * @since 1.0.0
-     */
-    initialize : function( ) {
-        this.addEventListeners();
-        this.checkDependencies( this.model.setting );
-    },
-
-    /**
-     * Provides the required information to the template rendering function.
-     *
-     * @since 1.0.0
+     * @since 1.7.2
      *
      * @returns {*}
      */
-    serializeData : function() {
-        var data = Backbone.Marionette.ItemView.prototype.serializeData.apply( this, arguments );
-        var defaultValue = this.getDefaultValue();
-
-        data.value = this.getSettingValue();
-        data.showDefault = null != defaultValue && ( data.value != defaultValue );
-        data.choices = [];
+    addSerializedData : function( data ) {
+        data.choices = this.model.get( 'choices' );
+        data.values = {};
         
-        var values;
-        if ( _.isString( data.value ) ) {
-            values = data.value.split( ',' );
-        }
-        
-        var choices = this.model.get( 'choices' );
-        for ( var choice in choices ) {
-            if ( choices.hasOwnProperty( choice ) ) {
-                data.choices[ choice ] = {};
-                data.choices[ choice ].label = choices[ choice ].label || '';
-                data.choices[ choice ].type = choices[ choice ].type || 'text';
-                data.choices[ choice ].unit = choices[ choice ].unit || '';
-                data.choices[ choice ].value = _.isArray( values ) ? values.shift() : null;
+        _.each( this.getValues(), function( value, media ) {
+            data.values[ media ] = {};
+            var values = [];
+            if ( _.isString( value ) ) {
+                if ( -1 != value.indexOf( ',' ) ) {
+                    values = value.split( ',' );
+                }
+                else {
+                    values = value.split( '-' ); // Old format
+                }
             }
-        }
+
+            var i = 0;
+            for ( var choice in data.choices ) {
+                if ( data.choices.hasOwnProperty( choice ) ) {
+                    data.values[ media ][ choice ] = values[ i ];
+                    i ++;
+                }
+            }
+        } );
 
         return data;
     },
 
     /**
-     * Responds to a control change.
+     * Updates the current setting value when a field change occurs.
      *
-     * @since 1.0.0
+     * @since 1.7.2
      */
-    onControlChange : function() {
-        var values = [];
-        _.each( this.ui.input, function( input ) {
-            values.push( input.value );
-        }, this );
-        this.setSettingValue( values.join( ',' ) );
-    },
-
-    /**
-     * Restores the default value for the setting.
-     *
-     * @since 1.0.0
-     */
-    restoreDefaultValue : function() {
-        this.setSettingValue( this.getDefaultValue() );
-        this.render();
+    onFieldChange : function( e ) {
+        var fields = this.ui.input.filter( '[name^="' + this.media + '"]' ).serializeArray();
+        var values = _.map( fields, function( field ) {
+            return field.value;
+        } );
+        this.setValue( values.join( ',' ) );
     }
 
 } );

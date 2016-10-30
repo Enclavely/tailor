@@ -47,6 +47,8 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Box_Element' ) 
 	        $general_control_types = array(
 		        'title',
 		        'horizontal_alignment',
+		        'horizontal_alignment_tablet',
+		        'horizontal_alignment_mobile',
 		        'graphic_type',
 		        'icon',
 		        'image',
@@ -156,9 +158,15 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Box_Element' ) 
 	        $attribute_control_types = array(
 		        'class',
 		        'padding',
+		        'padding_tablet',
+		        'padding_mobile',
 		        'margin',
+		        'margin_tablet',
+		        'margin_mobile',
 		        'border_style',
 		        'border_width',
+		        'border_width_tablet',
+		        'border_width_mobile',
 		        'border_radius',
 		        'shadow',
 		        'background_image',
@@ -184,11 +192,15 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Box_Element' ) 
 		    $css_rules = array();
 		    $excluded_control_types = array();
 		    $css_rules = tailor_css_presets( $css_rules, $atts, $excluded_control_types );
-
-		    if ( empty( $atts['graphic_type'] ) || 'image' != $atts['graphic_type'] ) {
-
+		    
+		    if ( empty( $atts['graphic_type'] ) ) {
+			    return $css_rules;
+		    }
+		    
+		    if ( 'icon' == $atts['graphic_type'] ) {
 			    if ( ! empty( $atts['graphic_color'] ) ) {
 				    $css_rules[] = array(
+					    'setting'           =>  'graphic_color',
 					    'selectors'         =>  array( '.tailor-box__graphic' ),
 					    'declarations'      =>  array(
 						    'color'             =>  esc_attr( $atts['graphic_color'] ),
@@ -198,6 +210,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Box_Element' ) 
 
 			    if ( ! empty( $atts['graphic_color_hover'] ) ) {
 				    $css_rules[] = array(
+					    'setting'           =>  'graphic_color_hover',
 					    'selectors'         =>  array( '.tailor-box__graphic:hover ' ),
 					    'declarations'      =>  array(
 						    'color'             =>  esc_attr( $atts['graphic_color_hover'] ),
@@ -207,6 +220,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Box_Element' ) 
 
 			    if ( ! empty( $atts['graphic_background_color'] ) ) {
 				    $css_rules[] = array(
+					    'setting'           =>  'graphic_background_color',
 					    'selectors'         =>  array( '.tailor-box__graphic' ),
 					    'declarations'      =>  array(
 						    'background-color'  =>  esc_attr( $atts['graphic_background_color'] ),
@@ -216,6 +230,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Box_Element' ) 
 
 			    if ( ! empty( $atts['graphic_background_color_hover'] ) ) {
 				    $css_rules[] = array(
+					    'setting'           =>  'graphic_background_color_hover',
 					    'selectors'         =>  array( '.tailor-box__graphic:hover' ),
 					    'declarations'      =>  array(
 						    'background-color'  =>  esc_attr( $atts['graphic_background_color_hover'] ),
@@ -225,6 +240,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Box_Element' ) 
 
 			    if ( ! empty( $atts['graphic_background_color'] ) || ! empty( $atts['graphic_background_color_hover'] ) ) {
 				    $css_rules[] = array(
+					    'setting'           =>  'graphic_background_color',
 					    'selectors'         =>  array( '.tailor-box__graphic' ),
 					    'declarations'      =>  array(
 						    'margin-bottom'     =>  '1em',
@@ -234,39 +250,37 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Box_Element' ) 
 			    }
 
 			    if ( ! empty( $atts['graphic_size'] ) ) {
-
-				    $value = tailor_strip_unit( $atts['graphic_size'] );
-
+					$unit = tailor_get_unit( $atts['graphic_size'] );
+				    $value = tailor_get_numeric_value( $atts['graphic_size'] );
 				    $css_rules[] = array(
+					    'setting'           =>  'graphic_size',
 					    'selectors'         =>  array( '.tailor-box__graphic' ),
 					    'declarations'      =>  array(
-						    'width'             =>  esc_attr( ( $value[0] * 2 ) . $value[1] ),
-						    'height'            =>  esc_attr( ( $value[0] * 2 ) . $value[1] ),
+						    'width'             =>  esc_attr( ( ( $value * 2 ) . $unit ) ),
+						    'height'            =>  esc_attr( ( ( $value * 2 ) . $unit ) ),
+						    'margin-bottom'     =>  '1em',
 					    ),
 				    );
-
 				    $css_rules[] = array(
+					    'setting'           =>  'graphic_size',
 					    'selectors'         =>  array( '.tailor-box__graphic span' ),
 					    'declarations'      =>  array(
-						    'font-size'         =>  esc_attr( $atts['graphic_size'] ),
+						    'font-size'         =>  esc_attr( ( $value . $unit ) ),
 					    ),
 				    );
 			    }
 		    }
-		    else {
-
-			    if ( ! empty( $atts['graphic_size'] ) ) {
-
-				    $value = tailor_strip_unit( $atts['graphic_size'] );
-
-				    $css_rules[] = array(
-					    'selectors'         =>  array( '.tailor-box__graphic' ),
-					    'declarations'      =>  array(
-						    'width'             =>  esc_attr( $value[0] . $value[1] ),
-						    'max-width'         =>  '100%',
-					    ),
-				    );
-			    }
+		    else if ( 'image' == $atts['graphic_type'] && ! empty( $atts['graphic_size'] ) ) {
+			    $unit = tailor_get_unit( $atts['graphic_size'] );
+			    $value = tailor_get_numeric_value( $atts['graphic_size'] );
+			    $css_rules[] = array(
+				    'setting'           =>  'graphic_size',
+				    'selectors'         =>  array( '.tailor-box__graphic' ),
+				    'declarations'      =>  array(
+					    'width'             =>  esc_attr( ( $value . $unit ) ),
+					    'max-width'         =>  '100%',
+				    ),
+			    );
 		    }
 
 		    return $css_rules;

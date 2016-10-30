@@ -58,7 +58,11 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Button_Element'
 		    $general_control_types = array(
 			    'style',
 			    'horizontal_alignment',
+			    'horizontal_alignment_tablet',
+			    'horizontal_alignment_mobile',
 			    'size',
+			    'size_tablet',
+			    'size_mobile',
 			    'icon',
 			    'href',
 			    'target',
@@ -72,12 +76,17 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Button_Element'
 					    'choices'               =>  array(
 						    'default'               =>  __( 'Default', 'tailor' ),
 						    'primary'               =>  __( 'Primary', 'tailor' ),
-						    'block'                 =>  __( 'Block', 'tailor' ),
 					    ),
 				    ),
 			    ),
 			    'horizontal_alignment'  =>  array(
 				    'control'               =>  array(
+					    'choices'               =>  array(
+						    'left'                  =>  '<i class="tailor-icon tailor-align-left"></i>',
+						    'center'                =>  '<i class="tailor-icon tailor-align-center"></i>',
+						    'right'                 =>  '<i class="tailor-icon tailor-align-right"></i>',
+						    'justify'               =>  '<i class="tailor-icon tailor-align-justify"></i>',
+					    ),
 					    'dependencies'          =>  array(
 						    'style'                 =>  array(
 							    'condition'             =>  'not',
@@ -115,9 +124,15 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Button_Element'
 		    $attribute_control_types = array(
 			    'class',
 			    'padding',
+			    'padding_tablet',
+			    'padding_mobile',
 			    'margin',
+			    'margin_tablet',
+			    'margin_mobile',
 			    'border_style',
 			    'border_width',
+			    'border_width_tablet',
+			    'border_width_mobile',
 			    'border_radius',
 			    'shadow',
 		    );
@@ -143,70 +158,68 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Button_Element'
 			    'border_color',
 			    'border_color_hover',
 			    'padding',
+			    'padding_tablet',
+			    'padding_mobile',
+			    'margin',
+			    'margin_tablet',
+			    'margin_mobile',
 			    'border_style',
 			    'border_width',
+			    'border_width_tablet',
+			    'border_width_mobile',
 			    'border_radius',
 			    'shadow',
 		    );
 		    $css_rules = tailor_css_presets( $css_rules, $atts, $excluded_control_types );
 
-		    if ( ! empty( $atts['color'] ) ) {
-			    $css_rules[] = array(
-				    'selectors'         =>  array( '.tailor-button__inner' ),
-				    'declarations'      =>  array(
-					    'color'             =>  esc_attr( $atts['color'] ),
-				    ),
-			    );
-		    }
+		    $selectors = array(
+			    'color'                     =>  array( '.tailor-button__inner' ),
+			    'color_hover'               =>  array( '.tailor-button__inner:hover', '.tailor-button__inner:focus' ),
+			    'background_color'          =>  array( '.tailor-button__inner' ),
+			    'background_color_hover'    =>  array( '.tailor-button__inner:hover', '.tailor-button__inner:focus' ),
+			    'border_color'              =>  array( '.tailor-button__inner' ),
+			    'border_color_hover'        =>  array( '.tailor-button__inner:hover', '.tailor-button__inner:focus' ),
+		    );
+		    $css_rules = tailor_generate_color_css_rules( $css_rules, $atts, $selectors );
 
-		    if ( ! empty( $atts['color_hover'] ) ) {
+		    $selectors = array(
+			    'padding'                   =>  array( '.tailor-button__inner' ),
+			    'padding_tablet'            =>  array( '.tailor-button__inner' ),
+			    'padding_mobile'            =>  array( '.tailor-button__inner' ),
+			    'margin'                    =>  array( '.tailor-button__inner' ),
+			    'margin_tablet'             =>  array( '.tailor-button__inner' ),
+			    'margin_mobile'             =>  array( '.tailor-button__inner' ),
+			    'border_style'              =>  array( '.tailor-button__inner' ),
+			    'border_width'              =>  array( '.tailor-button__inner' ),
+			    'border_width_tablet'       =>  array( '.tailor-button__inner' ),
+			    'border_width_mobile'       =>  array( '.tailor-button__inner' ),
+			    'border_radius'             =>  array( '.tailor-button__inner' ),
+			    'shadow'                    =>  array( '.tailor-button__inner' ),
+		    );
+		    $css_rules = tailor_generate_attribute_css_rules( $css_rules, $atts, $selectors );
+
+		    // Automatic hover and active color if one is not selected
+		    if ( ! empty( $atts['color'] ) && empty( $atts['color_hover'] ) ) {
 			    $css_rules[] = array(
-				    'selectors'         =>  array( '.tailor-button__inner:hover' ),
-				    'declarations'      =>  array(
-					    'color'             =>  esc_attr( $atts['color_hover'] ),
-				    ),
-			    );
-		    }
-		    else if ( ! empty( $atts['color'] ) ) {
-			    $css_rules[] = array(
-				    'selectors'         =>  array( '.tailor-button__inner:hover' ),
+				    'setting'           =>  'color_hover',
+				    'selectors'         =>  array( '.tailor-button__inner:hover', '.tailor-button__inner:focus' ),
 				    'declarations'      =>  array(
 					    'color'             =>  esc_attr( tailor_adjust_color_brightness( $atts['color'], -0.05 ) ),
 				    ),
 			    );
 		    }
 
-		    if ( ! empty( $atts['background_color'] ) ) {
+		    // Automatic background hover and active color if one is not selected
+		    if ( ! empty( $atts['background_color'] ) && empty( $atts['background_color_hover'] ) ) {
 			    $css_rules[] = array(
-				    'selectors'         =>  array( '.tailor-button__inner' ),
-				    'declarations'      =>  array(
-					    'background-color'  =>  esc_attr( $atts['background_color'] ),
-				    ),
-			    );
-		    }
-
-		    if ( ! empty( $atts['background_color_hover'] ) ) {
-			    $css_rules[] = array(
-				    'selectors'         =>  array( '.tailor-button__inner:hover', '.tailor-button__inner:focus' ),
-				    'declarations'      =>  array(
-					    'background-color'  =>  esc_attr( $atts['background_color_hover'] ),
-				    ),
-			    );
-			    $css_rules[] = array(
-				    'selectors'         =>  array( '.tailor-button__inner:active' ),
-				    'declarations'      =>  array(
-					    'background-color'  =>  esc_attr( tailor_adjust_color_brightness( $atts['background_color_hover'], -0.02 ) ),
-				    ),
-			    );
-		    }
-		    else if ( ! empty( $atts['background_color'] ) ) {
-			    $css_rules[] = array(
+				    'setting'           =>  'background_color_hover',
 				    'selectors'         =>  array( '.tailor-button__inner:hover', '.tailor-button__inner:focus' ),
 				    'declarations'      =>  array(
 					    'background-color'  =>  esc_attr( tailor_adjust_color_brightness( $atts['background_color'], -0.02 ) ),
 				    ),
 			    );
 			    $css_rules[] = array(
+				    'setting'           =>  'background_color_hover',
 				    'selectors'         =>  array( '.tailor-button__inner:active' ),
 				    'declarations'      =>  array(
 					    'background-color'  =>  esc_attr( tailor_adjust_color_brightness( $atts['background_color'], -0.05 ) ),
@@ -214,101 +227,24 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Button_Element'
 			    );
 		    }
 
-		    if ( ! empty( $atts['border_color'] ) ) {
+		    // Automatic border hover and active color if one is not selected
+		    if ( ! empty( $atts['border_color'] ) && empty( $atts['border_color_hover'] ) ) {
 			    $css_rules[] = array(
-				    'selectors'         =>  array( '.tailor-button__inner' ),
-				    'declarations'      =>  array(
-					    'border-color'      =>  esc_attr( $atts['border_color'] ),
-				    ),
-			    );
-		    }
-
-		    if ( ! empty( $atts['border_color_hover'] ) ) {
-			    $css_rules[] = array(
-				    'selectors'         =>  array( '.tailor-button__inner:hover', '.tailor-button__inner:focus' ),
-				    'declarations'      =>  array(
-					    'border-color'      =>  esc_attr( $atts['border_color_hover'] ),
-				    ),
-			    );
-		    }
-		    else if ( ! empty( $atts['border_color'] ) ) {
-			    $css_rules[] = array(
+				    'setting'           =>  'border_color_hover',
 				    'selectors'         =>  array( '.tailor-button__inner:hover', '.tailor-button__inner:focus' ),
 				    'declarations'      =>  array(
 					    'border-color'      =>  esc_attr( tailor_adjust_color_brightness( $atts['border_color'], -0.02 ) ),
 				    ),
 			    );
-		    }
-
-		    if ( ! empty( $atts['padding'] ) ) {
-			    $values = array_combine( array( 'top', 'right', 'bottom', 'left' ), explode( '-', $atts['padding'] ) );
-			    foreach ( $values as $position => $value ) {
-				    if ( ! empty( $value ) ) {
-					    $css_rules[] = array(
-						    'selectors'                 =>  array( '.tailor-button__inner' ),
-						    'declarations'              =>  array(
-							    "padding-{$position}"       =>  esc_attr( $value ),
-						    ),
-					    );
-				    }
-			    }
-		    }
-
-		    if ( ! empty( $atts['border_style'] ) ) {
-
 			    $css_rules[] = array(
-				    'selectors'         =>  array( '.tailor-button__inner' ),
+				    'setting'           =>  'border_color_hover',
+				    'selectors'         =>  array( '.tailor-button__inner:active' ),
 				    'declarations'      =>  array(
-					    'border-style'      =>  esc_attr( $atts['border_style'] ),
+					    'border-color'      =>  esc_attr( tailor_adjust_color_brightness( $atts['border_color'], -0.05 ) ),
 				    ),
 			    );
-
-			    if ( 'none' !== $atts['border_style'] ) {
-				    if ( ! empty( $atts['border_width'] )  ) {
-					    $borders = array_combine( array( 'top', 'right', 'bottom', 'left' ), explode( '-', $atts['border_width'] ) );
-					    if ( count( array_unique( $borders ) ) === 1 && end( $borders ) == '0' ) {
-						    $css_rules[] = array(
-							    'selectors'                 =>  array( '.tailor-button__inner' ),
-							    'declarations'              =>  array(
-								    'border'                    =>  'none',
-								    'box-shadow'                =>  'none',
-							    ),
-						    );
-					    }
-					    else {
-						    foreach ( $borders as $position => $border_width ) {
-							    if ( ! empty( $border_width ) ) {
-								    $css_rules[] = array(
-									    'selectors'                 =>  array( '.tailor-button__inner' ),
-									    'declarations'              =>  array(
-										    "border-{$position}-width"  =>  esc_attr( $border_width ),
-									    ),
-								    );
-							    }
-						    }
-					    }
-				    }
-
-				    if ( ! empty( $atts['border_radius'] ) ) {
-					    $css_rules[] = array(
-						    'selectors'         =>  array( '.tailor-button__inner' ),
-						    'declarations'      =>  array(
-							    'border-radius'     =>  esc_attr( $atts['border_radius'] ),
-						    ),
-					    );
-				    }
-
-				    if ( ! empty( $atts['shadow'] ) ) {
-					    $css_rules[] = array(
-						    'selectors'         =>  array( '.tailor-button__inner' ),
-						    'declarations'      =>  array(
-							    'box-shadow'        =>  '0 2px 6px rgba(0, 0, 0, 0.1)',
-						    ),
-					    );
-				    }
-			    }
 		    }
-
+		    
 		    return $css_rules;
 	    }
     }

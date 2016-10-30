@@ -117,7 +117,7 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Link_Control' )
         protected function render_template() { ?>
 
 	        <div class="control__input-group">
-		        <input type="text" placeholder="<%= placeholder %>" value="<%= value %>"/>
+		        <input type="text" name="<%= media %>" placeholder="<%= placeholder %>" value="<%= values[ media ] %>"/>
 		        <button class="button button-small button--select" title="<?php echo esc_attr( __( 'Search', 'tailor' ) ); ?>">
 			        <i class="dashicons dashicons-search"></i>
 		        </button>

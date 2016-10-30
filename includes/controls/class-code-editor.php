@@ -68,7 +68,7 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Code_Control' )
          */
         protected function render_template() { ?>
 
-	        <textarea id="<%= cid %>"><%= value %></textarea>
+	        <textarea name="<%= media %>-<%= cid %>"><%= values[ media ] %></textarea>
 
             <?php
         }

@@ -80,9 +80,15 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Tabs_Element' )
 	        $attribute_control_types = array(
 		        'class',
 		        'padding',
+		        'padding_tablet',
+		        'padding_mobile',
 		        'margin',
+		        'margin_tablet',
+		        'margin_mobile',
 		        'border_style',
 		        'border_width',
+		        'border_width_tablet',
+		        'border_width_mobile',
 		        'shadow',
 		        'background_image',
 		        'background_repeat',
@@ -103,8 +109,21 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Tabs_Element' )
 			        ),
 		        ),
 		        'border_width'          =>  array(
+			        'setting'               =>  array(
+				        'refresh'               =>  '',
+			        ),
 			        'control'               =>  array(
 				        'type'                  =>  'text',
+			        ),
+		        ),
+		        'border_width_tablet'   =>  array(
+			        'setting'               =>  array(
+				        'refresh'               =>  '',
+			        ),
+		        ),
+		        'border_width_mobile'   =>  array(
+			        'setting'               =>  array(
+				        'refresh'               =>  '',
 			        ),
 		        ),
 	        );
@@ -132,41 +151,40 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Tabs_Element' )
 		    if ( ! empty( $atts['border_style'] ) ) {
 
 			    $css_rules[] = array(
-				    'selectors'         =>  array( '.tailor-tabs__navigation-item', '.tailor-tab' ),
-				    'declarations'      =>  array(
-					    'border-style'      =>  esc_attr( $atts['border_style'] ),
+				    'selectors'                 =>  array( '.tailor-tabs__navigation-item', '.tailor-tab' ),
+				    'declarations'              =>  array(
+					    'border-style'              =>  esc_attr( $atts['border_style'] ),
 				    ),
 			    );
 
 			    if ( ! empty( $atts['position'] ) ) {
 				    switch ( $atts['position'] ) {
-
 					    case 'top':
 						    $css_rules[] = array(
-							    'media'             =>  'tablet-up',
-							    'selectors'         =>  array( '.tailor-tabs__navigation-item' ),
-							    'declarations'      =>  array(
-								    'border-bottom'     =>  'none',
+							    'media'                     =>  'tablet-up',
+							    'selectors'                 =>  array( '.tailor-tabs__navigation-item' ),
+							    'declarations'              =>  array(
+								    'border-bottom'             =>  'none',
 							    ),
 						    );
 						    break;
 
 					    case 'left':
 						    $css_rules[] = array(
-							    'media'             =>  'tablet-up',
-							    'selectors'         =>  array( '.tailor-tabs__navigation-item' ),
-							    'declarations'      =>  array(
-								    'border-right'      =>  'none',
+							    'media'                     =>  'tablet-up',
+							    'selectors'                 =>  array( '.tailor-tabs__navigation-item' ),
+							    'declarations'              =>  array(
+								    'border-right'              =>  'none',
 							    ),
 						    );
 						    break;
 
 					    case 'right':
 						    $css_rules[] = array(
-							    'media'             =>  'tablet-up',
-							    'selectors'         =>  array( '.tailor-tabs__navigation-item' ),
-							    'declarations'      =>  array(
-								    'border-left'       =>  'none',
+							    'media'                     =>  'tablet-up',
+							    'selectors'                 =>  array( '.tailor-tabs__navigation-item' ),
+							    'declarations'              =>  array(
+								    'border-left'               =>  'none',
 							    ),
 						    );
 						    break;
@@ -179,12 +197,12 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Tabs_Element' )
 					    $css_rules[] = array(
 						    'selectors'                 =>  array( '.tailor-tabs__navigation-item', '.tailor-tab' ),
 						    'declarations'              =>  array(
-							    "border-width"              =>  esc_attr( $atts['border_width'] ),
+							    'border-width'              =>  esc_attr( $atts['border_width'] ),
 						    ),
 					    );
 
 					    $css_rules[] = array(
-						    'media'             =>  'tablet-up',
+						    'media'                     =>  'tablet-up',
 						    'selectors'                 =>  array( '&.tailor-tabs--top .tailor-tabs__navigation-item:not( :last-child )' ),
 						    'declarations'              =>  array(
 							    'margin-right'              =>  esc_attr( '-' . $atts['border_width'] ),
@@ -206,7 +224,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Tabs_Element' )
 					    );
 
 					    $css_rules[] = array(
-						    'media'             =>  'tablet-up',
+						    'media'                     =>  'tablet-up',
 						    'selectors'                 =>  array( '&.tailor-tabs--right .tailor-tabs__navigation' ),
 						    'declarations'              =>  array(
 							    'margin-left'               =>  esc_attr( '-' . $atts['border_width'] ),
@@ -214,7 +232,8 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Tabs_Element' )
 					    );
 
 					    $css_rules[] = array(
-						    'media'             =>  'tablet-up',
+						    'media'                     =>  'tablet-up',
+						    'setting'                   =>  'border_color',
 						    'selectors'                 =>  array(
 							    '&.tailor-tabs--left .tailor-tabs__navigation-item:not( :first-child )',
 							    '&.tailor-tabs--right .tailor-tabs__navigation-item:not( :first-child )'
@@ -227,18 +246,20 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Tabs_Element' )
 
 				    if ( ! empty( $atts['border_color'] ) ) {
 					    $css_rules[] = array(
-						    'selectors'         =>  array( '.tailor-tabs__navigation-item', '.tailor-tab'  ),
-						    'declarations'      =>  array(
-							    'border-color'      =>  esc_attr( $atts['border_color'] ),
+						    'setting'                   =>  'border_color',
+						    'selectors'                 =>  array( '.tailor-tabs__navigation-item', '.tailor-tab' ),
+						    'declarations'              =>  array(
+							    'border-color'              =>  esc_attr( $atts['border_color'] ),
 						    ),
 					    );
 				    }
 
 				    if ( ! empty( $atts['shadow'] ) ) {
 					    $css_rules[] = array(
-						    'selectors'         =>  array( '.tailor-tab' ),
-						    'declarations'      =>  array(
-							    'box-shadow'        =>  '0 2px 6px rgba(0, 0, 0, 0.1)',
+						    'setting'                   =>  'shadow',
+						    'selectors'                 =>  array( '.tailor-tab' ),
+						    'declarations'              =>  array(
+							    'box-shadow'                =>  '0 2px 6px rgba(0, 0, 0, 0.1)',
 						    ),
 					    );
 				    }

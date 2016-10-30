@@ -49,8 +49,12 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Column_Element'
 
 		    $priority = 0;
 		    $general_control_types = array(
-                'horizontal_alignment',
-                'vertical_alignment',
+			    'vertical_alignment',
+			    'vertical_alignment_tablet',
+			    'vertical_alignment_mobile',
+			    'horizontal_alignment',
+			    'horizontal_alignment_tablet',
+			    'horizontal_alignment_mobile',
 			    'hidden',
 		    );
 		    $general_control_arguments = array();
@@ -72,9 +76,15 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Column_Element'
 		    $attribute_control_types = array(
 			    'class',
 			    'padding',
+			    'padding_tablet',
+			    'padding_mobile',
 			    'margin',
+			    'margin_tablet',
+			    'margin_mobile',
 			    'border_style',
 			    'border_width',
+			    'border_width_tablet',
+			    'border_width_mobile',
 			    'border_radius',
 			    'shadow',
 			    'background_image',

@@ -323,7 +323,7 @@ if ( ! class_exists( 'Tailor_Setting' ) ) {
 		    $value = apply_filters( "tailor_sanitize_js_{$this->id}", $this->value(), $this );
 
 		    if ( is_string( $value ) ) {
-			    return html_entity_decode( $value, ENT_QUOTES, 'UTF-8');
+			    return html_entity_decode( $value, ENT_QUOTES, 'UTF-8' );
 		    }
 
 		    return $value;

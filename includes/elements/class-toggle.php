@@ -65,43 +65,22 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Toggle_Element'
 			    'heading_color',
 			    'background_color',
 			    'border_color',
+			    'title_color',
+			    'title_background_color',
 		    );
 		    $color_control_arguments = array();
 		    $priority = tailor_control_presets( $this, $color_control_types, $color_control_arguments, $priority );
-
-		    $this->add_setting( 'title_color', array(
-			    'sanitize_callback'     =>  'tailor_sanitize_color',
-			    'refresh'               =>  array(
-				    'method'                =>  'js',
-			    ),
-		    ) );
-		    $this->add_control( 'title_color', array(
-			    'label'                 =>  __( 'Title color', 'tailor' ),
-			    'type'                  =>  'colorpicker',
-			    'priority'              =>  $priority += 10,
-			    'section'               =>  'colors',
-		    ) );
-
-		    $this->add_setting( 'title_background_color', array(
-			    'sanitize_callback'     =>  'tailor_sanitize_color',
-			    'refresh'               =>  array(
-				    'method'                =>  'js',
-			    ),
-		    ) );
-		    $this->add_control( 'title_background_color', array(
-			    'label'                 =>  __( 'Title background color', 'tailor' ),
-			    'type'                  =>  'colorpicker',
-			    'rgba'                  =>  1,
-			    'priority'              =>  $priority += 10,
-			    'section'               =>  'colors',
-		    ) );
 
 		    $priority = 0;
 		    $attribute_control_types = array(
 			    'class',
 			    'padding',
+			    'padding_tablet',
+			    'padding_mobile',
 			    'border_style',
 			    'border_width',
+			    'border_width_tablet',
+			    'border_width_mobile',
 			    'border_radius',
 			    'shadow',
 			    'background_image',
@@ -110,9 +89,24 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Toggle_Element'
 			    'background_size',
 			    'background_attachment',
 		    );
-		    $attribute_control_arguments = array();
+		    $attribute_control_arguments = array(
+			    'border_width'          =>  array(
+				    'setting'               =>  array(
+					    'refresh'               =>  '',
+				    ),
+			    ),
+			    'border_width_tablet'   =>  array(
+				    'setting'               =>  array(
+					    'refresh'               =>  '',
+				    ),
+			    ),
+			    'border_width_mobile'   =>  array(
+				    'setting'               =>  array(
+					    'refresh'               =>  '',
+				    ),
+			    ),
+		    );
 		    tailor_control_presets( $this, $attribute_control_types, $attribute_control_arguments, $priority );
-
 	    }
 
 	    /**
@@ -127,33 +121,23 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Toggle_Element'
 	    public function generate_css( $atts = array() ) {
 		    $css_rules = array();
 		    $excluded_control_types = array(
+			    'border_color',
 			    'border_style',
 			    'border_width',
+			    'border_width_tablet',
+			    'border_width_mobile',
 			    'border_radius',
-			    'border_color',
 		    );
 		    $css_rules = tailor_css_presets( $css_rules, $atts, $excluded_control_types );
 
-		    if ( ! empty( $atts['border_radius'] ) ) {
-			    $css_rules[] = array(
-				    'selectors'         =>  array( '.tailor-toggle__title', '.tailor-toggle__body' ),
-				    'declarations'      =>  array(
-					    'border-radius'     =>  esc_attr( $atts['border_radius'] ),
-				    ),
-			    );
-		    }
+		    $selectors = array(
+			    'border_color'              =>  array( '.tailor-toggle__title', '.tailor-toggle__body' ),
+		    );
+		    $css_rules = tailor_generate_color_css_rules( $css_rules, $atts, $selectors );
 
-		    if ( ! empty( $atts['border_color'] ) ) {
+		    if ( ! empty( $atts['title_color'] ) ) {
 			    $css_rules[] = array(
-				    'selectors'         =>  array( '.tailor-toggle__title', '.tailor-toggle__body' ),
-				    'declarations'      =>  array(
-					    'border-color'      =>  esc_attr( $atts['border_color'] ),
-				    ),
-			    );
-		    }
-
-		    if ( array_key_exists( 'title_color', $atts ) && ! empty( $atts['title_color'] ) ) {
-			    $css_rules[] = array(
+				    'setting'           =>  'title_color',
 				    'selectors'         =>  array( '.tailor-toggle__title' ),
 				    'declarations'      =>  array(
 					    'color'             =>  esc_attr( $atts['title_color'] ),
@@ -161,8 +145,9 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Toggle_Element'
 			    );
 		    }
 
-		    if ( array_key_exists( 'title_background_color', $atts ) && ! empty( $atts['title_background_color'] ) ) {
+		    if ( ! empty( $atts['title_background_color'] ) ) {
 			    $css_rules[] = array(
+				    'setting'           =>  'title_background_color',
 				    'selectors'         =>  array( '.tailor-toggle__title' ),
 				    'declarations'      =>  array(
 					    'background-color'  =>  esc_attr( $atts['title_background_color'] ),
@@ -170,69 +155,49 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Toggle_Element'
 			    );
 		    }
 
-		    if ( ! empty( $atts['border_style'] ) ) {
+		    $selectors = array(
+			    'border_style'              =>  array( '.tailor-toggle__title', '.tailor-toggle__body' ),
+			    'border_radius'             =>  array( '.tailor-toggle__title', '.tailor-toggle__body' ),
+		    );
+		    $css_rules = tailor_generate_attribute_css_rules( $css_rules, $atts, $selectors );
 
-			    $css_rules[] = array(
-				    'selectors'         =>  array( '.tailor-toggle__title', '.tailor-toggle__body' ),
-				    'declarations'      =>  array(
-					    'border-style'      =>  esc_attr( $atts['border_style'] ),
-				    ),
-			    );
+		    $border_width_settings = array(
+			    'border_width',
+			    'border_width_tablet',
+			    'border_width_mobile',
+		    );
+		    foreach ( $border_width_settings as $border_width_setting ) {
+			    if ( ! empty( $atts[ $border_width_setting ] ) ) {
+				    $styles = tailor_get_style_values( $atts[ $border_width_setting ] );
+				    $media = ( 19 == strlen( $border_width_setting ) ) ? substr( $border_width_setting, 13, 19 ) : '';
 
-			    if ( 'none' !== $atts['border_style'] ) {
+				    $declarations = array();
+				    foreach ( (array) $styles as $position => $value ) {
+					    $unit = tailor_get_unit( $value );
+					    $value = tailor_get_numeric_value( $value );
 
-				    if ( ! empty( $atts['border_width'] ) ) {
-					    $borders = array_combine( array( 'top', 'right', 'bottom', 'left' ), explode( '-', $atts['border_width'] ) );
-
-					    if ( count( array_unique( $borders ) ) === 1 && end( $borders ) == '0' ) {
+					    if ( 'top' == $position ) {
 						    $css_rules[] = array(
-							    'selectors'                 =>  array( '.tailor-toggle__title', '.tailor-toggle__body' ),
-							    'declarations'              =>  array(
-								    'border'                    =>  'none',
-								    'box-shadow'                =>  'none',
+							    'media'                 =>  $media,
+							    'setting'               =>  $border_width_setting,
+							    'selectors'             =>  array( '.tailor-toggle__title' ),
+							    'declarations'          =>  array(
+								    'border-top-width'      =>  esc_attr( $value . $unit ),
 							    ),
 						    );
-
 					    }
 					    else {
-						    foreach ( $borders as $position => $border_width ) {
-							    if ( ! empty( $border_width ) ) {
-								    if ( 'top' == $position ) {
-									    $css_rules[] = array(
-										    'selectors'                 =>  array( '.tailor-toggle__title' ),
-										    'declarations'              =>  array(
-											    "border-{$position}-width"  =>  esc_attr( $border_width ),
-										    ),
-									    );
-								    }
-								    else {
-									    $css_rules[] = array(
-										    'selectors'                 =>  array( '.tailor-toggle__title', '.tailor-toggle__body' ),
-										    'declarations'              =>  array(
-											    "border-{$position}-width"  =>  esc_attr( $border_width ),
-										    ),
-									    );
-								    }
-							    }
-						    }
+						    $declarations[ sprintf( 'border-%s-width', $position ) ] = esc_attr( $value . $unit );
 					    }
 				    }
 
-				    if ( ! empty( $atts['border_radius'] ) ) {
+				    // Add rule
+				    if ( ! empty( $declarations ) ) {
 					    $css_rules[] = array(
-						    'selectors'         =>  array( '.tailor-toggle__title', '.tailor-toggle__body' ),
-						    'declarations'      =>  array(
-							    'border-radius'     =>  esc_attr( $atts['border_radius'] ),
-						    ),
-					    );
-				    }
-
-				    if ( ! empty( $atts['shadow'] ) ) {
-					    $css_rules[] = array(
-						    'selectors'         =>  array(),
-						    'declarations'      =>  array(
-							    'box-shadow'        =>  '0 2px 6px rgba(0, 0, 0, 0.1)',
-						    ),
+						    'media'                 =>  $media,
+						    'setting'               =>  $border_width_setting,
+						    'selectors'             =>  array( '.tailor-toggle__title', '.tailor-toggle__body' ),
+						    'declarations'          =>  $declarations,
 					    );
 				    }
 			    }

@@ -9,75 +9,69 @@ var AbstractControl = require( './abstract-control' ),
     SelectMultiControl;
 
 SelectMultiControl = AbstractControl.extend( {
-
-
+    
     ui : {
         'input' : 'select',
-        'default' : '.js-default'
+        'mediaButton' : '.js-setting-group .button',
+        'defaultButton' : '.js-default',
+        'controlGroups' : '.control__body > *'
+    },
+
+    events : {
+        'change @ui.input' : 'onFieldChange',
+        'click @ui.mediaButton' : 'onMediaButtonChange',
+        'click @ui.defaultButton' : 'onDefaultButtonChange'
     },
 
     templateHelpers : {
 
-        /**
-         * Returns "selected" if the current choice is the selected one.
-         *
-         * @since 1.0.0
-         *
-         * @param choice
-         * @returns {string}
-         */
-        selected : function( choice ) {
-            var value = this.value.split( ',' );
-            return -1 !== value.indexOf( choice ) ? 'selected' : '';
+        selected : function( media, key ) {
+            var values = this.values[ media ].split( ',' );
+            return -1 !== values.indexOf( key ) ? 'selected' : '';
         }
     },
 
     /**
-     * Initializes the Select2 plugin.
+     * Initializes the Select2 instance(s) and updates the media-query based control groups when the control is rendered.
      *
-     * @since 1.0.0
+     * @since 1.7.2
      */
     onRender : function() {
-        this.ui.input.select2();
+        _.each( this.getValues(), function( value, media ) {
+            var $field = this.ui.input.filter( '[name^="' + media + '"]' );
+            $field.select2()
+        }, this );
+
+        this.updateControlGroups();
     },
 
     /**
-     * Responds to a control change.
+     * Updates the current setting value when a field change occurs.
      *
-     * @since 1.0.0
+     * @since 1.7.2
      */
-    onControlChange : function( e ) {
-        var select = this.ui.input.get(0);
-        var value = [];
-
-        for ( var i = 0; i < select.length; i ++ ) {
-            if ( select[ i ].selected ) {
-                value.push( select[ i ].value );
+    onFieldChange : function() {
+        var $field = this.ui.input.filter( '[name^="' + this.media + '"]' );
+        var field = $field.get(0);
+        var values = [];
+        for ( var i = 0; i < field.length; i ++ ) {
+            if ( field[ i ].selected ) {
+                values.push( field[ i ].value );
             }
         }
-
-        this.setSettingValue( value.join( ',' ) );
+        this.setValue( values.join( ',' ) );
     },
 
     /**
-     * Restores the default value for the setting.
+     * Destroys the Select2 instance(s).
      *
-     * @since 1.0.0
-     *
-     * @param e
-     */
-    restoreDefaultValue : function( e ) {
-        this.setSettingValue( this.getDefaultValue() );
-        this.render();
-    },
-
-    /**
-     * Destroys the Select2 instance when the control is destroyed.
-     *
-     * @since 1.0.0
+     * @since 1.7.2
      */
     onDestroy : function() {
-        this.ui.input.select2( 'destroy' );
+        _.each( this.getValues(), function( value, media ) {
+            var $field = this.ui.input.filter( '[name^="' + media + '"]' );
+            $field.select2( 'destroy' );
+        }, this );
     }
 
 } );

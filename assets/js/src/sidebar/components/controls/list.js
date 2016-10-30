@@ -268,7 +268,7 @@ var ListControl = Marionette.CompositeView.extend( {
      */
     updateContent : function() {
 	    var shortcode = this.generateShortcode();
-        this.model.setting.set( 'value', shortcode );
+        this.model.settings[0].set( 'value', shortcode );
     },
 
     /**

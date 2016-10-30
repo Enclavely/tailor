@@ -16,8 +16,9 @@ VideoControl = AbstractControl.extend( {
         'enterUrl' : '.button--enter',
         'change' : '.button--change',
 		'remove' : '.button--remove',
-        'default' : '.js-default',
-        'preview' : '.video-preview'
+        'mediaButton' : '.js-setting-group .button',
+        'defaultButton' : '.js-default',
+        'controlGroups' : '.control__body > *'
 	},
 
     events : {
@@ -25,7 +26,8 @@ VideoControl = AbstractControl.extend( {
         'click @ui.enterUrl' : 'openDialog',
         'click @ui.change' : 'openFrame',
         'click @ui.remove' : 'removeVideo',
-        'click @ui.default' : 'restoreDefaultValue'
+        'click @ui.mediaButton' : 'onMediaButtonChange',
+        'click @ui.defaultButton' : 'onDefaultButtonChange'
     },
 
     /**
@@ -48,7 +50,7 @@ VideoControl = AbstractControl.extend( {
         } );
 
         this.addEventListeners();
-        this.checkDependencies( this.model.setting );
+        this.checkDependencies();
     },
 
     /**
@@ -57,8 +59,10 @@ VideoControl = AbstractControl.extend( {
      * @since 1.0.0
      */
     addEventListeners : function() {
-        this.listenTo( this.model.setting, 'change', this.render );
-        this.listenTo( this.model.setting.collection, 'change', this.checkDependencies );
+        _.each( this.getSettings(), function( setting ) {
+            this.listenTo( setting, 'change', this.onSettingChange );
+        }, this );
+        this.listenTo( this.getSetting().collection, 'change', this.checkDependencies );
 
         this.frame.on( 'select', this.selectVideo.bind( this ) );
     },
@@ -81,8 +85,7 @@ VideoControl = AbstractControl.extend( {
         var selection = this.frame.state().get( 'selection' );
         var attachment = selection.first();
 
-        this.setSettingValue( attachment.get( 'id' ) );
-        this.updatePreview( attachment );
+        this.setValue( attachment.get( 'id' ) );
     },
 
     /**
@@ -127,8 +130,7 @@ VideoControl = AbstractControl.extend( {
              * @since 1.0.0
              */
             onSave : function() {
-                var url = $( '.search--content' ).val();
-                control.setSettingValue( url );
+                control.setValue( $( '.search--content' ).val() );
             },
 
             /**
@@ -150,12 +152,21 @@ VideoControl = AbstractControl.extend( {
     },
 
     /**
+     * Re-renders the control when a setting value changes.
+     *
+     * @since 1.7.2
+     */
+    onSettingChange : function() {
+        this.render();
+    },
+    
+    /**
      * Removes the selected video.
      *
      * @since 1.0.0
      */
     removeVideo : function() {
-        this.setSettingValue( '' );
+        this.setValue( '' );
     },
 
     /**
@@ -165,21 +176,23 @@ VideoControl = AbstractControl.extend( {
      */
     onRender : function() {
         var control = this;
-        var id = this.getSettingValue();
+        _.each( this.getValues(), function( value, media ) {
+            if ( value ) {
+                var attachment = wp.media.attachment( value );
+                if ( ! attachment.get( 'url' ) ) {
+                    attachment.fetch( {
+                        success : function() {
+                            control.updatePreview( attachment, media );
+                        }
+                    } );
+                }
+                else {
+                    control.updatePreview( attachment, media );
+                }
+            }
+        }, this );
 
-        if ( id && _.isNumber( id ) ) {
-            var attachment = wp.media.attachment( id );
-            if ( ! attachment.get( 'url' ) ) {
-                attachment.fetch( {
-                    success : function() {
-                        control.updatePreview( attachment );
-                    }
-                } );
-            }
-            else {
-                control.updatePreview( attachment );
-            }
-        }
+        this.updateControlGroups();
     },
 
     /**
@@ -188,12 +201,15 @@ VideoControl = AbstractControl.extend( {
      * @since 1.0.0
      *
      * @param attachment
+     * @param media
      */
-    updatePreview : function( attachment ) {
+    updatePreview : function( attachment, media ) {
         var url = attachment.get( 'url' );
         var mime = attachment.get( 'mime' );
 
-        this.ui.preview
+        this.ui.controlGroups
+            .filter( '[id^="' + media + '"]' )
+            .find( '.video-preview' )
             .removeClass( 'is-loading' )
             .html( '<video controls><source src="' + url + '" type="' + mime + '"></video>' );
     },
@@ -205,29 +221,8 @@ VideoControl = AbstractControl.extend( {
      */
     onDestroy : function() {
         this.frame.dispose();
-        //this.destroyPlayer();
-    },
-
-    /**
-     * Initializes the video player.
-     *
-     * @since 1.0.0
-     */
-    initializePlayer : function() {
-        var mejsSettings = window._wpmejsSettings || {};
-        var video = this.ui.preview.get(0).firstChild;
-        this.player = new MediaElementPlayer( video, mejsSettings );
-    },
-
-    /**
-     * Destroys the video player.
-     *
-     * @since 1.0.0
-     */
-    destroyPlayer : function() {
-        this.player && wp.media.mixin.removePlayer( this.player );
     }
-
+    
 } );
 
 module.exports = VideoControl;

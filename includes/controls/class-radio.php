@@ -54,14 +54,13 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Radio_Control' 
          */
         protected function render_template() { ?>
 
-            <% for ( var choice in choices ) { %>
+            <% _.each( choices, function( label, key ) { %>
             <label>
-                <input type="radio" name="<%= id %>" value="<%= choice %>" <%= checked( choice ) %> />
-                <?php echo "\n"; ?><%= choices[ choice ] %>
-                <br>
+                <input type="radio" name="<%= media %>[<%= id %>]" value="<%= key %>" <%= checked( media, key ) %> />
+                <?php echo "\n"; ?><span><%= label %></span></br>
             </label>
-            <% } %>
-
+            <% } ) %>
+            
             <?php
         }
     }

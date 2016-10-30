@@ -6,24 +6,16 @@
  * @augments Marionette.ItemView
  */
 var $ = window.jQuery,
+    AbstractControl = require( './abstract-control' ),
     WidgetFormControl;
 
-WidgetFormControl = Marionette.ItemView.extend( {
+WidgetFormControl = AbstractControl.extend( {
 
-    tagName : 'li',
-
-    className : function() {
-        return 'control control--' + this.model.get( 'type' );
-    },
-
-    ui : {
-		'default' : '.js-default'
-	},
+    ui : {},
 
     events : {
-        'input *' : 'onControlChange',
-        'change *' : 'onControlChange',
-        'click @ui.default' : 'restoreDefaultValue'
+        'blur *' : 'onFieldChange',
+        'change *' : 'onFieldChange'
     },
 
     /**
@@ -45,14 +37,20 @@ WidgetFormControl = Marionette.ItemView.extend( {
     getTemplate : function() {
         var el = document.getElementById( this.getTemplateId() );
         var template = '';
-
         if ( el ) {
             template = _.template( el.innerHTML );
         }
         return template;
     },
 
+	/**
+     * Populate the form with setting values when the control is rendered.
+     *
+     * @since 1.7.2
+     */
     onRender: function() {
+        var idBase = this.model.get( 'widget_id_base' );
+        var $el = this.$el;
 
         // Format the default WordPress widget label
         this.$el.find( 'label' )
@@ -62,39 +60,34 @@ WidgetFormControl = Marionette.ItemView.extend( {
                 $label.html( this.innerHTML.replace( ':', '' ) );
             } );
 
-        var values = this.getSettingValue();
-
-        if ( ! _.isEmpty( values ) ) {
-
-            values = JSON.parse( values );
-
-            var $el = this.$el;
-            var idBase = this.model.get( 'widget_id_base' );
-
-            _.each( values, function( value, name ) {
-                var $field = $el.find( '[name="widget-' + idBase + '[__i__][' + name + ']"]' );
-                if ( $field.length ) {
-                    if ( 'checkbox' == $field[0].type || 'radio' == $field[0].type  ) {
-                        $field.attr( 'checked', 'true' );
+        _.each( this.getValues(), function( value, media ) {
+            if ( ! _.isEmpty( value ) ) {
+                var values = JSON.parse( value );
+                _.each( values, function( value, name ) {
+                    var $field = $el.find( '[name="widget-' + idBase + '[__i__][' + name + ']"]' );
+                    if ( $field.length ) {
+                        if ( 'checkbox' == $field[0].type || 'radio' == $field[0].type  ) {
+                            $field.attr( 'checked', 'true' );
+                        }
+                        else {
+                            $field.val( value );
+                        }
                     }
-                    else {
-                        $field.val( value );
-                    }
-                }
-            } );
-        }
+                } );
+            }
+        }, this );
     },
 
     /**
-     * Responds to a control change.
+     * Updates the current setting value when a field change occurs.
      *
-     * @since 1.6.0
+     * @since 1.7.2
      */
-    onControlChange : function( e ) {
-        var data = this.$el.find( 'input, select, radio, textarea' ).serializeArray();
+    onFieldChange : function( e ) {
+        var fields = this.$el.find( 'input, select, radio, textarea' ).serializeArray();
         var values = {};
 
-        $.each( data, function() {
+        $.each( fields, function() {
             var matches = this.name.match( /\[(.*?)\]/g );
             if ( matches && 2 == matches.length ) { // Expecting name in format: widget-{type}[__i__][{field_id}]
                 var name = matches[1].substring( 1, matches[1].length - 1 );
@@ -109,33 +102,20 @@ WidgetFormControl = Marionette.ItemView.extend( {
                 }
             }
         } );
-        
-        this.setSettingValue( JSON.stringify( values ) );
-        
+
+        this.setValue( JSON.stringify( values ) );
+
         e.preventDefault();
         e.stopImmediatePropagation();
     },
 
-    /**
-     * Returns the setting value.
+	/**
+     * Do nothing on setting change.
      *
-     * @since 1.6.0
+     * @since 1.7.2
      */
-    getSettingValue : function() {
-        return this.model.setting.get( 'value' ) || '';
-    },
-
-    /**
-     * Updates the setting value.
-     *
-     * @since 1.6.0
-     *
-     * @param value
-     */
-    setSettingValue : function( value ) {
-        this.model.setting.set( 'value', value );
-    }
-
+    onSettingChange : function() {}
+    
 } );
 
 module.exports = WidgetFormControl;

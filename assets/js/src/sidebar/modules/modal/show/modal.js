@@ -105,7 +105,7 @@ ModalView = Marionette.LayoutView.extend( {
     onChange : function( setting ) {
         this.isModified = true;
         this.ui.apply.attr( 'disabled', false );
-
+        
         var model = this.model;
         if ( ! model.isTracking() ) {
             model.startTracking();
@@ -113,7 +113,7 @@ ModalView = Marionette.LayoutView.extend( {
 
         var update = setting.get( 'refresh' );
         var jsRefresh = update.hasOwnProperty( 'method' ) && 'js' == update['method'];
-
+        
         // Check dependencies, if they exist
         if ( jsRefresh && update.hasOwnProperty( 'dependencies' ) ) {
             for ( var settingId in update['dependencies'] ) {

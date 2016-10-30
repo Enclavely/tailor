@@ -16,7 +16,9 @@ IconControl = AbstractControl.extend( {
         'change' : '.button--change',
         'remove' : '.button--remove',
         'icon' : 'i',
-        'default' : '.js-default'
+		'mediaButton' : '.js-setting-group .button',
+		'defaultButton' : '.js-default',
+		'controlGroups' : '.control__body > *'
 	},
 
     events : {
@@ -24,17 +26,8 @@ IconControl = AbstractControl.extend( {
         'click @ui.change' : 'openDialog',
         'click @ui.remove' : 'removeIcon',
         'click @ui.icon' : 'openDialog',
-        'click @ui.default' : 'restoreDefaultValue'
-    },
-
-    /**
-     * Adds the required event listeners.
-     *
-     * @since 1.0.0
-     */
-    addEventListeners : function() {
-        this.listenTo( this.model.setting, 'change', this.render );
-        this.listenTo( this.model.setting.collection, 'change', this.checkDependencies );
+	    'click @ui.mediaButton' : 'onMediaButtonChange',
+	    'click @ui.defaultButton' : 'onDefaultButtonChange'
     },
 
 	/**
@@ -57,7 +50,7 @@ IconControl = AbstractControl.extend( {
              */
             content : function() {
                 var kits = window._kits || {};
-                var value = control.getSettingValue();
+                var value = control.getValue();
 
                 if ( _.keys( kits ).length ) {
                     return _.template( document.getElementById( 'tmpl-tailor-control-icon-select' ).innerHTML)( {
@@ -80,8 +73,7 @@ IconControl = AbstractControl.extend( {
                 var $kits = $el.find( '.icon-kit' );
 
                 this.$el.find( '.search--icon' ).on( 'input', function( e ) {
-                    var term =  this.value.replace( /[-\/\\^$*+?.()|[\]{}]/g, '\\$&' );
-
+                    var term = this.value.replace( /[-\/\\^$*+?.()|[\]{}]/g, '\\$&' );
                     term = term.replace( / /g, ')(?=.*' );
                     var match = new RegExp( '^(?=.*' + term + ').+', 'i' );
 
@@ -118,7 +110,7 @@ IconControl = AbstractControl.extend( {
 	         * @since 1.0.0
 	         */
             onSave : function() {
-                control.setSettingValue( $( 'input[name=icon]:checked' ).val() );
+                control.setValue( $( 'input[name=icon]:checked' ).val() );
             },
 
 	        /**
@@ -139,8 +131,22 @@ IconControl = AbstractControl.extend( {
 	    app.channel.trigger( 'dialog:open', options );
     },
 
+	/**
+	 * Re-renders the control when a setting value changes.
+	 *
+	 * @since 1.7.2
+	 */
+	onSettingChange : function() {
+		this.render();
+	},
+
+	/**
+	 * Clears the current setting value when an icon is removed.
+	 * 
+	 * @since 1.7.2
+	 */
     removeIcon : function() {
-        this.setSettingValue( '' );
+        this.setValue( '' );
     }
 
 } );

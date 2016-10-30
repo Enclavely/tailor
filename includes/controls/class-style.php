@@ -53,19 +53,21 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Style_Control' 
          * @see Tailor_Control::print_template()
          */
         protected function render_template() { ?>
-
+            
             <ul class="control__input-group">
-                <% for ( var choice in choices ) { %>
+
+                <% _.each( choices, function( label, key ) { %>
                 <li>
-                    <input type="text" value="<%= choices[ choice ] %>" />
-                    <span class="control__input-label"><%= choice %></span>
+                    <input type="text" name="<%= media %>[<%= key %>]" value="<%= values[ media ][ key ] %>" />
+                    <span class="control__input-label"><%= label %></span>
                 </li>
-                <% } %>
+                <% } ) %>
+
                 <li>
                     <button class="button button-small js-link"><i class="dashicons"></i></button>
                 </li>
             </ul>
-
+            
             <?php
         }
     }

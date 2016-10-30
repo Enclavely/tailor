@@ -31,15 +31,15 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Icon_Control' )
          * @see Tailor_Control::print_template()
          */
         protected function render_template() { ?>
-
-	        <% if ( '' == value ) { %>
+	        
+	        <% if ( '' == values[ media ] ) { %>
 	        <p class="control__message"><?php _e( 'No icon selected', 'tailor' ); ?></p>
 	        <div class="actions">
 		        <button type="button" class="button button--select"><?php _e( 'Select Icon', 'tailor' ); ?></button>
 	        </div>
 	        <% } else { %>
 	        <p>
-		        <i class="<%= value %>"></i>
+		        <i class="<%= values[ media ] %>"></i>
 	        </p>
 	        <div class="actions">
 		        <button type="button" class="button button--remove"><?php _e( 'Remove Icon', 'tailor' ); ?></button>

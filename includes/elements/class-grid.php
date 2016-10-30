@@ -46,8 +46,9 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Grid_Element' )
 
             $general_control_types = array(
                 'items_per_row',
-                'item_spacing',
-                'min_item_height',
+	            'min_item_height',
+	            'min_item_height_tablet',
+	            'min_item_height_mobile',
 	            'hidden',
             );
             $general_control_arguments = array(
@@ -59,7 +60,21 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Grid_Element' )
                         'choices'               =>  tailor_get_range( 2, 6, 1 ),
                     ),
                 ),
-	            'min_item_height'       =>  array(
+                'min_item_height'       =>  array(
+	                'setting'               =>  array(
+		                'refresh'               =>  array(
+			                'method'                =>  'js',
+		                ),
+	                ),
+                ),
+                'min_item_height_tablet'    =>  array(
+	                'setting'               =>  array(
+		                'refresh'               =>  array(
+			                'method'                =>  'js',
+		                ),
+	                ),
+                ),
+	            'min_item_height_mobile'    =>  array(
 		            'setting'               =>  array(
 			            'refresh'               =>  array(
 				            'method'                =>  'js',
@@ -102,8 +117,15 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Grid_Element' )
 	        $attribute_control_types = array(
 		        'class',
 		        'padding',
+		        'padding_tablet',
+		        'padding_mobile',
 		        'margin',
+		        'margin_tablet',
+		        'margin_mobile',
+		        'border_style',
 		        'border_width',
+		        'border_width_tablet',
+		        'border_width_mobile',
 		        'shadow',
 		        'background_image',
 		        'background_repeat',
@@ -132,69 +154,56 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Grid_Element' )
 	    public function generate_css( $atts = array() ) {
 		    $css_rules = array();
 		    $excluded_control_types = array(
-			    'item_spacing',
+			    'min_item_height',
+			    'min_item_height_tablet',
+			    'min_item_height_mobile',
 			    'border_style',
 			    'border_color',
 			    'border_width',
+			    'border_width_tablet',
+			    'border_width_mobile',
 		    );
 		    $css_rules = tailor_css_presets( $css_rules, $atts, $excluded_control_types );
-		    
-		    $media_query = ( ! $atts['collapse'] || 'mobile' == $atts['collapse'] ) ? '' : "{$atts['collapse']}-up";
 
-		    if ( ! empty( $atts['min_item_height'] ) ) {
-			    $css_rules[] = array(
-				    'media'             =>  $media_query,
-				    'selectors'         =>  array( '.tailor-grid__item' ),
-				    'declarations'      =>  array(
-					    'min-height'        =>  esc_attr( $atts['min_item_height'] ),
-				    ),
-			    );
-		    }
+		    $selectors = array(
+			    'min_item_height'               =>  array( '.tailor-grid__item' ),
+			    'min_item_height_tablet'        =>  array( '.tailor-grid__item' ),
+			    'min_item_height_mobile'        =>  array( '.tailor-grid__item' ),
+		    );
+		    $css_rules = tailor_generate_general_css_rules( $css_rules, $atts, $selectors );
 
-		    if ( ! empty( $atts['item_spacing'] ) ) {
-			    $value = preg_replace( "/[^0-9\.]/", "", $atts['item_spacing'] );
-			    $unit = str_replace( $value, '', $atts['item_spacing'] );
+		    $selectors = array(
+			    'border_color'                  =>  array( '.tailor-grid__item' ),
+		    );
+		    $css_rules = tailor_generate_color_css_rules( $css_rules, $atts, $selectors );
 
-			    if ( is_numeric( $value ) ) {
+		    $selectors = array(
+			    'border_style'                  =>  array( '.tailor-grid__item' ),
+		    );
+		    $css_rules = tailor_generate_attribute_css_rules( $css_rules, $atts, $selectors );
+
+		    $screen_sizes = array(
+			    '',
+			    'tablet',
+			    'mobile',
+		    );
+
+		    // Border width
+		    foreach ( $screen_sizes as $screen_size ) {
+			    $postfix = empty( $screen_size ) ? '' : "_{$screen_size}";
+			    if ( array_key_exists( ( 'border_width' . $postfix ), $atts ) ) {
+				    $border_width = $atts[ ( 'border_width' . $postfix ) ];
+				    $unit = tailor_get_unit( $border_width );
+				    $value = (string) tailor_get_numeric_value( $border_width );
 				    $css_rules[] = array(
-					    'media'             =>  $media_query,
-					    'selectors'         =>  array( ".tailor-grid__item-up" ),
-					    'declarations'      =>  array(
-						    'padding-left'      =>  esc_attr( ( $value / 2 ) . $unit ),
-						    'padding-right'     =>  esc_attr( ( $value / 2 ) . $unit ),
+					    'setting'               =>  ( 'border_width' . $postfix ),
+					    'media'                 =>  $screen_size,
+					    'selectors'             =>  array( '.tailor-grid__item' ),
+					    'declarations'          =>  array(
+						    'border-width'          =>  esc_attr( ( $value . $unit ) ),
 					    ),
 				    );
 			    }
-		    }
-
-		    if ( ! empty( $atts['border_color'] ) ) {
-			    $css_rules[] = array(
-				    'media'             =>  $media_query,
-				    'selectors'         =>  array( '.tailor-grid__item' ),
-				    'declarations'      =>  array(
-					    'border-color'      =>  esc_attr( $atts['border_color'] ),
-				    ),
-			    );
-		    }
-
-		    if ( ! empty( $atts['border_width'] )  ) {
-			    $css_rules[] = array(
-				    'media'             =>  $media_query,
-				    'selectors'         =>  array( '.tailor-grid__item' ),
-				    'declarations'      =>  array(
-					    'border-width'      =>  esc_attr( $atts['border_width'] ),
-				    ),
-			    );
-		    }
-
-		    if ( ! empty( $atts['shadow'] ) ) {
-			    $css_rules[] = array(
-				    'media'             =>  $media_query,
-				    'selectors'         =>  array(),
-				    'declarations'      =>  array(
-					    'box-shadow'        =>  '0 2px 6px rgba(0, 0, 0, 0.1)',
-				    ),
-			    );
 		    }
 
 		    return $css_rules;

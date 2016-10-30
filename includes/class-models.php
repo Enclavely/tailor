@@ -686,7 +686,7 @@ if ( ! class_exists( 'Tailor_Models' ) ) {
 						    $unsanitized_model['atts'][ $setting->id ] = $setting->default;
 					    }
 
-					    if ( empty( $unsanitized_model['atts'][ $setting->id ] ) && empty( $setting->default ) ) {
+					    if ( '' == $unsanitized_model['atts'][ $setting->id ] && '' == $setting->default ) {
 						    continue;
 					    }
 

@@ -55,21 +55,25 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Input_Group_Con
         protected function render_template() { ?>
 
             <ul class="control__input-group">
-                <% for ( var choice in choices ) { %>
-                <li>
-                    <% if ( choices[ choice ].unit ) { %>
-                        <div class="control__input-group">
-                            <input type="<%= choices[ choice ].type %>" value="<%= choices[ choice ].value %>" />
-                            <span class="control__input-addon"><%= choices[ choice ].unit %></span>
-                        </div>
-                    <% } else { %>
-                        <input type="<%= choices[ choice ].type %>" value="<%= choices[ choice ].value %>" />
-                    <% } %>
-                    <span class="control__input-label"><%= choices[ choice ].label %></span>
-                </li>
-                <% } %>
-            </ul>
 
+                <% _.each( choices, function( data, key ) { %>
+                <li>
+
+                    <% if ( label.unit ) { %>
+                    <div class="control__input-group">
+                        <input type="<%= data.type %>" name="<%= media %>[<%= key %>]" value="<%= values[ media ][ key ] %>" />
+                        <span class="control__input-addon"><%= data.unit %></span>
+                    </div>
+                    <% } else { %>
+                    <input type="<%= data.type %>" name="<%= media %>[<%= key %>]" value="<%= values[ media ][ key ] %>" />
+                    <% } %>
+
+                    <span class="control__input-label"><%= data.label %></span>
+                </li>
+                <% } ) %>
+
+            </ul>
+            
             <?php
         }
     }

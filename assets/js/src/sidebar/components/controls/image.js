@@ -14,8 +14,9 @@ ImageControl = AbstractControl.extend( {
         'select' : '.button--select',
         'change' : '.button--change',
 		'remove' : '.button--remove',
-        'default' : '.js-default',
-        'thumbnails' : '.thumbnails',
+        'mediaButton' : '.js-setting-group .button',
+        'defaultButton' : '.js-default',
+        'controlGroups' : '.control__body > *',
         'thumbnail' : '.thumbnail'
     },
 
@@ -24,7 +25,8 @@ ImageControl = AbstractControl.extend( {
         'click @ui.change' : 'openFrame',
         'click @ui.remove' : 'removeImage',
         'click @ui.thumbnail' : 'openFrame',
-        'click @ui.default' : 'restoreDefaultValue'
+        'click @ui.mediaButton' : 'onMediaButtonChange',
+        'click @ui.defaultButton' : 'onDefaultButtonChange'
     },
 
     /**
@@ -35,7 +37,6 @@ ImageControl = AbstractControl.extend( {
      * @param options
      */
     initialize : function( options ) {
-
         this.frame = wp.media( {
             states: [
                 new wp.media.controller.Library({
@@ -48,7 +49,7 @@ ImageControl = AbstractControl.extend( {
         } );
 
         this.addEventListeners();
-        this.checkDependencies( this.model.setting );
+        this.checkDependencies();
     },
 
     /**
@@ -57,8 +58,10 @@ ImageControl = AbstractControl.extend( {
      * @since 1.0.0
      */
     addEventListeners : function() {
-        this.listenTo( this.model.setting, 'change', this.render );
-        this.listenTo( this.model.setting.collection, 'change', this.checkDependencies );
+        _.each( this.getSettings(), function( setting ) {
+            this.listenTo( setting, 'change', this.onSettingChange );
+        }, this );
+        this.listenTo( this.getSetting().collection, 'change', this.checkDependencies );
 
         this.frame.on( 'select', this.selectImage.bind( this ) );
     },
@@ -81,9 +84,7 @@ ImageControl = AbstractControl.extend( {
         var selection = this.frame.state().get( 'selection' );
         var attachment = selection.first();
         var sizes = attachment.get( 'sizes' );
-
-        this.setSettingValue( attachment.get( 'id' ) );
-        this.updateThumbnail( sizes );
+        this.setValue( attachment.get( 'id' ) );
     },
 
     /**
@@ -92,8 +93,9 @@ ImageControl = AbstractControl.extend( {
      * @since 1.0.0
      *
      * @param sizes
+     * @param media
      */
-    updateThumbnail : function( sizes ) {
+    updateThumbnail : function( sizes, media ) {
         var url;
         if ( sizes.hasOwnProperty( 'medium' ) ) {
             url = sizes.medium.url;
@@ -102,13 +104,15 @@ ImageControl = AbstractControl.extend( {
             url = sizes.thumbnail.url;
         }
         else if ( sizes.hasOwnProperty( 'full' ) ) {
-            url = sizes.full.url; // small images do not have thumbnail generated
+            url = sizes.full.url; // Small images do not have thumbnail generated
         }
         else {
-            return; // invalid sizes
+            return; // Invalid sizes
         }
         
-        this.ui.thumbnails
+        this.ui.controlGroups
+            .filter( '[id^="' + media + '"]' )
+            .find( '.thumbnails' )
             .removeClass( 'is-loading' )
             .html( '<li class="thumbnail"><img src="' + url + '"/></li>' );
     },
@@ -119,7 +123,16 @@ ImageControl = AbstractControl.extend( {
      * @since 1.0.0
      */
     removeImage : function() {
-        this.setSettingValue( '' );
+        this.setValue( '' );
+    },
+
+    /**
+     * Re-renders the control when a setting value changes.
+     *
+     * @since 1.7.2
+     */
+    onSettingChange : function() {
+        this.render();
     },
 
     /**
@@ -128,26 +141,26 @@ ImageControl = AbstractControl.extend( {
      * @since 1.0.0
      */
     onRender : function() {
-
-        var control = this;
-        var id = this.getSettingValue();
-
-        if ( id ) {
-            var attachment = wp.media.attachment( id );
-            var sizes = attachment.get( 'sizes' );
-
-            if ( sizes ) {
-                this.updateThumbnail( sizes );
+        _.each( this.getValues(), function( value, media ) {
+            if ( value ) {
+                var attachment = wp.media.attachment( value );
+                var sizes = attachment.get( 'sizes' );
+                if ( sizes ) {
+                    this.updateThumbnail( sizes, media );
+                }
+                else {
+                    var control = this;
+                    attachment.fetch( {
+                        success : function() {
+                            sizes = attachment.get( 'sizes' );
+                            control.updateThumbnail( sizes, media );
+                        }
+                    } );
+                }
             }
-            else {
-                attachment.fetch( {
-                    success : function() {
-                        sizes = attachment.get( 'sizes' );
-                        control.updateThumbnail( sizes );
-                    }
-                } );
-            }
-        }
+        }, this );
+
+        this.updateControlGroups();
     },
 
     /**

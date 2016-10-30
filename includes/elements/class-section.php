@@ -46,17 +46,20 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Section_Element
 
 	        $general_control_types = array(
 		        'max_width',
+		        'max_width_tablet',
+		        'max_width_mobile',
 		        'min_height',
+		        'min_height_tablet',
+		        'min_height_mobile',
+		        'vertical_alignment',
+		        'vertical_alignment_tablet',
+		        'vertical_alignment_mobile',
 		        'horizontal_alignment',
-                'vertical_alignment',
+		        'horizontal_alignment_tablet',
+		        'horizontal_alignment_mobile',
 		        'hidden',
 	        );
 	        $general_control_arguments = array(
-		        'min_height'            =>  array(
-			        'setting'               =>  array(
-				        'refresh'               =>  array(),
-			        ),
-		        ),
 		        'vertical_alignment'    =>  array(
 			        'control'               =>  array(
 				        'dependencies'          =>  array(
@@ -79,16 +82,28 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Section_Element
 		        'background_color',
 		        'border_color',
 	        );
-	        $color_control_arguments = array();
+	        $color_control_arguments = array(
+		        'background_color'      =>  array(
+			        'setting'               =>  array(
+				        'refresh'               =>  '',
+			        ),
+		        ),
+	        );
 	        tailor_control_presets( $this, $color_control_types, $color_control_arguments, $priority );
 	        
 	        $priority = 0;
 	        $attribute_control_types = array(
 		        'class',
 		        'padding',
+		        'padding_tablet',
+		        'padding_mobile',
 		        'margin',
+		        'margin_tablet',
+		        'margin_mobile',
 		        'border_style',
 		        'border_width',
+		        'border_width_tablet',
+		        'border_width_mobile',
 		        'border_radius',
 		        'shadow',
 		        'background_image',
@@ -184,16 +199,6 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Section_Element
 			        ),
 		        ),
 	        ) );
-
-	        $this->add_setting( 'background_video', array(
-		        'sanitize_callback'     =>  'tailor_sanitize_number',
-	        ) );
-	        $this->add_control( 'background_video', array(
-		        'label'                 =>  __( 'Background video', 'tailor' ),
-		        'type'                  =>  'video',
-		        'priority'              =>  $priority += 10,
-		        'section'               =>  'attributes',
-	        ) );
         }
 
 	    /**
@@ -206,32 +211,31 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Section_Element
 	     */
 	    public function generate_css( $atts = array() ) {
 		    $css_rules = array();
-		    $excluded_control_types = array();
+		    $excluded_control_types = array(
+			    'max_width',
+			    'max_width_tablet',
+			    'max_width_mobile',
+			    'min_height',
+			    'min_height_tablet',
+			    'min_height_mobile',
+		    );
+		    $css_rules = tailor_css_presets( $css_rules, $atts, $excluded_control_types );
 
-		    if ( ! empty( $atts['max_width'] ) ) {
-			    $css_rules[] = array(
-				    'selectors'         =>  array( '.tailor-section__content' ),
-				    'declarations'      =>  array(
-					    'max-width'         =>  esc_attr( $atts['max_width'] ),
-				    ),
-				    'setting'           =>  'max_width',
-			    );
-		    }
-
-		    if ( ! empty( $atts['min_height'] ) ) {
-			    $css_rules[] = array(
-				    'selectors'         =>  array(),
-				    'declarations'      =>  array(
-					    'min-height'        =>  esc_attr( $atts['min_height'] ),
-				    ),
-				    'setting'           =>  'min_height',
-			    );
-		    }
+		    $selectors = array(
+			    'max_width'                 =>  array( '.tailor-section__content' ),
+			    'max_width_tablet'          =>  array( '.tailor-section__content' ),
+			    'max_width_mobile'          =>  array( '.tailor-section__content' ),
+			    'min_height'                =>  array( '.tailor-section__content' ),
+			    'min_height_tablet'         =>  array( '.tailor-section__content' ),
+			    'min_height_mobile'         =>  array( '.tailor-section__content' ),
+		    );
+		    $css_rules = tailor_generate_general_css_rules( $css_rules, $atts, $selectors );
 
 		    // Background video
 		    if ( ! empty( $atts['background_video'] ) ) {
 			    if ( ! empty( $atts['overlay_color'] ) ) {
 				    $css_rules[] = array(
+					    'setting'           =>  'overlay_color',
 					    'selectors'         =>  array( '.tailor-video-overlay' ),
 					    'declarations'      =>  array(
 						    'background-color'  =>  esc_attr( $atts['overlay_color'] ),
@@ -267,15 +271,14 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Section_Element
 				    }
 
 				    $css_rules[] = array(
-					    'selectors'    => array( '.tailor-section__background' ),
-					    'declarations' => array(
-						    'background' => esc_attr( $background ),
+					    'setting'           =>  'parallax',
+					    'selectors'         =>  array( '.tailor-section__background' ),
+					    'declarations'      =>  array(
+						    'background'        =>  esc_attr( $background ),
 					    ),
 				    );
 			    }
 		    }
-
-		    $css_rules = tailor_css_presets( $css_rules, $atts, $excluded_control_types );
 		    
 		    return $css_rules;
 	    }

@@ -41,7 +41,7 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Image_Control' 
          */
         protected function render_template() { ?>
 
-	        <% if ( '' == value ) { %>
+	        <% if ( '' == values[ media ] ) { %>
 	        <p class="control__message"><?php _e( 'No image selected', 'tailor' ); ?></p>
 	        <div class="actions">
 		        <button type="button" class="button button--select"><?php _e( 'Select Image', 'tailor' ); ?></button>

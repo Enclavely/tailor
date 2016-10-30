@@ -32,8 +32,8 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Switch_Control'
          */
         protected function render_template() { ?>
 
-            <input id="<%= id %>" type="checkbox" value="1" <%= checked() %> />
-	        <label for="<%= id %>" class="switch"></label>
+            <input id="<%= id %>-<%= media %>" name="<%= media %>" type="checkbox" value="1" <%= checked( media ) %> />
+            <label for="<%= id %>-<%= media %>" class="switch"></label>
 
             <?php
         }

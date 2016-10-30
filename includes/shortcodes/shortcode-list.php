@@ -134,6 +134,9 @@ if ( ! function_exists( 'tailor_shortcode_list_item' ) ) {
 		else if ( 'icon' == $graphic_type && ! empty( $atts['icon' ] ) ) {
 			$graphic = sprintf( '<span class="' . esc_attr( $atts['icon'] ) . '"></span>' );
 		}
+		else if ( 'number' == $graphic_type ) {
+			$graphic = sprintf( '<span></span>' );
+		}
 
 		if ( ! empty( $graphic ) ) {
 			$graphic = '<div class="tailor-list__graphic">' . $graphic . '</div>';

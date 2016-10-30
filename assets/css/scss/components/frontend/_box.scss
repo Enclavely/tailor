@@ -56,8 +56,8 @@ $box-image-width: 5em !default;
 				&__graphic {
 					position: relative;
 					display: table;
-					width: ( $box-icon-size * 2 ); //#{( $box-icon-size * 2 )}em;
-					height: ( $box-icon-size * 2 ); //#{( $box-icon-size * 2 )}em;
+					width: ( $box-icon-size * 2 );
+					height: ( $box-icon-size * 2 );
 					border-radius: 50%;
 
 					span {
@@ -67,7 +67,7 @@ $box-image-width: 5em !default;
 						width: 100%;
 						text-align: inherit;
 						vertical-align: middle;
-						font-size: $box-icon-size; //#{$box-icon-size}em;
+						font-size: $box-icon-size;
 					}
 				}
 			}
@@ -85,6 +85,16 @@ $box-image-width: 5em !default;
 		}
 
 		// Alignments
+		&.u-text-left {
+
+			.#{$box-class-prefix}box {
+
+				&__graphic {
+					margin-left: 0;
+				}
+			}
+		}
+
 		&.u-text-center {
 
 			.#{$box-class-prefix}box {
@@ -102,6 +112,79 @@ $box-image-width: 5em !default;
 
 				&__graphic {
 					margin-left: auto;
+				}
+			}
+		}
+
+		@media #{$tablet} {
+
+			&.u-text-left-tablet {
+
+				.#{$box-class-prefix}box {
+
+					&__graphic {
+						margin-left: 0;
+						margin-right: auto;
+					}
+				}
+			}
+
+			&.u-text-center-tablet {
+
+				.#{$box-class-prefix}box {
+
+					&__graphic {
+						margin-left: auto;
+						margin-right: auto;
+					}
+				}
+			}
+
+			&.u-text-right-tablet {
+
+				.#{$box-class-prefix}box {
+
+					&__graphic {
+						margin-left: auto;
+						margin-right: 0;
+					}
+				}
+			}
+		}
+
+
+		@media #{$mobile} {
+
+			&.u-text-left-mobile {
+
+				.#{$box-class-prefix}box {
+
+					&__graphic {
+						margin-left: 0;
+						margin-right: auto;
+					}
+				}
+			}
+
+			&.u-text-center-mobile {
+
+				.#{$box-class-prefix}box {
+
+					&__graphic {
+						margin-left: auto;
+						margin-right: auto;
+					}
+				}
+			}
+
+			&.u-text-right-mobile {
+
+				.#{$box-class-prefix}box {
+
+					&__graphic {
+						margin-left: auto;
+						margin-right: 0;
+					}
 				}
 			}
 		}

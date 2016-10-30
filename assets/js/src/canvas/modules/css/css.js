@@ -36,7 +36,6 @@ CSSModule = Marionette.Module.extend( {
         this.listenTo( app.channel, 'css:update', this.updateRules );   // Update the CSS for a given element
 		this.listenTo( app.channel, 'css:copy', this.copyRules );       // Copy the CSS for one element to another
 		this.listenTo( app.channel, 'css:clear', this.clearRules );     // Delete all CSS in the stylesheet
-
 		//this.listenTo( this.collection, 'reset', this.onReset );
 		this.listenTo( this.collection, 'destroy', this.onDestroy );
 	},

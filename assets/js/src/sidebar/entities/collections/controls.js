@@ -29,14 +29,33 @@ var ControlCollection = Backbone.Collection.extend( {
      * @since 1.0.0
      */
     onReset : function() {
-        if ( this.settings ) {
-            this.each( function( model ) {
-                var setting = this.settings.findWhere( { id : model.get( 'setting' ) } );
-                if ( setting ) {
-                    model.setting = setting;
-                }
-            }, this );
+
+        var mediaQueries = [];
+        for ( var mediaQueryId in _media_queries ) {
+            if ( _media_queries.hasOwnProperty( mediaQueryId ) && '' != _media_queries[ mediaQueryId ].max ) {
+                mediaQueries.push( mediaQueryId );
+            }
         }
+
+        this.each( function( model ) {
+            var settingId = model.get( 'setting' );
+            model.settings = this.settings.filter( function( setting ) {
+                var id = setting.get( 'id' );
+                if ( id == settingId ) {
+                    setting.media = 'desktop';
+                    return true;
+                }
+                else {
+                    var index = _.indexOf( mediaQueries, id.replace( settingId + '_', '' ) );
+                    if ( -1 !== index ) {
+                        setting.media = mediaQueries[ index ];
+                        return true;
+                    }
+                }
+
+                return false;
+            } );
+        }, this );
     }
 
 } );

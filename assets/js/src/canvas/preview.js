@@ -144,7 +144,7 @@ var $ = Backbone.$,
 /**
  * Live setting and dynamic CSS updates.
  */
-( function( app, SettingAPI ) {
+( function( window,  app, SettingAPI ) {
 
 	// CSS rule sets associated with sidebar settings
 	var cssRules = window._pageRules || [];
@@ -165,21 +165,149 @@ var $ = Backbone.$,
 	document.head.appendChild( stylesheet );
 
 	/**
-	 * Returns true if all values in an array are equal.
+	 * Returns an object containing style positions and values.
 	 *
-	 * @since 1.5.0
+	 * @since 1.7.2
 	 *
-	 * @param array
+	 * @param string
+	 * @returns {*}
+	 */
+	function getStyleValues( string ) {
+		var values;
+		if ( -1 != string.indexOf( ',' ) ) {
+			values = string.split( ',' );
+		}
+		else {
+			values = string.split( '-' ); // Old format
+		}
+		if ( 2 == values.length ) {
+			values = _.object( [ 'top', 'bottom' ], values );
+		}
+		else if ( 4 == values.length ) {
+			values = _.object( [ 'top', 'right', 'bottom', 'left' ], values );
+		}
+		else {
+			values = {};
+		}
+		return values;
+	}
+
+	/**
+	 * Returns the unit within a given string.
+	 *
+	 * @since 1.7.2
+	 *
+	 * @param string
+	 * @returns {*}
+	 */
+	function getUnit( string ) {
+		var map = [
+			"px",
+			"%",
+			"in",
+			"cm",
+			"mm",
+			"pt",
+			"pc",
+			"em",
+			"rem",
+			"ex"
+		];
+		var matches = string.match( new RegExp( '/' + map.join( '|') + '/' ) );
+		if ( matches ) {
+			return matches[0];
+		}
+		return 'px';
+	}
+
+	/**
+	 * Returns the media query for a given setting ID.
+	 *
+	 * @since 1.7.2
+	 *
+	 * @param string
+	 * @returns {string}
+	 */
+	function getMediaQuery( string ) {
+		var query = '';
+		_.each( [ '_tablet', '_mobile' ], function( target ) {
+			if ( string.substring( string.length - target.length ) == target ) {
+				query = target.substring(1)
+			}
+		} );
+		return query;
+	}
+
+	/**
+	 * Ensures a string does not contain numeric values.
+	 *
+	 * @since 1.7.2
+	 *
+	 * @param string
+	 * @returns {*|void|{style, text, priority, click}|XML}
+	 */
+	window.tailorValidateString = function( string ) {
+		return string.replace( /[0-9]/g, '' );
+	};
+
+	/**
+	 * Ensures a string contains only numeric values.
+	 *
+	 * @since 1.7.2
+	 *
+	 * @param string
+	 * @returns {*|void|{style, text, priority, click}|XML}
+	 */
+	window.tailorValidateNumber = function( string ) {
+		return string.replace( /[^0-9,.]+/i, '' );
+	};
+
+	/**
+	 * Ensures a hex or RGBA color value is valid.
+	 *
+	 * Since 1.7.2
+	 *
+	 * @param color
+	 * @returns {*}
+	 */
+	window.tailorValidateColor = function( color ) {
+		if ( /^#[0-9a-f]{3}(?:[0-9a-f]{3})?$/i.test( color ) ) {
+			return color;
+		}
+		if ( isRGBA( color ) ) {
+			return color;
+		}
+		return '';
+	};
+
+	/**
+	 * Returns true if the given color is RGBA.
+	 *
+	 * @since 1.7.2
+	 *
+	 * @param color
 	 * @returns {boolean}
 	 */
-	function isIdentical( array ) {
-		for ( var i = 0; i < array.length - 1; i++ ) {
-			if( array[ i ] !== array[ i + 1 ] ) {
-				return false;
-			}
-		}
-		return true;
+	function isRGBA( color ) {
+		return /^rgba\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3}),\s*(\d*(?:\.\d+)?)\)$/.test( color )
 	}
+
+	/**
+	 * Ensures a string contains a valid numeric value and unit.
+	 *
+	 * @since 1.7.2
+	 *
+	 * @param value
+	 * @returns {string}
+	 */
+	window.tailorValidateUnit = function( value ) {
+		var sign = '';
+		if ( '-' == value.charAt( 0 ) ) {
+			sign = '-';
+			value = value.substring(1);
+		}
+		return ( sign + tailorValidateNumber( value ) + getUnit( value ) );
+	};
 
 	/**
 	 * Generates CSS for a given setting.
@@ -277,337 +405,575 @@ var $ = Backbone.$,
 		/**
 		 * Element settings.
 		 */
-		ids = [
 
-			// Dimensions
-			'min_height',
+		var overrides = {
 
-			// Colors
-			'color',
-			'background_color',
-			'border_color',
+			'tailor_button' : {
+				'color_hover' : [ [ '.tailor-button__inner:hover', '.tailor-button__inner:focus' ], 'color', 'tailorValidateColor' ],
+				'background_color' : [ [ '.tailor-button__inner' ], 'background-color', 'tailorValidateColor' ],
+				'background_color_hover' : [ [ '.tailor-button__inner:hover', '.tailor-button__inner:focus' ], 'background-color', 'tailorValidateColor' ],
+				'border_color' : [ [ '.tailor-button__inner' ], 'border-color', 'tailorValidateColor' ],
+				'border_color_hover' : [ [ '.tailor-button__inner:hover', '.tailor-button__inner:focus' ], 'border-color', 'tailorValidateColor' ],
+				'padding' : [ [ '.tailor-button__inner' ], 'padding-{0}', 'tailorValidateUnit' ],
+				'padding_tablet' : [ [ '.tailor-button__inner' ], 'padding-{0}', 'tailorValidateUnit' ],
+				'padding_mobile' : [ [ '.tailor-button__inner' ], 'padding-{0}', 'tailorValidateUnit' ],
+				'margin' : [ [ '.tailor-button__inner' ], 'margin-{0}', 'tailorValidateUnit' ],
+				'margin_tablet' : [ [ '.tailor-button__inner' ], 'margin-{0}', 'tailorValidateUnit' ],
+				'margin_mobile' : [ [ '.tailor-button__inner' ], 'margin-{0}', 'tailorValidateUnit' ],
+				'border_width' : [ [ '.tailor-button__inner' ], 'border-{0}-width', 'tailorValidateUnit' ],
+				'border_width_tablet' : [ [ '.tailor-button__inner' ], 'border-{0}-width', 'tailorValidateUnit' ],
+				'border_width_mobile' : [ [ '.tailor-button__inner' ], 'border-{0}-width', 'tailorValidateUnit' ],
+				'border_radius' : [ [ '.tailor-button__inner' ], 'border-radius', 'tailorValidateUnit' ],
+				'shadow' : [ [ '.tailor-button__inner' ], 'box-shadow' ]
+			},
 
-			// Borders
-			'border_style',
-			'border_radius',
+			'tailor_card' : {
+				'border_color' : [ [ '', '.tailor-card__header' ], 'border-color', 'tailorValidateColor' ],
+				'padding' : [ [ '.tailor-card__content' ], 'padding-{0}', 'tailorValidateUnit' ],
+				'padding_tablet' : [ [ '.tailor-card__content' ], 'padding-{0}', 'tailorValidateUnit' ],
+				'padding_mobile' : [ [ '.tailor-card__content' ], 'padding-{0}', 'tailorValidateUnit' ]
+			},
 
-			// Background images
-			'background_repeat',
-			'background_position',
-			'background_size',
-			'background_attachment'
-		];
-		_.each( ids, function( settingId ) {
-			SettingAPI.onChange( 'element:' + settingId, function( to, from, model ) {
-				var rule = {
-					selectors: 'tailor_button' == model.get( 'tag' ) ? [ '.tailor-button__inner' ] : [],
-					declarations: {}
-				};
-				rule.declarations[ settingId.replace( '_', '-' ) ] = to;
+			'tailor_carousel' : {
+				'border_color' : [ [ '', '.slick-dots' ], 'border-color', 'tailorValidateColor' ]
+			},
 
-				// Return the rule(s)
-				return [ rule ];
-			} );
-		} );
-
-		// Tab-specific behavior
-		SettingAPI.onChange( 'element:background_color', function( to, from, model ) {
-			if ( 'tailor_tab' == model.get( 'tag' ) ) {
-				return [ {
-					selectors: [ '&.tailor-tabs__navigation-item', '&.tailor-tab' ],
-					declarations: {
-						'background-color' : to
-					}
-				} ];
-			}
-		} );
-
-		// Toggle-specific behavior
-		SettingAPI.onChange( 'element:title_color', function( to, from, model ) {
-			if ( 'tailor_toggle' == model.get( 'tag' ) ) {
-				return [ {
-					selectors: [ '.tailor-toggle__title' ],
-					declarations: {
-						'color' : to
-					}
-				} ];
-			}
-		} );
-
-		SettingAPI.onChange( 'element:title_background_color', function( to, from, model ) {
-			if ( 'tailor_toggle' == model.get( 'tag' ) ) {
-				return [ {
-					selectors: [ '.tailor-toggle__title' ],
-					declarations: {
-						'background-color' : to
-					}
-				} ];
-			}
-		} );
-
-
-		// Link color
-		SettingAPI.onChange( 'element:link_color', function( to, from, model ) {
-			return [ {
-				selectors: [ 'a' ],
-				declarations: { color : to }
-			} ];
-		} );
-
-		// Heading color
-		SettingAPI.onChange( 'element:heading_color', function( to, from, model ) {
-			return [ {
-				selectors: [ 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ],
-				declarations: { color : to }
-			} ];
-		} );
-
-		// Graphic color
-		SettingAPI.onChange( 'element:graphic_color', function( to, from, model ) {
-			var tag = model.get( 'tag' );
-			if ( 'tailor_list_item' == tag ) {
-				return [ {
-					selectors: [ '.tailor-list__graphic' ],
-					declarations: { color : to }
-				} ];
-			}
-			return [ {
-				selectors: [ '.' + tag.replace( /_/gi, '-' ) + '__graphic' ],
-				declarations: { color : to }
-			} ];
-		} );
-
-		// Graphic hover color
-		SettingAPI.onChange( 'element:graphic_color_hover', function( to, from, model ) {
-			var tag = model.get( 'tag' );
-			if ( 'tailor_list_item' == tag ) {
-				return [ {
-					selectors: [ '.tailor-list__graphic:hover' ],
-					declarations: { color : to }
-				} ];
-			}
-			return [ {
-				selectors: [ '.' + tag.replace( /_/gi, '-' ) + '__graphic:hover' ],
-				declarations: { color : to }
-			} ];
-		} );
-
-		// Minimum item height
-		SettingAPI.onChange( 'element:min_item_height', function( to, from, model ) {
-			return [ {
-				selectors: [ '.' + model.get( 'tag' ).replace( /_/gi, '-' ) + '__item' ],
-				declarations: { 'min-height' : to }
-			} ];
-		} );
-
-		// Maximum width
-		SettingAPI.onChange( 'element:max_width', function( to, from, model ) {
-			var $el = this.$childViewContainer ? this.$childViewContainer : this.$el;
-			$el.css( { maxWidth: to } );
-		} );
-
-		// Minimum column height
-		SettingAPI.onChange( 'element:min_column_height', function( to, from, model ) {
-			return [ {
-				selectors: [ '.tailor-column' ],
-				declarations: { 'min-height' : to }
-			} ];
-		} );
-
-		// Column spacing
-		SettingAPI.onChange( 'element:column_spacing', function( to, from, model ) {
-			return [
-				{
-					selectors: [],
-					declarations: {
-						'margin-left' : '-calc(' + to + '/2)',
-						'margin-right' : '-calc(' + to + '/2)'
-					}
+			'tailor_grid' : {
+				'border_color' : [ [ '.tailor-grid__item' ], 'border-color', 'tailorValidateColor' ],
+				'border_style' : [ [ '.tailor-grid__item' ], 'border-style', 'tailorValidateString' ],
+				'border_width' : function( to, from, model ) {
+					return [ {
+						selectors: [ '.tailor-grid__item' ],
+						declarations: {
+							'border-width': tailorValidateUnit( to )
+						}
+					} ];
 				},
-				{
-					selectors: [ '.tailor-column' ],
-					declarations: {
-						'padding-left' : 'calc(' + to + '/2)',
-						'padding-right' : 'calc(' + to + '/2)'
+				'border_width_tablet' : function( to, from, model ) {
+					return [ {
+						media: 'tablet',
+						selectors: [ '.tailor-grid__item' ],
+						declarations: {
+							'border-width': tailorValidateUnit( to )
+						}
+					} ];
+				},
+				'border_width_mobile' : function( to, from, model ) {
+					return [ {
+						media: 'mobile',
+						selectors: [ '.tailor-grid__item' ],
+						declarations: {
+							'border-width': tailorValidateUnit( to )
+						}
+					} ];
+				}
+			},
+
+			'tailor_tabs' : {
+				'border_color' : [ [ '.tailor-tabs__navigation-item', '.tailor-tab' ], 'border-color', 'tailorValidateColor' ]
+			},
+			
+			'tailor_tab' : {
+				'background_color' : [ [ '&.tailor-tabs__navigation-item', '&.tailor-tab' ], 'background-color', 'tailorValidateColor' ],
+				'padding' : [ [ '&.tailor-tab' ], 'padding-{0}', 'tailorValidateUnit' ],
+				'padding_tablet' : [ [ '&.tailor-tab' ], 'padding-{0}', 'tailorValidateUnit' ],
+				'padding_mobile' : [ [ '&.tailor-tab' ], 'padding-{0}', 'tailorValidateUnit' ],
+				'border_width' : [ [ '&.tailor-tab' ], 'border-{0}-width', 'tailorValidateUnit' ],
+				'border_width_tablet' : [ [ '&.tailor-tab' ], 'border-{0}-width', 'tailorValidateUnit' ],
+				'border_width_mobile' : [ [ '&.tailor-tab' ], 'border-{0}-width', 'tailorValidateUnit' ],
+				'background_repeat' : [ [ '&.tailor-tab' ], 'background-repeat', 'tailorValidateString' ],
+				'background_position' : [ [ '&.tailor-tab' ], 'background-position', 'tailorValidateString' ],
+				'background_size' : [ [ '&.tailor-tab' ], 'background-size', 'tailorValidateString' ],
+				'background_attachment' : [ [ '&.tailor-tab' ], 'background-attachment', 'tailorValidateString' ]
+			},
+
+			'tailor_toggle' : {
+				'border_color' : [ [ '.tailor-toggle__title', '.tailor-toggle__body' ], 'border-color', 'tailorValidateColor' ],
+				'border_style' : [ [ '.tailor-toggle__title', '.tailor-toggle__body' ], 'border-style', 'tailorValidateString' ],
+				'border_radius' : [ [ '.tailor-toggle__title', '.tailor-toggle__body' ], 'border-radius', 'tailorValidateUnit' ]
+			},
+
+			'tailor_section' : {
+				'max_width' : [ [ '.tailor-section__content' ], 'max-width', 'tailorValidateUnit' ],
+				'max_width_tablet' : [ [ '.tailor-section__content' ], 'max-width', 'tailorValidateUnit' ],
+				'max_width_mobile' : [ [ '.tailor-section__content' ], 'max-width', 'tailorValidateUnit' ],
+				'min_height' : [ [ '.tailor-section__content' ], 'min-height', 'tailorValidateUnit' ],
+				'min_height_tablet' : [ [ '.tailor-section__content' ], 'min-height', 'tailorValidateUnit' ],
+				'min_height_mobile' : [ [ '.tailor-section__content' ], 'min-height', 'tailorValidateUnit' ]
+			}
+		};
+
+		/**
+		 * Registers an Element Setting API callback function.
+		 *
+		 * @since 1.7.2
+		 *
+		 * @param settings
+		 */
+		function registerCallbacks( settings ) {
+			_.each( settings, function( setting, id ) {
+				SettingAPI.onChange( 'element:' + id, function( to, from, model ) {
+					var tag = model.get( 'tag' );
+					if ( overrides.hasOwnProperty( tag ) && overrides[ tag ].hasOwnProperty( id ) ) {
+						setting = overrides[ tag ][ id ];
+					}
+					
+					if ( 'function' == typeof setting ) {
+						return setting.call( this, to, from, model );
+					}
+					
+					var rule = {
+						media: getMediaQuery( id ),
+						selectors: setting[0],
+						declarations: {}
+					};
+					if ( 'function' == typeof window[ setting[2] ] ) {
+						rule.declarations[ setting[1] ] = window[ setting[2] ]( to );
+					}
+					else {
+						rule.declarations[ setting[1] ] = to;
+					}
+					return [ rule ];
+				} );
+			} );
+		}
+
+		//
+		// General
+		//
+		// Horizontal alignment
+		_.each( [
+			'horizontal_alignment',
+			'horizontal_alignment_tablet',
+			'horizontal_alignment_mobile'
+		], function( id ) {
+			SettingAPI.onChange( ( 'element:' + id ), function( to, from, model ) {
+				var media = getMediaQuery( id );
+				if ( '' != media ) {
+					media = '-' + media;
+				}
+
+				// Update class name
+				if ( from ) {
+					this.el.classList.remove( 'u-text-' + from + media );
+				}
+				this.el.classList.add( 'u-text-' + to + media );
+
+				if ( 'tailor_list_item' == model.get( 'tag' ) ) {
+					var atts = model.get( 'atts' );
+					if ( ! _.isEmpty( atts['graphic_background_color'] ) || ! _.isEmpty( atts['graphic_background_color_hover'] ) ) {
+						return [ {
+							selectors: [ '.tailor-list__body' ],
+							declarations: {
+								'padding-left': ( 'right' == to ) ? '0' : '1em',
+								'padding-right': ( 'right' == to ) ? '1em' : '0'
+							}
+						} ];
+					}
+					else {
+						return [ {
+							selectors: [ '.tailor-list__body' ],
+							declarations: {
+								'padding-left': '0',
+								'padding-right': '0'
+							}
+						} ];
 					}
 				}
-			];
-		} );
-
-		// Horizontal alignment
-		SettingAPI.onChange( 'element:horizontal_alignment', function( to, from, model ) {
-			this.el.className = this.el.className.replace( /\bu-text-.*?\b/g, '' );
-			this.el.classList.add( 'u-text-' + to );
+			} );
 		} );
 
 		// Vertical alignment
-		SettingAPI.onChange( 'element:vertical_alignment', function( to, from, model ) {
-			this.el.className = this.el.className.replace( /\bu-align-.*?\b/g, '' );
-			this.el.classList.add( 'u-align-' + to );
-		} );
-
-		// Class name
-		SettingAPI.onChange( 'element:class', function( to, from, model ) {
-			var classNames;
-
-			if ( ! _.isEmpty( from ) ) {
-				classNames = from.trim().split( /\s+(?!$)/g ); // Prevent multiple whitespace and whitespace at the end of string.
-				for ( var i in classNames ) {
-					this.el.classList.remove( classNames[ i ] );
+		_.each( [
+			'vertical_alignment',
+			'vertical_alignment_tablet',
+			'vertical_alignment_mobile'
+		], function( id ) {
+			SettingAPI.onChange( ( 'element:' + id ), function( to, from, model ) {
+				var media = getMediaQuery( id );
+				if ( '' !== media ) {
+					media = '-' + media;
 				}
-			}
-			if ( ! _.isEmpty( to ) ) {
-				classNames = to.trim().split( /\s+(?!$)/g );
-				for ( var j in classNames ) {
-					this.el.classList.add( classNames[ j ] );
+
+				if ( from ) {
+					this.el.classList.remove( 'u-align-' + from + media );
 				}
-			}
-		} );
-
-		// Box shadow
-		SettingAPI.onChange( 'element:shadow', function( to, from, model ) {
-			var rules = [];
-			if ( 1 == to ) {
-				rules.push( {
-					selectors: 'tailor_button' == model.get( 'tag' ) ? [ '.tailor-button__inner' ] : [ '' ],
-					declarations: { 'box-shadow' : '0 2px 6px rgba(0, 0, 0, 0.1)' }
-				} );
-			}
-			return rules;
-		} );
-
-		// Hover colors
-		ids = [
-			'color_hover',
-			'background_color_hover',
-			'border_color_hover'
-		];
-		_.each( ids, function( settingId ) {
-			SettingAPI.onChange( 'element:' + settingId, function( to, from, model ) {
-				var rule = {
-					selectors: 'tailor_button' == model.get( 'tag' ) ? [ 'a.tailor-button__inner:hover' ] : [ ':hover' ],
-					declarations: {}
-				};
-				rule.declarations[ settingId.substring( 0, settingId.lastIndexOf( '_hover' ) ).replace( '_', '-' ) ] = to;
-				return [ rule ];
+				this.el.classList.add( 'u-align-' + to + media );
 			} );
 		} );
-		
-		// Link hover color
-		SettingAPI.onChange( 'element:link_color_hover', function( to, from, model ) {
-			return [ {
-				selectors: [ 'a:hover' ],
-				declarations: { color : to }
-			} ];
+
+		// Button size
+		_.each( [
+			'size',
+			'size_tablet',
+			'size_mobile'
+		], function( id ) {
+			SettingAPI.onChange( ( 'element:' + id ), function( to, from, model ) {
+				if ( 'tailor_button' == model.get( 'tag' ) ) {
+					var media = getMediaQuery( id );
+					if ( '' != media ) {
+						media = '-' + media;
+					}
+
+					if ( from ) {
+						this.el.classList.remove( 'tailor-button--' + from + media );
+					}
+					this.el.classList.add( 'tailor-button--' + to + media );
+				}
+			} );
 		} );
-		
-		// Multi-dimensional attributes
-		ids = [
-			'padding',
-			'margin'
-		];
-		_.each( ids, function( settingId ) {
-			SettingAPI.onChange( 'element:' + settingId, function( to, from, model ) {
-				var rules = [];
+
+		// Max width
+		registerCallbacks( {
+			'max_width' : [ [], 'max-width', 'tailorValidateUnit' ],
+			'max_width_tablet' : [ [], 'max-width', 'tailorValidateUnit' ],
+			'max_width_mobile' : [ [], 'max-width', 'tailorValidateUnit' ],
+			'min_height' : [ [], 'min-height', 'tailorValidateUnit' ],
+			'min_height_tablet' : [ [], 'min-height', 'tailorValidateUnit' ],
+			'min_height_mobile' : [ [], 'min-height', 'tailorValidateUnit' ],
+			'min_item_height' : [ [ '.tailor-grid__item' ], 'min-height', 'tailorValidateUnit' ]
+		} );
+
+		//
+		// Colors
+		//
+		// Color
+		// Color (hover)
+		// Link color
+		// Link color (hover)
+		// Heading color
+		// Background color
+		// Background color (hover)
+		// Graphic color
+		// Graphic color (hover)
+		// Title color
+		// Title background color
+		registerCallbacks( {
+			'color' : [ [], 'color', 'tailorValidateColor' ],
+			'color_hover' : [ [ ':hover' ], 'color', 'tailorValidateColor' ],
+			'link_color' : [ [ 'a' ], 'color', 'tailorValidateColor' ],
+			'link_color_hover' : [ [ 'a:hover' ], 'color', 'tailorValidateColor' ],
+			'heading_color' : [ [ 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ], 'color', 'tailorValidateColor' ],
+			'background_color' : function( to, from, model ) {
+				var atts = model.get( 'atts' );
+
+				// Re-render the element if a background image is also being used
+				if ( atts['background_image'] ) {
+					return false;
+				}
+
+				var tag = model.get( 'tag' );
+				var setting = [ [], 'background-color', 'tailorValidateColor' ];
+				if ( overrides.hasOwnProperty( tag ) && overrides[ tag ].hasOwnProperty( 'background_color' ) ) {
+					setting = overrides[ tag ][ 'background_color' ];
+				}
+
+				if ( 'function' == typeof setting ) {
+					return setting.call( this, to, from, model );
+				}
+
 				var rule = {
-					selectors: 'tailor_button' == model.get( 'tag' ) ? [ '.tailor-button__inner' ] : [],
+					selectors: setting[0],
 					declarations: {}
 				};
-
-				if ( -1 != to.indexOf( ',' ) ) {
-					to = to.split( ',' );
+				if ( 'function' == typeof window[ setting[2] ] ) {
+					rule.declarations[ setting[1] ] = window[ setting[2] ]( to );
 				}
 				else {
-					to = to.split( '-' ); // Old format
+					rule.declarations[ setting[1] ] = to;
 				}
 
-				var map = [
-					"px",
-					"%",
-					"in",
-					"cm",
-					"mm",
-					"pt",
-					"pc",
-					"em",
-					"ex"
-				];
-
-				var unit = '';
-				if ( isIdentical( to ) ) {
-					if ( ! new RegExp( map.join( "|" ) ).test( to[0] ) ) {
-						unit = 'px';
-					}
-
-					rule.declarations[ settingId ] = to[0] + unit;
+				return [ rule ];
+			},
+			'background_color_hover' : [ [ ':hover' ], 'background-color', 'tailorValidateColor' ],
+			'border_color' : [ [], 'border-color', 'tailorValidateColor' ],
+			'border_color_hover' : [ [ ':hover' ], 'border-color', 'tailorValidateColor' ],
+			'graphic_color' : function( to, from, model ) {
+				var tag = model.get( 'tag' );
+				if ( 'tailor_box' == tag ) {
+					return [ {
+						selectors: [ '.tailor-box__graphic' ],
+						declarations: {
+							'color' : tailorValidateColor( to )
+						}
+					} ];
 				}
-				else {
-					if ( 2 == to.length ) {
-						to = _.object( [ 'top', 'bottom' ], to );
+				else if ( 'tailor_list_item' == tag ) {
+					return [ {
+						selectors: [ '.tailor-list__graphic' ],
+						declarations: {
+							'color' : tailorValidateColor( to )
+						}
+					} ];
+				}
+			},
+			'graphic_color_hover' : function( to, from, model ) {
+				var tag = model.get( 'tag' );
+				if ( 'tailor_box' == tag ) {
+					return [ {
+						selectors: [ '.tailor-box__graphic:hover' ],
+						declarations: {
+							'color' : tailorValidateColor( to )
+						}
+					} ];
+				}
+				else if ( 'tailor_list_item' == tag ) {
+					return [ {
+						selectors: [ '.tailor-list__graphic:hover' ],
+						declarations: {
+							'color' : tailorValidateColor( to )
+						}
+					} ];
+				}
+			},
+			'graphic_background_color' : function( to, from, model ) {
+				var tag = model.get( 'tag' );
+				var rules = [];
+
+				if ( 'tailor_box' == tag ) {
+					if ( to ) {
+						rules.push( {
+							selectors: [ '.tailor-box__graphic' ],
+							declarations: {
+								'margin-bottom': '1em',
+								'background-color' : tailorValidateColor( to ),
+								'text-align': 'center'
+							}
+						} );
 					}
-					else if ( 4 == to.length ) {
-						to = _.object( [ 'top', 'right', 'bottom', 'left' ], to );
+				}
+				else if ( 'tailor_list_item' == tag ) {
+					var atts = model.get( 'atts' );
+					var alignment = atts['horizontal_alignment'];
+
+					if ( to ) {
+						rules.push( {
+							selectors: [ '.tailor-list__graphic' ],
+							declarations: {
+								'background-color' : tailorValidateColor( to ),
+								'text-align': 'center'
+							}
+						} );
+						rules.push( {
+							selectors: [ '.tailor-list__body' ],
+							declarations: {
+								'padding-left': ( 'right' == alignment ) ? '0' : '1em',
+								'padding-right': ( 'right' == alignment ) ? '1em' : '0'
+							}
+						} );
 					}
 					else {
-						return;
-					}
-					for ( var key in to ) {
-						if ( to.hasOwnProperty( key ) ) {
-
-							unit = '';
-							if ( ! new RegExp( map.join( "|" ) ).test( to[ key ] ) ) {
-								unit = 'px';
-							}
-
-							rule.declarations[ settingId + '-' + key ] = to[ key ] + unit;
+						if ( ! _.isEmpty( atts['graphic_background_color_hover'] ) ) {
+							rules.push( {
+								selectors: [ '.tailor-list__body' ],
+								declarations: {
+									'padding-left': ( 'right' == alignment ) ? '0' : '1em',
+									'padding-right': ( 'right' == alignment ) ? '1em' : '0'
+								}
+							} );
+						}
+						else {
+							rules.push( {
+								selectors: [ '.tailor-list__body' ],
+								declarations: {
+									'padding-left': '0',
+									'padding-right': '0'
+								}
+							} );
 						}
 					}
 				}
 
-				if ( _.keys( rule.declarations ).length > 0 ) {
-					rules.push( rule );
+				return rules;
+			},
+			'graphic_background_color_hover' : function( to, from, model ) {
+				var tag = model.get( 'tag' );
+				var rules = [];
+
+				if ( 'tailor_box' == tag ) {
+					if ( to ) {
+						rules.push( {
+							selectors: [ '.tailor-box__graphic' ],
+							declarations: {
+								'margin-bottom': '1em',
+								'text-align': 'center'
+							}
+						} );
+						rules.push( {
+							selectors: [ '.tailor-box__graphic:hover' ],
+							declarations: {
+								'background-color' : tailorValidateColor( to )
+							}
+						} );
+					}
+				}
+				else if ( 'tailor_list_item' == tag ) {
+					var atts = model.get( 'atts' );
+					var alignment = atts['horizontal_alignment'];
+
+					if ( to ) {
+						rules.push( {
+							selectors: [ '.tailor-list__graphic' ],
+							declarations: {
+								'text-align': 'center'
+							}
+						} );
+						rules.push( {
+							selectors: [ '.tailor-list__body' ],
+							declarations: {
+								'padding-left': ( 'right' == alignment ) ? '0' : '1em',
+								'padding-right': ( 'right' == alignment ) ? '1em' : '0'
+							}
+						} );
+						rules.push( {
+							selectors: [ '.tailor-list__graphic:hover' ],
+							declarations: {
+								'background-color' : tailorValidateColor( to )
+							}
+						} );
+					}
+					else {
+						if ( ! _.isEmpty( atts['graphic_background_color'] ) ) {
+							rules.push( {
+								selectors: [ '.tailor-list__body' ],
+								declarations: {
+									'padding-left': ( 'right' == alignment ) ? '0' : '1em',
+									'padding-right': ( 'right' == alignment ) ? '1em' : '0'
+								}
+							} );
+						}
+						else {
+							rules.push( {
+								selectors: [ '.tailor-list__body' ],
+								declarations: {
+									'padding-left': '0',
+									'padding-right': '0'
+								}
+							} );
+						}
+					}
 				}
 
 				return rules;
-			} );
+			},
+			'title_color' : [ [ '.tailor-toggle__title' ], 'color', 'tailorValidateColor' ],
+			'title_background_color' : [ [ '.tailor-toggle__title' ], 'background-color', 'tailorValidateColor' ],
+			'navigation_color' : function( to, from, model ) {
+				return [ {
+					'selectors' : [ '.slick-active button:before' ],
+					'declarations' : {
+						'background-color' : tailorValidateColor( to )
+					}
+				}, {
+					'selectors' : [ '.slick-arrow:not( .slick-disabled )' ],
+					'declarations' : {
+						'color' : tailorValidateColor( to )
+					}
+				} ];
+			}
 		} );
 
-		// Border width
-		SettingAPI.onChange( 'element:border_width', function( to, from, model ) {
-			var rules = [];
-			var rule = {
-				selectors: 'tailor_button' == model.get( 'tag' ) ? [ '.tailor-button__inner' ] : [ '' ],
-				declarations: {}
-			};
+		//
+		// Attributes
+		//
+		// Border style
+		// Border radius
+		// Background repeat
+		// Background position
+		// Background size
+		// Background attachment
+		registerCallbacks( {
+			'class' : function( to, from, model ) {
+				var classNames;
+				if ( ! _.isEmpty( from ) ) {
 
-			// Process setting value
-			to = to.split( '-' );
-			if ( isIdentical( to ) ) {
-				rule.declarations[ 'border-width' ] = to[0];
-			}
-			else {
-				if ( 2 == to.length ) {
-					to = _.object( [ 'top', 'bottom' ], to );
-				}
-				else if ( 4 == to.length ) {
-					to = _.object( [ 'top', 'right', 'bottom', 'left' ], to );
-				}
-				else {
-					return;
-				}
-				for ( var key in to ) {
-					if ( to.hasOwnProperty( key ) ) {
-						rule.declarations[ 'border-' + key + '-width' ] = to[ key ];
+					// Prevent multiple whitespace and whitespace at the end of string.
+					classNames = from.trim().split( /\s+(?!$)/g );
+					for ( var i in classNames ) {
+						if ( classNames.hasOwnProperty( i ) ) {
+							this.el.classList.remove( classNames[ i ] );
+						}
 					}
 				}
+				if ( ! _.isEmpty( to ) ) {
+					classNames = to.trim().split( /\s+(?!$)/g );
+					for ( var j in classNames ) {
+						if ( classNames.hasOwnProperty( j ) ) {
+							this.el.classList.add( classNames[ j ] );
+						}
+					}
+				}
+			},
+			'border_style' : [ [], 'border-style', 'tailorValidateUnit' ],
+			'border_radius' : [ [], 'border-radius', 'tailorValidateUnit' ],
+			'background_repeat' : [ [], 'background-repeat', 'tailorValidateString' ],
+			'background_position' : [ [], 'background-position', 'tailorValidateString' ],
+			'background_size' : [ [], 'background-size', 'tailorValidateString' ],
+			'background_attachment' : [ [], 'background-attachment', 'tailorValidateString' ],
+			'shadow' : function( to, from, model ) {
+				if ( 1 == to ) {
+					var tag = model.get( 'tag' );
+					var setting = [ [] ];
+					if ( overrides.hasOwnProperty( tag ) && overrides[ tag ].hasOwnProperty('shadow') ) {
+						setting = overrides[ tag ]['shadow'];
+					}
+					return [ {
+						selectors: setting[0],
+						declarations: {
+							'box-shadow' : '0 2px 6px rgba(0, 0, 0, 0.1)'
+						}
+					} ];
+				}
+				return [];
 			}
-
-			if ( _.keys( rule.declarations ).length > 0 ) {
-				rules.push( rule );
-			}
-
-			return rules;
 		} );
 
+		// Margin
+		// Padding
+		// Border width
+		_.each( {
+			'margin' : [ [], 'margin-{0}', 'tailorValidateUnit' ],
+			'margin_tablet' : [ [], 'margin-{0}', 'tailorValidateUnit' ],
+			'margin_mobile' : [ [], 'margin-{0}', 'tailorValidateUnit' ],
+			'padding' : [ [], 'padding-{0}', 'tailorValidateUnit' ],
+			'padding_tablet' : [ [], 'padding-{0}', 'tailorValidateUnit' ],
+			'padding_mobile' : [ [], 'padding-{0}', 'tailorValidateUnit' ],
+			'border_width' : [ [], 'border-{0}-width', 'tailorValidateUnit' ],
+			'border_width_tablet' : [ [], 'border-{0}-width', 'tailorValidateUnit' ],
+			'border_width_mobile' : [ [], 'border-{0}-width', 'tailorValidateUnit' ]
+		}, function( setting, id ) {
+			SettingAPI.onChange( ( 'element:' + id ), function( to, from, model ) {
+				var tag = model.get( 'tag' );
+				if ( overrides.hasOwnProperty( tag ) && overrides[ tag ].hasOwnProperty( id ) ) {
+					setting = overrides[ tag ][ id ];
+				}
+
+				if ( 'function' == typeof setting ) {
+					return setting.call( this, to, from, model );
+				}
+
+				var rules = [];
+				var rule = {
+					media: getMediaQuery( id ),
+					selectors: setting[0],
+					declarations: {}
+				};
+
+				_.each( getStyleValues( to ), function( value, position ) {
+					if ( 'function' == typeof window[ setting[3] ] ) {
+						rule.declarations[ setting[1].replace( '{0}', position ) ] = window[ setting[2] ]( value );
+					}
+					else {
+						rule.declarations[ setting[1].replace( '{0}', position ) ] = value;
+					}
+				} );
+
+				if ( _.keys( rule.declarations ).length > 0 ) {
+					rules.push( rule );
+				}
+				return rules;
+			} );
+		} );
 	} );
-} ( window.app, window.Tailor.Api.Setting ) );
+
+} ( window, window.app, window.Tailor.Api.Setting ) );

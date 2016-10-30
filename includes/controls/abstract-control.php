@@ -96,7 +96,7 @@ if ( ! class_exists( 'Tailor_Control' ) ) {
          * @since 1.0.0
          * @var integer
          */
-        public $priority = 10;
+        public $priority;
 
         /**
          * The setting for the control.
@@ -105,6 +105,14 @@ if ( ! class_exists( 'Tailor_Control' ) ) {
          * @var Tailor_Setting
          */
         public $setting;
+
+	    /**
+	     * True if the control should allow for tablet and mobile settings.
+	     *
+	     * @since 1.7.2
+	     * @var Tailor_Setting
+	     */
+	    public $responsive;
 
         /**
          * The section for the control.
@@ -163,7 +171,6 @@ if ( ! class_exists( 'Tailor_Control' ) ) {
          * @access protected
          */
         protected function add_actions() {
-
              if ( 1 === $this->instance_number ) {
                  add_action( 'tailor_sidebar_head', array( $this, 'enqueue' ), -1 );
                  add_action( 'tailor_sidebar_footer', array( $this, 'print_template' ), -1 );
@@ -214,7 +221,15 @@ if ( ! class_exists( 'Tailor_Control' ) ) {
          * @return array The array to be exported to the client as JSON.
          */
         public function to_json() {
-            $array = wp_array_slice_assoc( (array) $this, array( 'id', 'label', 'description', 'type', 'section', 'dependencies' ) );
+            $array = wp_array_slice_assoc( (array) $this, array(
+	            'id',
+	            'label',
+	            'description',
+	            'type',
+	            'section',
+	            'responsive',
+	            'dependencies'
+            ) );
             $array['setting'] = $this->setting->id;
             return $array;
         }
@@ -224,46 +239,67 @@ if ( ! class_exists( 'Tailor_Control' ) ) {
          *
          * @since 1.0.0
          */
-        public function print_template() {
-
-	        $use_label = in_array( $this->type, array( 'select', 'switch', 'style', 'text', 'textarea' ) );
-
-	        /**
-	         * Filter the boolean value representing whether or not a label should be used in the control markup.
-	         *
-	         * @since 1.3.0
-	         *
-	         * @param bool $use_label
-	         */
-	        $use_label = apply_filters( 'tailor_control_use_label', $use_label, $this->type ); ?>
+        public function print_template() { ?>
 
             <script type="text/html" id="tmpl-tailor-control-<?php echo $this->type; ?>">
+	            <div class="control__header">
 
-	            <?php if ( $use_label ) { echo '<label>'; } ?>
+		            <% if ( label ) { %><div class="control__title"><span><%= label %></span><% } %>
 
-		            <div class="control__header">
+			        <?php $this->print_buttons(); ?>
 
-			            <% if ( label ) { %><div class="control__title"><%= label %><% } %>
+			        <% if ( label ) { %></div><% } %>
+		            <% if ( description ) { %><span class="control__description"><%= description %></span><% } %>
 
-				        <a class="button button-small js-default <% if ( 'undefined' == typeof showDefault || ! showDefault ) { %>is-hidden<% } %>">
-		                    <?php _e( 'Default', 'tailor' ); ?>
-		                </a>
+                </div>
+	            <div class="control__body">
 
-				        <% if ( label ) { %></div><% } %>
-			            <% if ( description ) { %><span class="control__description"><%= description %></span><% } %>
+		            <% for ( var media in values ) { %>
 
-	                </div>
-
-		            <div class="control__body">
+		            <div class="control__group" id="<%= media %>">
 			            <?php $this->render_template(); ?>
 		            </div>
+		            
+		            <% } %>
 
-	            <?php if ( $use_label ) { echo '</label>'; } ?>
-
+	            </div>
             </script>
 
             <?php
         }
+
+	    protected function print_buttons() { ?>
+
+		    <% if ( _.keys( values ).length > 1 ) { %>
+
+		    <div class="control__buttons">
+			    <div class="button-group js-setting-group">
+
+
+				    <% for ( var value in values ) { %>
+
+				    <button class="button button-small <%= value %> <% if ( value == media ) { %> active <% } %>"
+				            data-media="<%= value %>">
+				    </button>
+
+				    <% } %>
+
+			    </div>
+
+			    <% } %>
+
+			    <button class="button button-small js-default <% if ( hideDefault ) { %>is-hidden<% } %>">
+				    <?php _e( 'Default', 'tailor' ); ?>
+			    </button>
+			    
+			    <% if ( _.keys( values ).length > 1 ) { %>
+
+		    </div>
+
+		    <% } %>
+
+		    <?php
+	    }
 
         /**
          * Prints the Underscore (JS) template for this control.

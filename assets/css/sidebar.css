@@ -1,3 +1,4 @@
+@charset "UTF-8";
 html {
   font-family: sans-serif;
   -ms-text-size-adjust: 100%;
@@ -936,15 +937,30 @@ ul {
   padding: 0 12px; }
 .tailor-ui .control {
   margin-bottom: 1rem; }
+  .tailor-ui .control__header .button {
+    font-weight: 400; }
+  .tailor-ui .control__buttons {
+    margin: 2px 0;
+    display: inline-block; }
+    .tailor-ui .control__buttons .button-group .button::before {
+      display: inline-block;
+      -webkit-font-smoothing: antialiased;
+      font: 400 16px/22px dashicons; }
+    .tailor-ui .control__buttons .button-group .button.desktop::before {
+      content: "\f472"; }
+    .tailor-ui .control__buttons .button-group .button.tablet::before {
+      content: "\f471"; }
+    .tailor-ui .control__buttons .button-group .button.mobile::before {
+      content: "\f470"; }
   .tailor-ui .control__title {
     display: block;
     font-size: 14px;
-    line-height: 24px;
     font-weight: 600;
-    margin-bottom: 5px; }
-    .tailor-ui .control__title .button-small {
-      margin-left: 6px;
-      font-weight: 400; }
+    margin-bottom: 5px;
+    height: 28px; }
+    .tailor-ui .control__title span {
+      margin-right: 6px;
+      vertical-align: middle; }
     .tailor-ui .control__title input,
     .tailor-ui .control__title select,
     .tailor-ui .control__title textarea {
@@ -980,7 +996,8 @@ ul {
     padding: 0 10px 1px 4px;
     line-height: 24px; }
   .tailor-ui .control__input-label {
-    margin-left: 2px;
+    display: block;
+    margin: 2px 0 6px 2px;
     color: #a0a5aa; }
 .tailor-ui input ~ .control__title {
   display: inline; }
@@ -1087,8 +1104,6 @@ ul {
   width: 100%;
   max-width: none;
   margin: 0 0 6px; }
-.tailor-ui .control--link input {
-  margin-bottom: 1em; }
 .tailor-ui .dialog__container .search--content {
   padding: 6px 10px; }
 .tailor-ui .dialog__container .spinner {
@@ -1402,21 +1417,24 @@ ul {
 
 .tailor-align-center::before,
 .tailor-align-middle::before {
-  content: "\f134"; }
+  content: "\f207"; }
 
 .tailor-align-left::before,
 .tailor-align-top::before {
-  content: "\f135"; }
+  content: "\f206"; }
 
 .tailor-align-right::before,
 .tailor-align-bottom::before {
-  content: "\f136"; }
+  content: "\f208"; }
+
+.tailor-align-justify::before {
+  content: ""; }
 
 .tailor-align-top::before,
 .tailor-align-middle::before,
 .tailor-align-bottom::before {
   transform: rotate(90deg);
-  vertical-align: middle;
+  vertical-align: sub;
   line-height: 1; }
 
 .tailor-ui .devices {

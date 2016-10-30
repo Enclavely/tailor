@@ -54,7 +54,7 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Text_Control' )
          */
         protected function render_template() { ?>
 
-            <input type="<%= type %>" value="<%= value %>" <%= inputAttrs() %> />
+	        <input type="<%= type %>" name="<%= media %>" value="<%= values[ media ] %>" <%= inputAttrs() %> />
 
             <?php
         }

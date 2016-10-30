@@ -10,53 +10,36 @@ var AbstractControl = require( './abstract-control' ),
 
 ButtonGroupControl = AbstractControl.extend( {
 
-	ui: {
-		'input' : 'button',
-        'default' : '.js-default'
-	},
+    ui : {
+        'input' : '.control__body .button',
+        'mediaButton' : '.js-setting-group .button',
+        'defaultButton' : '.js-default',
+        'controlGroups' : '.control__body > *'
+    },
 
     events : {
-        'click @ui.input' : 'onControlChange',
-        'click @ui.default' : 'restoreDefaultValue'
+        'click @ui.input' : 'onFieldChange',
+        'click @ui.mediaButton' : 'onMediaButtonChange',
+        'click @ui.defaultButton' : 'onDefaultButtonChange'
     },
 
     templateHelpers : {
 
-        /**
-         * Returns the appropriate class name if the current button is the selected one.
-         *
-         * @since 1.0.0
-         *
-         * @param button
-         * @returns {string}
-         */
-        active : function( button ) {
-            return button === this.value ? 'active' : '';
+        active : function( media, key ) {
+            return key === this.values[ media ] ? 'active' : '';
         }
     },
 
     /**
-     * Adds the required event listeners.
+     * Updates the current setting value when a field change occurs.
      *
-     * @since 1.0.0
+     * @since 1.7.2
      */
-    addEventListeners : function() {
-        this.listenTo( this.model.setting, 'change', this.render );
-        this.listenTo( this.model.setting.collection, 'change', this.checkDependencies );
-    },
-
-    /**
-     * Responds to a control change.
-     *
-     * @since 1.0.0
-     */
-    onControlChange : function( e ) {
-
+    onFieldChange : function( e ) {
+        this.ui.input.filter( '[name^="' + this.media + '"]' ).removeClass( 'active' );
         var button = e.currentTarget;
-
-        this.ui.input.removeClass( 'active' );
         button.classList.add( 'active' );
-        this.setSettingValue( button.value );
+        this.setValue( button.value );
     }
 
 } );

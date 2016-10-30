@@ -142,6 +142,18 @@ $list-graphic-size: 1.5em !default;
 							display: table-cell;
 							width: 100%;
 							vertical-align: middle;
+						}
+					}
+				}
+			}
+
+			&--icon {
+
+				.#{$list-class-prefix}list {
+
+					&__graphic {
+
+						span {
 							font-size: $list-graphic-size;
 						}
 					}
@@ -149,6 +161,16 @@ $list-graphic-size: 1.5em !default;
 			}
 
 			// Alignments
+			&.u-text-left {
+
+				.#{$list-class-prefix}list {
+
+					&__graphic {
+						float: left;
+					}
+				}
+			}
+
 			&.u-text-right {
 
 				.#{$list-class-prefix}list {
@@ -159,8 +181,59 @@ $list-graphic-size: 1.5em !default;
 				}
 			}
 
+			@media #{$tablet} {
+
+				&.u-text-left-tablet {
+
+					.#{$list-class-prefix}list {
+
+						&__graphic {
+							float: left;
+						}
+					}
+				}
+
+				&.u-text-right-tablet {
+
+					.#{$list-class-prefix}list {
+
+						&__graphic {
+							float: right;
+						}
+					}
+				}
+			}
+
+			@media #{$mobile} {
+
+				&.u-text-left-mobile {
+
+					.#{$list-class-prefix}list {
+
+						&__graphic {
+							float: left;
+						}
+					}
+				}
+
+				&.u-text-right-mobile {
+
+					.#{$list-class-prefix}list {
+
+						&__graphic {
+							float: right;
+						}
+					}
+				}
+			}
+
+
 			&.u-text-left,
-			&.u-text-right {
+			&.u-text-left-tablet,
+			&.u-text-left-mobile,
+			&.u-text-right,
+			&.u-text-right-tablet,
+			&.u-text-right-mobile {
 				@include clearfix;
 			}
 		}

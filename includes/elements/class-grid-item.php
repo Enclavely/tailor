@@ -44,8 +44,12 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Grid_Item_Eleme
 
 		    $priority = 0;
 		    $general_control_types = array(
-			    'horizontal_alignment',
 			    'vertical_alignment',
+			    'vertical_alignment_tablet',
+			    'vertical_alignment_mobile',
+			    'horizontal_alignment',
+			    'horizontal_alignment_tablet',
+			    'horizontal_alignment_mobile',
 			    'hidden',
 		    );
 		    $general_control_arguments = array();
@@ -66,6 +70,8 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Grid_Item_Eleme
 		    $attribute_control_types = array(
 			    'class',
 			    'padding',
+			    'padding_tablet',
+			    'padding_mobile',
 			    'background_image',
 			    'background_repeat',
 			    'background_position',
@@ -86,23 +92,8 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Grid_Item_Eleme
 	     */
 	    public function generate_css( $atts = array() ) {
 		    $css_rules = array();
-		    $excluded_control_types = array( 'padding' );
+		    $excluded_control_types = array();
 		    $css_rules = tailor_css_presets( $css_rules, $atts, $excluded_control_types );
-
-		    if ( ! empty( $atts['padding'] ) ) {
-			    $padding = explode( '-', $atts['padding'] );
-			    $padding_values = array_combine( array( 'top', 'right', 'bottom', 'left' ), $padding );
-			    foreach ( $padding_values as $position => $padding_value ) {
-				    if ( ! empty( $padding_value ) ) {
-					    $css_rules[] = array(
-						    'selectors'                 =>  array( '&.tailor-grid__item' ),
-						    'declarations'              =>  array(
-							    "padding-{$position}"       =>  esc_attr( $padding_value ),
-						    ),
-					    );
-				    }
-			    }
-		    }
 
 		    return $css_rules;
 	    }

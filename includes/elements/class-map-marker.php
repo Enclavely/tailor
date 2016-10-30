@@ -36,7 +36,13 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Map_Marker_Elem
 	        $general_control_types = array(
 		        'title',
 	        );
-	        $general_control_arguments = array();
+	        $general_control_arguments = array(
+		        'title'                 =>  array(
+			        'setting'               =>  array(
+				        'default'               =>  $this->label,
+			        ),
+		        ),
+	        );
 	        $priority = tailor_control_presets( $this, $general_control_types, $general_control_arguments, $priority );
 
             $this->add_setting( 'address', array(

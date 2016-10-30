@@ -89,9 +89,10 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Editor_Control'
             $editor_settings = array(
                 'textarea_rows'     =>  30,
                 'tinymce'           =>  array(
-                    'toolbar1'          =>  'bold,italic,bullist,numlist,blockquote,hr,wp_adv,tailoricon',
+                    'toolbar1'          =>  'bold,italic,bullist,numlist,blockquote,tailoricon,wp_adv',
                     'toolbar2'          =>  'link,unlink,alignleft,aligncenter,alignright,alignjustify,outdent,indent',
-                    'toolbar3'          =>  'formatselect,styleselect,charmap,forecolor,underline,strikethrough,undo,redo,pastetext,removeformat',
+                    'toolbar3'          =>  'forecolor,hr,strikethrough,pastetext,removeformat,undo,redo',
+                    'toolbar4'          =>  'fontselect,fontsizeselect,formatselect,styleselect',
                 ),
             );
 
@@ -104,7 +105,7 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Editor_Control'
              */
             $editor_settings = apply_filters( 'tailor_editor_settings', $editor_settings );
 
-            wp_editor( 'tailor-value', 'tailor-editor', $editor_settings );
+	        wp_editor( 'tailor-value', 'tailor-editor', $editor_settings );
         }
     }
 }

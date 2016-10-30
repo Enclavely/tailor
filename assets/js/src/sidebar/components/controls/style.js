@@ -5,120 +5,121 @@
  *
  * @augments Marionette.ItemView
  */
-var AbstractControl = require( './abstract-control' ),
+var $ = window.jQuery,
+    AbstractControl = require( './abstract-control' ),
     StyleControl;
 
 StyleControl = AbstractControl.extend( {
 
+    linked : true,
+
     ui : {
         'input' : 'input',
-        'default' : '.js-default',
-        'link' : '.js-link'
+        'mediaButton' : '.js-setting-group .button',
+        'defaultButton' : '.js-default',
+        'linkButton' : '.js-link',
+        'controlGroups' : '.control__body > *'
     },
 
     events : {
-        'input @ui.input' : 'onControlChange',
-        'change @ui.input' : 'onControlChange',
-        'click @ui.default' : 'restoreDefaultValue',
-        'click @ui.link' : 'onLinkChange'
+        'input @ui.input' : 'updateLinkedFields',
+        'blur @ui.input' : 'onFieldChange',
+        'click @ui.mediaButton' : 'onMediaButtonChange',
+        'click @ui.defaultButton' : 'onDefaultButtonChange',
+        'click @ui.linkButton' : 'onLinkButtonChange'
     },
 
     /**
-     * Initializes the media frame for the control.
+     * Provides additional data to the template rendering function.
      *
-     * @since 1.0.0
-     *
-     * @param options
-     */
-    initialize : function( options ) {
-        this.linked = true;
-
-        this.addEventListeners();
-        this.checkDependencies( this.model.setting );
-    },
-
-    onRender : function() {
-        this.ui.link.toggleClass( 'is-active', this.linked );
-    },
-    
-    onLinkChange: function() {
-        this.linked = ! this.linked;
-        this.ui.link.toggleClass( 'is-active', this.linked );
-    },
-
-    /**
-     * Provides the required information to the template rendering function.
-     *
-     * @since 1.0.0
+     * @since 1.7.2
      *
      * @returns {*}
      */
-    serializeData : function() {
-        var data = Backbone.Marionette.ItemView.prototype.serializeData.apply( this, arguments );
-        var defaultValue = this.getDefaultValue();
+    addSerializedData : function( data ) {
+        data.choices = this.model.get( 'choices' );
+        data.values = {};
 
-        data.value = this.getSettingValue();
-        data.showDefault = null != defaultValue && ( data.value != defaultValue );
-        data.choices = [];
+        _.each( this.getValues(), function( value, media ) {
+            data.values[ media ] = {};
+            var values = [];
+            if ( _.isString( value ) ) {
+                if ( -1 != value.indexOf( ',' ) ) {
+                    values = value.split( ',' );
+                }
+                else {
+                    values = value.split( '-' ); // Old format
+                }
+            }
 
-        var values;
-        if ( _.isString( data.value ) ) {
-            if ( -1 != data.value.indexOf( ',' ) ) {
-                values = data.value.split( ',' );
+            var i = 0;
+            for ( var choice in data.choices ) {
+                if ( data.choices.hasOwnProperty( choice ) ) {
+                    data.values[ media ][ choice ] = values[ i ];
+                    i ++;
+                }
             }
-            else {
-                values = data.value.split( '-' ); // Old format
-            }
-        }
-
-        var choices = this.model.get( 'choices' );
-        for ( var choice in choices ) {
-            if ( choices.hasOwnProperty( choice ) ) {
-                data.choices[ choices[ choice ] ] = _.isArray( values ) ? values.shift() : null;
-            }
-        }
+        } );
 
         return data;
     },
 
     /**
-     * Responds to a control change.
+     * Updates the media-query based control groups when the control is rendered.
      *
-     * @since 1.0.0
+     * @since 1.7.2
      */
-    onControlChange : function( e ) {
-        var values;
-        if ( this.linked ) {
+    onRender : function() {
+        this.updateControlGroups();
+        this.updateLinkButton();
+    },
 
-            // Update the values
-            values = Array( this.ui.input.length ).fill( e.currentTarget.value );
-
-            // Update the other inputs
-            var $inputs = this.ui.input.filter( function( i, el ) {
-                return el != e.currentTarget;
-            } );
-            $inputs.val( e.currentTarget.value );
-        }
-        else {
-            values = [];
-            _.each( this.ui.input, function( input, index ) {
-                values.push( input.value );
-            }, this );
-        }
-
-        this.setSettingValue( values.join( ',' ) );
+	/**
+     * Updates the control state when the Linked button is pressed.
+     *
+     * @since 1.7.2
+     */
+    onLinkButtonChange: function() {
+        this.linked = ! this.linked;
+        this.updateLinkButton();
     },
 
     /**
-     * Restores the default value for the setting.
+     * Updates the current setting value when a field change occurs.
      *
-     * @since 1.0.0
+     * @since 1.7.2
+     */
+    onFieldChange : function( e ) {
+        var fields = this.ui.input.filter( '[name^="' + this.media + '"]' ).serializeArray();
+        var values = _.map( fields, function( field ) {
+            return field.value;
+        } );
+        this.setValue( values.join( ',' ) );
+    },
+
+	/**
+	 * Updates the Linked button state.
+     *
+     * @since 1.7.2
+     */
+    updateLinkButton: function() {
+        this.ui.linkButton.toggleClass( 'is-active', this.linked );
+    },
+
+	/**
+     * Updates linked fields when a setting value changed.
+     *
+     * @since 1.7.2
      *
      * @param e
      */
-    restoreDefaultValue : function( e ) {
-        this.setSettingValue( this.getDefaultValue() );
-        this.render();
+    updateLinkedFields : function( e ) {
+        if ( this.linked ) {
+            this.ui.input
+                .filter( '[name^="' + this.media + '"]' )
+                .filter( function( i, el ) { return el != e.currentTarget; } )
+                .val( e.currentTarget.value );
+        }
     }
 
 } );

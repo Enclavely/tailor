@@ -28,14 +28,21 @@ if ( ! function_exists( 'tailor_filter_html_attributes' ) ) {
 		if ( empty( $html_atts['id'] ) ) {
 			unset( $html_atts['id'] );
 		}
+		
+		$screen_sizes = array( '', 'mobile', 'tablet' );
+		foreach ( $screen_sizes as $screen_size ) {
+			$setting_postfix = empty( $screen_size ) ? '' : "_{$screen_size}";
+			$class_postfix = empty( $screen_size ) ? '' : "-{$screen_size}";
 
-		// Add global utility class names
-		if ( ! empty( $atts['horizontal_alignment'] ) ) {
-			$html_atts['class'][] = "u-text-{$atts['horizontal_alignment']}";
-		}
-
-		if ( ! empty( $atts['vertical_alignment'] ) ) {
-			$html_atts['class'][] = "u-align-{$atts['vertical_alignment']}";
+			if ( ! empty( $atts["horizontal_alignment{$setting_postfix}"] ) ) {
+				$alignment = $atts[ "horizontal_alignment{$setting_postfix}" ];
+				$html_atts['class'][] = "u-text-{$alignment}{$class_postfix}";
+			}
+			
+			if ( ! empty( $atts["vertical_alignment{$setting_postfix}"] ) ) {
+				$alignment = $atts[ "vertical_alignment{$setting_postfix}" ];
+				$html_atts['class'][] = "u-align-{$alignment}{$class_postfix}";
+			}
 		}
 
 		if ( ! empty( $atts['hidden'] ) ) {

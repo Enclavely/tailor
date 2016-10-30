@@ -192,7 +192,6 @@ var ListItemControl = Marionette.CompositeView.extend( {
         this.model.resetAttributes();
     }
 
-
 } );
 
 module.exports = ListItemControl;

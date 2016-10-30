@@ -49,9 +49,7 @@
              * @returns {*}
              */
             checkCondition : function( condition, actual, required ) {
-
                 actual = actual || '';
-                
                 switch ( condition ) {
                     case 'equals' : return actual === required;
 

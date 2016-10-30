@@ -47,6 +47,8 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Card_Element' )
 	        $general_control_types = array(
 		        'title',
 		        'horizontal_alignment',
+		        'horizontal_alignment_tablet',
+		        'horizontal_alignment_mobile',
 		        'image',
 	        );
 	        $general_control_arguments = array(
@@ -74,9 +76,15 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Card_Element' )
 	        $attribute_control_types = array(
 		        'class',
 		        'padding',
+		        'padding_tablet',
+		        'padding_mobile',
 		        'margin',
+		        'margin_tablet',
+		        'margin_mobile',
 		        'border_style',
 		        'border_width',
+		        'border_width_tablet',
+		        'border_width_mobile',
 		        'border_radius',
 		        'shadow',
 		        'background_image',
@@ -99,12 +107,24 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Card_Element' )
 	     */
 	    public function generate_css( $atts = array() ) {
 		    $css_rules = array();
-		    $excluded_control_types = array( 'padding' );
+		    $excluded_control_types = array(
+			    'padding',
+			    'padding_tablet',
+			    'padding_mobile'
+		    );
 		    $css_rules = tailor_css_presets( $css_rules, $atts, $excluded_control_types );
 
-
+		    $selectors = array(
+			    'padding'                   =>  array( '.tailor-card__content' ),
+			    'padding_tablet'            =>  array( '.tailor-card__content' ),
+			    'padding_mobile'            =>  array( '.tailor-card__content' ),
+		    );
+		    $css_rules = tailor_generate_attribute_css_rules( $css_rules, $atts, $selectors );
+		    
+		    // Header border color
 		    if ( ! empty( $atts['border_color'] ) ) {
 			    $css_rules[] = array(
+				    'setting'           =>  'border_color',
 				    'selectors'         =>  array( '.tailor-card__header' ),
 				    'declarations'      =>  array(
 					    'border-color'      =>  esc_attr( $atts['border_color'] ),
@@ -112,31 +132,18 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Card_Element' )
 			    );
 		    }
 
+		    // Header image
 		    if ( ! empty( $atts['image'] ) && is_numeric( $atts['image'] ) ) {
 			    $background_image_info = wp_get_attachment_image_src( $atts['image'], 'full' );
 			    $background_image_src = $background_image_info[0];
-
 			    $css_rules[] = array(
+				    'setting'           =>  'image',
 				    'selectors'         =>  array( '.tailor-card__header' ),
 				    'declarations'      =>  array(
 					    'background'        =>  "url('{$background_image_src}') center center no-repeat",
 					    'background-size'   =>  'cover',
 				    ),
 			    );
-		    }
-
-		    if ( ! empty( $atts['padding'] ) ) {
-			    $values = array_combine( array( 'top', 'right', 'bottom', 'left' ), explode( '-', $atts['padding'] ) );
-			    foreach ( $values as $position => $padding_value ) {
-				    if ( ! empty( $padding_value ) ) {
-					    $css_rules[] = array(
-						    'selectors'                 =>  array( '.tailor-card__content' ),
-						    'declarations'              =>  array(
-							    "padding-{$position}"       =>  esc_attr( $padding_value ),
-						    ),
-					    );
-				    }
-			    }
 		    }
 
 		    return $css_rules;

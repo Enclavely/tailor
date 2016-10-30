@@ -53,8 +53,8 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Range_Control' 
          */
         protected function render_template() { ?>
 
-            <input type="<%= type %>" value="<%= value %>" <%= inputAttrs() %> />
-            <input type="text" value="<%= value %>" />
+            <input type="<%= type %>" value="<%= values[ media ] %>" <%= inputAttrs() %> />
+            <input type="text" name="<%= media %>" value="<%= values[ media ] %>" />
 
             <?php
         }

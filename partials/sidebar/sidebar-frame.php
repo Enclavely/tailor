@@ -37,7 +37,6 @@ defined( 'ABSPATH' ) or die(); ?>
 	        // Get the return link
 	        $referer = wp_get_referer();
 	        $excluded_referer_basenames = array( 'customize.php', 'wp-login.php' );
-
 	        if ( $referer && ! in_array( basename( parse_url( $referer, PHP_URL_PATH ) ), $excluded_referer_basenames, true ) ) {
 		        $return_url = $referer;
 	        }
@@ -55,29 +54,22 @@ defined( 'ABSPATH' ) or die(); ?>
 	    <div class="tailor-sidebar__footer">
 
 		    <?php
-		    $device_sizes = tailor_get_previewable_devices();
-
-		    if ( ! empty( $device_sizes ) ) {
-
-			    echo '<div class="devices">';
-
-			    $format = '<button type="button" class="preview-%1$s" aria-pressed="false" data-device="%1$s">' .
-			                '<span class="screen-reader-text">%1$s</span>' .
-			              '</button>';
-
-			    foreach ( $device_sizes as $device_name => $device ) {
-					printf( $format, $device_name, $device['label'] );
-			    }
-
-			    echo '</div>';
+		    echo '<div class="devices">';
+		    foreach ( tailor_get_media_queries() as $query_id => $query_label ) {
+			    printf(
+				    '<button type="button" class="preview-%1$s" aria-pressed="false" data-device="%1$s">%2$s</button>',
+				    $query_id,
+				    tailor_screen_reader_text( sprintf( __( 'Enter %s preview mode', 'tailor' ), $query_label ) )
+			    );
 		    }
-		    ?>
+		    echo '</div>';
 		    
-		    <button type="button" class="collapse-sidebar" id="tailor-collapse" aria-expanded="true" aria-label="<?php _e( 'Collapse Sidebar', 'tailor' ); ?>">
+		    $collapse_label = __( 'Collapse Sidebar', 'tailor' ); ?>
+		    
+		    <button type="button" class="collapse-sidebar" id="tailor-collapse" aria-expanded="true" aria-label="<?php esc_attr( $collapse_label ); ?>">
 			    <span class="collapse-sidebar-arrow"></span>
-			    <span class="collapse-sidebar-label"><?php _e( 'Collapse', 'tailor' ); ?></span>
+			    <span class="collapse-sidebar-label"><?php esc_attr( $collapse_label ); ?></span>
 		    </button>
-
 	    </div>
     </div>
 

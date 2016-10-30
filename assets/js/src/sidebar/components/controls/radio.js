@@ -10,43 +10,26 @@ var AbstractControl = require( './abstract-control' ),
 
 RadioControl = AbstractControl.extend( {
 
-    ui : {
-        'input' : 'input',
-        'default' : '.js-default'
+    events : {
+        'change @ui.input' : 'onFieldChange',
+        'click @ui.mediaButton' : 'onMediaButtonChange',
+        'click @ui.defaultButton' : 'onDefaultButtonChange'
     },
 
     templateHelpers : {
 
-        /**
-         * Returns "checked" if the current choice is the selected one.
-         *
-         * @since 1.0.0
-         *
-         * @param choice
-         * @returns {string}
-         */
-        checked : function( choice ) {
-            return ( this.value === choice ) ? 'checked' : '';
+        checked : function( media, key ) {
+            return this.values[ media ] === key ? 'checked' : '';
         }
     },
-
+    
     /**
-     * Adds the required event listeners.
+     * Updates the current setting value when a field change occurs.
      *
-     * @since 1.0.0
+     * @since 1.7.2
      */
-    addEventListeners : function() {
-        this.listenTo( this.model.setting, 'change', this.render );
-        this.listenTo( this.model.setting.collection, 'change', this.checkDependencies );
-    },
-
-    /**
-     * Responds to a control change.
-     *
-     * @since 1.0.0
-     */
-    onControlChange : function( e ) {
-        this.setSettingValue( this.ui.input.filter( ':checked' ).val() );
+    onFieldChange : function() {
+        this.setValue( this.ui.input.filter( '[name^="' + this.media + '"]:checked' ).val() );
     }
 
 } );

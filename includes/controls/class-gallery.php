@@ -41,14 +41,14 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Gallery_Control
          */
         protected function render_template() { ?>
 
-	        <% if ( ! ids.length ) { %>
+	        <% if ( ! ids[ media ].length ) { %>
 	        <p class="control__message"><?php _e( 'No images selected', 'tailor' ); ?></p>
 	        <div class="actions">
 		        <button type="button" class="button button--select"><?php _e( 'Create Gallery', 'tailor' ); ?></button>
 	        </div>
 	        <% } else { %>
 	        <ul class="thumbnails is-loading">
-		        <% _.each( ids, function( id ) { %>
+		        <% _.each( ids[ media ], function( id ) { %>
 		        <li class="thumbnail">
 			        <img src="<?php echo tailor()->plugin_url() . 'assets/img/empty.png'; ?>"/>
 		        </li>

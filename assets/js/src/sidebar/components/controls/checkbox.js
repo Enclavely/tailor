@@ -10,53 +10,33 @@ var AbstractControl = require( './abstract-control' ),
 
 CheckboxControl = AbstractControl.extend( {
 
-    ui : {
-        'input' : 'input',
-        'default' : '.js-default'
+    events : {
+        'change @ui.input' : 'onFieldChange',
+        'click @ui.mediaButton' : 'onMediaButtonChange',
+        'click @ui.defaultButton' : 'onDefaultButtonChange'
     },
 
     templateHelpers : {
 
-        /**
-         * Returns "checked" if the current choice is the selected one.
-         *
-         * @since 1.0.0
-         *
-         * @param choice
-         * @returns {string}
-         */
-        checked : function( choice ) {
-            var value = this.value.split( ',' );
-            return -1 !== value.indexOf( choice ) ? 'checked' : '';
+        checked : function( media, key ) {
+            var values = this.values[ media ].split( ',' );
+            return -1 !== values.indexOf( key ) ? 'checked' : '';
         }
     },
 
     /**
-     * Adds the required event listeners.
+     * Updates the current setting value when a field change occurs.
      *
-     * @since 1.0.0
+     * @since 1.7.2
      */
-    addEventListeners : function() {
-        this.listenTo( this.model.setting, 'change', this.render );
-        this.listenTo( this.model.setting.collection, 'change', this.checkDependencies );
-    },
-
-    /**
-     * Responds to a control change.
-     *
-     * @since 1.0.0
-     */
-    onControlChange : function( e ) {
-
-        var value = [];
-
-        _.each( this.ui.input, function( input ) {
-            if ( input.checked ) {
-                value.push( input.value || 0 );
+    onFieldChange : function( e ) {
+        var values = [];
+        _.each( this.ui.input.filter( '[name^="' + this.media + '"]:checked' ), function( field ) {
+            if ( field.checked ) {
+                values.push( field.value || 0 );
             }
         } );
-
-        this.setSettingValue( value.join( ',' ) );
+        this.setValue( values.join( ',' ) );
     }
 
 } );

@@ -56,6 +56,8 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Carousel_Elemen
 		        'style',
 		        'items_per_row',
 		        'min_item_height',
+		        'min_item_height_tablet',
+		        'min_item_height_mobile',
 		        'autoplay',
 		        'fade',
 		        'arrows',
@@ -85,6 +87,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Carousel_Elemen
 		        ),
 		        'fade'                  =>  array(
 			        'control'               =>  array(
+				        'description'           =>  __( 'This will only take effect in the frontend', 'tailor' ),
 				        'dependencies'          =>  array(
 					        'items_per_row'         =>  array(
 						        'condition'             =>  'lessThan',
@@ -129,8 +132,12 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Carousel_Elemen
 	        $attribute_control_types = array(
 		        'class',
 		        'margin',
+		        'margin_tablet',
+		        'margin_mobile',
 		        'border_style',
 		        'border_width',
+		        'border_width_tablet',
+		        'border_width_mobile',
 		        'border_radius',
 		        'shadow',
 		        'background_image',
@@ -139,7 +146,23 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Carousel_Elemen
 		        'background_size',
 		        'background_attachment',
 	        );
-	        $attribute_control_arguments = array();
+	        $attribute_control_arguments = array(
+		        'margin'                =>  array(
+			        'setting'               =>  array(
+				        'refresh'               =>  ''
+			        ),
+		        ),
+		        'margin_tablet'         =>  array(
+			        'setting'               =>  array(
+				        'refresh'               =>  ''
+			        ),
+		        ),
+		        'margin_mobile'         =>  array(
+			        'setting'               =>  array(
+				        'refresh'               =>  ''
+			        ),
+		        ),
+	        );
 	        tailor_control_presets( $this, $attribute_control_types, $attribute_control_arguments, $priority );
         }
 
@@ -153,18 +176,26 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Carousel_Elemen
 	     */
 	    public function generate_css( $atts = array() ) {
 		    $css_rules = array();
-		    $excluded_control_types = array();
+		    $excluded_control_types = array(
+			    'border_color',
+			    'min_item_height',
+			    'min_item_height_tablet',
+			    'min_item_height_mobile',
+		    );
 		    $css_rules = tailor_css_presets( $css_rules, $atts, $excluded_control_types );
 
-		    if ( ! empty( $atts['min_item_height'] ) ) {
-			    $css_rules[] = array(
-				    'selectors'         =>  array( '.tailor-carousel__item' ),
-				    'declarations'      =>  array(
-					    'min-height'        =>  esc_attr( $atts['min_item_height'] ),
-				    ),
-			    );
-		    }
+		    $selectors = array(
+			    'border_color'              =>  array( '', '.slick-dots' ),
+		    );
+		    $css_rules = tailor_generate_color_css_rules( $css_rules, $atts, $selectors );
 
+		    $selectors = array(
+			    'min_item_height'               =>  array( '.tailor-carousel__item' ),
+			    'min_item_height_tablet'        =>  array( '.tailor-carousel__item' ),
+			    'min_item_height_mobile'        =>  array( '.tailor-carousel__item' ),
+		    );
+		    $css_rules = tailor_generate_general_css_rules( $css_rules, $atts, $selectors );
+		    
 		    return $css_rules;
 	    }
     }

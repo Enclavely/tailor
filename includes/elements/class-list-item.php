@@ -46,6 +46,8 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_List_Item_Eleme
 	        $general_control_types = array(
 		        'title',
 		        'horizontal_alignment',
+		        'horizontal_alignment_tablet',
+		        'horizontal_alignment_mobile',
 		        'graphic_type',
 		        'icon',
 		        'image',
@@ -164,9 +166,15 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_List_Item_Eleme
 	        $attribute_control_types = array(
 		        'class',
 		        'padding',
+		        'padding_tablet',
+		        'padding_mobile',
 		        'margin',
+		        'margin_tablet',
+		        'margin_mobile',
 		        'border_style',
 		        'border_width',
+		        'border_width_tablet',
+		        'border_width_mobile',
 		        'border_radius',
 		        'shadow',
 		        'background_image',
@@ -201,9 +209,14 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_List_Item_Eleme
 		    $excluded_control_types = array();
 		    $css_rules = tailor_css_presets( $css_rules, $atts, $excluded_control_types );
 
-		    if ( empty( $atts['graphic_type'] ) || 'image' != $atts['graphic_type'] ) {
+		    if ( empty( $atts['graphic_type'] ) ) {
+			    return $css_rules;
+		    }
+
+		    if ( 'icon' == $atts['graphic_type'] || 'number' == $atts['graphic_type'] ) {
 			    if ( ! empty( $atts['graphic_color'] ) ) {
 				    $css_rules[] = array(
+					    'setting'           =>  'graphic_color',
 					    'selectors'         =>  array( '.tailor-list__graphic' ),
 					    'declarations'      =>  array(
 						    'color'             =>  esc_attr( $atts['graphic_color'] ),
@@ -213,7 +226,8 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_List_Item_Eleme
 
 			    if ( ! empty( $atts['graphic_color_hover'] ) ) {
 				    $css_rules[] = array(
-					    'selectors'         =>  array( '.tailor-list__graphic:hover' ),
+					    'setting'           =>  'graphic_color_hover',
+					    'selectors'         =>  array( '.tailor-list__graphic:hover ' ),
 					    'declarations'      =>  array(
 						    'color'             =>  esc_attr( $atts['graphic_color_hover'] ),
 					    ),
@@ -222,6 +236,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_List_Item_Eleme
 
 			    if ( ! empty( $atts['graphic_background_color'] ) ) {
 				    $css_rules[] = array(
+					    'setting'           =>  'graphic_background_color',
 					    'selectors'         =>  array( '.tailor-list__graphic' ),
 					    'declarations'      =>  array(
 						    'background-color'  =>  esc_attr( $atts['graphic_background_color'] ),
@@ -231,6 +246,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_List_Item_Eleme
 
 			    if ( ! empty( $atts['graphic_background_color_hover'] ) ) {
 				    $css_rules[] = array(
+					    'setting'           =>  'graphic_background_color_hover',
 					    'selectors'         =>  array( '.tailor-list__graphic:hover' ),
 					    'declarations'      =>  array(
 						    'background-color'  =>  esc_attr( $atts['graphic_background_color_hover'] ),
@@ -238,38 +254,45 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_List_Item_Eleme
 				    );
 			    }
 
-                if ( ! empty( $atts['graphic_background_color'] ) || ! empty( $atts['graphic_background_color_hover'] ) ) {
-
-                    $alignment = empty( $atts['horizontal_alignment'] ) ? 'left' : $atts['horizontal_alignment'];
-
-                    $css_rules[] = array(
-                        'selectors'                 =>  array( '.tailor-list__body' ),
-                        'declarations'              =>  array(
-                            "padding-{$alignment}"      =>  '1em',
-                        ),
-                    );
-                }
-
-			    if ( ! empty( $atts['graphic_size'] ) ) {
-
-				    $value = tailor_strip_unit( $atts['graphic_size'] );
-
+			    if ( ! empty( $atts['graphic_background_color'] ) || ! empty( $atts['graphic_background_color_hover'] ) ) {
 				    $css_rules[] = array(
-					    'selectors'         =>  array( '.tailor-list__title' ),
-					    'declarations'      =>  array(
-						    'margin'            =>  esc_attr( "calc( {$value[0]}{$value[1]} - 1em ) 0 0.5em" ),
-					    ),
-				    );
-
-				    $css_rules[] = array(
+					    'setting'           =>  'graphic_background_color',
 					    'selectors'         =>  array( '.tailor-list__graphic' ),
 					    'declarations'      =>  array(
-						    'width'             =>  esc_attr( ( $value[0] * 2 ) . $value[1] ),
-						    'height'            =>  esc_attr( ( $value[0] * 2 ) . $value[1] ),
+						    'text-align'        =>  'center',
+					    )
+		            );
+
+				    $alignment = ! empty( $atts['horizontal_alignment'] ) ? $atts['horizontal_alignment'] : 'left';
+				    $css_rules[] = array(
+					    'setting'           =>  'graphic_background_color',
+					    'selectors'         =>  array( '.tailor-list__body' ),
+					    'declarations'      =>  array(
+						    "padding-{$alignment}"  =>  '1em',
+					    )
+				    );
+			    }
+
+			    if ( ! empty( $atts['graphic_size'] ) ) {
+				    $unit = tailor_get_unit( $atts['graphic_size'] );
+				    $value = tailor_get_numeric_value( $atts['graphic_size'] );
+				    $css_rules[] = array(
+					    'setting'           =>  'graphic_size',
+					    'selectors'         =>  array( '.tailor-list__title' ),
+					    'declarations'      =>  array(
+						    'margin'            =>  esc_attr( "calc( {$value}{$unit} - 1em ) 0 0.5em" ),
 					    ),
 				    );
-
 				    $css_rules[] = array(
+					    'setting'           =>  'graphic_size',
+					    'selectors'         =>  array( '.tailor-list__graphic' ),
+					    'declarations'      =>  array(
+						    'width'             =>  esc_attr( ( $value * 2 ) . $unit ),
+						    'height'            =>  esc_attr( ( $value * 2 ) . $unit ),
+					    ),
+				    );
+				    $css_rules[] = array(
+					    'setting'           =>  'graphic_size',
 					    'selectors'         =>  array( '.tailor-list__graphic span' ),
 					    'declarations'      =>  array(
 						    'font-size'         =>  esc_attr( $atts['graphic_size'] ),
@@ -277,22 +300,19 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_List_Item_Eleme
 				    );
 			    }
 		    }
-		    else {
-
-			    if ( ! empty( $atts['graphic_size'] ) ) {
-
-				    $value = tailor_strip_unit( $atts['graphic_size'] );
-
-				    $css_rules[] = array(
-					    'selectors'         =>  array( '.tailor-list__graphic' ),
-					    'declarations'      =>  array(
-						    'width'             =>  esc_attr( $value[0] . $value[1] ),
-						    'max-width'         =>  '100%',
-					    ),
-				    );
-			    }
+		    else if ( 'image' == $atts['graphic_type'] && ! empty( $atts['graphic_size'] ) ) {
+			    $unit = tailor_get_unit( $atts['graphic_size'] );
+			    $value = tailor_get_numeric_value( $atts['graphic_size'] );
+			    $css_rules[] = array(
+				    'setting'           =>  'graphic_size',
+				    'selectors'         =>  array( '.tailor-list__graphic' ),
+				    'declarations'      =>  array(
+					    'width'             =>  esc_attr( ( $value . $unit ) ),
+					    'max-width'         =>  '100%',
+				    ),
+			    );
 		    }
-
+		    
 		    return $css_rules;
 	    }
     }

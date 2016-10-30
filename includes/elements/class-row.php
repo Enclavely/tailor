@@ -43,32 +43,17 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Row_Element' ) 
 	        ) );
 
 	        $priority = 0;
-
-	        $this->add_setting( 'column_spacing', array(
-		        'sanitize_callback'     =>  'tailor_sanitize_text',
-		        'refresh'               =>  array(
-			        'method'                =>  'js',
-		        ),
-	        ) );
-	        $this->add_control( 'column_spacing', array(
-		        'label'                 =>  __( 'Column spacing', 'tailor' ),
-		        'type'                  =>  'text',
-		        'priority'              =>  $priority += 10,
-		        'section'               =>  'general',
-	        ) );
-
-	        $this->add_setting( 'min_column_height', array(
-		        'sanitize_callback'     =>  'tailor_sanitize_text',
-		        'refresh'               =>  array(
-			        'method'                =>  'js',
-		        ),
-	        ) );
-	        $this->add_control( 'min_column_height', array(
-		        'label'                 =>  __( 'Minimum height', 'tailor' ),
-		        'type'                  =>  'text',
-		        'priority'              =>  $priority += 10,
-		        'section'               =>  'general',
-	        ) );
+	        $general_control_types = array(
+		        'min_column_height',
+		        'min_column_height_tablet',
+		        'min_column_height_mobile',
+		        'column_spacing',
+		        'column_spacing_tablet',
+		        'column_spacing_mobile',
+		        'hidden',
+	        );
+	        $general_control_arguments = array();
+	        $priority = tailor_control_presets( $this, $general_control_types, $general_control_arguments, $priority );
 
 	        $this->add_setting( 'collapse', array(
 		        'sanitize_callback'     =>  'tailor_sanitize_text',
@@ -82,13 +67,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Row_Element' ) 
 		        'priority'              =>  $priority += 10,
 		        'section'               =>  'general',
 	        ) );
-
-	        $general_control_types = array(
-		        'hidden',
-	        );
-	        $general_control_arguments = array();
-	        tailor_control_presets( $this, $general_control_types, $general_control_arguments, $priority );
-
+	        
 	        $priority = 0;
 	        $color_control_types = array(
 		        'color',
@@ -105,9 +84,15 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Row_Element' ) 
 	        $attribute_control_types = array(
 		        'class',
 		        'padding',
+		        'padding_tablet',
+		        'padding_mobile',
 		        'margin',
+		        'margin_tablet',
+		        'margin_mobile',
 		        'border_style',
 		        'border_width',
+		        'border_width_tablet',
+		        'border_width_mobile',
 		        'border_radius',
 		        'shadow',
 		        'background_image',
@@ -142,42 +127,66 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Row_Element' ) 
 		    $excluded_control_types = array();
 		    $css_rules = tailor_css_presets( $css_rules, $atts, $excluded_control_types );
 
-		    $media_query = ( ! $atts['collapse'] || 'mobile' == $atts['collapse'] ) ? '' : "{$atts['collapse']}-up";
+		    $screen_sizes = array(
+			    '',
+			    'tablet',
+			    'mobile',
+		    );
 
-		    if ( ! empty( $atts['column_spacing'] ) ) {
-			    $value = preg_replace( "/[^0-9\.]/", "", $atts['column_spacing'] );
-			    $unit = str_replace( $value, '', $atts['column_spacing'] );
-
-			    if ( is_numeric( $value ) ) {
+		    foreach ( $screen_sizes as $screen_size ) {
+			    $postfix = empty( $screen_size ) ? '' : "_{$screen_size}";
+			    
+			    // Minimum column height
+			    if ( ! empty( $atts[ ( 'min_column_height' . $postfix ) ] ) ) {
+				    $min_column_height = $atts[ ( 'min_column_height' . $postfix ) ];
+				    $unit = tailor_get_unit( $min_column_height );
+				    $value = tailor_get_numeric_value( $min_column_height );
 				    $css_rules[] = array(
-					    'media'             =>  $media_query,
-					    'selectors'         =>  array(),
-					    'declarations'      =>  array(
+					    'setting'               =>  ( 'min_column_height' . $postfix ),
+					    'media'                 =>  $screen_size,
+					    'selectors'             =>  array( '.tailor-column' ),
+					    'declarations'          =>  array(
+						    'min-height'            =>  esc_attr( ( $value . $unit ) ),
+					    ),
+				    );
+			    }
+
+			    // Column spacing
+			    if ( ! empty( $atts[ ( 'column_spacing' . $postfix ) ] ) ) {
+				    $column_spacing = $atts[ ( 'column_spacing' . $postfix ) ];
+				    $unit = tailor_get_unit( $column_spacing );
+				    $value = tailor_get_numeric_value( $column_spacing );
+
+				    if ( ! empty( $atts['collapse'] ) ) {
+					    if ( 'tablet' == $atts['collapse'] && 'mobile' == $screen_size ) {
+						    continue;
+					    }
+					    if ( 'desktop' == $atts['collapse'] && ( 'mobile' == $screen_size || 'tablet' == $screen_size ) ) {
+						    continue;
+					    }
+				    }
+
+				    $css_rules[] = array(
+					    'setting'               =>  ( 'column_spacing' . $postfix ),
+					    'media'                 =>  $screen_size,
+					    'selectors'             =>  array(),
+					    'declarations'          =>  array(
 						    'margin-left'       =>  '-' . esc_attr( ( $value / 2 ) . $unit ),
 						    'margin-right'      =>  '-' . esc_attr( ( $value / 2 ) . $unit ),
 					    ),
 				    );
 				    $css_rules[] = array(
-					    'media'             =>  $media_query,
-					    'selectors'         =>  array( '.tailor-column' ),
-					    'declarations'      =>  array(
+					    'setting'               =>  ( 'column_spacing' . $postfix ),
+					    'media'                 =>  $screen_size,
+					    'selectors'             =>  array( '.tailor-column' ),
+					    'declarations'          =>  array(
 						    'padding-left'      =>  esc_attr( ( $value / 2 ) . $unit ),
 						    'padding-right'     =>  esc_attr( ( $value / 2 ) . $unit ),
 					    ),
 				    );
 			    }
 		    }
-
-		    if ( ! empty( $atts['min_column_height'] ) ) {
-			    $css_rules[] = array(
-				    'media'             =>  $media_query,
-				    'selectors'         =>  array( '.tailor-column' ),
-				    'declarations'      =>  array(
-					    'min-height'        =>  esc_attr( $atts['min_column_height'] ),
-				    ),
-			    );
-		    }
-
+		    
 		    return $css_rules;
 	    }
     }

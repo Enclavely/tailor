@@ -2,9 +2,9 @@
 Contributors: andrew.worsfold
 Donate link: http://gettailor.com/donate/
 Tags: page, layout, builder, frontend, content, page builder, drag and drop builder, home page builder, landing page builder, layout builder, frontend builder, frontend editor, responsive, visual composer, beaver builder
-Stable tag: 1.7.1
+Stable tag: 1.7.2
 Requires at least: 4.3
-Tested up to: 4.6.2
+Tested up to: 4.7
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl.html
 
@@ -133,6 +133,22 @@ Yes, however, users should be directed to the WordPress plugin repository to ins
 
 == Changelog ==
 
+= 1.7.2 =
+* Added - Support for desktop, tablet and mobile settings within all default controls.
+* Added - Desktop, tablet and mobile options for: margin, padding, border width, width, height, alignment and spacing settings.
+* Added - Font family and size selection within the Content element editor.
+* Added - Custom color palettes for colorpickers and the color selector within the Content element editor.
+* Added - Live previews for a variety of Button, Box, List Item, Grid, Tab and Toggle settings.
+* Added - Ability to force re-render of element during live preview update.
+* Improved - Priority ordering for panels, sections and controls [GitHub PR #62](https://github.com/andrew-worsfold/tailor/pull/62).
+* Improved - Standard input fields now update settings on blur (cf. change/input).
+* Improved - Custom CSS rule generation logic for a variety of settings.
+* Improved - Allow horizontal and vertical alignment of grid items with a minimum height even when the grid has collapsed.
+* Improved - Live preview CSS rule generation.
+* Removed - Block style option from Button element (use horizontal alignment instead).
+* Removed - Item spacing setting from Grid element (use padding on Grid Item elements instead).
+* Fixed - Numbered list items not displaying correctly.
+
 = 1.7.1 =
 * Fixed - Error in sidebar.min.js.
 
@@ -223,7 +239,6 @@ To browse all available actions and filters, please refer to the published [acti
 * Fixed - Excerpts are displayed for password protected posts.
 
 = 1.5.5 =
-* Added - Single function for the initialization of elements in the frontend [GitHub #31](https://github.com/andrew-worsfold/tailor/issues/31).
 * Added - Filter for empty content placeholder text [GitHub #33](https://github.com/andrew-worsfold/tailor/issues/33).
 * Fixed - User permission check being called too early, resulting in a warning message [GitHub #30](https://github.com/andrew-worsfold/tailor/issues/30).
 * Fixed - Fuzzy spinner image [GitHub #34](https://github.com/andrew-worsfold/tailor/issues/34).

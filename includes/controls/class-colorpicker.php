@@ -99,7 +99,7 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Colorpicker_Con
          */
         protected function render_template() { ?>
 
-            <input data-rgba="<%= rgba %>" type="text" value="<%= value %>" />
+	        <input type="text" name="<%= media %>" name="<%= media %>" value="<%= values[ media ] %>" data-rgba="<%= rgba %>" />
 
             <?php
         }

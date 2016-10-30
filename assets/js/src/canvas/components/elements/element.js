@@ -92,7 +92,7 @@ ElementView = Marionette.ItemView.extend( {
 
 		this.el.setAttribute( 'draggable', true );
 
-		this.el.classList.add( 'tailor-' + this.model.cid );
+		this.el.classList.add( 'tailor-' + this.model.id );
 		this.el.title = _strings.edit_element;
 		
 		return this;

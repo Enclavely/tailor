@@ -44,8 +44,12 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Carousel_Item_E
 
 	        $priority = 0;
 	        $general_control_types = array(
-                'horizontal_alignment',
-                'vertical_alignment',
+		        'vertical_alignment',
+		        'vertical_alignment_tablet',
+		        'vertical_alignment_mobile',
+		        'horizontal_alignment',
+		        'horizontal_alignment_tablet',
+		        'horizontal_alignment_mobile',
             );
 	        $general_control_arguments = array();
 	        tailor_control_presets( $this, $general_control_types, $general_control_arguments, $priority );

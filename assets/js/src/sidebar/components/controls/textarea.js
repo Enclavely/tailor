@@ -12,11 +12,9 @@ TextareaControl = AbstractControl.extend( {
 
     ui : {
         'input' : 'textarea',
-        'default' : '.js-default'
-    },
-
-    onRestoreDefault : function() {
-        this.render();
+        'mediaButton' : '.js-setting-group .button',
+        'defaultButton' : '.js-default',
+        'controlGroups' : '.control__body > *'
     }
 
 } );

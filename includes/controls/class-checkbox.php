@@ -54,13 +54,12 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Checkbox_Contro
          */
         protected function render_template() { ?>
 
-	        <% for ( var choice in choices ) { %>
+            <% _.each( choices, function( label, key ) { %>
             <label>
-                <input type="checkbox" value="<%= choice %>" <%= checked( choice ) %> />
-                <?php echo "\n"; ?><%= choices[ choice ] %>
-                <br>
+                <input type="checkbox" name="<%= media %>[<%= id %>]" value="<%= key %>" <%= checked( media, key ) %> />
+                <?php echo "\n"; ?><span><%= label %></span></br>
             </label>
-            <% } %>
+            <% } ) %>
 
             <?php
         }

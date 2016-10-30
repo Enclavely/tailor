@@ -14,33 +14,29 @@ LinkControl = AbstractControl.extend( {
 	ui: {
         'input' : 'input',
         'select' : '.button--select',
-        'default' : '.js-default'
+		'mediaButton' : '.js-setting-group .button',
+		'defaultButton' : '.js-default',
+		'controlGroups' : '.control__body > *'
 	},
 
     events : {
-        'input @ui.input' : 'onControlChange',
-        'change @ui.input' : 'onControlChange',
+        'blur @ui.input' : 'onFieldChange',
         'click @ui.select' : 'openDialog',
-        'click @ui.default' : 'restoreDefaultValue'
+	    'click @ui.mediaButton' : 'onMediaButtonChange',
+	    'click @ui.defaultButton' : 'onDefaultButtonChange'
     },
-
-    /**
-     * Provides the required information to the template rendering function.
-     *
-     * @since 1.0.0
-     *
-     * @returns {*}
-     */
-    serializeData : function() {
-        var data = Backbone.Marionette.ItemView.prototype.serializeData.apply( this, arguments );
-        var defaultValue = this.getDefaultValue();
-
-        data.value = this.getSettingValue();
-        data.placeholder = this.model.get( 'placeholder' );
-        data.showDefault = null != defaultValue && data.value != defaultValue;
-
-        return data;
-    },
+	
+	/**
+	 * Provides additional data to the template rendering function.
+	 *
+	 * @since 1.7.2
+	 *
+	 * @returns {*}
+	 */
+	addSerializedData : function( data ) {
+		data.placeholder = this.model.get( 'placeholder' );
+		return data;
+	},
 
 	/**
      * Queries the server for links based on the search criteria.
@@ -54,9 +50,7 @@ LinkControl = AbstractControl.extend( {
         var $searchResults = this.$el.find( '.search-results' );
 
         if ( $searchResults.length ) {
-
             control.$el.addClass( 'is-searching' );
-
             var options = {
 	            
                 data : {
@@ -123,9 +117,7 @@ LinkControl = AbstractControl.extend( {
                 var timeout;
 
                 this.$el.find( '.search--content' ).on( 'input', function( e ) {
-
                     clearTimeout( timeout );
-
                     var term = this.value;
                     if ( term.length >= minimumCharacters && previousTerm != $.trim( term ) ) {
                         timeout = setTimeout( $.proxy( control.search, dialog, term ), 500 );
@@ -151,9 +143,7 @@ LinkControl = AbstractControl.extend( {
 	         */
             onSave : function() {
                 var url = $( 'input[name=url]:checked' ).val();
-
-                control.setSettingValue( url );
-                control.ui.input.val( url )
+                control.setValue( url );
             },
 
 	        /**
@@ -173,24 +163,15 @@ LinkControl = AbstractControl.extend( {
 		 */
 		app.channel.trigger( 'dialog:open', options );
     },
-
+	
 	/**
-     * Clears the selected icon.
-     *
-     * @since 1.0.0
-     */
-    removeIcon : function() {
-        this.setSettingValue( '' );
-    },
-
-	/**
-     * Re-renders the control when the default value is restored.
-     *
-     * @since 1.0.0
-     */
-    onRestoreDefault : function() {
-        this.render();
-    }
+	 * Re-renders the control when a setting value changes.
+	 *
+	 * @since 1.7.2
+	 */
+	onSettingChange : function() {
+		this.render();
+	}
 
 } );
 

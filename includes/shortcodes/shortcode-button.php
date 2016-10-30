@@ -31,11 +31,23 @@ if ( ! function_exists( 'tailor_shortcode_button' ) ) {
 	     */
 	    $default_atts = apply_filters( 'tailor_shortcode_default_atts_' . $tag, array() );
 	    $atts = shortcode_atts( $default_atts, $atts, $tag );
+
+	    $class = explode( ' ', "tailor-element tailor-button tailor-button--{$atts['style']} {$atts['class']}" );
+	    $screen_sizes = array( '', 'mobile', 'tablet' );
+	    foreach ( $screen_sizes as $screen_size ) {
+		    $setting_postfix = empty( $screen_size ) ? '' : "_{$screen_size}";
+		    $class_postfix = empty( $screen_size ) ? '' : "-{$screen_size}";
+		    if ( ! empty( $atts["size{$setting_postfix}"] ) ) {
+			    $class[] = "tailor-button--{$atts["size{$setting_postfix}"]}{$class_postfix}";
+		    }
+	    }
+
 	    $html_atts = array(
 		    'id'            =>  empty( $atts['id'] ) ? null : $atts['id'],
-		    'class'         =>  explode( ' ', "tailor-element tailor-button tailor-button--{$atts['style']} tailor-button--{$atts['size']} {$atts['class']}" ),
+		    'class'         =>  $class,
 		    'data'          =>  array(),
 	    );
+
 
 	    /**
 	     * Filter the HTML attributes for the element.

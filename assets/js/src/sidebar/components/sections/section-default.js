@@ -84,11 +84,6 @@ var DefaultSection = Marionette.CompositeView.extend( {
 	 */
     onShow : function() {
         this.ui.backButton.get(0).focus();
-        this.children.each( function( control ) {
-            if ( 'code' === control.model.get( 'type' ) ) {
-                control.editor.refresh();
-            }
-        }, this );
     }
 
 } );

@@ -70,6 +70,10 @@ var onElementChange = function( setting, view ) {
             
             // Get the collection of rules from the callback function
             rules = callback.apply( view, [ setting.get( 'value' ), setting.previous( 'value' ), view.model ] );
+
+            if ( false === rules ) {
+                view.model.trigger( 'change:atts', view.model, view.model.get( 'atts' ) );
+            }
             
             if ( _.isArray( rules ) && rules.length > 0 ) {
 

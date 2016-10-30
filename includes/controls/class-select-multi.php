@@ -70,18 +70,20 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Select_Multi_Co
          */
         protected function render_template() { ?>
 
-	        <select multiple>
-                <% _.each( choices, function( choice, index ) { %>
-                    <% if ( ! _.isString( choice ) ) { %>
-                    <optgroup label="<%= index %>">
-                        <% _.each( choice, function( groupChoice, index ) { %>
-                        <option value="<%= index %>" <%= selected( index ) %>><%= groupChoice %></option>
-                        <% } ) %>
-                    </optgroup>
-                    <% } else { %>
-                    <option value="<%= index %>" <%= selected( index ) %>><%= choice %></option>
-		            <% } %>
-                <% } ) %>
+	        <select multiple name="<%= media %>">
+
+		        <% _.each( choices, function( label, key ) { %>
+		        <% if ( _.isObject( label ) ) { %>
+		        <optgroup label="<%= key %>">
+			        <% _.each( label, function( subLabel, subKey ) { %>
+			        <option value="<%= subKey %>" <%= selected( media, subKey ) %>><%= subLabel %></option>
+			        <% } ) %>
+		        </optgroup>
+		        <% } else { %>
+		        <option value="<%= key %>" <%= selected( media, key ) %>><%= label %></option>
+		        <% } %>
+		        <% } ) %>
+
 	        </select>
 
             <?php

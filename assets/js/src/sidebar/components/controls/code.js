@@ -5,86 +5,115 @@
  *
  * @augments Marionette.ItemView
  */
-var AbstractControl = require( './abstract-control' ),
+
+var $ = window.jQuery,
+	AbstractControl = require( './abstract-control' ),
 	CodeControl;
 
 CodeControl = AbstractControl.extend( {
 
-    ui : {
-        'input' : 'textarea',
-        'default' : '.js-default'
-    },
+	ui : {
+		'input' : 'textarea',
+		'mediaButton' : '.js-setting-group .button',
+		'defaultButton' : '.js-default',
+		'controlGroups' : '.control__body > *'
+	},
 
-    events : {
-        'click @ui.default' : 'restoreDefaultValue'
-    },
+	events : {
+		'click @ui.mediaButton' : 'onMediaButtonChange',
+		'click @ui.defaultButton' : 'onDefaultButtonChange'
+	},
 
-    /**
-     * Provides the required information to the template rendering function.
-     *
-     * @since 1.0.0
-     *
-     * @returns {*}
-     */
-    serializeData : function() {
-        var data = Backbone.Marionette.ItemView.prototype.serializeData.apply( this, arguments );
-        var defaultValue = this.getDefaultValue();
+	/**
+	 * Provides additional data to the template rendering function.
+	 *
+	 * @since 1.7.2
+	 *
+	 * @returns {*}
+	 */
+	addSerializedData : function( data ) {
+		data.cid = this.cid;
+		return data;
+	},
 
-        data.value = this.getSettingValue();
-        data.showDefault = null != defaultValue && data.value != defaultValue;
-        data.cid = this.cid;
-
-        return data;
-    },
-
-    /**
-     * Initializes the editor.
-     *
-     * @since 1.0.0
-     */
+	/**
+	 * Initailizes the CodeMirror editor when the control is rendered.
+	 * 
+	 * @since 1.7.2
+	 */
     onRender : function() {
-        var obj = this;
-        var mode = this.model.get( 'mode' );
+	    var control = this;
+	    var mode = control.model.get( 'mode' );
+	    this.editors = {};
 
-        obj.editor = CodeMirror.fromTextArea( this.ui.input.get(0), {
-			mode : mode,
-			lineNumbers : true,
-			matchBrackets : true,
-			continueComments : 'Enter',
-			viewportMargin : Infinity,
-			extraKeys : {
+	    _.each( this.getValues(), function( value, media ) {
+		    var $field = control.ui.input.filter( '[name^="' + media + '-' + control.cid + '"]' );
 
-				'F11' : function( cm ) {
-					cm.setOption( 'fullScreen', ! cm.getOption( 'fullScreen' ) );
-				},
+		    control.editors[ media ] = CodeMirror.fromTextArea( $field.get(0), {
+			    mode : mode,
+			    lineNumbers : true,
+			    matchBrackets : true,
+			    continueComments : 'Enter',
+			    viewportMargin : Infinity,
+			    extraKeys : {
 
-				'Esc' : function( cm ) {
-					if ( cm.getOption( 'fullScreen' ) )  {
-						cm.setOption( 'fullScreen', false );
-					}
-				}
-			}
+				    'F11' : function( cm ) {
+					    cm.setOption( 'fullScreen', ! cm.getOption( 'fullScreen' ) );
+				    },
+
+				    'Esc' : function( cm ) {
+					    if ( cm.getOption( 'fullScreen' ) )  {
+						    cm.setOption( 'fullScreen', false );
+					    }
+				    }
+			    }
+		    } );
+
+		    control.editors[ media ].on( 'change', function( editor ) {
+			    control.setValue( editor.getValue() );
+		    }, this );
+
+		    setTimeout( function() {
+			    control.editors[ media ].refresh();
+		    }, 10 );
+	    } );
+
+	    this.updateControlGroups();
+    },
+
+	/**
+	 * Restores each setting to its default value.
+	 *
+	 * @since 1.7.2
+	 *
+	 * @returns {*}
+	 */
+	restoreDefaults : function() {
+		_.each( this.getSettings(), function( setting, media ) {
+			var value = setting.get( 'default' ) || '';
+			setting.set( 'value', value );
+		} );
+	},
+
+	/**
+	 * Displays the control group associated with the current media query.
+	 *
+	 * @since 1.7.2
+	 */
+	updateControlGroups : function() {
+		var control = this;
+		var media = this.media;
+
+		this.ui.controlGroups.each( function() {
+			$( this ).toggleClass( 'is-hidden', media != this.id );
 		} );
 
-        var onControlChange = function( editor ) {
-            obj.setSettingValue( editor.getValue() );
-        };
+		this.ui.mediaButton.each( function() {
+			$( this ).toggleClass( 'active', media == this.getAttribute( 'data-media' ) );
+		} );
 
-        this.editor.on( 'change', onControlChange );
-    },
-
-    /**
-     * Restores the default value for the setting.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     */
-    restoreDefaultValue : function( e ) {
-        var value = this.getDefaultValue();
-        this.setSettingValue( value );
-        this.editor.setValue( value );
-    },
+		control.editors[ media ].refresh();
+	},
 
     /**
      * Destroys the editor instance when the control is destroyed.
@@ -92,8 +121,11 @@ CodeControl = AbstractControl.extend( {
      * @since 1.0.0
      */
 	onDestroy : function() {
-        this.editor.off( 'change', this.onChange );
-		this.editor.toTextArea();
+		var control = this;
+	    _.each( this.getValues(), function( value, media ) {
+		    control.editors[ media ].off();
+		    control.editors[ media ].toTextArea();
+	    } );
 	}
 
 } );

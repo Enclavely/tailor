@@ -294,7 +294,7 @@ var CompositeView = Marionette.CompositeView.extend( {
 	onChangeAttributes : _.debounce( function( model, atts ) {
 		model = this.model.toJSON();
 		model.atts = atts ? atts : {};
-		
+
 		var view = this;
 		view.el.classList.add( 'is-rendering' );
 		

@@ -29,7 +29,7 @@ var ControlCollectionView = Marionette.CollectionView.extend( {
      */
     childViewOptions : function( model, index ) {
         var options = { model : model };
-
+        
         if ( 'list' === model.get( 'type' ) ) {
             options.element = this.element;
             options.collection = this.element.collection;

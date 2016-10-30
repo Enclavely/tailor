@@ -10,44 +10,27 @@ var AbstractControl = require( './abstract-control' ),
 
 SwitchControl = AbstractControl.extend( {
 
-    ui : {
-        'input' : 'input',
-        'default' : '.js-default'
+    events : {
+        'change @ui.input' : 'onFieldChange',
+        'click @ui.mediaButton' : 'onMediaButtonChange',
+        'click @ui.defaultButton' : 'onDefaultButtonChange'
     },
 
     templateHelpers : {
 
-        /**
-         * Returns true if the switch is enabled.
-         *
-         * @since 1.0.0
-         *
-         * @returns {string}
-         */
-        checked : function() {
-            return 1 == parseInt( this.value, 10 ) ? 'checked' : '';
+        checked : function( media ) {
+            return 1 == parseInt( this.values[ media ], 10 ) ? 'checked' : '';
         }
     },
-
+    
     /**
-     * Responds to a control change.
+     * Updates the current setting value when a field change occurs.
      *
-     * @since 1.0.0
+     * @since 1.7.2
      */
-    onControlChange : function( e ) {
-        this.setSettingValue( this.ui.input.get( 0 ).checked ? '1' : '0' );
-    },
-
-    /**
-     * Restores the default value for the setting.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     */
-    restoreDefaultValue : function( e ) {
-        this.setSettingValue( this.getDefaultValue() );
-        this.render();
+    onFieldChange : function() {
+        var $field = this.ui.input.filter( '[name^="' + this.media + '"]' );
+        this.setValue( $field.get(0).checked ? '1' : '0' );
     }
 
 } );

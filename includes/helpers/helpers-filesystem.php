@@ -103,33 +103,10 @@ if ( ! function_exists( 'tailor_upload_dir' ) ) {
 	 * @return array
 	 */
 	function tailor_upload_dir() {
-
 		$wp_upload_dir = wp_upload_dir();
-
 		if ( tailor_is_ssl() ) {
 			$wp_info['baseurl'] = str_ireplace( 'http://', 'https://', $wp_upload_dir['baseurl'] );
 		}
-
 		return $wp_upload_dir;
-	}
-}
-
-if ( ! function_exists( 'tailor_is_ssl' ) ) {
-
-	/**
-	 * Returns true if SSL is used.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @see https://codex.wordpress.org/Function_Reference/is_ssl
-	 *
-	 * @return bool
-	 */
-	function tailor_is_ssl() {
-		return (
-			is_ssl() &&
-		    0 === stripos( get_option( 'siteurl' ), 'https://' ) &&
-		    isset( $_SERVER['HTTP_X_FORWARDED_PROTO'] ) && 'https' == $_SERVER['HTTP_X_FORWARDED_PROTO']
-		);
 	}
 }

@@ -54,12 +54,14 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Button_Group_Co
          */
         protected function render_template() { ?>
 
-	        <div class="button-group">
-            <% for ( var choice in choices ) { %>
-                <button class="button button-large <%= active( choice ) %>" value="<%= choice %>">
-                    <%= choices[ choice ] %>
+            <div class="button-group">
+
+                <% _.each( choices, function( label, key ) { %>
+                <button class="button button-large <%= active( media, key ) %>" name="<%= media %>[<%= id %>]" value="<%= key %>">
+                    <%= label %>
                 </button>
-            <% } %>
+                <% } ) %>
+
             </div>
 
             <?php

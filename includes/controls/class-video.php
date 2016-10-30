@@ -41,13 +41,13 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Video_Control' 
          */
         protected function render_template() { ?>
 
-	        <% if ( '' == value ) { %>
+	        <% if ( '' == values[ media ] ) { %>
 	        <p class="control__message"><?php _e( 'No video selected', 'tailor' ); ?></p>
 	        <div class="actions">
 		        <button type="button" class="button button--enter"><?php _e( 'Enter URL', 'tailor' ); ?></button>
 		        <button type="button" class="button button--select"><?php _e( 'Select Video', 'tailor' ); ?></button>
 	        </div>
-	        <% } else if ( _.isNumber( value ) ) { %>
+	        <% } else if ( _.isNumber( values[ media ] ) ) { %>
 	        <div class="video-preview is-loading">
 		        <img class="video-placeholder" src="<?php echo tailor()->plugin_url() . 'assets/img/empty.png'; ?>"/>
 	        </div>
@@ -57,13 +57,13 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Video_Control' 
 	        </div>
 	        <% } else { %>
 	        <div class="video-preview">
-		        <p class="control__description"><%= value %></p>
+		        <p class="control__message"><%= values[ media ] %></p>
 	        </div>
 	        <div class="actions">
 		        <button type="button" class="button button--remove"><?php _e( 'Remove Video', 'tailor' ); ?></button>
 	        </div>
 	        <% } %>
-
+	        
             <?php
         }
     }

@@ -71,6 +71,10 @@ var onElementChange = function( setting, view ) {
             
             // Get the collection of rules from the callback function
             rules = callback.apply( view, [ setting.get( 'value' ), setting.previous( 'value' ), view.model ] );
+
+            if ( false === rules ) {
+                view.model.trigger( 'change:atts', view.model, view.model.get( 'atts' ) );
+            }
             
             if ( _.isArray( rules ) && rules.length > 0 ) {
 
@@ -1446,76 +1450,100 @@ var ResizableBehavior = Marionette.Behavior.extend( {
 
 module.exports = ResizableBehavior;
 },{}],11:[function(require,module,exports){
-var AbstractControl = Marionette.ItemView.extend( {
+var $ = window.jQuery,
+    AbstractControl;
+
+AbstractControl = Marionette.ItemView.extend( {
 
     tagName : 'li',
 
+    media : 'desktop',
+
+    ui : {
+        'input' : 'input',
+        'mediaButton' : '.js-setting-group .button',
+        'defaultButton' : '.js-default',
+        'controlGroups' : '.control__body > *'
+    },
+    
+    events : {
+        'blur @ui.input' : 'onFieldChange',
+        'click @ui.mediaButton' : 'onMediaButtonChange',
+        'click @ui.defaultButton' : 'onDefaultButtonChange'
+    },
+
+	/**
+     * Returns the class name.
+     * 
+     * @since 1.0.0
+     * 
+     * @returns {string}
+     */
     className : function() {
         return 'control control--' + this.model.get( 'type' );
     },
-
-    events : {
-        'input @ui.input' : 'onControlChange',
-        'change @ui.input' : 'onControlChange',
-        'click @ui.default' : 'restoreDefaultValue'
-    },
-
+    
+	/**
+	 * Returns the template ID.
+     * 
+     * @since 1.0.0
+     * 
+     * @returns {string}
+     */
     getTemplate : function() {
         return '#tmpl-tailor-control-' + this.model.get( 'type' );
     },
 
-    /**
-     * Provides the required information to the template rendering function.
-     *
-     * @since 1.0.0
-     *
-     * @returns {*}
-     */
     serializeData : function() {
         var data = Backbone.Marionette.ItemView.prototype.serializeData.apply( this, arguments );
-        var defaultValue = this.getDefaultValue();
-
-        data.value = this.getSettingValue();
-        data.showDefault = null != defaultValue && ( data.value != defaultValue );
-
+        data.values = this.getValues();
+        data.hideDefault = this.checkDefault( data.values );
+        data = this.addSerializedData( data );
+        
         return data;
     },
 
-    /**
-     * Initializes the control.
-     *
-     * @since 1.0.0
-     */
+    checkDefault : function( values ) {
+        var hide = true;
+        _.each( this.getDefaults(), function( value, media ) {
+            if (
+                ! _.isNull( value ) &&
+                values.hasOwnProperty( media ) &&
+                ! _.isNull( values[ media ] ) &&
+                value !== values[ media ]
+            ) {
+                hide = false;
+            }
+        } );
+        return hide;
+    },
+
+    addSerializedData : function( data ) {
+        return data;
+    },
+
     initialize : function() {
         this.addEventListeners();
-        this.checkDependencies( this.model.setting );
+        this.checkDependencies();
     },
-
-    /**
-     * Adds the required event listeners.
-     *
-     * @since 1.0.0
-     */
+    
     addEventListeners : function() {
-        this.listenTo( this.model.setting, 'change', this.toggleDefaultButton );
-        this.listenTo( this.model.setting.collection, 'change', this.checkDependencies );
+        _.each( this.getSettings(), function( setting ) {
+            this.listenTo( setting, 'change', this.onSettingChange );
+        }, this );
+        this.listenTo( this.getSetting().collection, 'change', this.checkDependencies );
     },
 
-    /**
-     * Checks whether the control should be visible, based on its dependencies.
-     *
-     * @since 1.0.0
-     *
-     * @param setting
-     */
     checkDependencies : function( setting ) {
+        setting = setting || this.getSetting();
+
         var dependencies = this.model.get( 'dependencies' );
-        var settings = setting.collection;
+        var settingCollection = setting.collection;
         var visible = true;
 
         for ( var id in dependencies ) {
             if ( dependencies.hasOwnProperty( id ) ) {
-                var target = settings.get( id );
+                var target = settingCollection.get( id );
                 if ( ! target ) {
                     continue;
                 }
@@ -1533,69 +1561,96 @@ var AbstractControl = Marionette.ItemView.extend( {
 
         this.$el.toggle( visible );
     },
+    
+    onRender : function() {
+        this.updateControlGroups();
+    },
 
-    /**
-     * Responds to a control change.
-     *
-     * @since 1.0.0
-     */
-    onControlChange : function( e ) {
-        if ( 'function' == typeof this.ui.input.val ) {
-            this.setSettingValue( this.ui.input.val() );
+    onMediaButtonChange : function( e ) {
+        this.media = e.currentTarget.getAttribute( 'data-media' );
+        this.updateControlGroups();
+    },
+
+    onDefaultButtonChange : function() {
+        this.restoreDefaults();
+        this.render();
+    },
+    
+    onFieldChange : function() {
+        this.setValue( this.ui.input.filter( '[name^="' + this.media + '"]' ).val() );
+    },
+    
+    onSettingChange : function() {
+        this.updateDefaultButton();
+    },
+
+    updateControlGroups : function() {
+        var media = this.media;
+
+        this.ui.controlGroups.each( function() {
+            $( this ).toggleClass( 'is-hidden', media != this.id );
+        } );
+
+        this.ui.mediaButton.each( function() {
+            $( this ).toggleClass( 'active', media == this.getAttribute( 'data-media' ) );
+        } );
+    },
+
+    updateDefaultButton : function() {
+        this.ui.defaultButton.toggleClass( 'is-hidden', this.checkDefault( this.getValues() ) );
+    },
+
+    getSettings : function() {
+        return this.model.settings;
+    },
+
+    getSetting : function( media ) {
+        
+        media = media || this.media;
+        
+        var settings = this.getSettings();
+        for ( var i in settings ) {
+            if ( settings.hasOwnProperty( i ) ) {
+                if ( settings[ i ].media == media ) {
+                    return settings[ i ];
+                }
+            }
         }
+        return false;
+    },
+    
+    getDefaults : function() {
+        var defaults = {};
+        _.each( this.getSettings(), function( setting ) {
+            defaults[ setting.media ] = setting.get( 'default' );
+        } );
+        return defaults;
+    },
+    
+    getValues : function() {
+        var values = {};
+        _.each( this.getSettings(), function( setting ) {
+            values[ setting.media ] = setting.get( 'value' ) || '';
+        } );
+        return values;
     },
 
-    /**
-     * Toggles the default button based on the setting value.
-     *
-     * @since 1.0.0
-     */
-    toggleDefaultButton : function() {
-        var defaultValue = this.getDefaultValue();
-
-        this.ui.default.toggleClass( 'is-hidden', null == defaultValue || this.getSettingValue() == defaultValue );
+    getDefault : function() {
+        return this.getSetting().get( 'default' );
     },
 
-    /**
-     * Returns the setting value.
-     *
-     * @since 1.0.0
-     */
-    getSettingValue : function() {
-        return this.model.setting.get( 'value' ) || '';
+    getValue : function() {
+        return this.getSetting().get( 'value' );
     },
 
-    /**
-     * Updates the setting value.
-     *
-     * @since 1.0.0
-     *
-     * @param value
-     */
-    setSettingValue : function( value ) {
-        this.model.setting.set( 'value', value );
+    setValue : function( value ) {
+        this.getSetting().set( 'value', value ); // || '' );
     },
 
-    /**
-     * Returns the default value for the setting.
-     *
-     * @since 1.0.0
-     */
-    getDefaultValue : function() {
-        return this.model.setting.get( 'default' );
-    },
-
-    /**
-     * Restores the default value for the setting.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     */
-    restoreDefaultValue : function( e ) {
-        this.setSettingValue( this.getDefaultValue() );
-
-        this.triggerMethod( 'restore:default' );
+    restoreDefaults : function() {
+        _.each( this.getSettings(), function( setting ) {
+            setting.set( 'value', setting.get( 'default' ) ); // || '' );
+        } );
     }
 
 } );
@@ -1614,53 +1669,32 @@ var AbstractControl = require( './abstract-control' ),
 
 ButtonGroupControl = AbstractControl.extend( {
 
-	ui: {
-		'input' : 'button',
-        'default' : '.js-default'
-	},
+    ui : {
+        'input' : '.control__body .button',
+        'mediaButton' : '.js-setting-group .button',
+        'defaultButton' : '.js-default',
+        'controlGroups' : '.control__body > *'
+    },
 
     events : {
-        'click @ui.input' : 'onControlChange',
-        'click @ui.default' : 'restoreDefaultValue'
+        'click @ui.input' : 'onFieldChange',
+        'click @ui.mediaButton' : 'onMediaButtonChange',
+        'click @ui.defaultButton' : 'onDefaultButtonChange'
     },
 
     templateHelpers : {
 
-        /**
-         * Returns the appropriate class name if the current button is the selected one.
-         *
-         * @since 1.0.0
-         *
-         * @param button
-         * @returns {string}
-         */
-        active : function( button ) {
-            return button === this.value ? 'active' : '';
+        active : function( media, key ) {
+            return key === this.values[ media ] ? 'active' : '';
         }
     },
 
-    /**
-     * Adds the required event listeners.
-     *
-     * @since 1.0.0
-     */
-    addEventListeners : function() {
-        this.listenTo( this.model.setting, 'change', this.render );
-        this.listenTo( this.model.setting.collection, 'change', this.checkDependencies );
-    },
-
-    /**
-     * Responds to a control change.
-     *
-     * @since 1.0.0
-     */
-    onControlChange : function( e ) {
+    onFieldChange : function( e ) {
+        this.ui.input.filter( '[name^="' + this.media + '"]' ).removeClass( 'active' );
 
         var button = e.currentTarget;
-
-        this.ui.input.removeClass( 'active' );
         button.classList.add( 'active' );
-        this.setSettingValue( button.value );
+        this.setValue( button.value );
     }
 
 } );
@@ -1680,53 +1714,28 @@ var AbstractControl = require( './abstract-control' ),
 
 CheckboxControl = AbstractControl.extend( {
 
-    ui : {
-        'input' : 'input',
-        'default' : '.js-default'
+    events : {
+        'change @ui.input' : 'onFieldChange',
+        'click @ui.mediaButton' : 'onMediaButtonChange',
+        'click @ui.defaultButton' : 'onDefaultButtonChange'
     },
 
     templateHelpers : {
 
-        /**
-         * Returns "checked" if the current choice is the selected one.
-         *
-         * @since 1.0.0
-         *
-         * @param choice
-         * @returns {string}
-         */
-        checked : function( choice ) {
-            var value = this.value.split( ',' );
-            return -1 !== value.indexOf( choice ) ? 'checked' : '';
+        checked : function( media, key ) {
+            var values = this.values[ media ].split( ',' );
+            return -1 !== values.indexOf( key ) ? 'checked' : '';
         }
     },
 
-    /**
-     * Adds the required event listeners.
-     *
-     * @since 1.0.0
-     */
-    addEventListeners : function() {
-        this.listenTo( this.model.setting, 'change', this.render );
-        this.listenTo( this.model.setting.collection, 'change', this.checkDependencies );
-    },
-
-    /**
-     * Responds to a control change.
-     *
-     * @since 1.0.0
-     */
-    onControlChange : function( e ) {
-
-        var value = [];
-
-        _.each( this.ui.input, function( input ) {
-            if ( input.checked ) {
-                value.push( input.value || 0 );
+    onFieldChange : function( e ) {
+        var values = [];
+        _.each( this.ui.input.filter( '[name^="' + this.media + '"]:checked' ), function( field ) {
+            if ( field.checked ) {
+                values.push( field.value || 0 );
             }
         } );
-
-        this.setSettingValue( value.join( ',' ) );
+        this.setValue( values.join( ',' ) );
     }
 
 } );
@@ -1741,86 +1750,91 @@ module.exports = CheckboxControl;
  *
  * @augments Marionette.ItemView
  */
-var AbstractControl = require( './abstract-control' ),
+
+var $ = window.jQuery,
+	AbstractControl = require( './abstract-control' ),
 	CodeControl;
 
 CodeControl = AbstractControl.extend( {
 
-    ui : {
-        'input' : 'textarea',
-        'default' : '.js-default'
-    },
+	ui : {
+		'input' : 'textarea',
+		'mediaButton' : '.js-setting-group .button',
+		'defaultButton' : '.js-default',
+		'controlGroups' : '.control__body > *'
+	},
 
-    events : {
-        'click @ui.default' : 'restoreDefaultValue'
-    },
+	events : {
+		'click @ui.mediaButton' : 'onMediaButtonChange',
+		'click @ui.defaultButton' : 'onDefaultButtonChange'
+	},
 
-    /**
-     * Provides the required information to the template rendering function.
-     *
-     * @since 1.0.0
-     *
-     * @returns {*}
-     */
-    serializeData : function() {
-        var data = Backbone.Marionette.ItemView.prototype.serializeData.apply( this, arguments );
-        var defaultValue = this.getDefaultValue();
+	addSerializedData : function( data ) {
+		data.cid = this.cid;
+		return data;
+	},
 
-        data.value = this.getSettingValue();
-        data.showDefault = null != defaultValue && data.value != defaultValue;
-        data.cid = this.cid;
-
-        return data;
-    },
-
-    /**
-     * Initializes the editor.
-     *
-     * @since 1.0.0
-     */
     onRender : function() {
-        var obj = this;
-        var mode = this.model.get( 'mode' );
+	    var control = this;
+	    var mode = control.model.get( 'mode' );
+	    this.editors = {};
 
-        obj.editor = CodeMirror.fromTextArea( this.ui.input.get(0), {
-			mode : mode,
-			lineNumbers : true,
-			matchBrackets : true,
-			continueComments : 'Enter',
-			viewportMargin : Infinity,
-			extraKeys : {
+	    _.each( this.getValues(), function( value, media ) {
+		    var $field = control.ui.input.filter( '[name^="' + media + '-' + control.cid + '"]' );
 
-				'F11' : function( cm ) {
-					cm.setOption( 'fullScreen', ! cm.getOption( 'fullScreen' ) );
-				},
+		    control.editors[ media ] = CodeMirror.fromTextArea( $field.get(0), {
+			    mode : mode,
+			    lineNumbers : true,
+			    matchBrackets : true,
+			    continueComments : 'Enter',
+			    viewportMargin : Infinity,
+			    extraKeys : {
 
-				'Esc' : function( cm ) {
-					if ( cm.getOption( 'fullScreen' ) )  {
-						cm.setOption( 'fullScreen', false );
-					}
-				}
-			}
+				    'F11' : function( cm ) {
+					    cm.setOption( 'fullScreen', ! cm.getOption( 'fullScreen' ) );
+				    },
+
+				    'Esc' : function( cm ) {
+					    if ( cm.getOption( 'fullScreen' ) )  {
+						    cm.setOption( 'fullScreen', false );
+					    }
+				    }
+			    }
+		    } );
+
+		    control.editors[ media ].on( 'change', function( editor ) {
+			    control.setValue( editor.getValue() );
+		    }, this );
+
+		    setTimeout( function() {
+			    control.editors[ media ].refresh();
+		    }, 10 );
+	    } );
+
+	    this.updateControlGroups();
+    },
+
+	restoreDefaults : function() {
+		_.each( this.getSettings(), function( setting, media ) {
+			var value = setting.get( 'default' ) || '';
+			setting.set( 'value', value );
+		} );
+	},
+
+	updateControlGroups : function() {
+		var control = this;
+		var media = this.media;
+
+		this.ui.controlGroups.each( function() {
+			$( this ).toggleClass( 'is-hidden', media != this.id );
 		} );
 
-        var onControlChange = function( editor ) {
-            obj.setSettingValue( editor.getValue() );
-        };
+		this.ui.mediaButton.each( function() {
+			$( this ).toggleClass( 'active', media == this.getAttribute( 'data-media' ) );
+		} );
 
-        this.editor.on( 'change', onControlChange );
-    },
-
-    /**
-     * Restores the default value for the setting.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     */
-    restoreDefaultValue : function( e ) {
-        var value = this.getDefaultValue();
-        this.setSettingValue( value );
-        this.editor.setValue( value );
-    },
+		control.editors[ media ].refresh();
+	},
 
     /**
      * Destroys the editor instance when the control is destroyed.
@@ -1828,8 +1842,11 @@ CodeControl = AbstractControl.extend( {
      * @since 1.0.0
      */
 	onDestroy : function() {
-        this.editor.off( 'change', this.onChange );
-		this.editor.toTextArea();
+		var control = this;
+	    _.each( this.getValues(), function( value, media ) {
+		    control.editors[ media ].off();
+		    control.editors[ media ].toTextArea();
+	    } );
 	}
 
 } );
@@ -1844,7 +1861,8 @@ module.exports = CodeControl;
  *
  * @augments Marionette.ItemView
  */
-var AbstractControl = require( './abstract-control' ),
+var $ = window.jQuery,
+    AbstractControl = require( './abstract-control' ),
     ColorPickerControl;
 
 /**
@@ -1860,10 +1878,7 @@ var AbstractControl = require( './abstract-control' ),
  */
 ( function( $ ) {
 
-    // Variable for some backgrounds
     var image = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAAHnlligAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAHJJREFUeNpi+P///4EDBxiAGMgCCCAGFB5AADGCRBgYDh48CCRZIJS9vT2QBAggFBkmBiSAogxFBiCAoHogAKIKAlBUYTELAiAmEtABEECk20G6BOmuIl0CIMBQ/IEMkO0myiSSraaaBhZcbkUOs0HuBwDplz5uFJ3Z4gAAAABJRU5ErkJggg==';
-
-    // html stuff for wpColorPicker copy of the original color-picker.js
     var	_before = '<a tabindex="0" class="wp-color-result" />',
         _after = '<div class="wp-picker-holder" />',
         _wrap = '<div class="wp-picker-container" />',
@@ -1926,7 +1941,6 @@ var AbstractControl = require( './abstract-control' ),
             else {
                 self.button.addClass( 'wp-picker-clear' ).val( wpColorPickerL10n.clear );
             }
-
 
             el.wrap( '<span class="wp-picker-input-wrap" />' ).after(self.button);
             el.iris( {
@@ -2027,16 +2041,15 @@ var AbstractControl = require( './abstract-control' ),
                 }
             });
         }
-    });
+    } );
 
     /**
-     * Overwrite iris
+     * Overwrite Iris
      */
     $.widget( 'a8c.iris', $.a8c.iris, {
 
         _create: function() {
             this._super();
-
             this.options.rgba = this.element.data( 'rgba' ) || false;
             if ( ! this.element.is( ':input' ) ) {
                 this.options.alpha = false;
@@ -2044,7 +2057,6 @@ var AbstractControl = require( './abstract-control' ),
 
             if ( typeof this.options.rgba !== 'undefined' && this.options.rgba ) {
                 var self = this,
-                    el = self.element,
                     _html = '<div class="iris-strip iris-slider iris-alpha-slider"><div class="iris-slider-offset iris-slider-offset-alpha"></div></div>',
                     aContainer = $( _html ).appendTo( self.picker.find( '.iris-picker-inner' ) ),
                     aSlider = aContainer.find( '.iris-slider-offset-alpha' ),
@@ -2056,7 +2068,7 @@ var AbstractControl = require( './abstract-control' ),
                 // Push new controls
                 $.each( controls, function( k, v ){
                     self.controls[k] = v;
-                });
+                } );
 
                 // Change size strip and add margin for sliders
                 self.controls.square.css({'margin-right': '0'});
@@ -2066,7 +2078,7 @@ var AbstractControl = require( './abstract-control' ),
 
                 $.each( [ 'aContainer', 'strip' ], function( k, v ) {
                     self.controls[v].width( stripsWidth ).css({ 'margin-left': stripsMargin + 'px' });
-                });
+                } );
 
                 self._initControls();
                 self._change();
@@ -2075,12 +2087,11 @@ var AbstractControl = require( './abstract-control' ),
 
         _initControls: function() {
             this._super();
-
             if ( this.options.rgba ) {
                 var self = this,
                     controls = self.controls;
 
-                controls.aSlider.slider({
+                controls.aSlider.slider( {
                     orientation: 'vertical',
                     min: 0,
                     max: 100,
@@ -2090,18 +2101,20 @@ var AbstractControl = require( './abstract-control' ),
                         self._color._alpha = parseFloat( ui.value/100 );
                         self._change.apply( self, arguments );
                     }
-                });
+                } );
             }
         },
 
         _change: function() {
+
             this._super();
+
             var self = this,
                 el = self.element;
 
             if ( this.options.rgba ) {
                 var	controls = self.controls,
-                    alpha = parseInt( self._color._alpha*100 ),
+                    alpha = parseInt( self._color._alpha * 100 ),
                     color = self._color.toRgb(),
                     gradient = [
                         'rgb(' + color.r + ',' + color.g + ',' + color.b + ') 0%',
@@ -2111,7 +2124,7 @@ var AbstractControl = require( './abstract-control' ),
                     customWidth = self.options.customWidth,
                     target = self.picker.closest('.wp-picker-container').find( '.wp-color-result' );
 
-                controls.aContainer.css({ 'background': 'linear-gradient(to bottom, ' + gradient.join( ', ' ) + '), url(' + image + ')' });
+                controls.aContainer.css( { 'background': 'linear-gradient(to bottom, ' + gradient.join( ', ' ) + '), url(' + image + ')' } );
 
                 if ( target.hasClass('wp-picker-open') ) {
                     controls.aSlider.slider( 'value', alpha );
@@ -2127,13 +2140,13 @@ var AbstractControl = require( './abstract-control' ),
                 }
             }
 
-            var reset = el.data('reset-alpha') || false;
+            var reset = el.data( 'reset-alpha' ) || false;
             if ( reset ) {
                 self.picker.find( '.iris-palette-container' ).on( 'click.palette', '.iris-palette', function() {
                     self._color._alpha = 1;
                     self.active = 'external';
                     self._change();
-                });
+                } );
             }
         },
 
@@ -2165,7 +2178,7 @@ var AbstractControl = require( './abstract-control' ),
             if ( self.options.hide ) {
                 input.one( 'focus', function() {
                     self.show();
-                });
+                } );
             }
         }
     } );
@@ -2174,68 +2187,57 @@ var AbstractControl = require( './abstract-control' ),
 
 ColorPickerControl = AbstractControl.extend( {
 
-    ui : {
-        'input' : 'input'
-    },
-
-    events : {},
-
-    /**
-     * Provides the required information to the template rendering function.
-     *
-     * @since 1.0.0
-     *
-     * @returns {*}
-     */
-    serializeData : function() {
-        var data = Backbone.Marionette.ItemView.prototype.serializeData.apply( this, arguments );
-
-        data.value = this.model.setting.get( 'value' );
+    addSerializedData : function( data ) {
         data.rgba = this.model.get( 'rgba' );
-
         return data;
     },
-
-    /**
-     * Adds the required event listeners.
-     *
-     * @since 1.0.0
-     */
-    addEventListeners : function() {
-        this.listenTo( this.model.setting.collection, 'change', this.checkDependencies );
+    
+    onRender : function() {
+        this.initWidgets();
+        this.updateControlGroups();
     },
 
-	/**
-     * Initializes the WP ColorPicker jQuery widget.
-     *
-     * @since 1.0.0
-     */
-    onRender : function() {
+    onDefaultButtonChange : function() {
+        this.restoreDefaults();
+        this.destroyWidgets();
+        this.render();
+    },
+    
+    initWidgets : function() {
         var control = this;
-        this.ui.input.wpColorPicker( {
-            palettes : this.model.get( 'palettes' ),
-            defaultColor : control.getDefaultValue(),
+        var defaults = this.getDefaults();
+        var palettes = this.model.get( 'palettes' );
 
-            change : function() {
-                var color = control.ui.input.wpColorPicker( 'color' );
-                if ( control.getSettingValue() != color ) {
-                    control.setSettingValue( color );
+        this.ui.input.each( function() {
+
+            var $el = $( this );
+            $el.wpColorPicker( {
+                palettes : palettes,
+                defaultColor : defaults[ this.name ],
+
+                change : function() {
+                    var color = control.ui.input.wpColorPicker( 'color' );
+                    if ( 'undefined' == typeof control.getValue() && '' == color ) {
+                        return;
+                    }
+                    control.setValue( $el.wpColorPicker( 'color' ) );
+                },
+
+                clear : function() {
+                    control.setValue( '' );
                 }
-            },
-
-            clear : function() {
-                control.setSettingValue( '' );
-            }
+            } );
         } );
     },
 
-	/**
-     * Ensures that the WP ColorPicker widget is closed when the control is destroyed.
-     *
-     * @since 1.0.0
-     */
+    destroyWidgets : function() {
+        this.ui.input.each( function() {
+            $( this ).wpColorPicker( 'close' );
+        } );
+    },
+
     onBeforeDestroy : function() {
-        this.ui.input.wpColorPicker( 'close' );
+        this.destroyWidgets();
     }
 
 } );
@@ -2255,97 +2257,88 @@ var AbstractControl = require( './abstract-control' ),
 
 EditorControl = AbstractControl.extend( {
 
-    ui : {
-        'input' : 'textarea',
-        'default' : '.js-default'
-    },
+	ui : {
+		'mediaButton' : '.js-setting-group .button',
+		'defaultButton' : '.js-default',
+		'controlGroups' : '.control__body > *'
+	},
+
+	events : {
+		'blur @ui.input' : 'onFieldChange',
+		'click @ui.mediaButton' : 'onMediaButtonChange',
+		'click @ui.defaultButton' : 'restoreDefaults'
+	},
 
     getTemplate : function() {
         var html = document.getElementById( 'tmpl-tailor-control-editor' ).innerHTML;
         return _.template( html
-                .replace( new RegExp( 'tailor-editor', 'gi' ), this.cid )
-                .replace( new RegExp( 'tailor-value', 'gi' ), '<%= value %>' )
+                .replace( new RegExp( 'tailor-editor', 'gi' ), '<%= media %>-<%= cid %>' )
+                .replace( new RegExp( 'tailor-value', 'gi' ), '<%= values[ media ] %>' )
         );
     },
 
-    /**
-     * Adds the required event listeners.
-     *
-     * @since 1.0.0
-     */
-    addEventListeners : function() {
-        this.listenTo( this.model.setting, 'change', this.toggleDefaultButton );
-        this.listenTo( this.model.setting.collection, 'change', this.checkDependencies );
-        this.listenTo( app.channel, 'list:change:order', this.maybeRefreshEditor );
-    },
+	addSerializedData : function( data ) {
+		data.cid = this.cid;
+		return data;
+	},
+	
+	addEventListeners : function() {
+		this.listenTo( this.getSetting().collection, 'change', this.checkDependencies );
+	},
 
-	/**
-	 * Refreshes the editor after the containing list item is moved.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param e
-	 * @param el
-	 */
 	maybeRefreshEditor : function( el ) {
         if ( el.contains( this.el ) ) {
-            tinyMCE.execCommand( 'mceRemoveEditor', false, this.cid );
-            tinyMCE.execCommand( 'mceAddEditor', false, this.cid );
+	        _.each( this.getValues(), function( value, media ) {
+		        tinyMCE.execCommand( 'mceRemoveEditor', false, media + '-' + this.cid );
+		        tinyMCE.execCommand( 'mceAddEditor', false, media + '-' + this.cid );
+	        }, this );
         }
     },
 
-    /**
-     * Initializes the TinyMCE instance.
-     *
-     * @since 1.0.0
-     */
     onAttach : function() {
-		var input = this.ui.input;
-		var id = this.cid;
-		var quickTagSettings = _.extend( {}, tinyMCEPreInit.qtInit['tailor-editor'], { id : id } );
+	    var control = this;
 
-		quicktags( quickTagSettings );
-		QTags._buttonsInit();
+	    _.each( this.getValues(), function( value, media ) {
+		    var id = media + '-' + control.cid;
+		    var quickTagSettings = _.extend( {}, tinyMCEPreInit.qtInit['tailor-editor'], { id : id } );
 
-		tinyMCEPreInit.mceInit[ id ] = _.extend( {}, tinyMCEPreInit.mceInit['tailor-editor'], {
-			id : id,
-			resize : 'vertical',
-			height: 350,
+		    quicktags( quickTagSettings );
+		    QTags._buttonsInit();
 
-			setup : function( ed ) {
-                ed.on( 'change', function() {
-                    ed.save();
-                    input.change();
-                } );
-			}
-		} );
+		    tinyMCEPreInit.mceInit[ id ] = _.extend( {}, tinyMCEPreInit.mceInit['tailor-editor'], {
+			    id : id,
+			    resize : 'vertical',
+			    height: 350,
 
-		switchEditors.go( id, 'tmce' );
+			    setup : function( ed ) {
+				    ed.on( 'change', function() {
+					    ed.save();
+					    control.setValue( ed.getContent() );
+				    } );
+			    }
+		    } );
 
-        tinymce.execCommand( 'mceAddEditor', true, id );
+		    switchEditors.go( id, 'tmce' );
+		    tinymce.execCommand( 'mceAddEditor', true, id );
+	    }, this );
 	},
 
-    /**
-     * Restores the default value for the setting.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     */
-    restoreDefaultValue : function( e ) {
-        var value = this.getDefaultValue();
+	restoreDefaults : function() {
+		_.each( this.getSettings(), function( setting ) {
 
-        this.setSettingValue( value );
-        tinyMCE.get( this.cid ).setContent( value );
-    },
+			var value = setting.get( 'default' ) || '';
+			setting.set( 'value', value );
 
-    /**
-     * Destroys the TinyMCE instance when the control is destroyed.
-     *
-     * @since 1.0.0
-     */
+			var editor = tinyMCE.get( setting.media + '-' + this.cid );
+			editor.setContent( value );
+
+		}, this );
+	},
+	
 	onDestroy : function() {
-        tinyMCE.execCommand( 'mceRemoveEditor', true, this.cid );
+	    _.each( this.getValues(), function( value, media ) {
+		    tinyMCE.execCommand( 'mceRemoveEditor', true, media + '-' + this.cid );
+	    }, this );
 	}
 
 } );
@@ -2366,48 +2359,31 @@ var AbstractControl = require( './abstract-control' ),
 GalleryControl = AbstractControl.extend( {
 
 	ui: {
-        select : '.button--select',
-        change : '.button--change',
-		remove : '.button--remove',
-        thumbnails : '.thumbnails',
-        default : '.js-default'
+        'select' : '.button--select',
+        'change' : '.button--change',
+		'remove' : '.button--remove',
+        'thumbnails' : '.thumbnails',
+		'mediaButton' : '.js-setting-group .button',
+		'defaultButton' : '.js-default',
+		'controlGroups' : '.control__body > *'
 	},
 
     events : {
         'click @ui.select' : 'selectImages',
         'click @ui.change' : 'selectImages',
-        'click @ui.thumbnails' : 'selectImages',
-        'click @ui.remove' : 'removeImages',
-        'click @ui.default' : 'restoreDefaultValue'
+	    'click @ui.remove' : 'removeImages',
+	    'click @ui.thumbnails' : 'selectImages',
+	    'click @ui.mediaButton' : 'onMediaButtonChange',
+	    'click @ui.defaultButton' : 'onDefaultButtonChange'
     },
-
-    /**
-     * Provides the required information to the template rendering function.
-     *
-     * @since 1.0.0
-     *
-     * @returns {*}
-     */
-    serializeData : function() {
-        var data = Backbone.Marionette.ItemView.prototype.serializeData.apply( this, arguments );
-        var defaultValue = this.getDefaultValue();
-
-        data.value = this.getSettingValue();
-        data.showDefault = null != defaultValue && data.value != defaultValue;
-        data.ids = this.ids();
-
-        return data;
-    },
-
-    /**
-     * Adds the required event listeners.
-     *
-     * @since 1.0.0
-     */
-    addEventListeners : function() {
-        this.listenTo( this.model.setting, 'change', this.render );
-        this.listenTo( this.model.setting.collection, 'change', this.checkDependencies );
-    },
+	
+	addSerializedData : function( data ) {
+		data.ids = {};
+		_.each( data.values, function( value, media ) {
+			data.ids[ media ] = this.getIds( value );
+		}, this );
+		return data;
+	},
 
 	/**
 	 * Opens the Media Library window.
@@ -2415,43 +2391,65 @@ GalleryControl = AbstractControl.extend( {
 	 * @since 1.0.0
 	 */
     selectImages : function() {
-        var galleryControl = this;
-        var ids = this.ids();
-		var selection = this.getSelection( ids );
-        var frame = wp.media( {
-            frame : 'post',
-            state : ( ids.length ? 'gallery-edit' : 'gallery-library' ),
-            editing : true,
-            multiple : true,
-            selection : selection
-        } );
-		var library;
 
-        frame
-            .on( 'open', function() {
+		_.each( this.getValues(), function( value, media ) {
+			if ( media == this.media ) {
+				var control = this;
+				var ids = control.getIds( value );
+				var selection = this.getSelection( ids );
+				var frame = wp.media( {
+					frame : 'post',
+					state : ( ids.length ? 'gallery-edit' : 'gallery-library' ),
+					editing : true,
+					multiple : true,
+					selection : selection
+				} );
 
-	            // Hide the Cancel Gallery link
-                var mediaFrame = frame.views.get( '.media-frame-menu' )[0];
-                mediaFrame.$el.children().slice( 0, 2 ).hide();
+				var library;
 
-	            library = JSON.stringify( selection.toJSON() );
-            } )
-            .on( 'update', function( collection ) {
-	            var value = collection.pluck( 'id' ).join( ',' );
-	            galleryControl.setSettingValue( value );
+				frame
 
-	            if ( ! _.isEqual( library, JSON.stringify( collection.toJSON() ) ) ) {
-		            galleryControl.model.setting.trigger( 'change', galleryControl.model.setting, value );
-	            }
-	            galleryControl.updateThumbnails( collection );
+					/**
+					 * Hide the Cancel Gallery link and record the original library.
+					 */
+					.on( 'open', function() {
+						var mediaFrame = frame.views.get( '.media-frame-menu' )[0];
+						mediaFrame.$el.children().slice( 0, 2 ).hide();
+						library = JSON.stringify( selection.toJSON() );
+					} )
 
-            } )
-            .on( 'close', function() {
-                frame.dispose();
-            } );
+					/**
+					 * Update the setting value and thumbnails.
+					 */
+					.on( 'update', function( collection ) {
+						var value = collection.pluck( 'id' ).join( ',' );
+						control.setValue( value );
 
-        frame.open();
+						// Trigger change if the images are the same (implies other change)
+						if ( ! _.isEqual( library, JSON.stringify( collection.toJSON() ) ) ) {
+							var setting = control.getSetting( media );
+							setting.trigger( 'change', setting, value );
+						}
+					} )
+
+					/**
+					 * Dispose of the media frame when it's closed.
+					 */
+					.on( 'close', function() {
+						frame.dispose();
+					} );
+
+				frame.open();
+			}
+		}, this );
     },
+
+	getIds : function( value ) {
+		if ( _.isEmpty( value ) ) {
+			return false;
+		}
+		return value.split( ',' )
+	},
 
 	/**
 	 * Removes all selected images.
@@ -2459,9 +2457,12 @@ GalleryControl = AbstractControl.extend( {
 	 * @since 1.0.0
 	 */
     removeImages : function() {
-        this.setSettingValue( '' );
-        this.render();
+        this.setValue( '' );
     },
+
+	onSettingChange : function() {
+		this.render();
+	},
 
 	/**
 	 * Updates the thumbnails when the control is rendered.
@@ -2469,45 +2470,25 @@ GalleryControl = AbstractControl.extend( {
 	 * @since 1.0.0
 	 */
     onRender : function() {
-        this.generateThumbnails();
-    },
-
-	/**
-	 * Generates image thumbnails.
-	 *
-	 * @since 1.0.0
-	 */
-	generateThumbnails : function() {
-		var gallery = this;
-		var ids = this.ids();
-
-		if ( ids.length ) {
-			var selection = this.getSelection( this.ids() );
-
+		var control = this;
+		_.each( this.getValues(), function( value, media ) {
+			var selection = this.getSelection( control.getIds( value ) );
 			selection.more().done( function() {
 				selection.props.set( { query: false } );
 				selection.unmirror();
 				selection.props.unset( 'orderby' );
-
-				gallery.updateThumbnails( selection );
+				control.updateThumbnails( selection, media );
 			} );
-		}
+		}, this );
+
+		this.updateControlGroups();
 	},
 
-	/**
-	 * Updates image thumbnails based on a selection from the Media Library.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param selection
-	 */
-	updateThumbnails : function( selection ) {
+	updateThumbnails : function( selection, media ) {
 		var html = '';
 		var urls = selection.map( function( attachment ) {
-
 			var sizes = attachment.get( 'sizes' );
 			var url;
-
 			if ( sizes.hasOwnProperty( 'medium' ) ) {
 				url = sizes.medium.url;
 			}
@@ -2520,7 +2501,6 @@ GalleryControl = AbstractControl.extend( {
 			else {
 				url = '';
 			}
-
 			return url;
 		} );
 
@@ -2530,7 +2510,9 @@ GalleryControl = AbstractControl.extend( {
 			} );
 		}
 
-		this.ui.thumbnails
+		this.ui.controlGroups
+			.filter( '[id^="' + media + '"]' )
+			.find( '.thumbnails' )
 			.removeClass( 'is-loading' )
 			.html( html );
 	},
@@ -2555,27 +2537,6 @@ GalleryControl = AbstractControl.extend( {
             props : attachments.props.toJSON(),
             multiple: true
         } );
-    },
-	
-    /**
-     * Returns the selected image IDs.
-     *
-     * @since 1.0.0
-     *
-     * @returns {Array|*}
-     */
-    ids : function() {
-        var value = this.getSettingValue();
-        return value ? value.split( ',' ) : false;
-    },
-
-    /**
-     * Restores the default value for the setting.
-     *
-     * @since 1.0.0
-     */
-    restoreDefaultValue : function() {
-        this.setSettingValue( this.getDefaultValue() );
     }
 
 } );
@@ -2601,7 +2562,9 @@ IconControl = AbstractControl.extend( {
         'change' : '.button--change',
         'remove' : '.button--remove',
         'icon' : 'i',
-        'default' : '.js-default'
+		'mediaButton' : '.js-setting-group .button',
+		'defaultButton' : '.js-default',
+		'controlGroups' : '.control__body > *'
 	},
 
     events : {
@@ -2609,17 +2572,8 @@ IconControl = AbstractControl.extend( {
         'click @ui.change' : 'openDialog',
         'click @ui.remove' : 'removeIcon',
         'click @ui.icon' : 'openDialog',
-        'click @ui.default' : 'restoreDefaultValue'
-    },
-
-    /**
-     * Adds the required event listeners.
-     *
-     * @since 1.0.0
-     */
-    addEventListeners : function() {
-        this.listenTo( this.model.setting, 'change', this.render );
-        this.listenTo( this.model.setting.collection, 'change', this.checkDependencies );
+	    'click @ui.mediaButton' : 'onMediaButtonChange',
+	    'click @ui.defaultButton' : 'onDefaultButtonChange'
     },
 
 	/**
@@ -2642,7 +2596,7 @@ IconControl = AbstractControl.extend( {
              */
             content : function() {
                 var kits = window._kits || {};
-                var value = control.getSettingValue();
+                var value = control.getValue();
 
                 if ( _.keys( kits ).length ) {
                     return _.template( document.getElementById( 'tmpl-tailor-control-icon-select' ).innerHTML)( {
@@ -2665,8 +2619,7 @@ IconControl = AbstractControl.extend( {
                 var $kits = $el.find( '.icon-kit' );
 
                 this.$el.find( '.search--icon' ).on( 'input', function( e ) {
-                    var term =  this.value.replace( /[-\/\\^$*+?.()|[\]{}]/g, '\\$&' );
-
+                    var term = this.value.replace( /[-\/\\^$*+?.()|[\]{}]/g, '\\$&' );
                     term = term.replace( / /g, ')(?=.*' );
                     var match = new RegExp( '^(?=.*' + term + ').+', 'i' );
 
@@ -2703,7 +2656,7 @@ IconControl = AbstractControl.extend( {
 	         * @since 1.0.0
 	         */
             onSave : function() {
-                control.setSettingValue( $( 'input[name=icon]:checked' ).val() );
+                control.setValue( $( 'input[name=icon]:checked' ).val() );
             },
 
 	        /**
@@ -2724,8 +2677,12 @@ IconControl = AbstractControl.extend( {
 	    app.channel.trigger( 'dialog:open', options );
     },
 
+	onSettingChange : function() {
+		this.render();
+	},
+	
     removeIcon : function() {
-        this.setSettingValue( '' );
+        this.setValue( '' );
     }
 
 } );
@@ -2749,8 +2706,9 @@ ImageControl = AbstractControl.extend( {
         'select' : '.button--select',
         'change' : '.button--change',
 		'remove' : '.button--remove',
-        'default' : '.js-default',
-        'thumbnails' : '.thumbnails',
+        'mediaButton' : '.js-setting-group .button',
+        'defaultButton' : '.js-default',
+        'controlGroups' : '.control__body > *',
         'thumbnail' : '.thumbnail'
     },
 
@@ -2759,7 +2717,8 @@ ImageControl = AbstractControl.extend( {
         'click @ui.change' : 'openFrame',
         'click @ui.remove' : 'removeImage',
         'click @ui.thumbnail' : 'openFrame',
-        'click @ui.default' : 'restoreDefaultValue'
+        'click @ui.mediaButton' : 'onMediaButtonChange',
+        'click @ui.defaultButton' : 'onDefaultButtonChange'
     },
 
     /**
@@ -2783,7 +2742,7 @@ ImageControl = AbstractControl.extend( {
         } );
 
         this.addEventListeners();
-        this.checkDependencies( this.model.setting );
+        this.checkDependencies();
     },
 
     /**
@@ -2792,8 +2751,10 @@ ImageControl = AbstractControl.extend( {
      * @since 1.0.0
      */
     addEventListeners : function() {
-        this.listenTo( this.model.setting, 'change', this.render );
-        this.listenTo( this.model.setting.collection, 'change', this.checkDependencies );
+        _.each( this.getSettings(), function( setting ) {
+            this.listenTo( setting, 'change', this.onSettingChange );
+        }, this );
+        this.listenTo( this.getSetting().collection, 'change', this.checkDependencies );
 
         this.frame.on( 'select', this.selectImage.bind( this ) );
     },
@@ -2817,8 +2778,7 @@ ImageControl = AbstractControl.extend( {
         var attachment = selection.first();
         var sizes = attachment.get( 'sizes' );
 
-        this.setSettingValue( attachment.get( 'id' ) );
-        this.updateThumbnail( sizes );
+        this.setValue( attachment.get( 'id' ) );
     },
 
     /**
@@ -2827,8 +2787,10 @@ ImageControl = AbstractControl.extend( {
      * @since 1.0.0
      *
      * @param sizes
+     * @param media
      */
-    updateThumbnail : function( sizes ) {
+    updateThumbnail : function( sizes, media ) {
+
         var url;
         if ( sizes.hasOwnProperty( 'medium' ) ) {
             url = sizes.medium.url;
@@ -2837,13 +2799,15 @@ ImageControl = AbstractControl.extend( {
             url = sizes.thumbnail.url;
         }
         else if ( sizes.hasOwnProperty( 'full' ) ) {
-            url = sizes.full.url; // small images do not have thumbnail generated
+            url = sizes.full.url; // Small images do not have thumbnail generated
         }
         else {
-            return; // invalid sizes
+            return; // Invalid sizes
         }
         
-        this.ui.thumbnails
+        this.ui.controlGroups
+            .filter( '[id^="' + media + '"]' )
+            .find( '.thumbnails' )
             .removeClass( 'is-loading' )
             .html( '<li class="thumbnail"><img src="' + url + '"/></li>' );
     },
@@ -2854,7 +2818,11 @@ ImageControl = AbstractControl.extend( {
      * @since 1.0.0
      */
     removeImage : function() {
-        this.setSettingValue( '' );
+        this.setValue( '' );
+    },
+
+    onSettingChange : function() {
+        this.render();
     },
 
     /**
@@ -2863,26 +2831,26 @@ ImageControl = AbstractControl.extend( {
      * @since 1.0.0
      */
     onRender : function() {
-
-        var control = this;
-        var id = this.getSettingValue();
-
-        if ( id ) {
-            var attachment = wp.media.attachment( id );
-            var sizes = attachment.get( 'sizes' );
-
-            if ( sizes ) {
-                this.updateThumbnail( sizes );
+        _.each( this.getValues(), function( value, media ) {
+            if ( value ) {
+                var attachment = wp.media.attachment( value );
+                var sizes = attachment.get( 'sizes' );
+                if ( sizes ) {
+                    this.updateThumbnail( sizes, media );
+                }
+                else {
+                    var control = this;
+                    attachment.fetch( {
+                        success : function() {
+                            sizes = attachment.get( 'sizes' );
+                            control.updateThumbnail( sizes, media );
+                        }
+                    } );
+                }
             }
-            else {
-                attachment.fetch( {
-                    success : function() {
-                        sizes = attachment.get( 'sizes' );
-                        control.updateThumbnail( sizes );
-                    }
-                } );
-            }
-        }
+        }, this );
+
+        this.updateControlGroups();
     },
 
     /**
@@ -2911,83 +2879,40 @@ var AbstractControl = require( './abstract-control' ),
 
 InputGroup = AbstractControl.extend( {
 
-    ui : {
-        'input' : 'input',
-        'default' : '.js-default'
-    },
-
-    events : {
-        'input @ui.input' : 'onControlChange',
-        'change @ui.input' : 'onControlChange',
-        'click @ui.default' : 'restoreDefaultValue',
-        'click @ui.link' : 'onLinkChange'
-    },
-
-    /**
-     * Initializes the media frame for the control.
-     *
-     * @since 1.0.0
-     */
-    initialize : function( ) {
-        this.addEventListeners();
-        this.checkDependencies( this.model.setting );
-    },
-
-    /**
-     * Provides the required information to the template rendering function.
-     *
-     * @since 1.0.0
-     *
-     * @returns {*}
-     */
-    serializeData : function() {
-        var data = Backbone.Marionette.ItemView.prototype.serializeData.apply( this, arguments );
-        var defaultValue = this.getDefaultValue();
-
-        data.value = this.getSettingValue();
-        data.showDefault = null != defaultValue && ( data.value != defaultValue );
-        data.choices = [];
+    addSerializedData : function( data ) {
+        data.choices = this.model.get( 'choices' );
+        data.values = {};
         
-        var values;
-        if ( _.isString( data.value ) ) {
-            values = data.value.split( ',' );
-        }
-        
-        var choices = this.model.get( 'choices' );
-        for ( var choice in choices ) {
-            if ( choices.hasOwnProperty( choice ) ) {
-                data.choices[ choice ] = {};
-                data.choices[ choice ].label = choices[ choice ].label || '';
-                data.choices[ choice ].type = choices[ choice ].type || 'text';
-                data.choices[ choice ].unit = choices[ choice ].unit || '';
-                data.choices[ choice ].value = _.isArray( values ) ? values.shift() : null;
+        _.each( this.getValues(), function( value, media ) {
+            data.values[ media ] = {};
+            var values = [];
+            if ( _.isString( value ) ) {
+                if ( -1 != value.indexOf( ',' ) ) {
+                    values = value.split( ',' );
+                }
+                else {
+                    values = value.split( '-' ); // Old format
+                }
             }
-        }
+
+            var i = 0;
+            for ( var choice in data.choices ) {
+                if ( data.choices.hasOwnProperty( choice ) ) {
+                    data.values[ media ][ choice ] = values[ i ];
+                    i ++;
+                }
+            }
+        } );
 
         return data;
     },
-
-    /**
-     * Responds to a control change.
-     *
-     * @since 1.0.0
-     */
-    onControlChange : function() {
-        var values = [];
-        _.each( this.ui.input, function( input ) {
-            values.push( input.value );
-        }, this );
-        this.setSettingValue( values.join( ',' ) );
-    },
-
-    /**
-     * Restores the default value for the setting.
-     *
-     * @since 1.0.0
-     */
-    restoreDefaultValue : function() {
-        this.setSettingValue( this.getDefaultValue() );
-        this.render();
+    
+    onFieldChange : function( e ) {
+        var fields = this.ui.input.filter( '[name^="' + this.media + '"]' ).serializeArray();
+        var values = _.map( fields, function( field ) {
+            return field.value;
+        } );
+        this.setValue( values.join( ',' ) );
     }
 
 } );
@@ -3011,33 +2936,22 @@ LinkControl = AbstractControl.extend( {
 	ui: {
         'input' : 'input',
         'select' : '.button--select',
-        'default' : '.js-default'
+		'mediaButton' : '.js-setting-group .button',
+		'defaultButton' : '.js-default',
+		'controlGroups' : '.control__body > *'
 	},
 
     events : {
-        'input @ui.input' : 'onControlChange',
-        'change @ui.input' : 'onControlChange',
+        'blur @ui.input' : 'onFieldChange',
         'click @ui.select' : 'openDialog',
-        'click @ui.default' : 'restoreDefaultValue'
+	    'click @ui.mediaButton' : 'onMediaButtonChange',
+	    'click @ui.defaultButton' : 'onDefaultButtonChange'
     },
 
-    /**
-     * Provides the required information to the template rendering function.
-     *
-     * @since 1.0.0
-     *
-     * @returns {*}
-     */
-    serializeData : function() {
-        var data = Backbone.Marionette.ItemView.prototype.serializeData.apply( this, arguments );
-        var defaultValue = this.getDefaultValue();
-
-        data.value = this.getSettingValue();
-        data.placeholder = this.model.get( 'placeholder' );
-        data.showDefault = null != defaultValue && data.value != defaultValue;
-
-        return data;
-    },
+	addSerializedData : function( data ) {
+		data.placeholder = this.model.get( 'placeholder' );
+		return data;
+	},
 
 	/**
      * Queries the server for links based on the search criteria.
@@ -3051,9 +2965,7 @@ LinkControl = AbstractControl.extend( {
         var $searchResults = this.$el.find( '.search-results' );
 
         if ( $searchResults.length ) {
-
             control.$el.addClass( 'is-searching' );
-
             var options = {
 	            
                 data : {
@@ -3120,9 +3032,7 @@ LinkControl = AbstractControl.extend( {
                 var timeout;
 
                 this.$el.find( '.search--content' ).on( 'input', function( e ) {
-
                     clearTimeout( timeout );
-
                     var term = this.value;
                     if ( term.length >= minimumCharacters && previousTerm != $.trim( term ) ) {
                         timeout = setTimeout( $.proxy( control.search, dialog, term ), 500 );
@@ -3148,9 +3058,7 @@ LinkControl = AbstractControl.extend( {
 	         */
             onSave : function() {
                 var url = $( 'input[name=url]:checked' ).val();
-
-                control.setSettingValue( url );
-                control.ui.input.val( url )
+                control.setValue( url );
             },
 
 	        /**
@@ -3171,23 +3079,9 @@ LinkControl = AbstractControl.extend( {
 		app.channel.trigger( 'dialog:open', options );
     },
 
-	/**
-     * Clears the selected icon.
-     *
-     * @since 1.0.0
-     */
-    removeIcon : function() {
-        this.setSettingValue( '' );
-    },
-
-	/**
-     * Re-renders the control when the default value is restored.
-     *
-     * @since 1.0.0
-     */
-    onRestoreDefault : function() {
-        this.render();
-    }
+	onSettingChange : function() {
+		this.render();
+	}
 
 } );
 
@@ -3400,7 +3294,6 @@ var ListItemControl = Marionette.CompositeView.extend( {
     onCloseModal : function() {
         this.model.resetAttributes();
     }
-
 
 } );
 
@@ -3677,7 +3570,7 @@ var ListControl = Marionette.CompositeView.extend( {
      */
     updateContent : function() {
 	    var shortcode = this.generateShortcode();
-        this.model.setting.set( 'value', shortcode );
+        this.model.settings[0].set( 'value', shortcode );
     },
 
     /**
@@ -3727,43 +3620,21 @@ var AbstractControl = require( './abstract-control' ),
 
 RadioControl = AbstractControl.extend( {
 
-    ui : {
-        'input' : 'input',
-        'default' : '.js-default'
+    events : {
+        'change @ui.input' : 'onFieldChange',
+        'click @ui.mediaButton' : 'onMediaButtonChange',
+        'click @ui.defaultButton' : 'onDefaultButtonChange'
     },
 
     templateHelpers : {
 
-        /**
-         * Returns "checked" if the current choice is the selected one.
-         *
-         * @since 1.0.0
-         *
-         * @param choice
-         * @returns {string}
-         */
-        checked : function( choice ) {
-            return ( this.value === choice ) ? 'checked' : '';
+        checked : function( media, key ) {
+            return this.values[ media ] === key ? 'checked' : '';
         }
     },
 
-    /**
-     * Adds the required event listeners.
-     *
-     * @since 1.0.0
-     */
-    addEventListeners : function() {
-        this.listenTo( this.model.setting, 'change', this.render );
-        this.listenTo( this.model.setting.collection, 'change', this.checkDependencies );
-    },
-
-    /**
-     * Responds to a control change.
-     *
-     * @since 1.0.0
-     */
-    onControlChange : function( e ) {
-        this.setSettingValue( this.ui.input.filter( ':checked' ).val() );
+    onFieldChange : function() {
+        this.setValue( this.ui.input.filter( '[name^="' + this.media + '"]:checked' ).val() );
     }
 
 } );
@@ -3782,19 +3653,28 @@ var AbstractControl = require( './abstract-control' ),
     RangeControl;
 
 RangeControl = AbstractControl.extend( {
-
-	ui : {
+    
+    ui : {
         'range' : 'input[type=range]',
-		'input' : 'input[type=text]',
-        'default' : '.js-default'
-	},
+        'input' : 'input[type=text]',
+        'mediaButton' : '.js-setting-group .button',
+        'defaultButton' : '.js-default',
+        'controlGroups' : '.control__body > *'
+    },
+
+    events : {
+        'input @ui.range' : 'onFieldChange',
+        'blur @ui.input' : 'onFieldChange',
+        'click @ui.mediaButton' : 'onMediaButtonChange',
+        'click @ui.defaultButton' : 'onDefaultButtonChange'
+    },
 
     templateHelpers : {
 
         /**
          * Returns the attributes for the control.
          *
-         * @since 1.6.0
+         * @since 1.0.0
          *
          * @returns {string}
          */
@@ -3807,54 +3687,16 @@ RangeControl = AbstractControl.extend( {
         }
     },
 
-    /**
-     * Provides the required information to the template rendering function.
-     *
-     * @since 1.6.0
-     *
-     * @returns {*}
-     */
-    serializeData : function() {
-        var data = Backbone.Marionette.ItemView.prototype.serializeData.apply( this, arguments );
-        var defaultValue = this.getDefaultValue();
-
-        data.value = this.getSettingValue();
-        data.showDefault = null != defaultValue && ( data.value != defaultValue );
-
+    addSerializedData : function( data ) {
         data.attrs = this.model.get( 'input_attrs' );
-
         return data;
     },
-    
-    events : {
-        'input @ui.range' : 'onControlChange',
-        'change @ui.input' : 'onControlChange',
-        'click @ui.default' : 'restoreDefaultValue'
-    },
 
-    /**
-     * Responds to a control change.
-     *
-     * @since 1.0.0
-     */
-    onControlChange : function( e ) {
+    onFieldChange : function( e ) {
         var value = e.target.value;
-        this.ui.input.val( value );
-        this.ui.range.val( value );
-
-        this.setSettingValue( value );
-    },
-
-    /**
-     * Restores the default value for the setting.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     */
-    restoreDefaultValue : function( e ) {
-        this.setSettingValue( this.getDefaultValue() );
-        this.render();
+        this.ui.input.filter( '[name^="' + this.media + '"]' ).val( value );
+        this.ui.range.filter( '[name^="' + this.media + '"]' ).val( value );
+        this.setValue( value );
     }
 
 } );
@@ -3873,75 +3715,55 @@ var AbstractControl = require( './abstract-control' ),
     SelectMultiControl;
 
 SelectMultiControl = AbstractControl.extend( {
-
-
+    
     ui : {
         'input' : 'select',
-        'default' : '.js-default'
+        'mediaButton' : '.js-setting-group .button',
+        'defaultButton' : '.js-default',
+        'controlGroups' : '.control__body > *'
+    },
+
+    events : {
+        'change @ui.input' : 'onFieldChange',
+        'click @ui.mediaButton' : 'onMediaButtonChange',
+        'click @ui.defaultButton' : 'onDefaultButtonChange'
     },
 
     templateHelpers : {
 
-        /**
-         * Returns "selected" if the current choice is the selected one.
-         *
-         * @since 1.0.0
-         *
-         * @param choice
-         * @returns {string}
-         */
-        selected : function( choice ) {
-            var value = this.value.split( ',' );
-            return -1 !== value.indexOf( choice ) ? 'selected' : '';
+        selected : function( media, key ) {
+            var values = this.values[ media ].split( ',' );
+            return -1 !== values.indexOf( key ) ? 'selected' : '';
         }
     },
 
-    /**
-     * Initializes the Select2 plugin.
-     *
-     * @since 1.0.0
-     */
     onRender : function() {
-        this.ui.input.select2();
+        _.each( this.getValues(), function( value, media ) {
+            var $field = this.ui.input.filter( '[name^="' + media + '"]' );
+            $field.select2()
+        }, this );
+
+        this.updateControlGroups();
     },
 
-    /**
-     * Responds to a control change.
-     *
-     * @since 1.0.0
-     */
-    onControlChange : function( e ) {
-        var select = this.ui.input.get(0);
-        var value = [];
-
-        for ( var i = 0; i < select.length; i ++ ) {
-            if ( select[ i ].selected ) {
-                value.push( select[ i ].value );
+    onFieldChange : function() {
+        var $field = this.ui.input.filter( '[name^="' + this.media + '"]' );
+        var field = $field.get(0);
+        var values = [];
+        for ( var i = 0; i < field.length; i ++ ) {
+            if ( field[ i ].selected ) {
+                values.push( field[ i ].value );
             }
         }
 
-        this.setSettingValue( value.join( ',' ) );
+        this.setValue( values.join( ',' ) );
     },
 
-    /**
-     * Restores the default value for the setting.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     */
-    restoreDefaultValue : function( e ) {
-        this.setSettingValue( this.getDefaultValue() );
-        this.render();
-    },
-
-    /**
-     * Destroys the Select2 instance when the control is destroyed.
-     *
-     * @since 1.0.0
-     */
     onDestroy : function() {
-        this.ui.input.select2( 'destroy' );
+        _.each( this.getValues(), function( value, media ) {
+            var $field = this.ui.input.filter( '[name^="' + media + '"]' );
+            $field.select2( 'destroy' );
+        }, this );
     }
 
 } );
@@ -3963,32 +3785,22 @@ SelectControl = AbstractControl.extend( {
 
     ui : {
         'input' : 'select',
-        'default' : '.js-default'
+        'mediaButton' : '.js-setting-group .button',
+        'defaultButton' : '.js-default',
+        'controlGroups' : '.control__body > *'
+    },
+
+    events : {
+        'change @ui.input' : 'onFieldChange',
+        'click @ui.mediaButton' : 'onMediaButtonChange',
+        'click @ui.defaultButton' : 'onDefaultButtonChange'
     },
 
     templateHelpers : {
-
-        /**
-         * Returns "selected" if the current choice is the selected one.
-         *
-         * @since 1.0.0
-         *
-         * @param choice
-         * @returns {string}
-         */
-        selected : function( choice ) {
-            return this.value == choice ? 'selected' : '';
+        
+        selected : function( media, key ) {
+            return key === this.values[ media ] ? 'selected' : '';
         }
-    },
-
-    /**
-     * Adds the required event listeners.
-     *
-     * @since 1.0.0
-     */
-    addEventListeners : function() {
-        this.listenTo( this.model.setting, 'change', this.render );
-        this.listenTo( this.model.setting.collection, 'change', this.checkDependencies );
     }
 
 } );
@@ -4003,120 +3815,88 @@ module.exports = SelectControl;
  *
  * @augments Marionette.ItemView
  */
-var AbstractControl = require( './abstract-control' ),
+var $ = window.jQuery,
+    AbstractControl = require( './abstract-control' ),
     StyleControl;
 
 StyleControl = AbstractControl.extend( {
 
+    linked : true,
+
     ui : {
         'input' : 'input',
-        'default' : '.js-default',
-        'link' : '.js-link'
+        'mediaButton' : '.js-setting-group .button',
+        'defaultButton' : '.js-default',
+        'linkButton' : '.js-link',
+        'controlGroups' : '.control__body > *'
     },
 
     events : {
-        'input @ui.input' : 'onControlChange',
-        'change @ui.input' : 'onControlChange',
-        'click @ui.default' : 'restoreDefaultValue',
-        'click @ui.link' : 'onLinkChange'
+        'input @ui.input' : 'updateLinkedFields',
+        //'change @ui.input' : 'updateLinkedFields',
+        'blur @ui.input' : 'onFieldChange',
+        'click @ui.mediaButton' : 'onMediaButtonChange',
+        'click @ui.defaultButton' : 'onDefaultButtonChange',
+        'click @ui.linkButton' : 'onLinkButtonChange'
     },
 
-    /**
-     * Initializes the media frame for the control.
-     *
-     * @since 1.0.0
-     *
-     * @param options
-     */
-    initialize : function( options ) {
-        this.linked = true;
+    addSerializedData : function( data ) {
+        data.choices = this.model.get( 'choices' );
+        data.values = {};
 
-        this.addEventListeners();
-        this.checkDependencies( this.model.setting );
-    },
-
-    onRender : function() {
-        this.ui.link.toggleClass( 'is-active', this.linked );
-    },
-    
-    onLinkChange: function() {
-        this.linked = ! this.linked;
-        this.ui.link.toggleClass( 'is-active', this.linked );
-    },
-
-    /**
-     * Provides the required information to the template rendering function.
-     *
-     * @since 1.0.0
-     *
-     * @returns {*}
-     */
-    serializeData : function() {
-        var data = Backbone.Marionette.ItemView.prototype.serializeData.apply( this, arguments );
-        var defaultValue = this.getDefaultValue();
-
-        data.value = this.getSettingValue();
-        data.showDefault = null != defaultValue && ( data.value != defaultValue );
-        data.choices = [];
-
-        var values;
-        if ( _.isString( data.value ) ) {
-            if ( -1 != data.value.indexOf( ',' ) ) {
-                values = data.value.split( ',' );
+        _.each( this.getValues(), function( value, media ) {
+            data.values[ media ] = {};
+            var values = [];
+            if ( _.isString( value ) ) {
+                if ( -1 != value.indexOf( ',' ) ) {
+                    values = value.split( ',' );
+                }
+                else {
+                    values = value.split( '-' ); // Old format
+                }
             }
-            else {
-                values = data.value.split( '-' ); // Old format
-            }
-        }
 
-        var choices = this.model.get( 'choices' );
-        for ( var choice in choices ) {
-            if ( choices.hasOwnProperty( choice ) ) {
-                data.choices[ choices[ choice ] ] = _.isArray( values ) ? values.shift() : null;
+            var i = 0;
+            for ( var choice in data.choices ) {
+                if ( data.choices.hasOwnProperty( choice ) ) {
+                    data.values[ media ][ choice ] = values[ i ];
+                    i ++;
+                }
             }
-        }
+        } );
 
         return data;
     },
 
-    /**
-     * Responds to a control change.
-     *
-     * @since 1.0.0
-     */
-    onControlChange : function( e ) {
-        var values;
-        if ( this.linked ) {
-
-            // Update the values
-            values = Array( this.ui.input.length ).fill( e.currentTarget.value );
-
-            // Update the other inputs
-            var $inputs = this.ui.input.filter( function( i, el ) {
-                return el != e.currentTarget;
-            } );
-            $inputs.val( e.currentTarget.value );
-        }
-        else {
-            values = [];
-            _.each( this.ui.input, function( input, index ) {
-                values.push( input.value );
-            }, this );
-        }
-
-        this.setSettingValue( values.join( ',' ) );
+    onRender : function() {
+        this.updateControlGroups();
+        this.updateLinkButton();
     },
 
-    /**
-     * Restores the default value for the setting.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     */
-    restoreDefaultValue : function( e ) {
-        this.setSettingValue( this.getDefaultValue() );
-        this.render();
+    onLinkButtonChange: function() {
+        this.linked = ! this.linked;
+        this.updateLinkButton();
+    },
+
+    onFieldChange : function( e ) {
+        var fields = this.ui.input.filter( '[name^="' + this.media + '"]' ).serializeArray();
+        var values = _.map( fields, function( field ) {
+            return field.value;
+        } );
+        this.setValue( values.join( ',' ) );
+    },
+    
+    updateLinkButton: function() {
+        this.ui.linkButton.toggleClass( 'is-active', this.linked );
+    },
+
+    updateLinkedFields : function( e ) {
+        if ( this.linked ) {
+            this.ui.input
+                .filter( '[name^="' + this.media + '"]' )
+                .filter( function( i, el ) { return el != e.currentTarget; } )
+                .val( e.currentTarget.value );
+        }
     }
 
 } );
@@ -4136,44 +3916,22 @@ var AbstractControl = require( './abstract-control' ),
 
 SwitchControl = AbstractControl.extend( {
 
-    ui : {
-        'input' : 'input',
-        'default' : '.js-default'
+    events : {
+        'change @ui.input' : 'onFieldChange',
+        'click @ui.mediaButton' : 'onMediaButtonChange',
+        'click @ui.defaultButton' : 'onDefaultButtonChange'
     },
 
     templateHelpers : {
 
-        /**
-         * Returns true if the switch is enabled.
-         *
-         * @since 1.0.0
-         *
-         * @returns {string}
-         */
-        checked : function() {
-            return 1 == parseInt( this.value, 10 ) ? 'checked' : '';
+        checked : function( media ) {
+            return 1 == parseInt( this.values[ media ], 10 ) ? 'checked' : '';
         }
     },
 
-    /**
-     * Responds to a control change.
-     *
-     * @since 1.0.0
-     */
-    onControlChange : function( e ) {
-        this.setSettingValue( this.ui.input.get( 0 ).checked ? '1' : '0' );
-    },
-
-    /**
-     * Restores the default value for the setting.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     */
-    restoreDefaultValue : function( e ) {
-        this.setSettingValue( this.getDefaultValue() );
-        this.render();
+    onFieldChange : function() {
+        var $field = this.ui.input.filter( '[name^="' + this.media + '"]' );
+        this.setValue( $field.get(0).checked ? '1' : '0' );
     }
 
 } );
@@ -4192,12 +3950,7 @@ var AbstractControl = require( './abstract-control' ),
     TextControl;
 
 TextControl = AbstractControl.extend( {
-
-    ui : {
-		'input' : 'input',
-		'default' : '.js-default'
-	},
-
+    
     templateHelpers : {
 
         /**
@@ -4215,30 +3968,12 @@ TextControl = AbstractControl.extend( {
             return atts;
         }
     },
-
-    /**
-     * Provides the required information to the template rendering function.
-     *
-     * @since 1.0.0
-     *
-     * @returns {*}
-     */
-    serializeData : function() {
-        var data = Backbone.Marionette.ItemView.prototype.serializeData.apply( this, arguments );
-        var defaultValue = this.getDefaultValue();
-
-        data.value = this.getSettingValue();
-        data.showDefault = null != defaultValue && ( data.value != defaultValue );
-
+    
+    addSerializedData : function( data ) {
         data.attrs = this.model.get( 'input_attrs' );
-
         return data;
-    },
-
-    onRestoreDefault : function() {
-        this.render();
     }
-
+    
 } );
 
 module.exports = TextControl;
@@ -4258,11 +3993,9 @@ TextareaControl = AbstractControl.extend( {
 
     ui : {
         'input' : 'textarea',
-        'default' : '.js-default'
-    },
-
-    onRestoreDefault : function() {
-        this.render();
+        'mediaButton' : '.js-setting-group .button',
+        'defaultButton' : '.js-default',
+        'controlGroups' : '.control__body > *'
     }
 
 } );
@@ -4288,8 +4021,9 @@ VideoControl = AbstractControl.extend( {
         'enterUrl' : '.button--enter',
         'change' : '.button--change',
 		'remove' : '.button--remove',
-        'default' : '.js-default',
-        'preview' : '.video-preview'
+        'mediaButton' : '.js-setting-group .button',
+        'defaultButton' : '.js-default',
+        'controlGroups' : '.control__body > *'
 	},
 
     events : {
@@ -4297,7 +4031,8 @@ VideoControl = AbstractControl.extend( {
         'click @ui.enterUrl' : 'openDialog',
         'click @ui.change' : 'openFrame',
         'click @ui.remove' : 'removeVideo',
-        'click @ui.default' : 'restoreDefaultValue'
+        'click @ui.mediaButton' : 'onMediaButtonChange',
+        'click @ui.defaultButton' : 'onDefaultButtonChange'
     },
 
     /**
@@ -4320,7 +4055,7 @@ VideoControl = AbstractControl.extend( {
         } );
 
         this.addEventListeners();
-        this.checkDependencies( this.model.setting );
+        this.checkDependencies();
     },
 
     /**
@@ -4329,8 +4064,10 @@ VideoControl = AbstractControl.extend( {
      * @since 1.0.0
      */
     addEventListeners : function() {
-        this.listenTo( this.model.setting, 'change', this.render );
-        this.listenTo( this.model.setting.collection, 'change', this.checkDependencies );
+        _.each( this.getSettings(), function( setting ) {
+            this.listenTo( setting, 'change', this.onSettingChange );
+        }, this );
+        this.listenTo( this.getSetting().collection, 'change', this.checkDependencies );
 
         this.frame.on( 'select', this.selectVideo.bind( this ) );
     },
@@ -4353,8 +4090,7 @@ VideoControl = AbstractControl.extend( {
         var selection = this.frame.state().get( 'selection' );
         var attachment = selection.first();
 
-        this.setSettingValue( attachment.get( 'id' ) );
-        this.updatePreview( attachment );
+        this.setValue( attachment.get( 'id' ) );
     },
 
     /**
@@ -4399,8 +4135,7 @@ VideoControl = AbstractControl.extend( {
              * @since 1.0.0
              */
             onSave : function() {
-                var url = $( '.search--content' ).val();
-                control.setSettingValue( url );
+                control.setValue( $( '.search--content' ).val() );
             },
 
             /**
@@ -4421,13 +4156,17 @@ VideoControl = AbstractControl.extend( {
         app.channel.trigger( 'dialog:open', options );
     },
 
+    onSettingChange : function() {
+        this.render();
+    },
+    
     /**
      * Removes the selected video.
      *
      * @since 1.0.0
      */
     removeVideo : function() {
-        this.setSettingValue( '' );
+        this.setValue( '' );
     },
 
     /**
@@ -4436,22 +4175,26 @@ VideoControl = AbstractControl.extend( {
      * @since 1.0.0
      */
     onRender : function() {
+        
         var control = this;
-        var id = this.getSettingValue();
+        
+        _.each( this.getValues(), function( value, media ) {
+            if ( value ) {
+                var attachment = wp.media.attachment( value );
+                if ( ! attachment.get( 'url' ) ) {
+                    attachment.fetch( {
+                        success : function() {
+                            control.updatePreview( attachment, media );
+                        }
+                    } );
+                }
+                else {
+                    control.updatePreview( attachment, media );
+                }
+            }
+        }, this );
 
-        if ( id && _.isNumber( id ) ) {
-            var attachment = wp.media.attachment( id );
-            if ( ! attachment.get( 'url' ) ) {
-                attachment.fetch( {
-                    success : function() {
-                        control.updatePreview( attachment );
-                    }
-                } );
-            }
-            else {
-                control.updatePreview( attachment );
-            }
-        }
+        this.updateControlGroups();
     },
 
     /**
@@ -4460,12 +4203,15 @@ VideoControl = AbstractControl.extend( {
      * @since 1.0.0
      *
      * @param attachment
+     * @param media
      */
-    updatePreview : function( attachment ) {
+    updatePreview : function( attachment, media ) {
         var url = attachment.get( 'url' );
         var mime = attachment.get( 'mime' );
 
-        this.ui.preview
+        this.ui.controlGroups
+            .filter( '[id^="' + media + '"]' )
+            .find( '.video-preview' )
             .removeClass( 'is-loading' )
             .html( '<video controls><source src="' + url + '" type="' + mime + '"></video>' );
     },
@@ -4477,29 +4223,8 @@ VideoControl = AbstractControl.extend( {
      */
     onDestroy : function() {
         this.frame.dispose();
-        //this.destroyPlayer();
-    },
-
-    /**
-     * Initializes the video player.
-     *
-     * @since 1.0.0
-     */
-    initializePlayer : function() {
-        var mejsSettings = window._wpmejsSettings || {};
-        var video = this.ui.preview.get(0).firstChild;
-        this.player = new MediaElementPlayer( video, mejsSettings );
-    },
-
-    /**
-     * Destroys the video player.
-     *
-     * @since 1.0.0
-     */
-    destroyPlayer : function() {
-        this.player && wp.media.mixin.removePlayer( this.player );
     }
-
+    
 } );
 
 module.exports = VideoControl;
@@ -4513,24 +4238,16 @@ module.exports = VideoControl;
  * @augments Marionette.ItemView
  */
 var $ = window.jQuery,
+    AbstractControl = require( './abstract-control' ),
     WidgetFormControl;
 
-WidgetFormControl = Marionette.ItemView.extend( {
+WidgetFormControl = AbstractControl.extend( {
 
-    tagName : 'li',
-
-    className : function() {
-        return 'control control--' + this.model.get( 'type' );
-    },
-
-    ui : {
-		'default' : '.js-default'
-	},
+    ui : {},
 
     events : {
-        'input *' : 'onControlChange',
-        'change *' : 'onControlChange',
-        'click @ui.default' : 'restoreDefaultValue'
+        'blur *' : 'onFieldChange',
+        'change *' : 'onFieldChange'
     },
 
     /**
@@ -4552,7 +4269,6 @@ WidgetFormControl = Marionette.ItemView.extend( {
     getTemplate : function() {
         var el = document.getElementById( this.getTemplateId() );
         var template = '';
-
         if ( el ) {
             template = _.template( el.innerHTML );
         }
@@ -4560,6 +4276,8 @@ WidgetFormControl = Marionette.ItemView.extend( {
     },
 
     onRender: function() {
+        var idBase = this.model.get( 'widget_id_base' );
+        var $el = this.$el;
 
         // Format the default WordPress widget label
         this.$el.find( 'label' )
@@ -4569,39 +4287,29 @@ WidgetFormControl = Marionette.ItemView.extend( {
                 $label.html( this.innerHTML.replace( ':', '' ) );
             } );
 
-        var values = this.getSettingValue();
-
-        if ( ! _.isEmpty( values ) ) {
-
-            values = JSON.parse( values );
-
-            var $el = this.$el;
-            var idBase = this.model.get( 'widget_id_base' );
-
-            _.each( values, function( value, name ) {
-                var $field = $el.find( '[name="widget-' + idBase + '[__i__][' + name + ']"]' );
-                if ( $field.length ) {
-                    if ( 'checkbox' == $field[0].type || 'radio' == $field[0].type  ) {
-                        $field.attr( 'checked', 'true' );
+        _.each( this.getValues(), function( value, media ) {
+            if ( ! _.isEmpty( value ) ) {
+                var values = JSON.parse( value );
+                _.each( values, function( value, name ) {
+                    var $field = $el.find( '[name="widget-' + idBase + '[__i__][' + name + ']"]' );
+                    if ( $field.length ) {
+                        if ( 'checkbox' == $field[0].type || 'radio' == $field[0].type  ) {
+                            $field.attr( 'checked', 'true' );
+                        }
+                        else {
+                            $field.val( value );
+                        }
                     }
-                    else {
-                        $field.val( value );
-                    }
-                }
-            } );
-        }
+                } );
+            }
+        }, this );
     },
 
-    /**
-     * Responds to a control change.
-     *
-     * @since 1.6.0
-     */
-    onControlChange : function( e ) {
-        var data = this.$el.find( 'input, select, radio, textarea' ).serializeArray();
+    onFieldChange : function( e ) {
+        var fields = this.$el.find( 'input, select, radio, textarea' ).serializeArray();
         var values = {};
 
-        $.each( data, function() {
+        $.each( fields, function() {
             var matches = this.name.match( /\[(.*?)\]/g );
             if ( matches && 2 == matches.length ) { // Expecting name in format: widget-{type}[__i__][{field_id}]
                 var name = matches[1].substring( 1, matches[1].length - 1 );
@@ -4616,38 +4324,19 @@ WidgetFormControl = Marionette.ItemView.extend( {
                 }
             }
         } );
-        
-        this.setSettingValue( JSON.stringify( values ) );
-        
+
+        this.setValue( JSON.stringify( values ) );
+
         e.preventDefault();
         e.stopImmediatePropagation();
     },
 
-    /**
-     * Returns the setting value.
-     *
-     * @since 1.6.0
-     */
-    getSettingValue : function() {
-        return this.model.setting.get( 'value' ) || '';
-    },
-
-    /**
-     * Updates the setting value.
-     *
-     * @since 1.6.0
-     *
-     * @param value
-     */
-    setSettingValue : function( value ) {
-        this.model.setting.set( 'value', value );
-    }
-
+    onSettingChange : function() {}
+    
 } );
 
 module.exports = WidgetFormControl;
-
-},{}],35:[function(require,module,exports){
+},{"./abstract-control":11}],35:[function(require,module,exports){
 var DefaultPanel = Marionette.CompositeView.extend( {
 
     ui : {
@@ -4860,11 +4549,6 @@ var DefaultSection = Marionette.CompositeView.extend( {
 	 */
     onShow : function() {
         this.ui.backButton.get(0).focus();
-        this.children.each( function( control ) {
-            if ( 'code' === control.model.get( 'type' ) ) {
-                control.editor.refresh();
-            }
-        }, this );
     }
 
 } );
@@ -4922,6 +4606,35 @@ var ControlCollection = Backbone.Collection.extend( {
      * @since 1.0.0
      */
     onReset : function() {
+
+        var mediaQueries = [];
+        for ( var mediaQueryId in _media_queries ) {
+            if ( _media_queries.hasOwnProperty( mediaQueryId ) && '' != _media_queries[ mediaQueryId ].max ) {
+                mediaQueries.push( mediaQueryId );
+            }
+        }
+
+        this.each( function( model ) {
+            var settingId = model.get( 'setting' );
+            model.settings = this.settings.filter( function( setting ) {
+                var id = setting.get( 'id' );
+                if ( id == settingId ) {
+                    setting.media = 'desktop';
+                    return true;
+                }
+                else {
+                    var index = _.indexOf( mediaQueries, id.replace( settingId + '_', '' ) );
+                    if ( -1 !== index ) {
+                        setting.media = mediaQueries[ index ];
+                        return true;
+                    }
+                }
+
+                return false;
+            } );
+        }, this );
+
+        /*
         if ( this.settings ) {
             this.each( function( model ) {
                 var setting = this.settings.findWhere( { id : model.get( 'setting' ) } );
@@ -4929,7 +4642,7 @@ var ControlCollection = Backbone.Collection.extend( {
                     model.setting = setting;
                 }
             }, this );
-        }
+        } */
     }
 
 } );
@@ -7067,7 +6780,7 @@ ModalView = Marionette.LayoutView.extend( {
     onChange : function( setting ) {
         this.isModified = true;
         this.ui.apply.attr( 'disabled', false );
-
+        
         var model = this.model;
         if ( ! model.isTracking() ) {
             model.startTracking();
@@ -7075,6 +6788,8 @@ ModalView = Marionette.LayoutView.extend( {
 
         var update = setting.get( 'refresh' );
         var jsRefresh = update.hasOwnProperty( 'method' ) && 'js' == update['method'];
+
+        //jsRefresh = false;
 
         // Check dependencies, if they exist
         if ( jsRefresh && update.hasOwnProperty( 'dependencies' ) ) {
@@ -7235,7 +6950,7 @@ var ControlCollectionView = Marionette.CollectionView.extend( {
      */
     childViewOptions : function( model, index ) {
         var options = { model : model };
-
+        
         if ( 'list' === model.get( 'type' ) ) {
             options.element = this.element;
             options.collection = this.element.collection;
@@ -8734,9 +8449,7 @@ $buttons
              * @returns {*}
              */
             checkCondition : function( condition, actual, required ) {
-
                 actual = actual || '';
-                
                 switch ( condition ) {
                     case 'equals' : return actual === required;
 

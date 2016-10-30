@@ -11,48 +11,38 @@ var AbstractControl = require( './abstract-control' ),
 GalleryControl = AbstractControl.extend( {
 
 	ui: {
-        select : '.button--select',
-        change : '.button--change',
-		remove : '.button--remove',
-        thumbnails : '.thumbnails',
-        default : '.js-default'
+        'select' : '.button--select',
+        'change' : '.button--change',
+		'remove' : '.button--remove',
+        'thumbnails' : '.thumbnails',
+		'mediaButton' : '.js-setting-group .button',
+		'defaultButton' : '.js-default',
+		'controlGroups' : '.control__body > *'
 	},
 
     events : {
         'click @ui.select' : 'selectImages',
         'click @ui.change' : 'selectImages',
-        'click @ui.thumbnails' : 'selectImages',
-        'click @ui.remove' : 'removeImages',
-        'click @ui.default' : 'restoreDefaultValue'
+	    'click @ui.remove' : 'removeImages',
+	    'click @ui.thumbnails' : 'selectImages',
+	    'click @ui.mediaButton' : 'onMediaButtonChange',
+	    'click @ui.defaultButton' : 'onDefaultButtonChange'
     },
 
-    /**
-     * Provides the required information to the template rendering function.
-     *
-     * @since 1.0.0
-     *
-     * @returns {*}
-     */
-    serializeData : function() {
-        var data = Backbone.Marionette.ItemView.prototype.serializeData.apply( this, arguments );
-        var defaultValue = this.getDefaultValue();
-
-        data.value = this.getSettingValue();
-        data.showDefault = null != defaultValue && data.value != defaultValue;
-        data.ids = this.ids();
-
-        return data;
-    },
-
-    /**
-     * Adds the required event listeners.
-     *
-     * @since 1.0.0
-     */
-    addEventListeners : function() {
-        this.listenTo( this.model.setting, 'change', this.render );
-        this.listenTo( this.model.setting.collection, 'change', this.checkDependencies );
-    },
+	/**
+	 * Provides additional data to the template rendering function.
+	 *
+	 * @since 1.7.2
+	 *
+	 * @returns {*}
+	 */
+	addSerializedData : function( data ) {
+		data.ids = {};
+		_.each( data.values, function( value, media ) {
+			data.ids[ media ] = this.getIds( value );
+		}, this );
+		return data;
+	},
 
 	/**
 	 * Opens the Media Library window.
@@ -60,43 +50,73 @@ GalleryControl = AbstractControl.extend( {
 	 * @since 1.0.0
 	 */
     selectImages : function() {
-        var galleryControl = this;
-        var ids = this.ids();
-		var selection = this.getSelection( ids );
-        var frame = wp.media( {
-            frame : 'post',
-            state : ( ids.length ? 'gallery-edit' : 'gallery-library' ),
-            editing : true,
-            multiple : true,
-            selection : selection
-        } );
-		var library;
 
-        frame
-            .on( 'open', function() {
+		_.each( this.getValues(), function( value, media ) {
+			if ( media == this.media ) {
+				var control = this;
+				var ids = control.getIds( value );
+				var selection = this.getSelection( ids );
+				var frame = wp.media( {
+					frame : 'post',
+					state : ( ids.length ? 'gallery-edit' : 'gallery-library' ),
+					editing : true,
+					multiple : true,
+					selection : selection
+				} );
 
-	            // Hide the Cancel Gallery link
-                var mediaFrame = frame.views.get( '.media-frame-menu' )[0];
-                mediaFrame.$el.children().slice( 0, 2 ).hide();
+				var library;
 
-	            library = JSON.stringify( selection.toJSON() );
-            } )
-            .on( 'update', function( collection ) {
-	            var value = collection.pluck( 'id' ).join( ',' );
-	            galleryControl.setSettingValue( value );
+				frame
 
-	            if ( ! _.isEqual( library, JSON.stringify( collection.toJSON() ) ) ) {
-		            galleryControl.model.setting.trigger( 'change', galleryControl.model.setting, value );
-	            }
-	            galleryControl.updateThumbnails( collection );
+					/**
+					 * Hide the Cancel Gallery link and record the original library.
+					 */
+					.on( 'open', function() {
+						var mediaFrame = frame.views.get( '.media-frame-menu' )[0];
+						mediaFrame.$el.children().slice( 0, 2 ).hide();
+						library = JSON.stringify( selection.toJSON() );
+					} )
 
-            } )
-            .on( 'close', function() {
-                frame.dispose();
-            } );
+					/**
+					 * Update the setting value and thumbnails.
+					 */
+					.on( 'update', function( collection ) {
+						var value = collection.pluck( 'id' ).join( ',' );
+						control.setValue( value );
 
-        frame.open();
+						// Trigger change if the images are the same (implies other change)
+						if ( ! _.isEqual( library, JSON.stringify( collection.toJSON() ) ) ) {
+							var setting = control.getSetting( media );
+							setting.trigger( 'change', setting, value );
+						}
+					} )
+
+					/**
+					 * Dispose of the media frame when it's closed.
+					 */
+					.on( 'close', function() {
+						frame.dispose();
+					} );
+
+				frame.open();
+			}
+		}, this );
     },
+
+	/**
+	 * Returns the ID(s) of the selected image(s).
+	 * 
+	 * @since 1.7.2
+	 * 
+	 * @param value
+	 * @returns {*}
+	 */
+	getIds : function( value ) {
+		if ( _.isEmpty( value ) ) {
+			return false;
+		}
+		return value.split( ',' )
+	},
 
 	/**
 	 * Removes all selected images.
@@ -104,9 +124,17 @@ GalleryControl = AbstractControl.extend( {
 	 * @since 1.0.0
 	 */
     removeImages : function() {
-        this.setSettingValue( '' );
-        this.render();
+        this.setValue( '' );
     },
+
+	/**
+	 * Re-renders the control when a setting value changes.
+	 * 
+	 * @since 1.7.2
+	 */
+	onSettingChange : function() {
+		this.render();
+	},
 
 	/**
 	 * Updates the thumbnails when the control is rendered.
@@ -114,45 +142,33 @@ GalleryControl = AbstractControl.extend( {
 	 * @since 1.0.0
 	 */
     onRender : function() {
-        this.generateThumbnails();
-    },
-
-	/**
-	 * Generates image thumbnails.
-	 *
-	 * @since 1.0.0
-	 */
-	generateThumbnails : function() {
-		var gallery = this;
-		var ids = this.ids();
-
-		if ( ids.length ) {
-			var selection = this.getSelection( this.ids() );
-
+		var control = this;
+		_.each( this.getValues(), function( value, media ) {
+			var selection = this.getSelection( control.getIds( value ) );
 			selection.more().done( function() {
 				selection.props.set( { query: false } );
 				selection.unmirror();
 				selection.props.unset( 'orderby' );
-
-				gallery.updateThumbnails( selection );
+				control.updateThumbnails( selection, media );
 			} );
-		}
+		}, this );
+
+		this.updateControlGroups();
 	},
 
 	/**
-	 * Updates image thumbnails based on a selection from the Media Library.
-	 *
-	 * @since 1.0.0
-	 *
+	 * Updates the image thumbnails.
+	 * 
+	 * @since 1.7.2
+	 * 
 	 * @param selection
+	 * @param media
 	 */
-	updateThumbnails : function( selection ) {
+	updateThumbnails : function( selection, media ) {
 		var html = '';
 		var urls = selection.map( function( attachment ) {
-
 			var sizes = attachment.get( 'sizes' );
 			var url;
-
 			if ( sizes.hasOwnProperty( 'medium' ) ) {
 				url = sizes.medium.url;
 			}
@@ -165,7 +181,6 @@ GalleryControl = AbstractControl.extend( {
 			else {
 				url = '';
 			}
-
 			return url;
 		} );
 
@@ -175,7 +190,9 @@ GalleryControl = AbstractControl.extend( {
 			} );
 		}
 
-		this.ui.thumbnails
+		this.ui.controlGroups
+			.filter( '[id^="' + media + '"]' )
+			.find( '.thumbnails' )
 			.removeClass( 'is-loading' )
 			.html( html );
 	},
@@ -200,27 +217,6 @@ GalleryControl = AbstractControl.extend( {
             props : attachments.props.toJSON(),
             multiple: true
         } );
-    },
-	
-    /**
-     * Returns the selected image IDs.
-     *
-     * @since 1.0.0
-     *
-     * @returns {Array|*}
-     */
-    ids : function() {
-        var value = this.getSettingValue();
-        return value ? value.split( ',' ) : false;
-    },
-
-    /**
-     * Restores the default value for the setting.
-     *
-     * @since 1.0.0
-     */
-    restoreDefaultValue : function() {
-        this.setSettingValue( this.getDefaultValue() );
     }
 
 } );

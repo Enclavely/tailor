@@ -65,6 +65,8 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Tab_Element' ) 
 	        $attribute_control_types = array(
 		        'class',
 		        'padding',
+		        'padding_tablet',
+		        'padding_mobile',
 		        'background_image',
 		        'background_repeat',
 		        'background_position',
@@ -87,82 +89,34 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Tab_Element' ) 
 	    public function generate_css( $atts ) {
 		    $css_rules = array();
 		    $excluded_control_types = array(
+			    'background_color',
 			    'padding',
+			    'padding_tablet',
+			    'padding_mobile',
 			    'background_image',
+			    'background_repeat',
+			    'background_position',
+			    'background_size',
+			    'background_attachment',
 		    );
 		    $css_rules = tailor_css_presets( $css_rules, $atts, $excluded_control_types );
 
-		    if ( ! empty( $atts['heading_color'] ) ) {
-			    $css_rules[] = array(
-				    'selectors'         =>  array( '&.tailor-tabs__navigation-item' ),
-				    'declarations'      =>  array(
-					    'color'             =>  esc_attr( $atts['heading_color'] ),
-				    ),
-			    );
-		    }
+		    $selectors = array(
+			    'background_color'          =>  array( '&.tailor-tabs__navigation-item', '&.tailor-tab' ),
+		    );
+		    $css_rules = tailor_generate_color_css_rules( $css_rules, $atts, $selectors );
 
-		    if ( ! empty( $atts['background_color'] ) ) {
-			    $css_rules[] = array(
-				    'selectors'         =>  array( '&.tailor-tabs__navigation-item', '&.tailor-tab' ),
-				    'declarations'      =>  array(
-					    'background-color'  =>  esc_attr( $atts['background_color'] ),
-				    ),
-			    );
-		    }
-
-		    if ( ! empty( $atts['padding'] ) ) {
-			    $values = array_combine( array( 'top', 'right', 'bottom', 'left' ), explode( '-', $atts['padding'] ) );
-
-			    foreach ( $values as $position => $value ) {
-				    if ( ! empty( $value ) ) {
-					    $css_rules[] = array(
-						    'selectors'                 =>  array( '&.tailor-tab' ),
-						    'declarations'              =>  array(
-							    "padding-{$position}"       =>  esc_attr( $value ),
-						    ),
-					    );
-				    }
-			    }
-		    }
-
-		    if (  ! empty( $atts['background_image'] ) && is_numeric( $atts['background_image'] ) ) {
-			    $background_image_info = wp_get_attachment_image_src( $atts['background_image'], 'full' );
-			    $background_image_src = $background_image_info[0];
-
-			    $css_rules[] = array(
-				    'selectors'         =>  array( '&.tailor-tab' ),
-				    'declarations'      =>  array(
-					    'background'        =>  "url('{$background_image_src}') center center no-repeat",
-				    ),
-			    );
-		    }
-
-		    if ( ! empty( $atts['background_repeat'] ) ) {
-			    $css_rules[] = array(
-				    'selectors'         =>  array( '&.tailor-tab' ),
-				    'declarations'      =>  array(
-					    'background-repeat' =>  $atts['background_repeat'],
-				    ),
-			    );
-		    }
-
-		    if ( ! empty( $atts['background_position'] ) ) {
-			    $css_rules[] = array(
-				    'selectors'         =>  array( '&.tailor-tab' ),
-				    'declarations'      =>  array(
-					    'background-position'   =>  $atts['background_position'],
-				    ),
-			    );
-		    }
-
-		    if ( ! empty( $atts['background_size'] ) ) {
-			    $css_rules[] = array(
-				    'selectors'         =>  array( '&.tailor-tab' ),
-				    'declarations'      =>  array(
-					    'background-size'   =>  $atts['background_size'],
-				    ),
-			    );
-		    }
+		    $selectors = array(
+			    'padding'                   =>  array( '&.tailor-tab' ),
+			    'padding_tablet'            =>  array( '&.tailor-tab'),
+			    'padding_mobile'            =>  array( '&.tailor-tab' ),
+			    'background_image'          =>  array( '&.tailor-tab' ),
+			    'background_repeat'         =>  array( '&.tailor-tab' ),
+			    'background_position'       =>  array( '&.tailor-tab' ),
+			    'background_size'           =>  array( '&.tailor-tab' ),
+			    'background_attachment'     =>  array( '&.tailor-tab' ),
+		    );
+		    $css_rules = tailor_generate_attribute_css_rules( $css_rules, $atts, $selectors );
 
 		    return $css_rules;
 	    }

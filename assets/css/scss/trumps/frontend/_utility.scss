@@ -1,30 +1,93 @@
 .#{$global-class-prefix}ui {
 
 	.u-text-left {
-		text-align: left!important;
+		text-align: left;
 	}
 
 	.u-text-center {
-		text-align: center!important;
+		text-align: center;
 	}
 
 	.u-text-right {
-		text-align: right!important;
+		text-align: right;
+	}
+
+	.u-text-justify {
+		text-align: justify;
 	}
 
 	.u-align-top {
-		align-items: flex-start;
 		justify-content: flex-start;
 	}
 
 	.u-align-middle {
-		align-items: center;
 		justify-content: center;
 	}
 
 	.u-align-bottom {
-		align-items: flex-end;
 		justify-content: flex-end;
+	}
+
+	@media #{$tablet} {
+
+		.u-text-left-tablet {
+			text-align: left;
+		}
+
+		.u-text-center-tablet {
+			text-align: center;
+		}
+
+		.u-text-right-tablet {
+			text-align: right;
+		}
+
+		.u-text-justify-tablet {
+			text-align: justify;
+		}
+
+		.u-align-top-tablet {
+			justify-content: flex-start;
+		}
+
+		.u-align-middle-tablet {
+			justify-content: center;
+		}
+
+		.u-align-bottom-tablet {
+			justify-content: flex-end;
+		}
+	}
+
+	@media #{$mobile} {
+
+		.u-text-left-mobile {
+			text-align: left;
+		}
+
+		.u-text-center-mobile {
+			text-align: center;
+		}
+
+		.u-text-right-mobile {
+			text-align: right;
+		}
+
+		.u-text-justify-mobile {
+			text-align: justify;
+		}
+
+		.u-align-top-mobile {
+			justify-content: flex-start;
+		}
+
+		.u-align-middle-mobile {
+			justify-content: center;
+		}
+
+		.u-align-bottom-mobile {
+			justify-content: flex-end;
+		}
 	}
 
 	.u-full-width {

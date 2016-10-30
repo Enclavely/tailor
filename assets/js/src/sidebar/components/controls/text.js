@@ -9,12 +9,7 @@ var AbstractControl = require( './abstract-control' ),
     TextControl;
 
 TextControl = AbstractControl.extend( {
-
-    ui : {
-		'input' : 'input',
-		'default' : '.js-default'
-	},
-
+    
     templateHelpers : {
 
         /**
@@ -32,30 +27,19 @@ TextControl = AbstractControl.extend( {
             return atts;
         }
     },
-
+    
     /**
-     * Provides the required information to the template rendering function.
+     * Provides additional data to the template rendering function.
      *
-     * @since 1.0.0
+     * @since 1.7.2
      *
      * @returns {*}
      */
-    serializeData : function() {
-        var data = Backbone.Marionette.ItemView.prototype.serializeData.apply( this, arguments );
-        var defaultValue = this.getDefaultValue();
-
-        data.value = this.getSettingValue();
-        data.showDefault = null != defaultValue && ( data.value != defaultValue );
-
+    addSerializedData : function( data ) {
         data.attrs = this.model.get( 'input_attrs' );
-
         return data;
-    },
-
-    onRestoreDefault : function() {
-        this.render();
     }
-
+    
 } );
 
 module.exports = TextControl;

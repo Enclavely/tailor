@@ -18,16 +18,52 @@ $control-body-max-width: 350px !default;
 	.control {
 		margin-bottom: $control-spacing-vertical;
 
+		&__header {
+
+			.button {
+				font-weight: 400;
+			}
+		}
+
+		&__buttons {
+			margin: 2px 0;
+			display: inline-block;
+
+			.button-group {
+
+				.button {
+
+					&::before {
+						display: inline-block;
+						-webkit-font-smoothing: antialiased;
+						font: 400 16px/22px dashicons;
+					}
+
+					&.desktop::before {
+						content: "\f472";
+					}
+
+					&.tablet::before {
+						content: "\f471";
+					}
+
+					&.mobile::before {
+						content: "\f470";
+					}
+				}
+			}
+		}
+
 		&__title {
 			display: block;
 			font-size: 14px;
-			line-height: 24px;
 			font-weight: 600;
 			margin-bottom: 5px;
+			height: 28px;
 
-			.button-small {
-				margin-left: 6px;
-				font-weight: 400;
+			span {
+				margin-right: 6px;
+				vertical-align: middle;
 			}
 
 			// Fix for some widget forms
@@ -87,7 +123,8 @@ $control-body-max-width: 350px !default;
 		}
 
 		&__input-label {
-			margin-left: 2px;
+			display: block;
+			margin: 2px 0 6px 2px;
 			color: #a0a5aa;
 		}
 	}
@@ -162,7 +199,7 @@ $control-body-max-width: 350px !default;
 .#{$global-class-prefix}align-middle {
 
 	&::before {
-		content: "\f134";
+		content: "\f207";
 	}
 }
 
@@ -170,7 +207,7 @@ $control-body-max-width: 350px !default;
 .#{$global-class-prefix}align-top {
 
 	&::before {
-		content: "\f135";
+		content: "\f206";
 	}
 }
 
@@ -179,7 +216,14 @@ $control-body-max-width: 350px !default;
 .#{$global-class-prefix}align-bottom {
 
 	&::before {
-		content: "\f136";
+		content: "\f208";
+	}
+}
+
+.#{$global-class-prefix}align-justify {
+
+	&::before {
+		content: "\f214"
 	}
 }
 
@@ -189,7 +233,7 @@ $control-body-max-width: 350px !default;
 
 	&::before {
 		transform: rotate( 90deg );
-		vertical-align: middle;
+		vertical-align: sub;
 		line-height: 1;
 	}
 }

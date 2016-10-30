@@ -32,7 +32,7 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Textarea_Contro
          */
         protected function render_template() { ?>
 
-            <textarea><%= value %></textarea>
+            <textarea name="<%= media %>"><%= values[ media ] %></textarea>
 
             <?php
         }

@@ -24,11 +24,16 @@ $version = tailor()->version(); ?>
 
 		<h3><?php _e( 'Resources', 'tailor' ); ?></h3>
 		<ul>
-			<li><a href="https://tailor.zendesk.com/hc/en-us/categories/202586427" target="_blank"><?php _e( 'Getting started', 'tailor' ); ?></a></li>
-			<li><a href="https://tailor.zendesk.com/hc/en-us/categories/203117247" target="_blank"><?php _e( 'Extending', 'tailor' ); ?></a></li>
-			<li><a href="https://tailor.zendesk.com/hc/en-us/community/topics" target="_blank"><?php _e( 'Community', 'tailor' ); ?></a></li>
+			<li><a href="https://support.gettailor.com/hc/en-us/categories/202586427" target="_blank"><?php _e( 'Getting started', 'tailor' ); ?></a></li>
+			<li><a href="https://support.gettailor.com/hc/en-us/categories/203117247" target="_blank"><?php _e( 'Extending', 'tailor' ); ?></a></li>
+			<li><a href="https://support.gettailor.com/hc/en-us/community/topics" target="_blank"><?php _e( 'Community', 'tailor' ); ?></a></li>
 		</ul>
-		<p><?php printf( __( 'If you like Tailor, please consider %1$srating it!%2$s','tailor' ), '<a href="https://wordpress.org/support/view/plugin-reviews/tailor?rate=5#postform" target="_blank">', '</a>' ); ?></p>
+		<p>
+			<?php printf(
+				__( 'If you like Tailor, please consider %1$srating it!%2$s','tailor' ),
+				'<a href="https://wordpress.org/support/view/plugin-reviews/tailor?rate=5#postform" target="_blank">', '</a>'
+			); ?>
+		</p>
 	</div>
 
 	<div class="settings-form">

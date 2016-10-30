@@ -92,12 +92,12 @@ $grid-column-number : 6 !default;
 
 					flex-wrap: wrap;
 
-					> .#{$grid-class-prefix}grid {
+					//> .#{$grid-class-prefix}grid {
 
-						&__item {
-							@include flex( column );
-						}
-					}
+					//	&__item {
+					//		@include flex( column );
+					//	}
+					//}
 				}
 
 				&.#{$grid-class-prefix}grid--bordered {
@@ -137,6 +137,8 @@ $grid-column-number : 6 !default;
 			min-height: 1px;
 			width: 100%;
 			border: $grid-item-border-width none $grid-border-color;
+
+			@include flex( column );
 		}
 
 		// Variations

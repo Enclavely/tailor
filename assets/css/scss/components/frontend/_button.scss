@@ -29,8 +29,8 @@ $button-box-shadow: $global-box-shadow !default;
 		width: 100%;
 
 		&__inner {
-			display: block;
-			padding: $button-padding ( $button-padding * 1.5 );
+			display: inline-block;
+			padding: ( $button-padding / 2 ) ( $button-padding * 1.5 );
 			margin: 0;
 			text-align: center;
 			cursor: pointer;
@@ -105,13 +105,65 @@ $button-box-shadow: $global-box-shadow !default;
 			}
 		}
 
-		&--block {
-			//font-size: ( $button-font-size * 1.6 );
+		&--block,
+		&.u-text-justify {
 
 			.#{$button-class-prefix}button {
 
 				&__inner {
 					display: block;
+				}
+			}
+		}
+
+		@media #{$tablet} {
+
+			&--block-mobile,
+			&.u-text-justify-tablet {
+
+				.#{$button-class-prefix}button {
+
+					&__inner {
+						display: block;
+					}
+				}
+			}
+
+			&.u-text-left-tablet,
+			&.u-text-center-tablet,
+			&.u-text-right-tablet {
+
+				.#{$button-class-prefix}button {
+
+					&__inner {
+						display: inline-block;
+					}
+				}
+			}
+		}
+
+		@media #{$mobile} {
+
+			&--block-mobile,
+			&.u-text-justify-mobile {
+
+				.#{$button-class-prefix}button {
+
+					&__inner {
+						display: block;
+					}
+				}
+			}
+
+			&.u-text-left-mobile,
+			&.u-text-center-mobile,
+			&.u-text-right-mobile {
+
+				.#{$button-class-prefix}button {
+
+					&__inner {
+						display: inline-block;
+					}
 				}
 			}
 		}
@@ -124,22 +176,34 @@ $button-box-shadow: $global-box-shadow !default;
 		&--large {
 			font-size: ( $button-font-size * 1.6 );
 		}
-	}
-}
 
-//
-// Media queries
-//
-@media #{$tablet-up} {
+		@media #{$tablet} {
 
-	.#{$global-class-prefix}ui {
+			&--small-tablet {
+				font-size: ( $button-font-size * 0.8 );
+			}
 
-		.#{$button-class-prefix}button {
+			&--medium-tablet {
+				font-size: ( $button-font-size );
+			}
 
-			&__inner {
-				display: inline-block;
-				padding-top: ( $button-padding / 2 );
-				padding-bottom: ( $button-padding / 2 );
+			&--large-tablet {
+				font-size: ( $button-font-size * 1.6 );
+			}
+		}
+
+		@media #{$mobile} {
+
+			&--small-mobile {
+				font-size: ( $button-font-size * 0.8 );
+			}
+
+			&--medium-mobile {
+				font-size: ( $button-font-size );
+			}
+
+			&--large-mobile {
+				font-size: ( $button-font-size * 1.6 );
 			}
 		}
 	}

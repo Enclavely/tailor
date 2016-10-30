@@ -22,6 +22,7 @@ $gallery-box-shadow: none !default;
 .#{$global-class-prefix}ui {
 
 	.#{$gallery-class-prefix}gallery {
+		position: relative;
 		padding: $gallery-padding;
 		margin-bottom: $gallery-spacing-vertical;
 		font-size: $gallery-font-size;

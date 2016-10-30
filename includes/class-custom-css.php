@@ -71,6 +71,8 @@ if ( ! class_exists( 'Tailor_Custom_CSS' ) ) {
 	         * Filter the meta key used to store custom CSS.
 	         * 
 	         * @since 1.4.0
+	         *
+	         * @param string
 	         */
 	        $this->custom_css_key = (string) apply_filters( 'tailor_custom_css_key', '_tailor_page_css' );
 
@@ -78,6 +80,8 @@ if ( ! class_exists( 'Tailor_Custom_CSS' ) ) {
 	         * Filter the meta key used to store dynamic CSS.
 	         * 
 	         * @since 1.4.0
+	         *
+	         * @param string
 	         */
 	        $this->dynamic_css_key = (string) apply_filters( 'tailor_dynamic_css_key', '_tailor_element_css' );
 
@@ -106,6 +110,8 @@ if ( ! class_exists( 'Tailor_Custom_CSS' ) ) {
 
 	        // Update CSS rule sets when the model collection changes
 	        add_action( 'tailor_change_collection', array( $this, 'save_dynamic_css_rules' ), 10, 2 );
+
+	        add_filter( 'tailor_get_custom_css', array( $this, 'add_dynamic_css' ) );
         }
 
 	    /**
@@ -157,7 +163,6 @@ if ( ! class_exists( 'Tailor_Custom_CSS' ) ) {
 		    if ( ! empty( $sanitized_models ) ) {
 			    foreach ( (array) $sanitized_models as $sanitized_model ) {
 				    $element = tailor_elements()->get_element( $sanitized_model['tag'] );
-
 				    if ( ! method_exists( $element, 'generate_css' ) ) {
 					    continue;
 				    }
@@ -458,6 +463,39 @@ if ( ! class_exists( 'Tailor_Custom_CSS' ) ) {
 		    $custom_css = apply_filters( 'tailor_get_custom_css', $custom_css, $post_id );
 
 		    return $custom_css;
+	    }
+
+	    /**
+	     * Adds CSS based on Customizer/page settings to the custom page CSS.
+	     *
+	     * @since 1.7.2
+	     *
+	     * @param $custom_page_css
+	     *
+	     * @return string
+	     */
+	    public function add_dynamic_css( $custom_page_css ) {
+		    $post_id = get_the_ID();
+		    $css_rule_sets = tailor_css()->get_setting_css_rules();
+
+		    if ( ! empty( $css_rule_sets ) ) {
+			    foreach ( $css_rule_sets as $setting_id => $css_rules ) {
+				    $setting_value = get_post_meta( $post_id, $setting_id, true );
+				    if ( empty( $setting_value ) ) {
+					    continue;
+				    }
+
+				    if ( ! empty( $css_rules ) ) {
+					    foreach ( $css_rules as $css_rule ) {
+						    $selectors = implode(  ",\n", $css_rule['selectors'] );
+						    $declarations = tailor_css()->parse_declarations( $css_rule['declarations'], '' );
+						    $custom_page_css .= str_replace( '{{value}}', $setting_value, "{$selectors} {\n{$declarations}}\n" );
+					    }
+				    }
+			    }
+		    }
+
+		    return $custom_page_css;
 	    }
 
 	    /**
