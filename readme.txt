@@ -134,10 +134,10 @@ Yes, however, users should be directed to the WordPress plugin repository to ins
 == Changelog ==
 
 = 1.7.2 =
-* Added - Support for desktop, tablet and mobile settings within all default controls.
+* Added - Support for desktop, tablet and mobile settings within all default controls. [Read more](https://medium.com/@tailorwp/responsive-design-made-easy-c082cde3355c).
 * Added - Desktop, tablet and mobile options for: margin, padding, border width, width, height, alignment and spacing settings.
 * Added - Font family and size selection within the Content element editor.
-* Added - Custom color palettes for colorpickers and the color selector within the Content element editor.
+* Added - Custom color palettes for colorpickers and the color selector within the Content element editor. [Read more](https://medium.com/@tailorwp/easy-color-management-f33f4255b29b).
 * Added - Live previews for a variety of Button, Box, List Item, Grid, Tab and Toggle settings.
 * Added - Ability to force re-render of element during live preview update.
 * Improved - Priority ordering for panels, sections and controls [GitHub PR #62](https://github.com/andrew-worsfold/tailor/pull/62).

@@ -8,6 +8,7 @@ This is the official GitHub repository for the Tailor page builder WordPress plu
 * Drag and drop templates.
 * History snapshots and undo/redo.
 * [Device previews](http://andrewworsfold.com/2016/06/25/device-previews/) for mobile, tablet and desktop screen sizes.
+* Support for device-specific settings.
 * Support for built-in and third-party widgets.
 * Support for WordPress features (multimedia, shortcodes and more). 
 * Simple yet comprehensive configuration options.
