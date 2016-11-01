@@ -56,42 +56,59 @@ Stylesheet.prototype = {
     addRules : function( ruleSet ) {
 		for ( var elementId in ruleSet ) {
 			if ( ruleSet.hasOwnProperty( elementId ) ) {
-
 				this.lookup = this.lookup || [];
 
 				// Add rules for each element
-				for ( var rule in ruleSet[ elementId ] ) {
-
-					// Check that the data is correctly formatted
-					if (
-						ruleSet[ elementId ].hasOwnProperty( rule ) &&
-						_.has( ruleSet[ elementId ][ rule ], 'selectors' ) &&
-						_.has( ruleSet[ elementId ][ rule ], 'declarations' ) &&
-						_.has( ruleSet[ elementId ][ rule ], 'setting' )
-					) {
-						var selectorString = Tailor.CSS.parseSelectors( ruleSet[ elementId ][ rule ]['selectors'], elementId );
-						var declarationString = Tailor.CSS.parseDeclarations( ruleSet[ elementId ][ rule ]['declarations'] );
-						
-						if ( ! _.isEmpty( declarationString ) ) {
-
-							// Add the rule to the stylesheet
-							Tailor.CSS.addRule(
-								this.sheet,
-								selectorString,
-								declarationString,
-								this.lookup.length
-							);
-
-							// Add rule data to the lookup array
-							this.lookup.push( {
-								elementId: elementId,
-								settingId: ruleSet[ elementId ][ rule ]['setting']
-							} );
-						}
+				for ( var i in ruleSet[ elementId ] ) {
+					if ( ruleSet[ elementId ].hasOwnProperty( i ) ) {
+						this.addRule( elementId, ruleSet[ elementId ][ i ] );
 					}
 				}
 			}
 		}
+	},
+
+	/**
+	 * Adds a rule to the stylesheet.
+	 *
+	 * @since 1.7.3
+	 *
+	 * @param elementId
+	 * @param rule
+	 */
+	addRule : function( elementId, rule ) {
+		if ( this.checkRule( rule ) ) {
+			var selectors = Tailor.CSS.parseSelectors( rule['selectors'], elementId );
+			var declarations = Tailor.CSS.parseDeclarations( rule['declarations'] );
+
+			if ( ! _.isEmpty( declarations ) ) {
+				var settingId = rule['setting'];
+
+				// this.deleteRules( elementId, settingId );
+
+				// Add the rule to the stylesheet and lookup array
+				Tailor.CSS.addRule( this.sheet, selectors, declarations, this.lookup.length );
+				
+				this.lookup.push( {
+					elementId: elementId,
+					settingId: settingId
+				} );
+			}
+		}
+	},
+
+	/**
+	 * Returns true if the rule is properly formatted.
+	 *
+	 * @since 1.7.3
+	 *
+	 * @param rule
+	 * @returns {*|Boolean}
+	 */
+	checkRule : function( rule ) {
+		return _.has( rule, 'selectors' ) &&
+		       _.has( rule, 'declarations' ) &&
+		       _.has( rule, 'setting' );
 	},
 
 	/**
@@ -131,7 +148,6 @@ Stylesheet.prototype = {
     deleteRules : function( elementId, settingId ) {
 		for ( var i = 0; i < this.sheet.cssRules.length; i++ ) {
 			if ( _.has( this.lookup[ i ], 'elementId' ) && elementId == this.lookup[ i ]['elementId'] ) {
-
 				if ( _.isEmpty( settingId ) ) {
 					this.deleteRule( i );
 					i--;

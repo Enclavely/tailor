@@ -10,12 +10,14 @@ SelectMenuView = Marionette.CompositeView.extend( {
 	childViewContainer : '.select__menu',
 
 	ui : {
+		'add' : '.js-add',
 		'edit' : '.js-edit',
 		'copy' : '.js-copy',
 		'delete' : '.js-delete'
 	},
 
     events : {
+        'click @ui.add' : 'addElement',
         'click @ui.edit' : 'editElement',
         'click @ui.copy' : 'copyElement',
         'click @ui.delete' : 'deleteElement'
@@ -40,6 +42,7 @@ SelectMenuView = Marionette.CompositeView.extend( {
      */
     serializeData : function() {
         var data = Backbone.Marionette.CompositeView.prototype.serializeData.apply( this, arguments );
+        data.type = this.model.get( 'type' );
         data.siblings = this.collection.where( { parent : this.model.get( 'parent' ) } ).length;
         return data;
     },
@@ -89,6 +92,27 @@ SelectMenuView = Marionette.CompositeView.extend( {
         this.el.style.height = thatRect.height + 'px';
     },
 
+	/**
+     * Adds a child to the container element.
+     *
+     * @since 1.7.3
+     */
+    addElement : function() {
+        var child = this.model.collection.createChild( this.model );
+        
+        // Set the collection to library to ensure the history snapshot is created
+        child.set( 'collection', 'library', { silent : true } );
+
+        /**
+         * Fires when a child element is added.
+         *
+         * @since 1.7.3
+         *
+         * @param this.model
+         */
+        app.channel.trigger( 'element:add', child );
+    },
+
     /**
      * Edits the target element.
      *
@@ -110,7 +134,6 @@ SelectMenuView = Marionette.CompositeView.extend( {
      * @since 1.6.2
      */
     copyElement : function() {
-
         this.model.copyAfter( this._view, this._view );
 
         /**

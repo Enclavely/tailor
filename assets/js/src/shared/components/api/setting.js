@@ -71,20 +71,16 @@ var onElementChange = function( setting, view ) {
             // Get the collection of rules from the callback function
             rules = callback.apply( view, [ setting.get( 'value' ), setting.previous( 'value' ), view.model ] );
 
+            // Re-render the element if the the callback function returns a value of false
             if ( false === rules ) {
                 view.model.trigger( 'change:atts', view.model, view.model.get( 'atts' ) );
             }
-            
-            if ( _.isArray( rules ) && rules.length > 0 ) {
+            else if ( _.isArray( rules ) && rules.length > 0 ) {
 
                 // Process the rules
                 for ( var rule in rules ) {
                     if ( rules.hasOwnProperty( rule ) ) {
-                        
-                        if (
-                            ! rules[ rule ].hasOwnProperty( 'selectors' ) ||
-                            ! rules[ rule ].hasOwnProperty( 'declarations' )
-                        ) {
+                        if ( ! rules[ rule ].hasOwnProperty( 'selectors' ) || ! rules[ rule ].hasOwnProperty( 'declarations' ) ) {
                             continue;
                         }
                         
@@ -96,7 +92,7 @@ var onElementChange = function( setting, view ) {
                             ruleSets[ query ][ elementId ].push( {
                                 selectors: rules[ rule ].selectors,
                                 declarations: rules[ rule ].declarations,
-                                setting: settingId
+                                setting: rules[ rule ].setting || settingId
                             } );
                         }
                     }

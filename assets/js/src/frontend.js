@@ -3,20 +3,20 @@ var $ = window.jQuery;
 window.Tailor = window.Tailor || {};
 
 // Include polyfills
-require( '../shared/utility/polyfills/classlist' );
-require( '../shared/utility/polyfills/raf' );
-require( '../shared/utility/polyfills/transitions' );
+require( './shared/utility/polyfills/classlist' );
+require( './shared/utility/polyfills/raf' );
+require( './shared/utility/polyfills/transitions' );
 
 // Include shared components
-require( '../shared/components/ui/tabs' );
-require( '../shared/components/ui/toggles' );
-require( '../shared/components/ui/map' );
-require( '../shared/components/ui/lightbox' );
-require( '../shared/components/ui/slideshow' );
-require( '../shared/components/ui/parallax' );
+require( './shared/components/ui/tabs' );
+require( './shared/components/ui/toggles' );
+require( './shared/components/ui/map' );
+require( './shared/components/ui/lightbox' );
+require( './shared/components/ui/slideshow' );
+require( './shared/components/ui/parallax' );
 
 // Include frontend-only components
-require( './components/ui/carousel' );
+require( './frontend/components/ui/carousel' );
 
 window.Tailor.initElements = function() {
 
@@ -93,6 +93,11 @@ window.Tailor.initElements = function() {
 		}
 	} );
 
+	$( '.is-lightbox-image' ).each( function() {
+		$( this ).tailorLightbox( {
+			delegate : false
+		} );
+	} );
 };
 
 // Initialize elements when the document is ready

@@ -148,7 +148,7 @@ if ( ! function_exists( 'tailor_get_image_sizes' ) ) {
 					'%1$s (%2$spx x %3$spx)',
 					ucwords( str_replace( '_', ' ', str_replace( '-', ' ', $key ) ) ),
 					$image_size['width'],
-					$image_size['width']
+					$image_size['height']
 				);
 			}
 			else {

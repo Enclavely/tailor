@@ -104,12 +104,12 @@ ElementModel = BaseModel.extend( {
 		var index = targetView.model.get( 'order' );
 
 		clone.set( 'id', clone.cid );
-		clone.set( 'parent', targetView.model.get( 'parent' ) );//, { silent : true } );
-		clone.set( 'order', index );//, { silent : true } );
+		clone.set( 'parent', targetView.model.get( 'parent' ) );
+		clone.set( 'order', index );
 
 		this.createTemplate( clone.cid, sourceView );
 
-		this.collection.add( clone );//, { at : index } );
+		this.collection.add( clone );
 	},
 
 	/**

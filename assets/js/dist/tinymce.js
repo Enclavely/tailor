@@ -122,4 +122,5 @@
     tinymce.PluginManager.add( 'tailoricon', tinymce.plugins.tailoricon );
 
 } ) ( tinymce, jQuery );
+
 },{}]},{},[1]);

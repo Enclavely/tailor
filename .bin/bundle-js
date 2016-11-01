@@ -1,0 +1,5 @@
+browserify assets/js/src/canvas.js > assets/js/dist/canvas.js
+browserify assets/js/src/sidebar.js > assets/js/dist/sidebar.js
+browserify assets/js/src/frontend.js > assets/js/dist/frontend.js
+browserify assets/js/src/admin.js > assets/js/dist/admin.js
+browserify assets/js/src/tinymce.js > assets/js/dist/tinymce.js

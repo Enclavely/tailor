@@ -211,7 +211,9 @@ var $ = Backbone.$,
 			"pc",
 			"em",
 			"rem",
-			"ex"
+			"ex",
+			'vw',
+			'vh'
 		];
 		var matches = string.match( new RegExp( '/' + map.join( '|') + '/' ) );
 		if ( matches ) {
@@ -259,7 +261,8 @@ var $ = Backbone.$,
 	 * @returns {*|void|{style, text, priority, click}|XML}
 	 */
 	window.tailorValidateNumber = function( string ) {
-		return string.replace( /[^0-9,.]+/i, '' );
+		string = string.replace( /[^0-9,.]+/i, '' );
+		return ! _.isEmpty( string ) ? string : '0';
 	};
 
 	/**
@@ -405,8 +408,10 @@ var $ = Backbone.$,
 		/**
 		 * Element settings.
 		 */
+		window.Tailor.Settings.overrides = {
 
-		var overrides = {
+			// Global overrides
+			'*' : {},
 
 			'tailor_button' : {
 				'color_hover' : [ [ '.tailor-button__inner:hover', '.tailor-button__inner:focus' ], 'color', 'tailorValidateColor' ],
@@ -469,6 +474,12 @@ var $ = Backbone.$,
 				}
 			},
 
+			'tailor_grid_item' : {
+				'padding' : [ [ '&.tailor-grid__item' ], 'padding-{0}', 'tailorValidateUnit' ],
+				'padding_tablet' : [ [ '&.tailor-grid__item' ], 'padding-{0}', 'tailorValidateUnit' ],
+				'padding_mobile' : [ [ '&.tailor-grid__item' ], 'padding-{0}', 'tailorValidateUnit' ]
+			},
+
 			'tailor_tabs' : {
 				'border_color' : [ [ '.tailor-tabs__navigation-item', '.tailor-tab' ], 'border-color', 'tailorValidateColor' ]
 			},
@@ -504,34 +515,45 @@ var $ = Backbone.$,
 		};
 
 		/**
+		 * Returns the CSS rule definition to be used for the element/setting.
+		 *
+		 * @since 1.7.3
+		 */
+		function getDefinition( tag, id, definition ) {
+			if ( window.Tailor.Settings.overrides['*'].hasOwnProperty( id ) ) {
+				return window.Tailor.Settings.overrides['*'][ id ];
+			}
+			if ( window.Tailor.Settings.overrides.hasOwnProperty( tag ) && window.Tailor.Settings.overrides[ tag ].hasOwnProperty( id ) ) {
+				return window.Tailor.Settings.overrides[ tag ][ id ];
+			}
+			return definition;
+		}
+
+		/**
 		 * Registers an Element Setting API callback function.
 		 *
 		 * @since 1.7.2
 		 *
-		 * @param settings
+		 * @param definitions
 		 */
-		function registerCallbacks( settings ) {
-			_.each( settings, function( setting, id ) {
+		function registerCallbacks( definitions ) {
+			_.each( definitions, function( definition, id ) {
 				SettingAPI.onChange( 'element:' + id, function( to, from, model ) {
-					var tag = model.get( 'tag' );
-					if ( overrides.hasOwnProperty( tag ) && overrides[ tag ].hasOwnProperty( id ) ) {
-						setting = overrides[ tag ][ id ];
-					}
-					
-					if ( 'function' == typeof setting ) {
-						return setting.call( this, to, from, model );
+					definition = getDefinition( model.get( 'tag' ), id, definition );
+					if ( 'function' == typeof definition ) {
+						return definition.call( this, to, from, model );
 					}
 					
 					var rule = {
 						media: getMediaQuery( id ),
-						selectors: setting[0],
+						selectors: definition[0],
 						declarations: {}
 					};
-					if ( 'function' == typeof window[ setting[2] ] ) {
-						rule.declarations[ setting[1] ] = window[ setting[2] ]( to );
+					if ( 'function' == typeof window[ definition[2] ] ) {
+						rule.declarations[ definition[1] ] = window[ definition[2] ]( to );
 					}
 					else {
-						rule.declarations[ setting[1] ] = to;
+						rule.declarations[ definition[1] ] = to;
 					}
 					return [ rule ];
 				} );
@@ -662,27 +684,21 @@ var $ = Backbone.$,
 					return false;
 				}
 
-				var tag = model.get( 'tag' );
-				var setting = [ [], 'background-color', 'tailorValidateColor' ];
-				if ( overrides.hasOwnProperty( tag ) && overrides[ tag ].hasOwnProperty( 'background_color' ) ) {
-					setting = overrides[ tag ][ 'background_color' ];
-				}
-
-				if ( 'function' == typeof setting ) {
-					return setting.call( this, to, from, model );
+				var definition = getDefinition( model.get( 'tag' ), id, [ [], 'background-color', 'tailorValidateColor' ] );
+				if ( 'function' == typeof definition ) {
+					return definition.call( this, to, from, model );
 				}
 
 				var rule = {
-					selectors: setting[0],
+					selectors: definition[0],
 					declarations: {}
 				};
-				if ( 'function' == typeof window[ setting[2] ] ) {
-					rule.declarations[ setting[1] ] = window[ setting[2] ]( to );
+				if ( 'function' == typeof window[ definition[2] ] ) {
+					rule.declarations[ definition[1] ] = window[ definition[2] ]( to );
 				}
 				else {
-					rule.declarations[ setting[1] ] = to;
+					rule.declarations[ definition[1] ] = to;
 				}
-
 				return [ rule ];
 			},
 			'background_color_hover' : [ [ ':hover' ], 'background-color', 'tailorValidateColor' ],
@@ -904,21 +920,21 @@ var $ = Backbone.$,
 					}
 				}
 			},
-			'border_style' : [ [], 'border-style', 'tailorValidateUnit' ],
+			'border_style' : [ [], 'border-style', 'tailorValidateString' ],
 			'border_radius' : [ [], 'border-radius', 'tailorValidateUnit' ],
 			'background_repeat' : [ [], 'background-repeat', 'tailorValidateString' ],
 			'background_position' : [ [], 'background-position', 'tailorValidateString' ],
 			'background_size' : [ [], 'background-size', 'tailorValidateString' ],
 			'background_attachment' : [ [], 'background-attachment', 'tailorValidateString' ],
 			'shadow' : function( to, from, model ) {
+				var definition = getDefinition( model.get( 'tag' ), 'shadow' [ [] ] );
+				if ( 'function' == typeof definition ) {
+					return definition.call( this, to, from, model );
+				}
+
 				if ( 1 == to ) {
-					var tag = model.get( 'tag' );
-					var setting = [ [] ];
-					if ( overrides.hasOwnProperty( tag ) && overrides[ tag ].hasOwnProperty('shadow') ) {
-						setting = overrides[ tag ]['shadow'];
-					}
 					return [ {
-						selectors: setting[0],
+						selectors: definition[0],
 						declarations: {
 							'box-shadow' : '0 2px 6px rgba(0, 0, 0, 0.1)'
 						}
@@ -941,30 +957,26 @@ var $ = Backbone.$,
 			'border_width' : [ [], 'border-{0}-width', 'tailorValidateUnit' ],
 			'border_width_tablet' : [ [], 'border-{0}-width', 'tailorValidateUnit' ],
 			'border_width_mobile' : [ [], 'border-{0}-width', 'tailorValidateUnit' ]
-		}, function( setting, id ) {
+		}, function( definition, id ) {
 			SettingAPI.onChange( ( 'element:' + id ), function( to, from, model ) {
-				var tag = model.get( 'tag' );
-				if ( overrides.hasOwnProperty( tag ) && overrides[ tag ].hasOwnProperty( id ) ) {
-					setting = overrides[ tag ][ id ];
-				}
-
-				if ( 'function' == typeof setting ) {
-					return setting.call( this, to, from, model );
+				definition = getDefinition( model.get( 'tag' ), id, definition );
+				if ( 'function' == typeof definition ) {
+					return definition.call( this, to, from, model );
 				}
 
 				var rules = [];
 				var rule = {
 					media: getMediaQuery( id ),
-					selectors: setting[0],
+					selectors: definition[0],
 					declarations: {}
 				};
 
 				_.each( getStyleValues( to ), function( value, position ) {
-					if ( 'function' == typeof window[ setting[3] ] ) {
-						rule.declarations[ setting[1].replace( '{0}', position ) ] = window[ setting[2] ]( value );
+					if ( 'function' == typeof window[ definition[3] ] ) {
+						rule.declarations[ definition[1].replace( '{0}', position ) ] = window[ definition[2] ]( value );
 					}
 					else {
-						rule.declarations[ setting[1].replace( '{0}', position ) ] = value;
+						rule.declarations[ definition[1].replace( '{0}', position ) ] = value;
 					}
 				} );
 

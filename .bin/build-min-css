@@ -1,0 +1,6 @@
+node-sass --output-style compressed --sourceMap assets/css/admin.min.css.map assets/scss/admin.scss assets/css/admin.min.css
+node-sass --output-style compressed --sourceMap assets/css/canvas.min.css.map assets/scss/canvas.scss assets/css/canvas.min.css
+node-sass --output-style compressed --sourceMap assets/css/frontend.min.css.map assets/scss/frontend.scss assets/css/frontend.min.css
+node-sass --output-style compressed --sourceMap assets/css/ie.min.css.map assets/scss/ie.scss assets/css/ie.min.css
+node-sass --output-style compressed --sourceMap assets/css/sidebar.min.css.map assets/scss/sidebar.scss assets/css/sidebar.min.css
+node-sass --output-style compressed --sourceMap assets/css/tinymce.min.css.map assets/scss/tinymce.scss assets/css/tinymce.min.css

@@ -2,7 +2,7 @@
 Contributors: andrew.worsfold
 Donate link: http://gettailor.com/donate/
 Tags: page, layout, builder, frontend, content, page builder, drag and drop builder, home page builder, landing page builder, layout builder, frontend builder, frontend editor, responsive, visual composer, beaver builder
-Stable tag: 1.7.2
+Stable tag: 1.7.3
 Requires at least: 4.3
 Tested up to: 4.7
 License: GPLv3 or later
@@ -132,6 +132,14 @@ Yes.  Tailored pages can be migrated like any other type of page using the [dupl
 Yes, however, users should be directed to the WordPress plugin repository to install the latest version of the plugin.  Consider using a tool like [TGM Plugin Activation](http://tgmpluginactivation.com/) to guide users through the installation process.
 
 == Changelog ==
+
+= 1.7.3 =
+* Added - Add button to container elements (e.g., Carousels, Grids, Lists, Tabs and Toggles).
+* Added - Support for vh and vw units [GitHub #65](https://github.com/andrew-worsfold/tailor/issues/65).
+* Added - Ability for third-party extensions to override live CSS rule generation for all default elements.
+* Fixed - Grid Item padding custom CSS selectors are not specific enough to override default styles [GitHub #64](https://github.com/andrew-worsfold/tailor/issues/64).
+* Fixed - Incorrect validation being performed for border-style setting.
+* Developer - Moved SCSS folder to assets folder.
 
 = 1.7.2 =
 * Added - Support for desktop, tablet and mobile settings within all default controls. [Read more](https://medium.com/@tailorwp/responsive-design-made-easy-c082cde3355c).

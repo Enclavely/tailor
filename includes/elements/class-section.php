@@ -231,21 +231,8 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Section_Element
 		    );
 		    $css_rules = tailor_generate_general_css_rules( $css_rules, $atts, $selectors );
 
-		    // Background video
-		    if ( ! empty( $atts['background_video'] ) ) {
-			    if ( ! empty( $atts['overlay_color'] ) ) {
-				    $css_rules[] = array(
-					    'setting'           =>  'overlay_color',
-					    'selectors'         =>  array( '.tailor-video-overlay' ),
-					    'declarations'      =>  array(
-						    'background-color'  =>  esc_attr( $atts['overlay_color'] ),
-					    ),
-				    );
-			    }
-		    }
-
 		    // Parallax background image
-		    else if ( ! empty( $atts['background_image'] ) ) {
+		    if ( ! empty( $atts['background_image'] ) ) {
 			    if ( 1 == $atts['parallax'] && $background_image_url = wp_get_attachment_image_url( $atts['background_image'], 'full' ) ) {
 
 				    // Prevent default background image styles from being applied

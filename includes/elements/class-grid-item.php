@@ -92,8 +92,19 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Grid_Item_Eleme
 	     */
 	    public function generate_css( $atts = array() ) {
 		    $css_rules = array();
-		    $excluded_control_types = array();
+		    $excluded_control_types = array(
+			    'padding',
+			    'padding_tablet',
+			    'padding_mobile',
+		    );
 		    $css_rules = tailor_css_presets( $css_rules, $atts, $excluded_control_types );
+
+		    $selectors = array(
+			    'padding'                   =>  array( '&.tailor-grid__item' ),
+			    'padding_tablet'            =>  array( '&.tailor-grid__item' ),
+			    'padding_mobile'            =>  array( '&.tailor-grid__item' ),
+		    );
+		    $css_rules = tailor_generate_attribute_css_rules( $css_rules, $atts, $selectors );
 
 		    return $css_rules;
 	    }

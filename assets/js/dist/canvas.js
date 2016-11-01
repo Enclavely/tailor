@@ -1,4 +1,176 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+( function( window, $ ) {
+
+    // Do nothing if the canvas does not exist in the page
+    if ( null == document.getElementById( "canvas" ) ) {
+        console.error( 'The canvas does not exist in the page.  This could be caused by a plugin or theme conflict.' );
+        return;
+    }
+
+    // Include utilities
+    require( './shared/utility/polyfills/classlist' );
+    require( './shared/utility/polyfills/raf' );
+    require( './shared/utility/polyfills/transitions' );
+    require( './shared/utility/ajax' );
+
+    // Include components
+    require( './shared/components/ui/tabs' );
+    require( './shared/components/ui/toggles' );
+    require( './shared/components/ui/map' );
+    require( './shared/components/ui/masonry' );
+    require( './shared/components/ui/slideshow' );
+    require( './shared/components/ui/lightbox' );
+    require( './shared/components/ui/parallax' );
+    require( './canvas/components/ui/carousel' );
+    require( './canvas/components/ui/carousel-simple' );
+    Marionette.Behaviors.behaviorsLookup = function() {
+        return {
+            Container:          require( './canvas/components/behaviors/container' ),
+            Droppable:          require( './canvas/components/behaviors/droppable' ),
+            Editable:           require( './canvas/components/behaviors/editable' ),
+            Movable:            require( './canvas/components/behaviors/movable' ),
+            Draggable:          require( './shared/components/behaviors/draggable' )
+        };
+    };
+    
+    // Create the app
+    var App = require( './canvas/app' );
+    window.app = new App();
+
+    // Create the Tailor object
+    window.Tailor = {
+        Api : {
+            Setting :   require( './shared/components/api/setting' ),
+            Element :   require( './canvas/components/api/element' )
+        },
+        CSS :       require( './shared/utility/css' ),
+        Models :    {},
+        Views :     {},
+        Settings :  {}
+    };
+
+    app.addRegions( {
+        canvasRegion : {
+            selector : "#canvas",
+            regionClass : require( './canvas/modules/canvas/canvas-region' )
+        },
+        selectRegion : {
+            selector : "#select",
+            regionClass : require( './canvas/modules/tools/select-region' )
+        }
+    } );
+
+    // Initialize preview
+    require( './canvas/preview' );
+
+    app.on( 'before:start', function() {
+
+        // Load element-specific models
+        Tailor.Models.Section =             require( './canvas/entities/models/wrappers/section' );
+        Tailor.Models.Row =                 require( './canvas/entities/models/containers/row' );
+        Tailor.Models.Column =              require( './canvas/entities/models/children/column' );
+        Tailor.Models.GridItem =            require( './canvas/entities/models/children/grid-item' );
+        Tailor.Models.Tabs =                require( './canvas/entities/models/containers/tabs' );
+        Tailor.Models.Carousel =            require( './canvas/entities/models/containers/carousel' );
+        Tailor.Models.Container =           require( './canvas/entities/models/element-container' );
+        Tailor.Models.Wrapper =             require( './canvas/entities/models/element-wrapper' );
+        Tailor.Models.Child =               require( './canvas/entities/models/element-child' );
+        Tailor.Models.Default =             require( './canvas/entities/models/element' );
+
+        // Load views
+        Tailor.Views.Section =              require( './canvas/components/elements/wrappers/section' );
+        Tailor.Views.Column =               require( './canvas/components/elements/children/column' );
+        Tailor.Views.Tab =                  require( './canvas/components/elements/children/tab' );
+        Tailor.Views.CarouselItem =         require( './canvas/components/elements/children/carousel-item' );
+        Tailor.Views.Tabs =                 require( './canvas/components/elements/containers/tabs' );
+        Tailor.Views.Carousel =             require( './canvas/components/elements/containers/carousel' );
+        Tailor.Views.Container =            require( './canvas/components/elements/element-container' );
+        Tailor.Views.Wrapper =              require( './canvas/components/elements/element-container' );
+        Tailor.Views.Child =                require( './canvas/components/elements/element-container' );
+        Tailor.Views.Default =              require( './canvas/components/elements/element' );
+
+        /**
+         * Returns the element name (in title case) based on the tag or type.
+         *
+         * @since 1.5.0
+         *
+         * @param string
+         */
+        function getName( string ) {
+            string = string || '';
+            return string
+                .replace( /_|-|tailor_/gi, ' ' )
+                .replace( /(?: |\b)(\w)/g, function( key ) {
+                    return key.toUpperCase().replace( /\s+/g, '' );
+                } );
+        }
+
+        /**
+         * Returns the appropriate object based on tag or type.
+         *
+         * @since 1.5.0
+         *
+         * @param tag
+         * @param type
+         * @param object
+         * @returns {*}
+         */
+        Tailor.lookup = function( tag, type, object ) {
+            if ( ! Tailor.hasOwnProperty( object ) ) {
+                console.error( 'Object type ' + object + ' does not exist' );
+                return;
+            }
+
+            var name = getName( tag );
+            if ( Tailor[ object ].hasOwnProperty( name ) ) {
+                return Tailor[ object ][ name ];
+            }
+
+            if ( type ) {
+                name = getName( type );
+                if ( Tailor[ object ].hasOwnProperty( name ) ) {
+                    return Tailor[ object ][ name ];
+                }
+            }
+
+            return Tailor[ object ].Default;
+        };
+    } );
+
+    app.on( 'start', function() {
+
+        // Load modules
+        app.module( 'module:elements', require( './canvas/modules/elements/elements' ) );
+        app.module( 'module:templates', require( './canvas/modules/templates/templates' ) );
+        app.module( 'module:canvas', require( './canvas/modules/canvas/canvas' ) );
+        app.module( 'module:tools', require( './canvas/modules/tools/tools' ) );
+        app.module( 'module:css', require( './canvas/modules/css/css' ) );
+    } );
+
+    $( document ).ready( function() {
+
+        // Start the app
+        app.start( {
+            elements : window._elements || [],
+            nonces : window._nonces || [],
+            mediaQueries : window._media_queries || {},
+            cssRules : window._css_rules || {}
+        } );
+        
+        /**
+         * Fires when the canvas is initialized.
+         *
+         * @since 1.5.0
+         *
+         * @param app
+         */
+        app.channel.trigger( 'canvas:initialize', app );
+    } );
+
+} ( window, Backbone.$ ) );
+
+//require( './utility/debug' );
+},{"./canvas/app":2,"./canvas/components/api/element":3,"./canvas/components/behaviors/container":4,"./canvas/components/behaviors/droppable":5,"./canvas/components/behaviors/editable":6,"./canvas/components/behaviors/movable":7,"./canvas/components/elements/children/carousel-item":8,"./canvas/components/elements/children/column":9,"./canvas/components/elements/children/tab":10,"./canvas/components/elements/containers/carousel":11,"./canvas/components/elements/containers/tabs":16,"./canvas/components/elements/element":18,"./canvas/components/elements/element-container":17,"./canvas/components/elements/wrappers/section":19,"./canvas/components/ui/carousel":21,"./canvas/components/ui/carousel-simple":20,"./canvas/entities/models/children/column":23,"./canvas/entities/models/children/grid-item":24,"./canvas/entities/models/containers/carousel":25,"./canvas/entities/models/containers/row":26,"./canvas/entities/models/containers/tabs":27,"./canvas/entities/models/element":33,"./canvas/entities/models/element-child":29,"./canvas/entities/models/element-container":31,"./canvas/entities/models/element-wrapper":32,"./canvas/entities/models/wrappers/section":34,"./canvas/modules/canvas/canvas":36,"./canvas/modules/canvas/canvas-region":35,"./canvas/modules/css/css":38,"./canvas/modules/elements/elements":40,"./canvas/modules/templates/templates":41,"./canvas/modules/tools/select-region":42,"./canvas/modules/tools/tools":46,"./canvas/preview":47,"./shared/components/api/setting":48,"./shared/components/behaviors/draggable":49,"./shared/components/ui/lightbox":50,"./shared/components/ui/map":51,"./shared/components/ui/masonry":52,"./shared/components/ui/parallax":53,"./shared/components/ui/slideshow":54,"./shared/components/ui/tabs":55,"./shared/components/ui/toggles":56,"./shared/utility/ajax":57,"./shared/utility/css":58,"./shared/utility/polyfills/classlist":59,"./shared/utility/polyfills/raf":60,"./shared/utility/polyfills/transitions":61}],2:[function(require,module,exports){
 /**
  * The Canvas Marionette application.
  */
@@ -176,179 +348,7 @@ CanvasApplication = Marionette.Application.extend( {
 } );
 
 module.exports = CanvasApplication;
-},{}],2:[function(require,module,exports){
-( function( window, $ ) {
-
-    // Do nothing if the canvas does not exist in the page
-    if ( null == document.getElementById( "canvas" ) ) {
-        console.error( 'The canvas does not exist in the page.  This could be caused by a plugin or theme conflict.' );
-        return;
-    }
-
-    // Include utilities
-    require( '../shared/utility/polyfills/classlist' );
-    require( '../shared/utility/polyfills/raf' );
-    require( '../shared/utility/polyfills/transitions' );
-    require( '../shared/utility/ajax' );
-
-    // Include components
-    require( '../shared/components/ui/tabs' );
-    require( '../shared/components/ui/toggles' );
-    require( '../shared/components/ui/map' );
-    require( '../shared/components/ui/masonry' );
-    require( '../shared/components/ui/slideshow' );
-    require( '../shared/components/ui/lightbox' );
-    require( '../shared/components/ui/parallax' );
-    require( './components/ui/carousel' );
-    require( './components/ui/carousel-simple' );
-    Marionette.Behaviors.behaviorsLookup = function() {
-        return {
-            Container:          require( './components/behaviors/container' ),
-            Droppable:          require( './components/behaviors/droppable' ),
-            Editable:           require( './components/behaviors/editable' ),
-            Movable:            require( './components/behaviors/movable' ),
-            Draggable:          require( '../shared/components/behaviors/draggable' )
-        };
-    };
-    
-    // Create the app
-    var App = require( './app' );
-    window.app = new App();
-
-    // Create the Tailor object
-    window.Tailor = {
-        Api : {
-            Setting :   require( '../shared/components/api/setting' ),
-            Element :   require( './components/api/element' )
-        },
-        CSS :       require( '../shared/utility/css' ),
-        Models :    {},
-        Views :     {}
-    };
-
-    app.addRegions( {
-        canvasRegion : {
-            selector : "#canvas",
-            regionClass : require( './modules/canvas/canvas-region' )
-        },
-        selectRegion : {
-            selector : "#select",
-            regionClass : require( './modules/tools/select-region' )
-        }
-    } );
-
-    // Initialize preview
-    require( './preview' );
-
-    app.on( 'before:start', function() {
-
-        // Load element-specific models
-        Tailor.Models.Section =             require( './entities/models/wrappers/section' );
-        Tailor.Models.Row =                 require( './entities/models/containers/row' );
-        Tailor.Models.Column =              require( './entities/models/children/column' );
-        Tailor.Models.GridItem =            require( './entities/models/children/grid-item' );
-        Tailor.Models.Tabs =                require( './entities/models/containers/tabs' );
-        Tailor.Models.Carousel =            require( './entities/models/containers/carousel' );
-        Tailor.Models.Container =           require( './entities/models/element-container' );
-        Tailor.Models.Wrapper =             require( './entities/models/element-wrapper' );
-        Tailor.Models.Child =               require( './entities/models/element-child' );
-        Tailor.Models.Default =             require( './entities/models/element' );
-
-        // Load views
-        Tailor.Views.Section =              require( './components/elements/wrappers/section' );
-        Tailor.Views.Column =               require( './components/elements/children/column' );
-        Tailor.Views.Tab =                  require( './components/elements/children/tab' );
-        Tailor.Views.CarouselItem =         require( './components/elements/children/carousel-item' );
-        Tailor.Views.Tabs =                 require( './components/elements/containers/tabs' );
-        Tailor.Views.Carousel =             require( './components/elements/containers/carousel' );
-        Tailor.Views.Container =            require( './components/elements/element-container' );
-        Tailor.Views.Wrapper =              require( './components/elements/element-container' );
-        Tailor.Views.Child =                require( './components/elements/element-container' );
-        Tailor.Views.Default =              require( './components/elements/element' );
-
-        /**
-         * Returns the element name (in title case) based on the tag or type.
-         *
-         * @since 1.5.0
-         *
-         * @param string
-         */
-        function getName( string ) {
-            string = string || '';
-            return string
-                .replace( /_|-|tailor_/gi, ' ' )
-                .replace( /(?: |\b)(\w)/g, function( key ) {
-                    return key.toUpperCase().replace( /\s+/g, '' );
-                } );
-        }
-
-        /**
-         * Returns the appropriate object based on tag or type.
-         *
-         * @since 1.5.0
-         *
-         * @param tag
-         * @param type
-         * @param object
-         * @returns {*}
-         */
-        Tailor.lookup = function( tag, type, object ) {
-
-            if ( ! Tailor.hasOwnProperty( object ) ) {
-                console.error( 'Object type ' + object + ' does not exist' );
-                return;
-            }
-
-            var name = getName( tag );
-            if ( Tailor[ object ].hasOwnProperty( name ) ) {
-                return Tailor[ object ][ name ];
-            }
-
-            if ( type ) {
-                name = getName( type );
-                if ( Tailor[ object ].hasOwnProperty( name ) ) {
-                    return Tailor[ object ][ name ];
-                }
-            }
-
-            return Tailor[ object ].Default;
-        };
-    } );
-
-    app.on( 'start', function() {
-
-        // Load modules
-        app.module( 'module:elements', require( './modules/elements/elements' ) );
-        app.module( 'module:templates', require( './modules/templates/templates' ) );
-        app.module( 'module:canvas', require( './modules/canvas/canvas' ) );
-        app.module( 'module:tools', require( './modules/tools/tools' ) );
-        app.module( 'module:css', require( './modules/css/css' ) );
-    } );
-
-    $( document ).ready( function() {
-
-        // Start the app
-        app.start( {
-            elements : window._elements || [],
-            nonces : window._nonces || [],
-            mediaQueries : window._media_queries || {},
-            cssRules : window._css_rules || {}
-        } );
-        
-        /**
-         * Fires when the canvas is initialized.
-         *
-         * @since 1.5.0
-         *
-         * @param app
-         */
-        app.channel.trigger( 'canvas:initialize', app );
-    } );
-
-} ( window, Backbone.$ ) );
-
-//require( './utility/debug' );
-},{"../shared/components/api/setting":48,"../shared/components/behaviors/draggable":49,"../shared/components/ui/lightbox":50,"../shared/components/ui/map":51,"../shared/components/ui/masonry":52,"../shared/components/ui/parallax":53,"../shared/components/ui/slideshow":54,"../shared/components/ui/tabs":55,"../shared/components/ui/toggles":56,"../shared/utility/ajax":57,"../shared/utility/css":58,"../shared/utility/polyfills/classlist":59,"../shared/utility/polyfills/raf":60,"../shared/utility/polyfills/transitions":61,"./app":1,"./components/api/element":3,"./components/behaviors/container":4,"./components/behaviors/droppable":5,"./components/behaviors/editable":6,"./components/behaviors/movable":7,"./components/elements/children/carousel-item":8,"./components/elements/children/column":9,"./components/elements/children/tab":10,"./components/elements/containers/carousel":11,"./components/elements/containers/tabs":16,"./components/elements/element":18,"./components/elements/element-container":17,"./components/elements/wrappers/section":19,"./components/ui/carousel":21,"./components/ui/carousel-simple":20,"./entities/models/children/column":23,"./entities/models/children/grid-item":24,"./entities/models/containers/carousel":25,"./entities/models/containers/row":26,"./entities/models/containers/tabs":27,"./entities/models/element":33,"./entities/models/element-child":29,"./entities/models/element-container":31,"./entities/models/element-wrapper":32,"./entities/models/wrappers/section":34,"./modules/canvas/canvas":36,"./modules/canvas/canvas-region":35,"./modules/css/css":38,"./modules/elements/elements":40,"./modules/templates/templates":41,"./modules/tools/select-region":42,"./modules/tools/tools":46,"./preview":47}],3:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 var callbacks = {
     'render' : [],
     'destroy' : []
@@ -3431,7 +3431,6 @@ var ElementCollection = Backbone.Collection.extend( {
      */
     onEmpty : function() {
         var section = this.createSection( 0 );
-
         this.create( [ {
             tag : 'tailor_content',
             atts : {},
@@ -3554,7 +3553,6 @@ var ElementCollection = Backbone.Collection.extend( {
         else {
             this.applyDefaults( models );
         }
-
         return this.set( models, _.extend( { merge: false }, options, { add: true, remove: false } ) );
     },
 
@@ -3593,7 +3591,6 @@ var ElementCollection = Backbone.Collection.extend( {
      * @returns {*}
      */
     applyDefaults : function( model ) {
-        
         if ( model instanceof Backbone.Model ) {
             model = model.toJSON();
         }
@@ -3696,6 +3693,34 @@ var ElementCollection = Backbone.Collection.extend( {
     },
 
     /**
+     * Adds a child into the specified parent.
+     *
+     * @since 1.7.3
+     *
+     * @param model
+     */
+    createChild : function( model ) {
+        var child = _.first( this.create( [ {
+            tag : model.get( 'child' ),
+            parent : model.get( 'id' ),
+            order : this.getChildren( model ).length
+        } ], {
+            silent : true
+        } ) );
+
+        this.create( [ {
+            tag : 'tailor_content',
+            parent : child.get( 'id' ),
+            order : 0
+        } ], {
+            silent : true
+        } );
+
+        this.trigger( 'add', child, this, {} );
+        return child;
+    },
+
+    /**
      * Inserts a child into the specified parent.
      *
      * @since 1.0.0
@@ -3704,18 +3729,15 @@ var ElementCollection = Backbone.Collection.extend( {
      * @param parent
      */
     insertChild : function( child, parent ) {
-
         if ( ! child ) {
             return;
         }
-
         if ( child.get( 'parent' ) !== parent.get( 'id' ) ) {
             child.trigger( 'remove:child' );
         }
 
         parent.trigger( 'insert', child );
         child.trigger( 'add:child' );
-
         child.set( 'parent', parent.get( 'id' ) );
     },
 
@@ -3781,7 +3803,6 @@ var ElementCollection = Backbone.Collection.extend( {
         } ], {
             silent : true
         } ) );
-
         if ( 'undefined' == typeof child ) {
             this.create( [ {
                 tag : 'tailor_content',
@@ -3793,7 +3814,6 @@ var ElementCollection = Backbone.Collection.extend( {
         }
 
         this.trigger( 'add', wrapper, this, {} );
-
         if ( 'undefined' != typeof child ) {
             this.insertChild( child, wrapper );
         }
@@ -4786,12 +4806,12 @@ ElementModel = BaseModel.extend( {
 		var index = targetView.model.get( 'order' );
 
 		clone.set( 'id', clone.cid );
-		clone.set( 'parent', targetView.model.get( 'parent' ) );//, { silent : true } );
-		clone.set( 'order', index );//, { silent : true } );
+		clone.set( 'parent', targetView.model.get( 'parent' ) );
+		clone.set( 'order', index );
 
 		this.createTemplate( clone.cid, sourceView );
 
-		this.collection.add( clone );//, { at : index } );
+		this.collection.add( clone );
 	},
 
 	/**
@@ -5410,10 +5430,10 @@ CSSModule = Marionette.Module.extend( {
      */
     addEventListeners : function() {
         this.listenTo( app.channel, 'css:add', this.addRules );         // Add CSS for an element (or elements)
+        this.listenTo( app.channel, 'css:delete', this.deleteRules );   // Delete CSS rules for an element/setting (or elements)
         this.listenTo( app.channel, 'css:update', this.updateRules );   // Update the CSS for a given element
-		this.listenTo( app.channel, 'css:copy', this.copyRules );       // Copy the CSS for one element to another
-		this.listenTo( app.channel, 'css:clear', this.clearRules );     // Delete all CSS in the stylesheet
-		//this.listenTo( this.collection, 'reset', this.onReset );
+		this.listenTo( app.channel, 'css:copy', this.copyRules );       // Copy the CSS for one element/setting to another
+		this.listenTo( app.channel, 'css:clear', this.clearRules );     // Clear all dynamic CSS rules
 		this.listenTo( this.collection, 'destroy', this.onDestroy );
 	},
 
@@ -5534,7 +5554,6 @@ CSSModule = Marionette.Module.extend( {
 
 	            // Get rules for the existing element
 	            var rules = this.stylesheets[ queryId ].getRules( elementId );
-
 	            if ( rules.length ) {
 
 		            // Update the selector strings
@@ -5548,7 +5567,6 @@ CSSModule = Marionette.Module.extend( {
 		            var rulesSet = {};
 		            rulesSet[ queryId ] = {};
 		            rulesSet[ queryId ][ newElementId ] = rules;
-		            
 		            this.addRules( rulesSet );
 	            }
             }
@@ -5666,42 +5684,59 @@ Stylesheet.prototype = {
     addRules : function( ruleSet ) {
 		for ( var elementId in ruleSet ) {
 			if ( ruleSet.hasOwnProperty( elementId ) ) {
-
 				this.lookup = this.lookup || [];
 
 				// Add rules for each element
-				for ( var rule in ruleSet[ elementId ] ) {
-
-					// Check that the data is correctly formatted
-					if (
-						ruleSet[ elementId ].hasOwnProperty( rule ) &&
-						_.has( ruleSet[ elementId ][ rule ], 'selectors' ) &&
-						_.has( ruleSet[ elementId ][ rule ], 'declarations' ) &&
-						_.has( ruleSet[ elementId ][ rule ], 'setting' )
-					) {
-						var selectorString = Tailor.CSS.parseSelectors( ruleSet[ elementId ][ rule ]['selectors'], elementId );
-						var declarationString = Tailor.CSS.parseDeclarations( ruleSet[ elementId ][ rule ]['declarations'] );
-						
-						if ( ! _.isEmpty( declarationString ) ) {
-
-							// Add the rule to the stylesheet
-							Tailor.CSS.addRule(
-								this.sheet,
-								selectorString,
-								declarationString,
-								this.lookup.length
-							);
-
-							// Add rule data to the lookup array
-							this.lookup.push( {
-								elementId: elementId,
-								settingId: ruleSet[ elementId ][ rule ]['setting']
-							} );
-						}
+				for ( var i in ruleSet[ elementId ] ) {
+					if ( ruleSet[ elementId ].hasOwnProperty( i ) ) {
+						this.addRule( elementId, ruleSet[ elementId ][ i ] );
 					}
 				}
 			}
 		}
+	},
+
+	/**
+	 * Adds a rule to the stylesheet.
+	 *
+	 * @since 1.7.3
+	 *
+	 * @param elementId
+	 * @param rule
+	 */
+	addRule : function( elementId, rule ) {
+		if ( this.checkRule( rule ) ) {
+			var selectors = Tailor.CSS.parseSelectors( rule['selectors'], elementId );
+			var declarations = Tailor.CSS.parseDeclarations( rule['declarations'] );
+
+			if ( ! _.isEmpty( declarations ) ) {
+				var settingId = rule['setting'];
+
+				// this.deleteRules( elementId, settingId );
+
+				// Add the rule to the stylesheet and lookup array
+				Tailor.CSS.addRule( this.sheet, selectors, declarations, this.lookup.length );
+				
+				this.lookup.push( {
+					elementId: elementId,
+					settingId: settingId
+				} );
+			}
+		}
+	},
+
+	/**
+	 * Returns true if the rule is properly formatted.
+	 *
+	 * @since 1.7.3
+	 *
+	 * @param rule
+	 * @returns {*|Boolean}
+	 */
+	checkRule : function( rule ) {
+		return _.has( rule, 'selectors' ) &&
+		       _.has( rule, 'declarations' ) &&
+		       _.has( rule, 'setting' );
 	},
 
 	/**
@@ -5741,7 +5776,6 @@ Stylesheet.prototype = {
     deleteRules : function( elementId, settingId ) {
 		for ( var i = 0; i < this.sheet.cssRules.length; i++ ) {
 			if ( _.has( this.lookup[ i ], 'elementId' ) && elementId == this.lookup[ i ]['elementId'] ) {
-
 				if ( _.isEmpty( settingId ) ) {
 					this.deleteRule( i );
 					i--;
@@ -6190,12 +6224,14 @@ SelectMenuView = Marionette.CompositeView.extend( {
 	childViewContainer : '.select__menu',
 
 	ui : {
+		'add' : '.js-add',
 		'edit' : '.js-edit',
 		'copy' : '.js-copy',
 		'delete' : '.js-delete'
 	},
 
     events : {
+        'click @ui.add' : 'addElement',
         'click @ui.edit' : 'editElement',
         'click @ui.copy' : 'copyElement',
         'click @ui.delete' : 'deleteElement'
@@ -6220,6 +6256,7 @@ SelectMenuView = Marionette.CompositeView.extend( {
      */
     serializeData : function() {
         var data = Backbone.Marionette.CompositeView.prototype.serializeData.apply( this, arguments );
+        data.type = this.model.get( 'type' );
         data.siblings = this.collection.where( { parent : this.model.get( 'parent' ) } ).length;
         return data;
     },
@@ -6269,6 +6306,27 @@ SelectMenuView = Marionette.CompositeView.extend( {
         this.el.style.height = thatRect.height + 'px';
     },
 
+	/**
+     * Adds a child to the container element.
+     *
+     * @since 1.7.3
+     */
+    addElement : function() {
+        var child = this.model.collection.createChild( this.model );
+        
+        // Set the collection to library to ensure the history snapshot is created
+        child.set( 'collection', 'library', { silent : true } );
+
+        /**
+         * Fires when a child element is added.
+         *
+         * @since 1.7.3
+         *
+         * @param this.model
+         */
+        app.channel.trigger( 'element:add', child );
+    },
+
     /**
      * Edits the target element.
      *
@@ -6290,7 +6348,6 @@ SelectMenuView = Marionette.CompositeView.extend( {
      * @since 1.6.2
      */
     copyElement : function() {
-
         this.model.copyAfter( this._view, this._view );
 
         /**
@@ -6640,7 +6697,9 @@ var $ = Backbone.$,
 			"pc",
 			"em",
 			"rem",
-			"ex"
+			"ex",
+			'vw',
+			'vh'
 		];
 		var matches = string.match( new RegExp( '/' + map.join( '|') + '/' ) );
 		if ( matches ) {
@@ -6688,7 +6747,8 @@ var $ = Backbone.$,
 	 * @returns {*|void|{style, text, priority, click}|XML}
 	 */
 	window.tailorValidateNumber = function( string ) {
-		return string.replace( /[^0-9,.]+/i, '' );
+		string = string.replace( /[^0-9,.]+/i, '' );
+		return ! _.isEmpty( string ) ? string : '0';
 	};
 
 	/**
@@ -6834,8 +6894,10 @@ var $ = Backbone.$,
 		/**
 		 * Element settings.
 		 */
+		window.Tailor.Settings.overrides = {
 
-		var overrides = {
+			// Global overrides
+			'*' : {},
 
 			'tailor_button' : {
 				'color_hover' : [ [ '.tailor-button__inner:hover', '.tailor-button__inner:focus' ], 'color', 'tailorValidateColor' ],
@@ -6898,6 +6960,12 @@ var $ = Backbone.$,
 				}
 			},
 
+			'tailor_grid_item' : {
+				'padding' : [ [ '&.tailor-grid__item' ], 'padding-{0}', 'tailorValidateUnit' ],
+				'padding_tablet' : [ [ '&.tailor-grid__item' ], 'padding-{0}', 'tailorValidateUnit' ],
+				'padding_mobile' : [ [ '&.tailor-grid__item' ], 'padding-{0}', 'tailorValidateUnit' ]
+			},
+
 			'tailor_tabs' : {
 				'border_color' : [ [ '.tailor-tabs__navigation-item', '.tailor-tab' ], 'border-color', 'tailorValidateColor' ]
 			},
@@ -6933,34 +7001,45 @@ var $ = Backbone.$,
 		};
 
 		/**
+		 * Returns the CSS rule definition to be used for the element/setting.
+		 *
+		 * @since 1.7.3
+		 */
+		function getDefinition( tag, id, definition ) {
+			if ( window.Tailor.Settings.overrides['*'].hasOwnProperty( id ) ) {
+				return window.Tailor.Settings.overrides['*'][ id ];
+			}
+			if ( window.Tailor.Settings.overrides.hasOwnProperty( tag ) && window.Tailor.Settings.overrides[ tag ].hasOwnProperty( id ) ) {
+				return window.Tailor.Settings.overrides[ tag ][ id ];
+			}
+			return definition;
+		}
+
+		/**
 		 * Registers an Element Setting API callback function.
 		 *
 		 * @since 1.7.2
 		 *
-		 * @param settings
+		 * @param definitions
 		 */
-		function registerCallbacks( settings ) {
-			_.each( settings, function( setting, id ) {
+		function registerCallbacks( definitions ) {
+			_.each( definitions, function( definition, id ) {
 				SettingAPI.onChange( 'element:' + id, function( to, from, model ) {
-					var tag = model.get( 'tag' );
-					if ( overrides.hasOwnProperty( tag ) && overrides[ tag ].hasOwnProperty( id ) ) {
-						setting = overrides[ tag ][ id ];
-					}
-					
-					if ( 'function' == typeof setting ) {
-						return setting.call( this, to, from, model );
+					definition = getDefinition( model.get( 'tag' ), id, definition );
+					if ( 'function' == typeof definition ) {
+						return definition.call( this, to, from, model );
 					}
 					
 					var rule = {
 						media: getMediaQuery( id ),
-						selectors: setting[0],
+						selectors: definition[0],
 						declarations: {}
 					};
-					if ( 'function' == typeof window[ setting[2] ] ) {
-						rule.declarations[ setting[1] ] = window[ setting[2] ]( to );
+					if ( 'function' == typeof window[ definition[2] ] ) {
+						rule.declarations[ definition[1] ] = window[ definition[2] ]( to );
 					}
 					else {
-						rule.declarations[ setting[1] ] = to;
+						rule.declarations[ definition[1] ] = to;
 					}
 					return [ rule ];
 				} );
@@ -7091,27 +7170,21 @@ var $ = Backbone.$,
 					return false;
 				}
 
-				var tag = model.get( 'tag' );
-				var setting = [ [], 'background-color', 'tailorValidateColor' ];
-				if ( overrides.hasOwnProperty( tag ) && overrides[ tag ].hasOwnProperty( 'background_color' ) ) {
-					setting = overrides[ tag ][ 'background_color' ];
-				}
-
-				if ( 'function' == typeof setting ) {
-					return setting.call( this, to, from, model );
+				var definition = getDefinition( model.get( 'tag' ), id, [ [], 'background-color', 'tailorValidateColor' ] );
+				if ( 'function' == typeof definition ) {
+					return definition.call( this, to, from, model );
 				}
 
 				var rule = {
-					selectors: setting[0],
+					selectors: definition[0],
 					declarations: {}
 				};
-				if ( 'function' == typeof window[ setting[2] ] ) {
-					rule.declarations[ setting[1] ] = window[ setting[2] ]( to );
+				if ( 'function' == typeof window[ definition[2] ] ) {
+					rule.declarations[ definition[1] ] = window[ definition[2] ]( to );
 				}
 				else {
-					rule.declarations[ setting[1] ] = to;
+					rule.declarations[ definition[1] ] = to;
 				}
-
 				return [ rule ];
 			},
 			'background_color_hover' : [ [ ':hover' ], 'background-color', 'tailorValidateColor' ],
@@ -7333,21 +7406,21 @@ var $ = Backbone.$,
 					}
 				}
 			},
-			'border_style' : [ [], 'border-style', 'tailorValidateUnit' ],
+			'border_style' : [ [], 'border-style', 'tailorValidateString' ],
 			'border_radius' : [ [], 'border-radius', 'tailorValidateUnit' ],
 			'background_repeat' : [ [], 'background-repeat', 'tailorValidateString' ],
 			'background_position' : [ [], 'background-position', 'tailorValidateString' ],
 			'background_size' : [ [], 'background-size', 'tailorValidateString' ],
 			'background_attachment' : [ [], 'background-attachment', 'tailorValidateString' ],
 			'shadow' : function( to, from, model ) {
+				var definition = getDefinition( model.get( 'tag' ), 'shadow' [ [] ] );
+				if ( 'function' == typeof definition ) {
+					return definition.call( this, to, from, model );
+				}
+
 				if ( 1 == to ) {
-					var tag = model.get( 'tag' );
-					var setting = [ [] ];
-					if ( overrides.hasOwnProperty( tag ) && overrides[ tag ].hasOwnProperty('shadow') ) {
-						setting = overrides[ tag ]['shadow'];
-					}
 					return [ {
-						selectors: setting[0],
+						selectors: definition[0],
 						declarations: {
 							'box-shadow' : '0 2px 6px rgba(0, 0, 0, 0.1)'
 						}
@@ -7370,30 +7443,26 @@ var $ = Backbone.$,
 			'border_width' : [ [], 'border-{0}-width', 'tailorValidateUnit' ],
 			'border_width_tablet' : [ [], 'border-{0}-width', 'tailorValidateUnit' ],
 			'border_width_mobile' : [ [], 'border-{0}-width', 'tailorValidateUnit' ]
-		}, function( setting, id ) {
+		}, function( definition, id ) {
 			SettingAPI.onChange( ( 'element:' + id ), function( to, from, model ) {
-				var tag = model.get( 'tag' );
-				if ( overrides.hasOwnProperty( tag ) && overrides[ tag ].hasOwnProperty( id ) ) {
-					setting = overrides[ tag ][ id ];
-				}
-
-				if ( 'function' == typeof setting ) {
-					return setting.call( this, to, from, model );
+				definition = getDefinition( model.get( 'tag' ), id, definition );
+				if ( 'function' == typeof definition ) {
+					return definition.call( this, to, from, model );
 				}
 
 				var rules = [];
 				var rule = {
 					media: getMediaQuery( id ),
-					selectors: setting[0],
+					selectors: definition[0],
 					declarations: {}
 				};
 
 				_.each( getStyleValues( to ), function( value, position ) {
-					if ( 'function' == typeof window[ setting[3] ] ) {
-						rule.declarations[ setting[1].replace( '{0}', position ) ] = window[ setting[2] ]( value );
+					if ( 'function' == typeof window[ definition[3] ] ) {
+						rule.declarations[ definition[1].replace( '{0}', position ) ] = window[ definition[2] ]( value );
 					}
 					else {
-						rule.declarations[ setting[1].replace( '{0}', position ) ] = value;
+						rule.declarations[ definition[1].replace( '{0}', position ) ] = value;
 					}
 				} );
 
@@ -7480,20 +7549,16 @@ var onElementChange = function( setting, view ) {
             // Get the collection of rules from the callback function
             rules = callback.apply( view, [ setting.get( 'value' ), setting.previous( 'value' ), view.model ] );
 
+            // Re-render the element if the the callback function returns a value of false
             if ( false === rules ) {
                 view.model.trigger( 'change:atts', view.model, view.model.get( 'atts' ) );
             }
-            
-            if ( _.isArray( rules ) && rules.length > 0 ) {
+            else if ( _.isArray( rules ) && rules.length > 0 ) {
 
                 // Process the rules
                 for ( var rule in rules ) {
                     if ( rules.hasOwnProperty( rule ) ) {
-                        
-                        if (
-                            ! rules[ rule ].hasOwnProperty( 'selectors' ) ||
-                            ! rules[ rule ].hasOwnProperty( 'declarations' )
-                        ) {
+                        if ( ! rules[ rule ].hasOwnProperty( 'selectors' ) || ! rules[ rule ].hasOwnProperty( 'declarations' ) ) {
                             continue;
                         }
                         
@@ -7505,7 +7570,7 @@ var onElementChange = function( setting, view ) {
                             ruleSets[ query ][ elementId ].push( {
                                 selectors: rules[ rule ].selectors,
                                 declarations: rules[ rule ].declarations,
-                                setting: settingId
+                                setting: rules[ rule ].setting || settingId
                             } );
                         }
                     }
@@ -9716,4 +9781,4 @@ module.exports = CSS;
 
 } ) ( window );
 
-},{}]},{},[2]);
+},{}]},{},[1]);

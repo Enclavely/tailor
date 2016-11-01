@@ -1,4 +1,111 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+var $ = window.jQuery;
+
+window.Tailor = window.Tailor || {};
+
+// Include polyfills
+require( './shared/utility/polyfills/classlist' );
+require( './shared/utility/polyfills/raf' );
+require( './shared/utility/polyfills/transitions' );
+
+// Include shared components
+require( './shared/components/ui/tabs' );
+require( './shared/components/ui/toggles' );
+require( './shared/components/ui/map' );
+require( './shared/components/ui/lightbox' );
+require( './shared/components/ui/slideshow' );
+require( './shared/components/ui/parallax' );
+
+// Include frontend-only components
+require( './frontend/components/ui/carousel' );
+
+window.Tailor.initElements = function() {
+
+	// Parallax sections
+	$( '.tailor-section[data-ratio]' ).each( function() {
+		var $el = $( this );
+		$el.tailorParallax( { ratio: $el.data( 'ratio' ) } );
+	} );
+
+	// Tabs
+	$( '.tailor-tabs' ).tailorTabs();
+
+	// Toggles
+	$( '.tailor-toggles' ).tailorToggles();
+
+	// Google Maps
+	$( '.tailor-map' ).tailorGoogleMap();
+
+	// Carousels
+	$( '.tailor-carousel' ).each( function() {
+		var $el = $( this );
+		var $data = $el.data();
+
+		$el.tailorCarousel( {
+			slidesToShow : $data.slides || 1,
+			fade : ( $data.fade && 1 == $data.slides ),
+			infinite : this.classList.contains( 'tailor-posts' ) || this.classList.contains( 'tailor-gallery' )
+		} );
+	} );
+
+	// Masonry layouts
+	$( '.tailor-grid--masonry' ).each( function() {
+		var $el = $( this );
+
+		$el.imagesLoaded( function() {
+			$el.shuffle( {
+				itemSelector: '.tailor-grid__item'
+			} );
+		} );
+	} );
+
+	// Slideshows
+	$( '.tailor-slideshow--gallery' ).each( function() {
+		var $el = $( this );
+		var $data = $el.data() || {};
+		var options = {
+			autoplay : $data.autoplay || false,
+			arrows : $data.arrows || false,
+			draggable : true
+		};
+
+		if ( '1' == $data.thumbnails ) {
+			options.customPaging = function( slider, i ) {
+				var thumb = $( slider.$slides[ i ] ).data( 'thumb' );
+				return '<img class="slick-thumbnail" src="' + thumb + '">';
+			};
+			options.dots = true;
+		}
+
+		$el.tailorSlideshow( options );
+	} );
+
+	// Lightboxes
+	$( '.is-lightbox-gallery' ).each( function() {
+		var $el = $( this );
+
+		if ( $el.hasClass( 'tailor-carousel' ) ) {
+			$el.tailorLightbox( {
+				delegate : '.slick-slide:not( .slick-cloned ) .is-lightbox-image'
+			} );
+		}
+		else {
+			$el.tailorLightbox();
+		}
+	} );
+
+	$( '.is-lightbox-image' ).each( function() {
+		$( this ).tailorLightbox( {
+			delegate : false
+		} );
+	} );
+};
+
+// Initialize elements when the document is ready
+$( document ).ready( function() {
+	window.Tailor.initElements();
+} );
+},{"./frontend/components/ui/carousel":2,"./shared/components/ui/lightbox":3,"./shared/components/ui/map":4,"./shared/components/ui/parallax":5,"./shared/components/ui/slideshow":6,"./shared/components/ui/tabs":7,"./shared/components/ui/toggles":8,"./shared/utility/polyfills/classlist":9,"./shared/utility/polyfills/raf":10,"./shared/utility/polyfills/transitions":11}],2:[function(require,module,exports){
 /**
  * A frontend carousel module for managing Slick Slider elements.
  *
@@ -136,109 +243,7 @@ $.fn.tailorCarousel = function( options, callbacks ) {
     } );
 };
 
-},{}],2:[function(require,module,exports){
-var $ = window.jQuery;
-
-window.Tailor = window.Tailor || {};
-
-// Include polyfills
-require( '../shared/utility/polyfills/classlist' );
-require( '../shared/utility/polyfills/raf' );
-require( '../shared/utility/polyfills/transitions' );
-
-// Include shared components
-require( '../shared/components/ui/tabs' );
-require( '../shared/components/ui/toggles' );
-require( '../shared/components/ui/map' );
-require( '../shared/components/ui/lightbox' );
-require( '../shared/components/ui/slideshow' );
-require( '../shared/components/ui/parallax' );
-
-// Include frontend-only components
-require( './components/ui/carousel' );
-
-window.Tailor.initElements = function() {
-
-	// Parallax sections
-	$( '.tailor-section[data-ratio]' ).each( function() {
-		var $el = $( this );
-		$el.tailorParallax( { ratio: $el.data( 'ratio' ) } );
-	} );
-
-	// Tabs
-	$( '.tailor-tabs' ).tailorTabs();
-
-	// Toggles
-	$( '.tailor-toggles' ).tailorToggles();
-
-	// Google Maps
-	$( '.tailor-map' ).tailorGoogleMap();
-
-	// Carousels
-	$( '.tailor-carousel' ).each( function() {
-		var $el = $( this );
-		var $data = $el.data();
-
-		$el.tailorCarousel( {
-			slidesToShow : $data.slides || 1,
-			fade : ( $data.fade && 1 == $data.slides ),
-			infinite : this.classList.contains( 'tailor-posts' ) || this.classList.contains( 'tailor-gallery' )
-		} );
-	} );
-
-	// Masonry layouts
-	$( '.tailor-grid--masonry' ).each( function() {
-		var $el = $( this );
-
-		$el.imagesLoaded( function() {
-			$el.shuffle( {
-				itemSelector: '.tailor-grid__item'
-			} );
-		} );
-	} );
-
-	// Slideshows
-	$( '.tailor-slideshow--gallery' ).each( function() {
-		var $el = $( this );
-		var $data = $el.data() || {};
-		var options = {
-			autoplay : $data.autoplay || false,
-			arrows : $data.arrows || false,
-			draggable : true
-		};
-
-		if ( '1' == $data.thumbnails ) {
-			options.customPaging = function( slider, i ) {
-				var thumb = $( slider.$slides[ i ] ).data( 'thumb' );
-				return '<img class="slick-thumbnail" src="' + thumb + '">';
-			};
-			options.dots = true;
-		}
-
-		$el.tailorSlideshow( options );
-	} );
-
-	// Lightboxes
-	$( '.is-lightbox-gallery' ).each( function() {
-		var $el = $( this );
-
-		if ( $el.hasClass( 'tailor-carousel' ) ) {
-			$el.tailorLightbox( {
-				delegate : '.slick-slide:not( .slick-cloned ) .is-lightbox-image'
-			} );
-		}
-		else {
-			$el.tailorLightbox();
-		}
-	} );
-
-};
-
-// Initialize elements when the document is ready
-$( document ).ready( function() {
-	window.Tailor.initElements();
-} );
-},{"../shared/components/ui/lightbox":3,"../shared/components/ui/map":4,"../shared/components/ui/parallax":5,"../shared/components/ui/slideshow":6,"../shared/components/ui/tabs":7,"../shared/components/ui/toggles":8,"../shared/utility/polyfills/classlist":9,"../shared/utility/polyfills/raf":10,"../shared/utility/polyfills/transitions":11,"./components/ui/carousel":1}],3:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 /**
  * Tailor.Objects.Lightbox
  *
@@ -1917,4 +1922,4 @@ module.exports = Toggles;
 
 } ) ( window );
 
-},{}]},{},[2]);
+},{}]},{},[1]);

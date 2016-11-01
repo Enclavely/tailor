@@ -470,10 +470,10 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'label'                     =>  __( 'Image link', 'tailor' ),
 					'type'                      =>  'select',
 					'choices'                   =>  array(
+						'none'                      =>  __( 'None', 'tailor' ),
 						'post'                      =>  __( 'Post', 'tailor' ),
 						'file'                      =>  __( 'Image', 'tailor' ),
 						'lightbox'                  =>  __( 'Lightbox', 'tailor' ),
-						'none'                      =>  __( 'None', 'tailor' ),
 					),
 					'section'                   =>  'general',
 				),
@@ -1263,4 +1263,3 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 		return $priority;
 	}
 }
-

@@ -199,7 +199,6 @@ var ElementCollection = Backbone.Collection.extend( {
      */
     onEmpty : function() {
         var section = this.createSection( 0 );
-
         this.create( [ {
             tag : 'tailor_content',
             atts : {},
@@ -322,7 +321,6 @@ var ElementCollection = Backbone.Collection.extend( {
         else {
             this.applyDefaults( models );
         }
-
         return this.set( models, _.extend( { merge: false }, options, { add: true, remove: false } ) );
     },
 
@@ -361,7 +359,6 @@ var ElementCollection = Backbone.Collection.extend( {
      * @returns {*}
      */
     applyDefaults : function( model ) {
-        
         if ( model instanceof Backbone.Model ) {
             model = model.toJSON();
         }
@@ -464,6 +461,34 @@ var ElementCollection = Backbone.Collection.extend( {
     },
 
     /**
+     * Adds a child into the specified parent.
+     *
+     * @since 1.7.3
+     *
+     * @param model
+     */
+    createChild : function( model ) {
+        var child = _.first( this.create( [ {
+            tag : model.get( 'child' ),
+            parent : model.get( 'id' ),
+            order : this.getChildren( model ).length
+        } ], {
+            silent : true
+        } ) );
+
+        this.create( [ {
+            tag : 'tailor_content',
+            parent : child.get( 'id' ),
+            order : 0
+        } ], {
+            silent : true
+        } );
+
+        this.trigger( 'add', child, this, {} );
+        return child;
+    },
+
+    /**
      * Inserts a child into the specified parent.
      *
      * @since 1.0.0
@@ -472,18 +497,15 @@ var ElementCollection = Backbone.Collection.extend( {
      * @param parent
      */
     insertChild : function( child, parent ) {
-
         if ( ! child ) {
             return;
         }
-
         if ( child.get( 'parent' ) !== parent.get( 'id' ) ) {
             child.trigger( 'remove:child' );
         }
 
         parent.trigger( 'insert', child );
         child.trigger( 'add:child' );
-
         child.set( 'parent', parent.get( 'id' ) );
     },
 
@@ -549,7 +571,6 @@ var ElementCollection = Backbone.Collection.extend( {
         } ], {
             silent : true
         } ) );
-
         if ( 'undefined' == typeof child ) {
             this.create( [ {
                 tag : 'tailor_content',
@@ -561,7 +582,6 @@ var ElementCollection = Backbone.Collection.extend( {
         }
 
         this.trigger( 'add', wrapper, this, {} );
-
         if ( 'undefined' != typeof child ) {
             this.insertChild( child, wrapper );
         }

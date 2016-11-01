@@ -84,6 +84,8 @@ if ( ! function_exists( 'tailor_get_unit' ) ) {
 			"em",
 			"rem",
 			"ex",
+			"vw",
+			"vh",
 		);
 		if ( 1 == preg_match( '/' .  implode( '|', $map ) . '/', (string) $string, $matches ) ) {
 			return $matches[0];
@@ -122,6 +124,7 @@ if ( ! function_exists( 'tailor_generate_general_css_rules' ) ) {
 
 		$screen_sizes = array(
 			'',
+			'tablet',
 			'tablet',
 			'mobile',
 		);

@@ -6,30 +6,30 @@
     var $win = $( window );
     
     // Include utilities
-    require( '../shared/utility/polyfills/classlist' );
-    require( '../shared/utility/polyfills/raf' );
-    require( '../shared/utility/polyfills/transitions' );
-    require( '../shared/utility/ajax' );
+    require( './shared/utility/polyfills/classlist' );
+    require( './shared/utility/polyfills/raf' );
+    require( './shared/utility/polyfills/transitions' );
+    require( './shared/utility/ajax' );
 
     // Include components
     Marionette.Behaviors.behaviorsLookup = function() {
         return {
-            Resizable:          require( './components/behaviors/resizable' ),
-            Panel:              require( './components/behaviors/panel' ),
-            Draggable:          require( '../shared/components/behaviors/draggable' )
+            Resizable:          require( './sidebar/components/behaviors/resizable' ),
+            Panel:              require( './sidebar/components/behaviors/panel' ),
+            Draggable:          require( './shared/components/behaviors/draggable' )
         };
     };
     
     // Create the app
-    var App = require( './app' );
+    var App = require( './sidebar/app' );
     window.app = new App();
 
     // Create the Tailor object
     window.Tailor = {
         Api : {
-            Setting :   require( '../shared/components/api/setting' )
+            Setting :   require( './shared/components/api/setting' )
         },
-        Notify :    require( '../shared/utility/notify' ),
+        Notify :    require( './shared/utility/notify' ),
         Models :    {},
         Panels :    {},
         Sections :  {},
@@ -83,47 +83,47 @@
         content : '#tailor-sidebar-content',
         dialog : {
             selector : "#tailor-dialog-container",
-            regionClass : require( './modules/dialog/dialog-region' )
+            regionClass : require( './sidebar/modules/dialog/dialog-region' )
         },
         modal : {
             selector : "#tailor-modal-container",
-            regionClass : require( './modules/modal/modal-region' )
+            regionClass : require( './sidebar/modules/modal/modal-region' )
         }
     } );
 
     // Load models
-    Tailor.Models.Container =           require( './entities/models/element-container' );
-    Tailor.Models.Wrapper =             require( './entities/models/element-wrapper' );
-    Tailor.Models.Section =             require( './entities/models/element-wrapper' ); // Sections are just special wrappers
-    Tailor.Models.Default =             require( './entities/models/element' );
+    Tailor.Models.Container =           require( './sidebar/entities/models/element-container' );
+    Tailor.Models.Wrapper =             require( './sidebar/entities/models/element-wrapper' );
+    Tailor.Models.Section =             require( './sidebar/entities/models/element-wrapper' ); // Sections are just special wrappers
+    Tailor.Models.Default =             require( './sidebar/entities/models/element' );
 
     // Load views
-    Tailor.Panels.Default =             require( './components/panels/panel-default' );
-    Tailor.Panels.Empty =               require( './components/panels/panel-empty' );
-    Tailor.Sections.Default =           require( './components/sections/section-default' );
-    Tailor.Controls.ButtonGroup =       require( './components/controls/button-group' );
-    Tailor.Controls.Checkbox =          require( './components/controls/checkbox' );
-    Tailor.Controls.Code =              require( './components/controls/code' );
-    Tailor.Controls.Colorpicker =       require( './components/controls/colorpicker' );
-    Tailor.Controls.Editor =            require( './components/controls/editor' );
-    Tailor.Controls.Gallery =           require( './components/controls/gallery' );
-    Tailor.Controls.Icon =              require( './components/controls/icon' );
-    Tailor.Controls.Image =             require( './components/controls/image' );
-    Tailor.Controls.InputGroup =        require( './components/controls/input-group' );
-    Tailor.Controls.Link =              require( './components/controls/link' );
-    Tailor.Controls.List =              require( './components/controls/list' );
-    Tailor.Controls.Radio =             require( './components/controls/radio' );
-    Tailor.Controls.Range =             require( './components/controls/range' );
-    Tailor.Controls.Select =            require( './components/controls/select' );
-    Tailor.Controls.SelectMulti =       require( './components/controls/select-multi' );
-    Tailor.Controls.Style =             require( './components/controls/style' );
-    Tailor.Controls.Switch =            require( './components/controls/switch' );
-    Tailor.Controls.Text =              require( './components/controls/text' );
-    Tailor.Controls.Textarea =          require( './components/controls/textarea' );
-    Tailor.Controls.Video =             require( './components/controls/video' );
-    Tailor.Controls.WidgetForm =        require( './components/controls/widget-form' );
-    Tailor.Controls.Default =           require( './components/controls/text' );
-    Tailor.Controls.Abstract =          require( './components/controls/abstract-control' );
+    Tailor.Panels.Default =             require( './sidebar/components/panels/panel-default' );
+    Tailor.Panels.Empty =               require( './sidebar/components/panels/panel-empty' );
+    Tailor.Sections.Default =           require( './sidebar/components/sections/section-default' );
+    Tailor.Controls.ButtonGroup =       require( './sidebar/components/controls/button-group' );
+    Tailor.Controls.Checkbox =          require( './sidebar/components/controls/checkbox' );
+    Tailor.Controls.Code =              require( './sidebar/components/controls/code' );
+    Tailor.Controls.Colorpicker =       require( './sidebar/components/controls/colorpicker' );
+    Tailor.Controls.Editor =            require( './sidebar/components/controls/editor' );
+    Tailor.Controls.Gallery =           require( './sidebar/components/controls/gallery' );
+    Tailor.Controls.Icon =              require( './sidebar/components/controls/icon' );
+    Tailor.Controls.Image =             require( './sidebar/components/controls/image' );
+    Tailor.Controls.InputGroup =        require( './sidebar/components/controls/input-group' );
+    Tailor.Controls.Link =              require( './sidebar/components/controls/link' );
+    Tailor.Controls.List =              require( './sidebar/components/controls/list' );
+    Tailor.Controls.Radio =             require( './sidebar/components/controls/radio' );
+    Tailor.Controls.Range =             require( './sidebar/components/controls/range' );
+    Tailor.Controls.Select =            require( './sidebar/components/controls/select' );
+    Tailor.Controls.SelectMulti =       require( './sidebar/components/controls/select-multi' );
+    Tailor.Controls.Style =             require( './sidebar/components/controls/style' );
+    Tailor.Controls.Switch =            require( './sidebar/components/controls/switch' );
+    Tailor.Controls.Text =              require( './sidebar/components/controls/text' );
+    Tailor.Controls.Textarea =          require( './sidebar/components/controls/textarea' );
+    Tailor.Controls.Video =             require( './sidebar/components/controls/video' );
+    Tailor.Controls.WidgetForm =        require( './sidebar/components/controls/widget-form' );
+    Tailor.Controls.Default =           require( './sidebar/components/controls/text' );
+    Tailor.Controls.Abstract =          require( './sidebar/components/controls/abstract-control' );
 
     /**
      * Returns the element name (in title case) based on the tag or type.
@@ -152,7 +152,6 @@
      * @returns {*}
      */
     Tailor.lookup = function( tag, type, object ) {
-
         if ( ! Tailor.hasOwnProperty( object ) ) {
             console.error( 'Object type ' + object + ' does not exist' );
             return;
@@ -175,18 +174,18 @@
     app.on( 'start', function( options ) {
 
         // Load modules
-        app.module( 'module:library', require( './modules/library/library' ) );
-        app.module( 'module:templates', require( './modules/templates/templates' ) );
-        app.module( 'module:settings', require( './modules/settings/settings' ) );
-        app.module( 'module:history', require( './modules/history/history' ) );
-        app.module( 'module:sections', require( './modules/sections/sections' ) );
-        app.module( 'module:panels', require( './modules/panels/panels' ) );
-        app.module( 'module:modal', require( './modules/modal/modal' ) );
-        app.module( 'module:dialog', require( './modules/dialog/dialog' ) );
-        app.module( 'module:notification', require( './modules/notifications/notifications' ) );
+        app.module( 'module:library', require( './sidebar/modules/library/library' ) );
+        app.module( 'module:templates', require( './sidebar/modules/templates/templates' ) );
+        app.module( 'module:settings', require( './sidebar/modules/settings/settings' ) );
+        app.module( 'module:history', require( './sidebar/modules/history/history' ) );
+        app.module( 'module:sections', require( './sidebar/modules/sections/sections' ) );
+        app.module( 'module:panels', require( './sidebar/modules/panels/panels' ) );
+        app.module( 'module:modal', require( './sidebar/modules/modal/modal' ) );
+        app.module( 'module:dialog', require( './sidebar/modules/dialog/dialog' ) );
+        app.module( 'module:notification', require( './sidebar/modules/notifications/notifications' ) );
         
         // Initialize preview
-        require( './preview' );
+        require( './sidebar/preview' );
         
         $doc.on( 'heartbeat-send', function( e, data ) {
             data['tailor_post_id'] = window.post.id;

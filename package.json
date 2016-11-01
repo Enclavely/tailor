@@ -1,0 +1,17 @@
+{
+  "name": "tailor",
+  "version": "1.7.3",
+  "scripts": {
+    "bundle-js": "./.bin/bundle-js && ./.bin/bundle-min-js",
+    "build-css": "./.bin/build-css && ./.bin/build-min-css",
+    "build": "npm run bundle-js & npm run build-css",
+    "postinstall": "npm run build"
+  },
+  "author": "Andrew Worsfold (http://andrewworsfold.com)",
+  "license": "gpl3",
+  "devDependencies": {
+    "browserify": "^13.1.1",
+    "node-sass": "^3.10.1",
+    "uglify-js": "^2.7.4"
+  }
+}

@@ -1,7 +1,11 @@
 {
-"version": 3,
-"mappings": "AAaC,uDACmC,CAClC,KAAK,CAAE,IAAI,CCVT,gEAAS,CACL,OAAO,CAAE,EAAE,CACX,OAAO,CAAE,KAAK,CACd,KAAK,CAAE,IAAI",
-"sources": ["scss/ie.scss","scss/tools/_clearfix.scss"],
-"names": [],
-"file": "ie.min.css"
+	"version": 3,
+	"file": "ie.min.css",
+	"sources": [
+		"../scss/ie.scss",
+		"../scss/_variables.scss",
+		"../scss/tools/_clearfix.scss"
+	],
+	"mappings": "AAWA,AAEC,UAFS,CAET,cAAc,CAFf,AAGC,UAHS,CAGT,kBAAkB,AADlB,CACC,KAAK,CAAE,IAAK,CACZ,AAJF,AAMC,UANS,CAMT,eAAe,AEZX,OAAO,CFMZ,AAOC,UAPS,CAOT,YAAY,AEbR,OAAO,AAAC,CACL,OAAO,CAAE,EAAG,CACZ,OAAO,CAAE,KAAM,CACf,KAAK,CAAE,IAAK,CACf",
+	"names": []
 }

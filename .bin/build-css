@@ -1,0 +1,6 @@
+node-sass --output-style expanded --sourceMap assets/css/admin.css.map assets/scss/admin.scss assets/css/admin.css
+node-sass --output-style expanded --sourceMap assets/css/canvas.css.map assets/scss/canvas.scss assets/css/canvas.css
+node-sass --output-style expanded --sourceMap assets/css/frontend.css.map assets/scss/frontend.scss assets/css/frontend.css
+node-sass --output-style expanded --sourceMap assets/css/ie.css.map assets/scss/ie.scss assets/css/ie.css
+node-sass --output-style expanded --sourceMap assets/css/sidebar.css.map assets/scss/sidebar.scss assets/css/sidebar.css
+node-sass --output-style expanded --sourceMap assets/css/tinymce.css.map assets/scss/tinymce.scss assets/css/tinymce.css
