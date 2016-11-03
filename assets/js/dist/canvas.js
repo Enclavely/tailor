@@ -311,6 +311,18 @@ CanvasApplication = Marionette.Application.extend( {
         } );
 
         /**
+         * Returns the current device preview size.
+         *
+         * @since 1.7.4
+         *
+         * @param id
+         * @returns {*|{}}
+         */
+        this.channel.reply( 'sidebar:device', function() {
+            return remoteChannel.request( 'sidebar:device' );
+        } );
+        
+        /**
          * Returns the current sidebar setting values from the registered remote channel.
          *
          * @since 1.4.0
@@ -842,7 +854,7 @@ ColumnView = ContainerView.extend( {
      * @since 1.0.0
      */
     onRenderCollection : function() {
-        this.updateClassName( this.model.get( 'atts' ).width );
+        //this.updateClassName( this.model.get( 'atts' ).width );
         this.$el
             .attr( 'draggable', true )
             .prepend(
@@ -861,13 +873,17 @@ ColumnView = ContainerView.extend( {
      */
 	onResize : function( e ) {
 		var columnView = this;
-		var model = columnView.model;
-		var nextModel = model.collection.findWhere( {
-            parent : model.get( 'parent' ),
-            order : model.get( 'order' ) + 1 }
-        );
+	    var device = app.channel.request( 'sidebar:device' );
+	    var setting = ( 'desktop' == device ) ? 'width' : ( 'width_' + device );
 
-        var originalWidth = model.get( 'atts' ).width;
+	    var model = columnView.model;
+	    var nextModel = model.collection.findWhere( {
+		    parent : model.get( 'parent' ),
+		    order : model.get( 'order' ) + 1 }
+	    );
+
+	    var atts = model.get( 'atts' );
+	    var originalWidth = atts[ setting ] || atts['width'];
 
 	    /**
 	     * Handles the resizing of columns.
@@ -880,24 +896,24 @@ ColumnView = ContainerView.extend( {
 			document.body.classList.add( 'is-resizing' );
 			document.body.style.cursor = 'col-resize';
 
-			var rect = columnView.el.getBoundingClientRect();
-            var atts = _.clone( model.get( 'atts' ) );
-            var nextAtts = _.clone( nextModel.get( 'atts' ) );
-			var width = parseInt( atts.width );
-            var nextWidth = parseInt( nextAtts.width );
-			var newWidth = Math.round( ( e.clientX - rect.left ) / ( rect.width ) * width );
-			if ( newWidth < 1 || ( newWidth + 1 ) > ( width + nextWidth ) || newWidth == width ) {
-				return;
-			}
+		    var rect = columnView.el.getBoundingClientRect();
+		    var atts = _.clone( model.get( 'atts' ) );
+		    var nextAtts = _.clone( nextModel.get( 'atts' ) );
+		    var width = parseInt( atts[ setting ] || atts['width'] );
+		    var nextWidth = parseInt( nextAtts[ setting ] || nextAtts['width'] );
+		    var newWidth = Math.round( ( e.clientX - rect.left ) / ( rect.width ) * width );
+		    if ( newWidth < 1 || ( newWidth + 1 ) > ( width + nextWidth ) || newWidth == width ) {
+			    return;
+		    }
 
-            atts.width = newWidth;
-            nextAtts.width =  nextWidth - ( newWidth - width );
+		    atts[ setting ] = newWidth;
+		    nextAtts[ setting ] =  nextWidth - ( newWidth - width );
 
-            model.set( 'atts', atts, { silent : true } );
-            nextModel.set( 'atts', nextAtts, { silent : true } );
+		    model.set( 'atts', atts, { silent : true } );
+		    nextModel.set( 'atts', nextAtts, { silent : true } );
 
-            model.trigger( 'change:width', model, atts.width );
-		    nextModel.trigger( 'change:width', nextModel, nextAtts.width );
+		    model.trigger( 'change:width', model, atts );
+		    nextModel.trigger( 'change:width', nextModel, nextAtts );
         }
 
 	    /**
@@ -914,7 +930,10 @@ ColumnView = ContainerView.extend( {
             document.body.classList.remove( 'is-resizing' );
             document.body.style.cursor = 'default';
 
-            if ( originalWidth != model.get( 'atts' ).width ) {
+		    var atts = model.get( 'atts' );
+		    var device = app.channel.request( 'sidebar:device' );
+		    var setting = ( 'desktop' == device ) ? 'width' : ( 'width_' + device );
+            if ( originalWidth != atts[ setting ] ) {
 
                 /**
                  * Fires after the column has been resized.
@@ -942,12 +961,9 @@ ColumnView = ContainerView.extend( {
      * Updates the column class name when the width changes.
      *
      * @since 1.0.0
-     *
-     * @param model
-     * @param width
      */
-	onChangeWidth : function( model, width ) {
-        this.updateClassName( width );
+	onChangeWidth : function( model, atts ) {
+        this.updateClassName( atts );
 
 	    /**
 	     * Fires after the column width has changed.
@@ -962,14 +978,21 @@ ColumnView = ContainerView.extend( {
      *
      * @since 1.0.0
      *
-     * @param width
+     * @param atts
      */
-    updateClassName : function( width ) {
-        this.$el.removeClass( function( index, css ) {
-            return ( css.match( /(^|\s)columns-\S+/g) || [] ).join( ' ' );
-        } );
+    updateClassName : function( atts ) {
+	    this.$el.removeClass( function( index, css ) {
+		    return ( css.match( /(^|\s)columns-\S+/g) || [] ).join( ' ' );
+	    } );
 
-        this.el.classList.add( 'columns-' + width );
+	    var device = app.channel.request( 'sidebar:device' );
+	    this.el.classList.add( 'columns-' + atts.width );
+	    if ( atts.hasOwnProperty( 'width_tablet' ) && 'undefined' != typeof atts['width_tablet'] ) {
+		    this.el.classList.add( ( 'columns-tablet-' + atts.width_tablet ) );
+	    }
+	    if ( atts.hasOwnProperty( 'width_mobile' ) && 'undefined' !== typeof atts['width_mobile'] ) {
+		    this.el.classList.add( ( 'columns-mobile-' + atts.width_mobile ) );
+	    }
     }
 
 } );
@@ -1643,7 +1666,7 @@ var CompositeView = Marionette.CompositeView.extend( {
 	    this.el.setAttribute( 'draggable', true );
 
 	    this.el.classList.add( 'tailor-' + this.model.cid );
-	    this.el.title = _strings.edit_element;
+	    this.el.title = _l10n.edit_element;
 	    
         return this;
     },
@@ -2311,7 +2334,7 @@ ElementView = Marionette.ItemView.extend( {
 		this.el.setAttribute( 'draggable', true );
 
 		this.el.classList.add( 'tailor-' + this.model.id );
-		this.el.title = _strings.edit_element;
+		this.el.title = _l10n.edit_element;
 		
 		return this;
 	},
@@ -3276,6 +3299,56 @@ var ElementCollection = Backbone.Collection.extend( {
     },
 
     /**
+     * Returns the library collection.
+     *
+     * @since 1.0.0
+     *
+     * @returns {*}
+     */
+    getElementDefinitions : function() {
+        return this.library || app.channel.request( 'sidebar:library' );
+    },
+
+    /**
+     * Applies default values to the element model.
+     *
+     * @since 1.0.0
+     *
+     * @param model
+     * @returns {*}
+     */
+    applyDefaults : function( model ) {
+        if ( model instanceof Backbone.Model ) {
+            model = model.toJSON();
+        }
+
+        var item = this.getElementDefinitions().findWhere( { tag : model.tag } );
+        var defaults = {
+            label : item.get( 'label' ),
+            type : item.get( 'type' )
+        };
+
+        var child = item.get( 'child' );
+        if ( child ) {
+            defaults.child = child;
+        }
+
+        var childViewContainer = item.get( 'child_container' );
+        if ( childViewContainer ) {
+            defaults.child_container = childViewContainer;
+        }
+
+        model.atts = model.atts || {};
+        _.each( item.get( 'settings' ), function( setting ) {
+            if ( ! _.isEmpty( setting['value'] ) && ! model.atts.hasOwnProperty( setting['id'] ) ) {
+                model.atts[ setting['id'] ] = setting['value'];
+            }
+        } );
+
+        return _.extend( model, defaults );
+    },
+
+    /**
      * Returns the parent of a given model.
      *
      * @since 1.0.0
@@ -3455,88 +3528,6 @@ var ElementCollection = Backbone.Collection.extend( {
         }, this );
     },
 
-    /**
-     * Re-balances the columns in a given row.
-     *
-     * @since 1.0.0
-     *
-     * @param model
-     */
-    _reBalanceColumns : function( model ) {
-        var children = this.where( { parent : model.get( 'id' ) } );
-        var numberChildren = children.length;
-
-        _.each( children, function( child ) {
-            var atts = _.clone( child.get( 'atts' ) );
-            atts.width = 12 / numberChildren;
-
-            child.set( 'atts', atts, { silent : true } );
-            child.trigger( 'change:width', model, atts.width );
-        }, this );
-    },
-
-    /**
-     * Performs checks on the previous parent when an element changes parent.
-     *
-     * @since 1.0.0
-     *
-     * @param model
-     */
-	_checkParent : function( model ) {
-        if ( ! model ) {
-            return;
-        }
-        if ( 'container' == model.get( 'type' ) ) {
-            this._checkCollapsibleContainer( model );
-        }
-        this._checkChildren( model );
-	},
-
-    /**
-     * Checks whether a collapsible container is still valid.
-     *
-     * @since 1.0.0
-     *
-     * @param model
-     * @private
-     */
-    _checkCollapsibleContainer : function( model ) {
-        var childTag = this.getElementDefinitions().findWhere( { tag : model.get( 'tag' ) } ).get( 'child' ) ;
-        var containerId = model.get( 'id' );
-        var children = this.filter( function( element ) {
-            return containerId === element.get( 'parent' ) && childTag === element.get( 'tag' );
-        } );
-
-        // Collapse the container
-        if ( 0 === children.length ) {
-            model.trigger( 'container:collapse', model, this.where( { parent : containerId } ) );
-        }
-
-        // Collapse the only remaining column
-        else if ( 1 === children.length ) {
-	        var child = _.first( children );
-            
-            if ( 'tailor_row' === model.get( 'tag' ) ) {
-                child.trigger( 'container:collapse', child, this.where( { parent : child.get( 'id' ) } ) );
-            }
-        }
-    },
-
-    /**
-     * Destroys a container element if it is empty.
-     *
-     * @since 1.0.0
-     *
-     * @param model
-     * @private
-     */
-	_checkChildren : function( model ) {
-		var children = this.where( { parent : model.get( 'id' ) } );
-		if ( 0 === children.length ) {
-			model.trigger( 'destroy', model );
-		}
-	},
-
 	/**
      * Adds a model to the collection.
      * 
@@ -3569,56 +3560,6 @@ var ElementCollection = Backbone.Collection.extend( {
         options = options || {};
 
         return this.add( models, options );
-    },
-
-	/**
-	 * Returns the library collection.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @returns {*}
-	 */
-    getElementDefinitions : function() {
-          return this.library || app.channel.request( 'sidebar:library' );
-    },
-
-    /**
-     * Applies default values to the element model.
-     *
-     * @since 1.0.0
-     *
-     * @param model
-     * @returns {*}
-     */
-    applyDefaults : function( model ) {
-        if ( model instanceof Backbone.Model ) {
-            model = model.toJSON();
-        }
-
-        var item = this.getElementDefinitions().findWhere( { tag : model.tag } );
-        var defaults = {
-            label : item.get( 'label' ),
-            type : item.get( 'type' )
-        };
-
-        var child = item.get( 'child' );
-        if ( child ) {
-            defaults.child = child;
-        }
-
-        var childViewContainer = item.get( 'child_container' );
-        if ( childViewContainer ) {
-            defaults.child_container = childViewContainer;
-        }
-
-        model.atts = model.atts || {};
-        _.each( item.get( 'settings' ), function( setting ) {
-            if ( ! _.isEmpty( setting['value'] ) && ! model.atts.hasOwnProperty( setting['id'] ) ) {
-                model.atts[ setting['id'] ] = setting['value'];
-            }
-        } );
-
-        return _.extend( model, defaults );
     },
 
     /**
@@ -3693,6 +3634,86 @@ var ElementCollection = Backbone.Collection.extend( {
     },
 
     /**
+     * Creates a new container.
+     *
+     * @since 1.0.0
+     *
+     * @param model
+     * @param parentId
+     * @param order
+     * @param descendants
+     */
+    createContainer : function( model, parentId, order, descendants ) {
+        var tag = model.get( 'tag' );
+        var container = _.first( this.create( [ {
+            tag : tag,
+            parent : parentId,
+            order : order
+        } ], {
+            at : order,
+            silent : true
+        } ) );
+
+        var childTag = model.get( 'child' );
+        var children = this.create( [ {
+            tag : childTag,
+            parent : container.get( 'id' ),
+            order : 0
+        }, {
+            tag : childTag,
+            parent : container.get( 'id' ),
+            order : 1
+
+        } ], {
+            silent : true
+        } );
+
+        if ( descendants ) {
+            _.first( descendants ).set( 'parent', _.first( children ).get( 'id' ), { silent : true } );
+            _.last( descendants ).set( 'parent', _.last( children ).get( 'id' ), { silent : true } );
+        }
+
+        this.trigger( 'add', container, this, {} );
+    },
+
+    /**
+     * Creates and returns a new wrapper element.
+     *
+     * @since 1.0.0
+     *
+     * @param tag
+     * @param parentId
+     * @param order
+     * @param child
+     * @returns {*}
+     */
+    createWrapper : function( tag, parentId, order, child ) {
+        var wrapper = _.first( this.create( [ {
+            tag : tag,
+            parent : parentId,
+            order : order
+        } ], {
+            silent : true
+        } ) );
+        if ( 'undefined' == typeof child ) {
+            this.create( [ {
+                tag : 'tailor_content',
+                parent : wrapper.get( 'id' ),
+                order : 0
+            } ], {
+                silent : true
+            } )
+        }
+
+        this.trigger( 'add', wrapper, this, {} );
+        if ( 'undefined' != typeof child ) {
+            this.insertChild( child, wrapper );
+        }
+
+        return wrapper;
+    },
+
+    /**
      * Adds a child into the specified parent.
      *
      * @since 1.7.3
@@ -3741,84 +3762,86 @@ var ElementCollection = Backbone.Collection.extend( {
         child.set( 'parent', parent.get( 'id' ) );
     },
 
-	/**
-	 * Creates a new container.
+    /**
+     * Re-balances the columns in a given row.
      *
      * @since 1.0.0
      *
      * @param model
-     * @param parentId
-     * @param order
-     * @param descendants
      */
-    createContainer : function( model, parentId, order, descendants ) {
-        var tag = model.get( 'tag' );
-        var container = _.first( this.create( [ {
-            tag : tag,
-            parent : parentId,
-            order : order
-        } ], {
-            at : order,
-            silent : true
-        } ) );
+    _reBalanceColumns : function( model ) {
+        var children = this.where( { parent : model.get( 'id' ) } );
+        var numberChildren = children.length;
 
-        var childTag = model.get( 'child' );
-        var children = this.create( [ {
-            tag : childTag,
-            parent : container.get( 'id' ),
-            order : 0
-        }, {
-            tag : childTag,
-            parent : container.get( 'id' ),
-            order : 1
+        _.each( children, function( child ) {
+            var atts = _.clone( child.get( 'atts' ) );
+            atts.width = 12 / numberChildren;
 
-        } ], {
-            silent : true
-        } );
-
-        if ( descendants ) {
-            _.first( descendants ).set( 'parent', _.first( children ).get( 'id' ), { silent : true } );
-            _.last( descendants ).set( 'parent', _.last( children ).get( 'id' ), { silent : true } );
-        }
-
-        this.trigger( 'add', container, this, {} );
+            child.set( 'atts', atts, { silent : true } );
+            child.trigger( 'change:width', model, atts.width );
+        }, this );
     },
 
-	/**
-     * Creates and returns a new wrapper element.
+    /**
+     * Performs checks on the previous parent when an element changes parent.
      *
      * @since 1.0.0
      *
-     * @param tag
-     * @param parentId
-     * @param order
-     * @param child
-     * @returns {*}
+     * @param model
      */
-    createWrapper : function( tag, parentId, order, child ) {
-        var wrapper = _.first( this.create( [ {
-            tag : tag,
-            parent : parentId,
-            order : order
-        } ], {
-            silent : true
-        } ) );
-        if ( 'undefined' == typeof child ) {
-            this.create( [ {
-                tag : 'tailor_content',
-                parent : wrapper.get( 'id' ),
-                order : 0
-            } ], {
-                silent : true
-            } )
+    _checkParent : function( model ) {
+        if ( ! model ) {
+            return;
+        }
+        if ( 'container' == model.get( 'type' ) ) {
+            this._checkCollapsibleContainer( model );
+        }
+        this._checkChildren( model );
+    },
+
+    /**
+     * Destroys a container element if it is empty.
+     *
+     * @since 1.0.0
+     *
+     * @param model
+     * @private
+     */
+    _checkChildren : function( model ) {
+        var children = this.where( { parent : model.get( 'id' ) } );
+        if ( 0 === children.length ) {
+            model.trigger( 'destroy', model );
+        }
+    },
+
+    /**
+     * Checks whether a collapsible container is still valid.
+     *
+     * @since 1.0.0
+     *
+     * @param model
+     * @private
+     */
+    _checkCollapsibleContainer : function( model ) {
+        var childTag = this.getElementDefinitions().findWhere( { tag : model.get( 'tag' ) } ).get( 'child' ) ;
+        var containerId = model.get( 'id' );
+        var children = this.filter( function( element ) {
+            return containerId === element.get( 'parent' ) && childTag === element.get( 'tag' );
+        } );
+
+        // Collapse the container
+        if ( 0 === children.length ) {
+            model.trigger( 'container:collapse', model, this.where( { parent : containerId } ) );
         }
 
-        this.trigger( 'add', wrapper, this, {} );
-        if ( 'undefined' != typeof child ) {
-            this.insertChild( child, wrapper );
-        }
+        // Collapse the only remaining column
+        else if ( 1 === children.length ) {
+            var child = _.first( children );
 
-        return wrapper;
+            if ( 'tailor_row' === model.get( 'tag' ) ) {
+                child.trigger( 'container:collapse', child, this.where( { parent : child.get( 'id' ) } ) );
+            }
+        }
     }
 
 } );
@@ -4738,7 +4761,7 @@ ElementModel = BaseModel.extend( {
 				return _.contains( [ 'tailor_section', 'tailor_column' ], parent.get( 'tag' ) ) || ! _.contains( [ 'container', 'wrapper', 'child' ], that.get( 'type' ) );
 			}
 
-			return 'tailor_section' == parent.get( 'tag' ) || ! _.contains( [ 'left', 'right' ], region );
+			return 'tailor_section' == parent.get( 'tag' ) || _.contains( [ 'left', 'right' ], region );
 		}
 
 		return true;
@@ -6175,7 +6198,7 @@ var SelectMenuItemView = Marionette.ItemView.extend( {
 	},
 
 	getTemplate : function() {
-		return _.template( '<%= label %>' );
+		return _.template( '<span><%= label %></span>' );
 	},
 
 	/**
@@ -6304,6 +6327,21 @@ SelectMenuView = Marionette.CompositeView.extend( {
         this.el.style.left = thatRect.left - thisRect.left + 'px';
         this.el.style.width = thatRect.width + 'px';
         this.el.style.height = thatRect.height + 'px';
+
+        var controls = this.el.querySelector( '.select__controls' );
+        var menu = this.el.querySelector( '.select__menu' );
+
+        if ( menu && controls ) {
+            var menuRect = menu.getBoundingClientRect();
+            var controlsRect = controls.getBoundingClientRect();
+
+            console.log( menuRect.width + controlsRect.width );
+            console.log( parseInt( this.el.style.width, 10 ) );
+
+            if ( ( menuRect.width + controlsRect.width ) > parseInt( this.el.style.width, 10 ) ) {
+                this.el.classList.add( 'is-minimal' );
+            }
+        }
     },
 
 	/**
@@ -7133,6 +7171,9 @@ var $ = Backbone.$,
 
 		// Max width
 		registerCallbacks( {
+			'width': [ [], 'width', 'tailorValidateUnit' ],
+			'width_tablet': [ [], 'width', 'tailorValidateUnit' ],
+			'width_mobile': [ [], 'width', 'tailorValidateUnit' ],
 			'max_width' : [ [], 'max-width', 'tailorValidateUnit' ],
 			'max_width_tablet' : [ [], 'max-width', 'tailorValidateUnit' ],
 			'max_width_mobile' : [ [], 'max-width', 'tailorValidateUnit' ],

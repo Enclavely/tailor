@@ -135,6 +135,38 @@ $guide-background-color: $global-primary-color !default;
 					}
 				}
 			}
+
+			&.is-minimal .select {
+
+				&__menu {
+					right: 1px;
+					z-index: 2;
+
+					.select__item {
+						margin-bottom: 2px;
+						clear: both;
+						width: 100%;
+
+						&:not(:only-child):first-child::after {
+							float: right;
+						}
+					}
+				}
+
+				&__controls {
+					top: 31px;
+					left: 1px;
+					z-index: 1;
+					background-color: $guide-background-color;
+				}
+			}
+
+			&.is-minimal.is-expanded .select {
+
+				&__controls {
+					display: none;
+				}
+			}
 		}
 
 		.guide {

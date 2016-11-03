@@ -23,7 +23,7 @@ ColumnView = ContainerView.extend( {
      * @since 1.0.0
      */
     onRenderCollection : function() {
-        this.updateClassName( this.model.get( 'atts' ).width );
+        //this.updateClassName( this.model.get( 'atts' ).width );
         this.$el
             .attr( 'draggable', true )
             .prepend(
@@ -42,13 +42,17 @@ ColumnView = ContainerView.extend( {
      */
 	onResize : function( e ) {
 		var columnView = this;
-		var model = columnView.model;
-		var nextModel = model.collection.findWhere( {
-            parent : model.get( 'parent' ),
-            order : model.get( 'order' ) + 1 }
-        );
+	    var device = app.channel.request( 'sidebar:device' );
+	    var setting = ( 'desktop' == device ) ? 'width' : ( 'width_' + device );
 
-        var originalWidth = model.get( 'atts' ).width;
+	    var model = columnView.model;
+	    var nextModel = model.collection.findWhere( {
+		    parent : model.get( 'parent' ),
+		    order : model.get( 'order' ) + 1 }
+	    );
+
+	    var atts = model.get( 'atts' );
+	    var originalWidth = atts[ setting ] || atts['width'];
 
 	    /**
 	     * Handles the resizing of columns.
@@ -61,24 +65,24 @@ ColumnView = ContainerView.extend( {
 			document.body.classList.add( 'is-resizing' );
 			document.body.style.cursor = 'col-resize';
 
-			var rect = columnView.el.getBoundingClientRect();
-            var atts = _.clone( model.get( 'atts' ) );
-            var nextAtts = _.clone( nextModel.get( 'atts' ) );
-			var width = parseInt( atts.width );
-            var nextWidth = parseInt( nextAtts.width );
-			var newWidth = Math.round( ( e.clientX - rect.left ) / ( rect.width ) * width );
-			if ( newWidth < 1 || ( newWidth + 1 ) > ( width + nextWidth ) || newWidth == width ) {
-				return;
-			}
+		    var rect = columnView.el.getBoundingClientRect();
+		    var atts = _.clone( model.get( 'atts' ) );
+		    var nextAtts = _.clone( nextModel.get( 'atts' ) );
+		    var width = parseInt( atts[ setting ] || atts['width'] );
+		    var nextWidth = parseInt( nextAtts[ setting ] || nextAtts['width'] );
+		    var newWidth = Math.round( ( e.clientX - rect.left ) / ( rect.width ) * width );
+		    if ( newWidth < 1 || ( newWidth + 1 ) > ( width + nextWidth ) || newWidth == width ) {
+			    return;
+		    }
 
-            atts.width = newWidth;
-            nextAtts.width =  nextWidth - ( newWidth - width );
+		    atts[ setting ] = newWidth;
+		    nextAtts[ setting ] =  nextWidth - ( newWidth - width );
 
-            model.set( 'atts', atts, { silent : true } );
-            nextModel.set( 'atts', nextAtts, { silent : true } );
+		    model.set( 'atts', atts, { silent : true } );
+		    nextModel.set( 'atts', nextAtts, { silent : true } );
 
-            model.trigger( 'change:width', model, atts.width );
-		    nextModel.trigger( 'change:width', nextModel, nextAtts.width );
+		    model.trigger( 'change:width', model, atts );
+		    nextModel.trigger( 'change:width', nextModel, nextAtts );
         }
 
 	    /**
@@ -95,7 +99,10 @@ ColumnView = ContainerView.extend( {
             document.body.classList.remove( 'is-resizing' );
             document.body.style.cursor = 'default';
 
-            if ( originalWidth != model.get( 'atts' ).width ) {
+		    var atts = model.get( 'atts' );
+		    var device = app.channel.request( 'sidebar:device' );
+		    var setting = ( 'desktop' == device ) ? 'width' : ( 'width_' + device );
+            if ( originalWidth != atts[ setting ] ) {
 
                 /**
                  * Fires after the column has been resized.
@@ -123,12 +130,9 @@ ColumnView = ContainerView.extend( {
      * Updates the column class name when the width changes.
      *
      * @since 1.0.0
-     *
-     * @param model
-     * @param width
      */
-	onChangeWidth : function( model, width ) {
-        this.updateClassName( width );
+	onChangeWidth : function( model, atts ) {
+        this.updateClassName( atts );
 
 	    /**
 	     * Fires after the column width has changed.
@@ -143,14 +147,21 @@ ColumnView = ContainerView.extend( {
      *
      * @since 1.0.0
      *
-     * @param width
+     * @param atts
      */
-    updateClassName : function( width ) {
-        this.$el.removeClass( function( index, css ) {
-            return ( css.match( /(^|\s)columns-\S+/g) || [] ).join( ' ' );
-        } );
+    updateClassName : function( atts ) {
+	    this.$el.removeClass( function( index, css ) {
+		    return ( css.match( /(^|\s)columns-\S+/g) || [] ).join( ' ' );
+	    } );
 
-        this.el.classList.add( 'columns-' + width );
+	    var device = app.channel.request( 'sidebar:device' );
+	    this.el.classList.add( 'columns-' + atts.width );
+	    if ( atts.hasOwnProperty( 'width_tablet' ) && 'undefined' != typeof atts['width_tablet'] ) {
+		    this.el.classList.add( ( 'columns-tablet-' + atts.width_tablet ) );
+	    }
+	    if ( atts.hasOwnProperty( 'width_mobile' ) && 'undefined' !== typeof atts['width_mobile'] ) {
+		    this.el.classList.add( ( 'columns-mobile-' + atts.width_mobile ) );
+	    }
     }
 
 } );

@@ -36,7 +36,7 @@ ElementModel = BaseModel.extend( {
 				return _.contains( [ 'tailor_section', 'tailor_column' ], parent.get( 'tag' ) ) || ! _.contains( [ 'container', 'wrapper', 'child' ], that.get( 'type' ) );
 			}
 
-			return 'tailor_section' == parent.get( 'tag' ) || ! _.contains( [ 'left', 'right' ], region );
+			return 'tailor_section' == parent.get( 'tag' ) || _.contains( [ 'left', 'right' ], region );
 		}
 
 		return true;

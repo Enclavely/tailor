@@ -9,7 +9,7 @@ var SelectMenuItemView = Marionette.ItemView.extend( {
 	},
 
 	getTemplate : function() {
-		return _.template( '<%= label %>' );
+		return _.template( '<span><%= label %></span>' );
 	},
 
 	/**

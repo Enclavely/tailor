@@ -138,6 +138,18 @@ CanvasApplication = Marionette.Application.extend( {
         } );
 
         /**
+         * Returns the current device preview size.
+         *
+         * @since 1.7.4
+         *
+         * @param id
+         * @returns {*|{}}
+         */
+        this.channel.reply( 'sidebar:device', function() {
+            return remoteChannel.request( 'sidebar:device' );
+        } );
+        
+        /**
          * Returns the current sidebar setting values from the registered remote channel.
          *
          * @since 1.4.0

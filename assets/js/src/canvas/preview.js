@@ -647,6 +647,9 @@ var $ = Backbone.$,
 
 		// Max width
 		registerCallbacks( {
+			'width': [ [], 'width', 'tailorValidateUnit' ],
+			'width_tablet': [ [], 'width', 'tailorValidateUnit' ],
+			'width_mobile': [ [], 'width', 'tailorValidateUnit' ],
 			'max_width' : [ [], 'max-width', 'tailorValidateUnit' ],
 			'max_width_tablet' : [ [], 'max-width', 'tailorValidateUnit' ],
 			'max_width_mobile' : [ [], 'max-width', 'tailorValidateUnit' ],

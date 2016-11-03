@@ -156,6 +156,32 @@ html {
   content: "\f142";
 }
 
+.tailor-ui .tools .select.is-minimal .select__menu {
+  right: 1px;
+  z-index: 2;
+}
+
+.tailor-ui .tools .select.is-minimal .select__menu .select__item {
+  margin-bottom: 2px;
+  clear: both;
+  width: 100%;
+}
+
+.tailor-ui .tools .select.is-minimal .select__menu .select__item:not(:only-child):first-child::after {
+  float: right;
+}
+
+.tailor-ui .tools .select.is-minimal .select__controls {
+  top: 31px;
+  left: 1px;
+  z-index: 1;
+  background-color: #0f95ee;
+}
+
+.tailor-ui .tools .select.is-minimal.is-expanded .select__controls {
+  display: none;
+}
+
 .tailor-ui .tools .guide {
   position: absolute;
   top: 0;

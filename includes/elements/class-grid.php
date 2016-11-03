@@ -83,18 +83,18 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Grid_Element' )
 	            ),
             );
             $priority = tailor_control_presets( $this, $general_control_types, $general_control_arguments, $priority );
-	        
+
 	        $this->add_setting( 'collapse', array(
 		        'sanitize_callback'     =>  'tailor_sanitize_text',
 		        'default'               =>  'tablet',
 	        ) );
 	        $this->add_control( 'collapse', array(
-		        'label'             =>  __( 'Minimum screen size', 'tailor' ),
-		        'description'       =>  __( 'Select the smallest screen size on which items are displayed in a grid layout', 'tailor' ),
-		        'type'              =>  'select',
-		        'choices'           =>  tailor_get_media_queries(),
-		        'priority'          =>  $priority += 10,
-		        'section'           =>  'general',
+		        'label'                 =>  __( 'Minimum screen size', 'tailor' ),
+		        'description'           =>  __( 'Select the smallest screen size on which items are displayed in a grid layout', 'tailor' ),
+		        'type'                  =>  'select',
+		        'choices'               =>  tailor_get_media_queries(),
+		        'priority'              =>  $priority += 10,
+		        'section'               =>  'general',
 	        ) );
 
 	        $general_control_types = array();

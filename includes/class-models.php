@@ -264,7 +264,6 @@ if ( ! class_exists( 'Tailor_Models' ) ) {
 	     * @return array
 	     */
 	    public function get_sanitized_models( $post_id, $apply_default = false ) {
-
 		    $sanitized_models = $this->sanitize_models( $this->get_models( $post_id ) );
 		    if ( empty( $sanitized_models ) ) {
 			    $sanitized_models = ( true == $apply_default ) ? $this->get_default_models() : array();
@@ -362,7 +361,6 @@ if ( ! class_exists( 'Tailor_Models' ) ) {
 	     * @return bool|array
 	     */
 	    public function update_model( $post_id, $model ) {
-
 		    if ( empty( $post_id ) || empty( $model['id'] ) ) {
 			    return false;
 		    }
@@ -387,7 +385,6 @@ if ( ! class_exists( 'Tailor_Models' ) ) {
 		    $sanitized_models = $this->sanitize_models( $unsanitized_models );
 		    
 		    if ( ! empty( $sanitized_models ) && update_post_meta( $post_id, '_tailor_layout', $sanitized_models ) ) {
-
 			    $sanitized_model = $this->sanitize_model( $model );
 			    
 			    /**
@@ -426,7 +423,6 @@ if ( ! class_exists( 'Tailor_Models' ) ) {
 	     * @return bool
 	     */
 	    public function delete_models( $post_id ) {
-		    
 		    if ( ! empty( $post_id ) && delete_post_meta( $post_id, '_tailor_layout' ) ) {
 
 			    /**
@@ -521,7 +517,6 @@ if ( ! class_exists( 'Tailor_Models' ) ) {
 	     * @param string $post_id
 	     */
 	    public function save_models( $post_id = '' ) {
-
 		    $post = get_post( $post_id );
 		    if ( ! $post ) {
 			    wp_send_json_error( array(
@@ -557,7 +552,7 @@ if ( ! class_exists( 'Tailor_Models' ) ) {
 			// Update the post content
 		    $this->update_post_content( $post_id, $refreshed_models );
 	    }
-	    
+
 	    /**
 	     * Updates the content of a post based on a collection of element models.
 	     *
@@ -572,8 +567,8 @@ if ( ! class_exists( 'Tailor_Models' ) ) {
 		    
 		    // Generate the page content using the model collection
 		    if ( ! empty( $sanitized_models ) ) {
-			    $reordered_models = $this->order_models_by_parent( $sanitized_models );
-			    $shortcodes = $this->generate_shortcodes( '', $reordered_models );
+			    $ordered_sanitized_models = $this->order_models_by_parent( $sanitized_models );
+			    $shortcodes = $this->generate_shortcodes( '', $ordered_sanitized_models );
 
 			    /**
 			     * Allows developers to control whether content is saved as HTML or shortcodes.
@@ -597,8 +592,6 @@ if ( ! class_exists( 'Tailor_Models' ) ) {
 				    $updated_post_content = do_shortcode( $shortcodes );
 			    }
 			    else {
-
-				    // Save the raw shortcodes as the post content
 				    $updated_post_content = $shortcodes;
 			    }
 		    }
@@ -629,7 +622,59 @@ if ( ! class_exists( 'Tailor_Models' ) ) {
 		     */
 		    do_action( 'tailor_save_post_content_after', $post_id, $updated_post_content );
 	    }
-	    
+
+	    /**
+	     * Returns an array of models sorted by parent and order.
+	     *
+	     * @since 1.0.0
+	     *
+	     * @param $models
+	     * @return array $css_rules
+	     */
+	    public function order_models_by_parent( $models ) {
+		    $ordered_models = array();
+		    foreach ( $models as $model ) {
+			    $ordered_models[ $model['parent'] ][ $model['order'] ] = $model;
+		    }
+
+		    return $ordered_models;
+	    }
+
+	    /**
+	     * Returns all child (and grandchild) shortcodes for an given model.
+	     *
+	     * @since 1.4.0
+	     *
+	     * @param $parent_id
+	     * @param $ordered_sanitized_models
+	     * @return string
+	     */
+	    public function generate_shortcodes( $parent_id, $ordered_sanitized_models ) {
+		    $shortcodes = '';
+		    foreach ( $ordered_sanitized_models[ $parent_id ] as $sanitized_model ) {
+			    $element = tailor_elements()->get_element( $sanitized_model['tag'] );
+
+			    // Set the element content appropriately
+			    $content = $this->generate_shortcodes( $sanitized_model['id'], $ordered_sanitized_models );
+			    if ( array_key_exists( 'content', $sanitized_model['atts'] ) ) {
+				    if ( empty( $content ) ) {
+					    $content = $sanitized_model['atts']['content'];
+				    }
+				    unset( $sanitized_model['atts']['content'] );
+			    }
+
+				// Allow nested shortcodes
+			    if ( has_shortcode( $content, $element->tag ) ) {
+				    $content = do_shortcode( $content );
+			    }
+
+			    $shortcode = $element->generate_shortcode( $sanitized_model['id'], $sanitized_model['atts'], $content );
+			    $shortcodes .= $shortcode;
+		    }
+
+		    return $shortcodes;
+	    }
+
 	    /**
 	     * Sanitizes a collection of element models.
 	     *
@@ -640,7 +685,6 @@ if ( ! class_exists( 'Tailor_Models' ) ) {
 	     * @return array
 	     */
 	    public function sanitize_models( $unsanitized_models ) {
-
 		    $sanitized_models = array();
 		    if ( ! is_array( $unsanitized_models ) ) {
 			    return $sanitized_models;
@@ -674,7 +718,7 @@ if ( ! class_exists( 'Tailor_Models' ) ) {
 				    $sanitized_atts['content'] = sprintf(
 					    __( '%1$sThe %2$s element is not active.%3$s ', 'tailor' ),
 					    '<p class="error">',
-					    '<code>'  . esc_attr( $original_label ) . '</code>',
+					        '<code>'  . esc_attr( $original_label ) . '</code>',
 					    '</p>'
 				    );
 			    }
@@ -765,65 +809,11 @@ if ( ! class_exists( 'Tailor_Models' ) ) {
 	    }
 
 	    /**
-	     * Returns an array of models sorted by parent and order.
-	     *
-	     * @since 1.0.0
-	     *
-	     * @param $models
-	     * @return array $css_rules
-	     */
-	    public function order_models_by_parent( $models ) {
-		    $ordered_models = array();
-		    foreach ( $models as $model ) {
-			    $ordered_models[ $model['parent'] ][ $model['order'] ] = $model;
-		    }
-
-		    return $ordered_models;
-	    }
-
-	    /**
-	     * Returns all child (and grandchild) shortcodes for an given model.
-	     *
-	     * @since 1.4.0
-	     *
-	     * @param $parent_id
-	     * @param $ordered_sanitized_models
-	     * @return string
-	     */
-	    public function generate_shortcodes( $parent_id, $ordered_sanitized_models ) {
-		    $shortcodes = '';
-
-		    // Do nothing if the model doesn't exist in the collection
-		    if ( ! isset( $ordered_sanitized_models[ $parent_id ] ) ) {
-			    return $shortcodes;
-		    }
-
-		    foreach ( $ordered_sanitized_models[ $parent_id ] as $sanitized_model ) {
-			    $element = tailor_elements()->get_element( $sanitized_model['tag'] );
-
-			    // Set the element content appropriately
-			    $content = $this->generate_shortcodes( $sanitized_model['id'], $ordered_sanitized_models );
-			    if ( array_key_exists( 'content', $sanitized_model['atts'] ) ) {
-				    if ( empty( $content ) ) {
-					    $content = $sanitized_model['atts']['content'];
-				    }
-				    unset( $sanitized_model['atts']['content'] );
-			    }
-
-			    $shortcode = $element->generate_shortcode( $sanitized_model['id'], $sanitized_model['atts'], $content );
-			    $shortcodes .= $shortcode;
-		    }
-
-		    return $shortcodes;
-	    }
-	    
-	    /**
 	     * Prints model data.
 	     *
 	     * @since 1.4.0
 	     */
 	    public function print_models() {
-
 		    if ( did_action( 'tailor_print_models' ) ) {
 			    return;
 		    }

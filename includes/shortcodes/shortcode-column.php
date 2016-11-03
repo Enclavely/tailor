@@ -31,9 +31,19 @@ if ( ! function_exists( 'tailor_shortcode_column' ) ) {
 	     */
 	    $default_atts = apply_filters( 'tailor_shortcode_default_atts_' . $tag, array() );
 	    $atts = shortcode_atts( $default_atts, $atts, $tag );
+
+	    $class = explode( ' ', "tailor-column columns-{$atts['width']} {$atts['class']}" );
+	    foreach ( array( 'tablet', 'mobile' ) as $screen_size ) {
+		    $setting_id = 'width_' . $screen_size;
+		    if ( ! empty( $atts[ $setting_id ] ) ) {
+			    $value = (string) tailor_get_numeric_value( $atts[ $setting_id ] );
+			    $class[] = "columns-{$screen_size}-{$value}";
+		    }
+	    }
+
 	    $html_atts = array(
 		    'id'            =>  empty( $atts['id'] ) ? null : $atts['id'],
-		    'class'         =>  explode( ' ', "tailor-column columns-{$atts['width']} {$atts['class']}" ),
+		    'class'         =>  $class,
 		    'data'          =>  array(),
 	    );
 

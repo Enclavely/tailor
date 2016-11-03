@@ -57,7 +57,7 @@ if ( class_exists( 'Tailor_Setting_Manager' ) && ! class_exists( 'Tailor_Element
 	     * @since 1.0.0
 	     * @var string
 	     */
-	    public $type = 'element';
+	    public $type = 'content';
 
 	    /**
 	     * The child item tag, if any.

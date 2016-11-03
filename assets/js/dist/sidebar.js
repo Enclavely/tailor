@@ -788,6 +788,7 @@ module.exports = notify;
         app.module( 'module:modal', require( './sidebar/modules/modal/modal' ) );
         app.module( 'module:dialog', require( './sidebar/modules/dialog/dialog' ) );
         app.module( 'module:notification', require( './sidebar/modules/notifications/notifications' ) );
+        app.module( 'module:devicePreview', require( './sidebar/modules/device-preview/device-preview' ) );
         
         // Initialize preview
         require( './sidebar/preview' );
@@ -853,7 +854,7 @@ module.exports = notify;
     } );
     
 } ( window, Backbone.$ ) );
-},{"./shared/components/api/setting":1,"./shared/components/behaviors/draggable":2,"./shared/utility/ajax":3,"./shared/utility/notify":4,"./shared/utility/polyfills/classlist":5,"./shared/utility/polyfills/raf":6,"./shared/utility/polyfills/transitions":7,"./sidebar/app":9,"./sidebar/components/behaviors/panel":10,"./sidebar/components/behaviors/resizable":11,"./sidebar/components/controls/abstract-control":12,"./sidebar/components/controls/button-group":13,"./sidebar/components/controls/checkbox":14,"./sidebar/components/controls/code":15,"./sidebar/components/controls/colorpicker":16,"./sidebar/components/controls/editor":17,"./sidebar/components/controls/gallery":18,"./sidebar/components/controls/icon":19,"./sidebar/components/controls/image":20,"./sidebar/components/controls/input-group":21,"./sidebar/components/controls/link":22,"./sidebar/components/controls/list":25,"./sidebar/components/controls/radio":26,"./sidebar/components/controls/range":27,"./sidebar/components/controls/select":29,"./sidebar/components/controls/select-multi":28,"./sidebar/components/controls/style":30,"./sidebar/components/controls/switch":31,"./sidebar/components/controls/text":32,"./sidebar/components/controls/textarea":33,"./sidebar/components/controls/video":34,"./sidebar/components/controls/widget-form":35,"./sidebar/components/panels/panel-default":36,"./sidebar/components/panels/panel-empty":37,"./sidebar/components/sections/section-default":38,"./sidebar/entities/models/element":51,"./sidebar/entities/models/element-container":49,"./sidebar/entities/models/element-wrapper":50,"./sidebar/modules/dialog/dialog":57,"./sidebar/modules/dialog/dialog-region":56,"./sidebar/modules/history/history":59,"./sidebar/modules/library/library":61,"./sidebar/modules/modal/modal":64,"./sidebar/modules/modal/modal-region":63,"./sidebar/modules/notifications/notifications":72,"./sidebar/modules/panels/panels":73,"./sidebar/modules/sections/sections":78,"./sidebar/modules/settings/settings":80,"./sidebar/modules/templates/templates":83,"./sidebar/preview":84}],9:[function(require,module,exports){
+},{"./shared/components/api/setting":1,"./shared/components/behaviors/draggable":2,"./shared/utility/ajax":3,"./shared/utility/notify":4,"./shared/utility/polyfills/classlist":5,"./shared/utility/polyfills/raf":6,"./shared/utility/polyfills/transitions":7,"./sidebar/app":9,"./sidebar/components/behaviors/panel":10,"./sidebar/components/behaviors/resizable":11,"./sidebar/components/controls/abstract-control":12,"./sidebar/components/controls/button-group":13,"./sidebar/components/controls/checkbox":14,"./sidebar/components/controls/code":15,"./sidebar/components/controls/colorpicker":16,"./sidebar/components/controls/editor":17,"./sidebar/components/controls/gallery":18,"./sidebar/components/controls/icon":19,"./sidebar/components/controls/image":20,"./sidebar/components/controls/input-group":21,"./sidebar/components/controls/link":22,"./sidebar/components/controls/list":25,"./sidebar/components/controls/radio":26,"./sidebar/components/controls/range":27,"./sidebar/components/controls/select":29,"./sidebar/components/controls/select-multi":28,"./sidebar/components/controls/style":30,"./sidebar/components/controls/switch":31,"./sidebar/components/controls/text":32,"./sidebar/components/controls/textarea":33,"./sidebar/components/controls/video":34,"./sidebar/components/controls/widget-form":35,"./sidebar/components/panels/panel-default":36,"./sidebar/components/panels/panel-empty":37,"./sidebar/components/sections/section-default":38,"./sidebar/entities/models/element":51,"./sidebar/entities/models/element-container":49,"./sidebar/entities/models/element-wrapper":50,"./sidebar/modules/device-preview/device-preview":56,"./sidebar/modules/dialog/dialog":58,"./sidebar/modules/dialog/dialog-region":57,"./sidebar/modules/history/history":60,"./sidebar/modules/library/library":62,"./sidebar/modules/modal/modal":65,"./sidebar/modules/modal/modal-region":64,"./sidebar/modules/notifications/notifications":73,"./sidebar/modules/panels/panels":74,"./sidebar/modules/sections/sections":79,"./sidebar/modules/settings/settings":81,"./sidebar/modules/templates/templates":84,"./sidebar/preview":85}],9:[function(require,module,exports){
 /**
  * The Sidebar Marionette application.
  */
@@ -6434,6 +6435,97 @@ var TemplateModel = Backbone.Model.extend( {
 module.exports = TemplateModel;
 
 },{}],56:[function(require,module,exports){
+var $ = window.jQuery,
+    DevicePreviewModule;
+
+DevicePreviewModule = Marionette.Module.extend( {
+
+    device : 'desktop',
+
+    onBeforeStart : function() {
+        var module = this;
+        var api = {
+
+            /**
+             * Returns the current device preview size.
+             *
+             * @since 1.7.4
+             *
+             * @returns {*}
+             */
+            getDevice : function() {
+                return module.device;
+            }
+        };
+
+        app.channel.reply( 'sidebar:device', api.getDevice );
+    },
+
+    /**
+     * Initializes the module.
+     *
+     * @since 1.7.4
+     */
+	onStart : function() {
+        var module = this;
+        this.$buttons = $( '.tailor-sidebar .devices button' );
+        this.preview = document.querySelector( '.tailor-preview' );
+        this.viewport = this.preview.querySelector( '.tailor-preview__viewport' );
+        this.mediaQueries = window._media_queries;
+
+        this.setActive( this.$buttons.get(0) );
+        this.addEventListeners();
+
+        /**
+         * Fires when the module is initialized.
+         *
+         * @since ≈
+         *
+         * @param this
+         */
+        app.channel.trigger( 'module:devicePreview:ready', this );
+    },
+
+    /**
+     * Adds the required event listeners.
+     *
+     * @since 1.7.4
+     */
+    addEventListeners : function() {
+        this.$buttons.on( 'click', this.onDevicePreview.bind( this ) );
+    },
+
+    onDevicePreview : function( e ) {
+        var button = e.target;
+        var previous = this.$buttons.filter( "[data-device='" + this.device + "']" ).get(0);
+
+        this.setInactive( previous );
+        this.setActive( button );
+
+        this.device = button.getAttribute( 'data-device' );
+        this.preview.className = 'tailor-preview ' + this.device + '-screens';
+        if ( this.mediaQueries.hasOwnProperty( this.device ) && this.mediaQueries[ this.device ].max ) {
+            this.viewport.style.maxWidth = this.mediaQueries[ this.device ].max;
+        }
+        else {
+            this.viewport.style.maxWidth ='';
+        }
+    },
+
+    setActive: function( button ) {
+        button.classList.add( 'is-active' );
+        button.setAttribute( 'aria-pressed', 'true' );
+    },
+
+    setInactive: function( button ) {
+        button.classList.remove( 'is-active' );
+        button.setAttribute( 'aria-pressed', 'false' );
+    }
+} );
+
+module.exports = DevicePreviewModule;
+
+},{}],57:[function(require,module,exports){
 var DialogRegion = Backbone.Marionette.Region.extend( {
 
     /**
@@ -6473,7 +6565,7 @@ var DialogRegion = Backbone.Marionette.Region.extend( {
 
 module.exports = DialogRegion;
 
-},{}],57:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 var DialogView = require( './show/dialog' ),
 	DialogModule;
 
@@ -6514,7 +6606,7 @@ DialogModule = Marionette.Module.extend( {
 } );
 
 module.exports = DialogModule;
-},{"./show/dialog":58}],58:[function(require,module,exports){
+},{"./show/dialog":59}],59:[function(require,module,exports){
 /**
  * Dialog view for present growl-style notifications to the user.
  *
@@ -6662,7 +6754,7 @@ DialogView = Backbone.Marionette.ItemView.extend( {
 
 module.exports = DialogView;
 
-},{}],59:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 var SnapshotsCollection = require( '../../entities/collections/snapshots' ),
     SnapshotMenuItem = require( './show/snapshot-menu-item' ),
     HistoryModule;
@@ -6874,7 +6966,7 @@ HistoryModule = Marionette.Module.extend( {
 } );
 
 module.exports = HistoryModule;
-},{"../../entities/collections/snapshots":46,"./show/snapshot-menu-item":60}],60:[function(require,module,exports){
+},{"../../entities/collections/snapshots":46,"./show/snapshot-menu-item":61}],61:[function(require,module,exports){
 var $ = Backbone.$,
     HistoryItem;
 
@@ -6995,7 +7087,7 @@ HistoryItem = Marionette.ItemView.extend( {
 
 module.exports = HistoryItem;
 
-},{}],61:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 
 var LibraryCollection = require( '../../entities/collections/library' ),
     LibraryMenuItem = require( './show/library-menu-item' ),
@@ -7048,7 +7140,7 @@ LibraryModule = Marionette.Module.extend( {
 } );
 
 module.exports = LibraryModule;
-},{"../../entities/collections/library":41,"./show/library-menu-item":62}],62:[function(require,module,exports){
+},{"../../entities/collections/library":41,"./show/library-menu-item":63}],63:[function(require,module,exports){
 var $ = Backbone.$,
     ElementMenuItem;
 
@@ -7128,7 +7220,7 @@ ElementMenuItem = Marionette.ItemView.extend( {
 
 module.exports = ElementMenuItem;
 
-},{}],63:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 var ModalRegion = Backbone.Marionette.Region.extend( {
 
     /**
@@ -7216,7 +7308,7 @@ var ModalRegion = Backbone.Marionette.Region.extend( {
 } );
 
 module.exports = ModalRegion;
-},{}],64:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 var ModalView = require( './show/modal' ),
 	ModalModule;
 
@@ -7278,7 +7370,7 @@ ModalModule = Marionette.Module.extend( {
 } );
 
 module.exports = ModalModule;
-},{"./show/modal":67}],65:[function(require,module,exports){
+},{"./show/modal":68}],66:[function(require,module,exports){
 var EmptyModalView = Marionette.ItemView.extend( {
 
     className : 'empty',
@@ -7288,7 +7380,7 @@ var EmptyModalView = Marionette.ItemView.extend( {
 } );
 
 module.exports = EmptyModalView;
-},{}],66:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 var EmptySectionView = Marionette.ItemView.extend( {
 
     className : 'empty',
@@ -7298,7 +7390,7 @@ var EmptySectionView = Marionette.ItemView.extend( {
 } );
 
 module.exports = EmptySectionView;
-},{}],67:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 var SectionCollectionView = require( './sections' ),
     NavigationView = require( './tabs' ),
     ModalView;
@@ -7542,7 +7634,7 @@ ModalView = Marionette.LayoutView.extend( {
 } );
 
 module.exports = ModalView;
-},{"./sections":69,"./tabs":71}],68:[function(require,module,exports){
+},{"./sections":70,"./tabs":72}],69:[function(require,module,exports){
 var ControlCollectionView = Marionette.CollectionView.extend( {
 
 	tagName : 'ul',
@@ -7634,7 +7726,7 @@ var ControlCollectionView = Marionette.CollectionView.extend( {
 } );
 
 module.exports = ControlCollectionView;
-},{"./empty-section":66}],69:[function(require,module,exports){
+},{"./empty-section":67}],70:[function(require,module,exports){
 var SectionCollectionView = Marionette.CollectionView.extend( {
 
     childView : require( './section' ),
@@ -7667,7 +7759,7 @@ var SectionCollectionView = Marionette.CollectionView.extend( {
 } );
 
 module.exports = SectionCollectionView;
-},{"./empty-modal":65,"./section":68}],70:[function(require,module,exports){
+},{"./empty-modal":66,"./section":69}],71:[function(require,module,exports){
 var NavigationItemView = Marionette.ItemView.extend( {
 
     tagName : 'li',
@@ -7720,7 +7812,7 @@ var NavigationItemView = Marionette.ItemView.extend( {
 } );
 
 module.exports = NavigationItemView;
-},{}],71:[function(require,module,exports){
+},{}],72:[function(require,module,exports){
 var NavigationItemView = require( './tab' ),
     NavigationView;
 
@@ -7763,7 +7855,7 @@ NavigationView = Marionette.CollectionView.extend( {
 } );
 
 module.exports = NavigationView;
-},{"./tab":70}],72:[function(require,module,exports){
+},{"./tab":71}],73:[function(require,module,exports){
 var Notify = window.Tailor.Notify,
     NotificationsModule;
 
@@ -7835,7 +7927,7 @@ NotificationsModule = Marionette.Module.extend( {
 
 module.exports = NotificationsModule;
 
-},{}],73:[function(require,module,exports){
+},{}],74:[function(require,module,exports){
 var PanelCollection = require( '../../entities/collections/panels' ),
     PanelLayoutView = require( './show/layout' ),
     PanelMenuItem = require( './show/panel-menu-item' ),
@@ -7899,7 +7991,7 @@ PanelsModule = Marionette.Module.extend( {
 
 module.exports = PanelsModule;
 
-},{"../../entities/collections/panels":42,"./show/layout":74,"./show/panel-menu-item":75}],74:[function(require,module,exports){
+},{"../../entities/collections/panels":42,"./show/layout":75,"./show/panel-menu-item":76}],75:[function(require,module,exports){
 var PanelsView = require( './panels' ),
     PanelLayoutView;
 
@@ -8025,7 +8117,7 @@ PanelLayoutView = Marionette.LayoutView.extend( {
 
 module.exports = PanelLayoutView;
 
-},{"./panels":77}],75:[function(require,module,exports){
+},{"./panels":78}],76:[function(require,module,exports){
 var $ = Backbone.$,
 	PanelItem;
 
@@ -8092,7 +8184,7 @@ PanelItem = Marionette.ItemView.extend( {
 
 module.exports = PanelItem;
 
-},{}],76:[function(require,module,exports){
+},{}],77:[function(require,module,exports){
 var EmptyPanelView = Marionette.ItemView.extend( {
 
     className : 'empty',
@@ -8102,7 +8194,7 @@ var EmptyPanelView = Marionette.ItemView.extend( {
 } );
 
 module.exports = EmptyPanelView;
-},{}],77:[function(require,module,exports){
+},{}],78:[function(require,module,exports){
 var PanelsView = Marionette.CompositeView.extend( {
 
     getChildView : function() {
@@ -8128,7 +8220,7 @@ var PanelsView = Marionette.CompositeView.extend( {
 } );
 
 module.exports = PanelsView;
-},{"./panels-empty":76}],78:[function(require,module,exports){
+},{"./panels-empty":77}],79:[function(require,module,exports){
 
 var SectionCollection = require( '../../entities/collections/sections' ),
     DefaultMenuItem = require( './show/default-menu-item' ),
@@ -8201,7 +8293,7 @@ SectionsModule = Marionette.Module.extend( {
 } );
 
 module.exports = SectionsModule;
-},{"../../entities/collections/sections":44,"./show/default-menu-item":79}],79:[function(require,module,exports){
+},{"../../entities/collections/sections":44,"./show/default-menu-item":80}],80:[function(require,module,exports){
 var $ = Backbone.$,
     DefaultItem;
 
@@ -8273,7 +8365,7 @@ DefaultItem = Marionette.ItemView.extend( {
 
 module.exports = DefaultItem;
 
-},{}],80:[function(require,module,exports){
+},{}],81:[function(require,module,exports){
 
 var SettingCollection = require( '../../entities/collections/settings' ),
     ControlCollection = require( '../../entities/collections/controls' ),
@@ -8407,7 +8499,7 @@ SettingsModule = Marionette.Module.extend( {
 } );
 
 module.exports = SettingsModule;
-},{"../../entities/collections/controls":40,"../../entities/collections/settings":45}],81:[function(require,module,exports){
+},{"../../entities/collections/controls":40,"../../entities/collections/settings":45}],82:[function(require,module,exports){
 var $ = Backbone.$,
     l10n = window._l10n,
     TemplateMenuItem;
@@ -8608,7 +8700,7 @@ TemplateMenuItem = Marionette.ItemView.extend( {
 } );
 
 module.exports = TemplateMenuItem;
-},{}],82:[function(require,module,exports){
+},{}],83:[function(require,module,exports){
 var l10n = window._l10n,
     TemplatesPanel;
 
@@ -8918,7 +9010,7 @@ TemplatesPanel = Marionette.CompositeView.extend( {
 } );
 
 module.exports = TemplatesPanel;
-},{}],83:[function(require,module,exports){
+},{}],84:[function(require,module,exports){
 
 var TemplateCollection = require( '../../entities/collections/templates' ),
 	TemplatesPanel = require( './show/templates-panel' ),
@@ -8970,7 +9062,7 @@ TemplatesModule = Marionette.Module.extend( {
 } );
 
 module.exports = TemplatesModule;
-},{"../../entities/collections/templates":47,"./show/template-menu-item":81,"./show/templates-panel":82}],84:[function(require,module,exports){
+},{"../../entities/collections/templates":47,"./show/template-menu-item":82,"./show/templates-panel":83}],85:[function(require,module,exports){
 /* window._l10n, window._mediaQueries */
 
 var $ = jQuery;
@@ -8988,37 +9080,4 @@ Tailor.Api.Setting.onChange( 'sidebar:_post_title', function( to, from ) {
 
     document.title = window._l10n.tailoring + to;
 } );
-
-var $buttons = $( '.devices button' );
-var preview = document.querySelector( '.tailor-preview' );
-var viewport = document.querySelector( '.tailor-preview__viewport' );
-var mediaQueries = window._media_queries;
-
-// Change the viewport size based on which device preview size is selected
-$buttons
-    .on( 'click', function( e ) {
-        var button = e.target;
-
-        $buttons.each( function() {
-            if ( this == button ) {
-                var device = button.getAttribute( 'data-device' );
-                this.classList.add( 'is-active' );
-                this.setAttribute( 'aria-pressed', 'true' );
-                preview.className = 'tailor-preview ' + device + '-screens';
-
-                if ( mediaQueries.hasOwnProperty( device ) && mediaQueries[ device ].max ) {
-                    viewport.style.maxWidth = mediaQueries[ device ].max;
-                }
-                else {
-                    viewport.style.maxWidth ='';
-                }
-            }
-            else {
-                this.classList.remove( 'is-active' );
-                this.setAttribute( 'aria-pressed', 'false' );
-            }
-        } );
-
-    } )
-    .first().click();
 },{}]},{},[8]);

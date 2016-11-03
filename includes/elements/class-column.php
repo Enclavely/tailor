@@ -27,11 +27,6 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Column_Element'
 	     */
 	    protected function register_controls() {
 
-		    $this->add_setting( 'width', array(
-			    'sanitize_callback'     =>  'tailor_sanitize_number',
-			    'default'               =>  '6',
-		    ) );
-
 		    $this->add_section( 'general', array(
 			    'title'                 =>  __( 'General', 'tailor' ),
 			    'priority'              =>  10,
@@ -48,6 +43,27 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Column_Element'
 		    ) );
 
 		    $priority = 0;
+
+		    $this->add_setting( 'width', array(
+			    'sanitize_callback'     =>  'tailor_sanitize_number',
+			    'refresh'               =>  array(
+				    'method'                =>  'js',
+			    ),
+			    'default'               =>  '6',
+		    ) );
+		    $this->add_setting( 'width_tablet', array(
+			    'sanitize_callback'     =>  'tailor_sanitize_number',
+			    'refresh'               =>  array(
+				    'method'                =>  'js',
+			    ),
+		    ) );
+		    $this->add_setting( 'width_mobile', array(
+			    'sanitize_callback'     =>  'tailor_sanitize_number',
+			    'refresh'               =>  array(
+				    'method'                =>  'js',
+			    ),
+		    ) );
+
 		    $general_control_types = array(
 			    'vertical_alignment',
 			    'vertical_alignment_tablet',

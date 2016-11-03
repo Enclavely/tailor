@@ -4,7 +4,7 @@ This is the official GitHub repository for the Tailor page builder WordPress plu
 
 ## Features
 
-* True drag and drop layout creation (add, move, [copy](https://github.com/andrew-worsfold/tailor/blob/master/api.md) and [create rows and columns](http://andrewworsfold.com/2016/06/26/working-with-containers/)).
+* True drag and drop layout creation (add, move, [copy](https://github.com/andrew-worsfold/tailor/blob/master/api.md) and [create rows](http://andrewworsfold.com/2016/06/26/working-with-containers/) and [nested columns](https://medium.com/@tailorwp/columns-on-steroids-df5a5a957d89)).
 * Drag and drop templates.
 * History snapshots and undo/redo.
 * [Device previews](http://andrewworsfold.com/2016/06/25/device-previews/) for mobile, tablet and desktop screen sizes.

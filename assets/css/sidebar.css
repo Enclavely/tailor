@@ -1321,7 +1321,7 @@ ul {
   font-size: 14px;
   font-weight: 600;
   margin-bottom: 5px;
-  height: 28px;
+  min-height: 28px;
 }
 
 .tailor-ui .control__title span {

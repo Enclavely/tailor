@@ -360,7 +360,6 @@ if ( ! class_exists( 'Tailor_Sidebar' ) ) {
             }
 
             $nonces = $this->create_nonces();
-
             wp_send_json_success( $nonces );
         }
 

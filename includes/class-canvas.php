@@ -210,7 +210,7 @@ if ( ! class_exists( 'Tailor_Canvas' ) ) {
 		        'isCrossDomain'     =>  $is_cross_domain,
 	        ) );
 
-	        wp_localize_script( $handle, '_strings', array(
+	        wp_localize_script( $handle, '_l10n', array(
 		        'edit_element'      => __( 'Shift-click to edit this element', 'tailor' )
 	        ) );
 	        wp_localize_script( $handle, '_nonces', $this->create_nonces() );
@@ -246,13 +246,11 @@ if ( ! class_exists( 'Tailor_Canvas' ) ) {
 	     * @since 1.0.0
 	     */
 	    public function refresh_nonces() {
-
 		    if ( ! tailor()->is_tailoring() ) {
 			    wp_send_json_error();
 		    }
 
 		    $nonces = $this->create_nonces();
-
 		    wp_send_json_success( $nonces );
 	    }
 
@@ -265,13 +263,11 @@ if ( ! class_exists( 'Tailor_Canvas' ) ) {
 	     * @return array
 	     */
 	    protected function create_nonces() {
-
 		    $nonces = array(
 			    'render'                =>  wp_create_nonce( 'tailor-render' ),
 			    'reset'                 =>  wp_create_nonce( 'tailor-reset' ),
 			    'loadTemplate'          =>  wp_create_nonce( 'tailor-load-template' ),
 		    );
-
 		    return $nonces;
 	    }
 

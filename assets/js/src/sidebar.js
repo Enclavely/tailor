@@ -183,6 +183,7 @@
         app.module( 'module:modal', require( './sidebar/modules/modal/modal' ) );
         app.module( 'module:dialog', require( './sidebar/modules/dialog/dialog' ) );
         app.module( 'module:notification', require( './sidebar/modules/notifications/notifications' ) );
+        app.module( 'module:devicePreview', require( './sidebar/modules/device-preview/device-preview' ) );
         
         // Initialize preview
         require( './sidebar/preview' );

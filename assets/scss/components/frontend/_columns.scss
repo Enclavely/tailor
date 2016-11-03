@@ -48,6 +48,34 @@ $column-sizer-width: 1rem !default;
 
 			@include flex;
 
+			// Widths
+			@for $i from 1 through $column-number {
+
+				.columns-#{$i} {
+					width: percentage( ( $i / $column-number ) );
+				}
+			}
+
+			@for $i from 1 through $column-number {
+
+				@media #{$tablet} {
+
+					.columns-tablet-#{$i} {
+						width: percentage( ( $i / $column-number ) );
+					}
+				}
+			}
+
+			@for $i from 1 through $column-number {
+
+				@media #{$mobile} {
+
+					.columns-mobile-#{$i} {
+						width: percentage( ( $i / $column-number ) );
+					}
+				}
+			}
+
 			// Column
 			.#{$column-class-prefix}column {
 				padding-left: $row-spacing-horizontal;
@@ -65,19 +93,12 @@ $column-sizer-width: 1rem !default;
 
 				&:last-of-type {
 
-					.#{$column-class-prefix}column {
+					> .#{$column-class-prefix}column {
 
 						// Hide the column handle for the last column
 						&__helper {
 							display: none;
 						}
-					}
-				}
-
-				@for $i from 1 through $column-number {
-
-					&.columns-#{$i} {
-						width: percentage( ( $i / $column-number ) );
 					}
 				}
 			}
@@ -108,6 +129,7 @@ $column-sizer-width: 1rem !default;
 	}
 
 	.#{$column-class-prefix}column {
+		position: relative;
 		min-height: 1px;
 		padding: $column-padding;
 		margin-bottom: $column-spacing-vertical;

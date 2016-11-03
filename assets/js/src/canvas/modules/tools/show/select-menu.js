@@ -90,6 +90,21 @@ SelectMenuView = Marionette.CompositeView.extend( {
         this.el.style.left = thatRect.left - thisRect.left + 'px';
         this.el.style.width = thatRect.width + 'px';
         this.el.style.height = thatRect.height + 'px';
+
+        var controls = this.el.querySelector( '.select__controls' );
+        var menu = this.el.querySelector( '.select__menu' );
+
+        if ( menu && controls ) {
+            var menuRect = menu.getBoundingClientRect();
+            var controlsRect = controls.getBoundingClientRect();
+
+            console.log( menuRect.width + controlsRect.width );
+            console.log( parseInt( this.el.style.width, 10 ) );
+
+            if ( ( menuRect.width + controlsRect.width ) > parseInt( this.el.style.width, 10 ) ) {
+                this.el.classList.add( 'is-minimal' );
+            }
+        }
     },
 
 	/**

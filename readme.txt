@@ -2,7 +2,7 @@
 Contributors: andrew.worsfold
 Donate link: http://gettailor.com/donate/
 Tags: page, layout, builder, frontend, content, page builder, drag and drop builder, home page builder, landing page builder, layout builder, frontend builder, frontend editor, responsive, visual composer, beaver builder
-Stable tag: 1.7.3
+Stable tag: 1.7.4
 Requires at least: 4.3
 Tested up to: 4.7
 License: GPLv3 or later
@@ -25,7 +25,7 @@ To get started:
 
 = Easy to use =
 
-- Add elements and create columns instantly in a single drag and drop movement.
+- Add elements and create [nested columns](https://medium.com/@tailorwp/columns-on-steroids-df5a5a957d89) instantly in a single drag and drop movement.
 - Copy elements anywhere on the page by dragging and holding the Shift key.
 - Move content independently and have it adopt the style of its parent elements!
 - Save one or more elements as templates, then drag and drop them onto any page.
@@ -40,6 +40,11 @@ To get started:
 
 Because Tailor works with any theme, choosing one that you like is now the hardest part of creating a website.
 
+- Need to show off your creative side?  Check out the free [Portfolio extension](https://wordpress.org/plugins/tailor-portfolio/).
+- Have an online store?  The free [WooCommerce extension](https://wordpress.org/plugins/tailor-woocommerce/) is what you need.
+
+A free advanced features extension will be released in the coming days, which will add powerful new elements and features!
+
 = Easy to extend =
 
 Tailor is open source and built based on WordPress' coding standards and best practices.  Everything from the code base to the user interface integrate perfectly with WordPress. The plugin features:
@@ -48,11 +53,6 @@ Tailor is open source and built based on WordPress' coding standards and best pr
 - An API for adding, changing or removing elements.
 - An API for adding, changing or removing settings and controls.
 - A [REST API](https://github.com/andrew-worsfold/tailor/blob/master/api.md) to manage elements, templates and models.
-
-There are currently two free extensions, with more to come!
-
-- [Portfolio](https://wordpress.org/plugins/tailor-portfolio/) for the creative types.
-- [WooCommerce](https://wordpress.org/plugins/tailor-woocommerce/) for those running an online store.
 
 For more information:
 
@@ -132,6 +132,12 @@ Yes.  Tailored pages can be migrated like any other type of page using the [dupl
 Yes, however, users should be directed to the WordPress plugin repository to install the latest version of the plugin.  Consider using a tool like [TGM Plugin Activation](http://tgmpluginactivation.com/) to guide users through the installation process.
 
 == Changelog ==
+
+= 1.7.4 =
+* Added - Nested rows and columns [GitHub 49](https://github.com/andrew-worsfold/tailor/issues/49) [Read more](https://medium.com/@tailorwp/columns-on-steroids-df5a5a957d89).
+* Added - Tablet and mobile-specific widths for columns [GitHub 47](https://github.com/andrew-worsfold/tailor/issues/47) [Read more](https://medium.com/@tailorwp/columns-are-now-more-responsive-1e2cf793b11f).
+* Improved - Appearance of element controls in preview window for narrow elements.
+* Fixed - Responsive setting buttons appear over fields when the control title is too long [GitHub 67](https://github.com/andrew-worsfold/tailor/issues/67).
 
 = 1.7.3 =
 * Added - Add button to container elements (e.g., Carousels, Grids, Lists, Tabs and Toggles).

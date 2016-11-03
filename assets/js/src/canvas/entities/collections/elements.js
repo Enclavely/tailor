@@ -44,6 +44,56 @@ var ElementCollection = Backbone.Collection.extend( {
     },
 
     /**
+     * Returns the library collection.
+     *
+     * @since 1.0.0
+     *
+     * @returns {*}
+     */
+    getElementDefinitions : function() {
+        return this.library || app.channel.request( 'sidebar:library' );
+    },
+
+    /**
+     * Applies default values to the element model.
+     *
+     * @since 1.0.0
+     *
+     * @param model
+     * @returns {*}
+     */
+    applyDefaults : function( model ) {
+        if ( model instanceof Backbone.Model ) {
+            model = model.toJSON();
+        }
+
+        var item = this.getElementDefinitions().findWhere( { tag : model.tag } );
+        var defaults = {
+            label : item.get( 'label' ),
+            type : item.get( 'type' )
+        };
+
+        var child = item.get( 'child' );
+        if ( child ) {
+            defaults.child = child;
+        }
+
+        var childViewContainer = item.get( 'child_container' );
+        if ( childViewContainer ) {
+            defaults.child_container = childViewContainer;
+        }
+
+        model.atts = model.atts || {};
+        _.each( item.get( 'settings' ), function( setting ) {
+            if ( ! _.isEmpty( setting['value'] ) && ! model.atts.hasOwnProperty( setting['id'] ) ) {
+                model.atts[ setting['id'] ] = setting['value'];
+            }
+        } );
+
+        return _.extend( model, defaults );
+    },
+
+    /**
      * Returns the parent of a given model.
      *
      * @since 1.0.0
@@ -223,88 +273,6 @@ var ElementCollection = Backbone.Collection.extend( {
         }, this );
     },
 
-    /**
-     * Re-balances the columns in a given row.
-     *
-     * @since 1.0.0
-     *
-     * @param model
-     */
-    _reBalanceColumns : function( model ) {
-        var children = this.where( { parent : model.get( 'id' ) } );
-        var numberChildren = children.length;
-
-        _.each( children, function( child ) {
-            var atts = _.clone( child.get( 'atts' ) );
-            atts.width = 12 / numberChildren;
-
-            child.set( 'atts', atts, { silent : true } );
-            child.trigger( 'change:width', model, atts.width );
-        }, this );
-    },
-
-    /**
-     * Performs checks on the previous parent when an element changes parent.
-     *
-     * @since 1.0.0
-     *
-     * @param model
-     */
-	_checkParent : function( model ) {
-        if ( ! model ) {
-            return;
-        }
-        if ( 'container' == model.get( 'type' ) ) {
-            this._checkCollapsibleContainer( model );
-        }
-        this._checkChildren( model );
-	},
-
-    /**
-     * Checks whether a collapsible container is still valid.
-     *
-     * @since 1.0.0
-     *
-     * @param model
-     * @private
-     */
-    _checkCollapsibleContainer : function( model ) {
-        var childTag = this.getElementDefinitions().findWhere( { tag : model.get( 'tag' ) } ).get( 'child' ) ;
-        var containerId = model.get( 'id' );
-        var children = this.filter( function( element ) {
-            return containerId === element.get( 'parent' ) && childTag === element.get( 'tag' );
-        } );
-
-        // Collapse the container
-        if ( 0 === children.length ) {
-            model.trigger( 'container:collapse', model, this.where( { parent : containerId } ) );
-        }
-
-        // Collapse the only remaining column
-        else if ( 1 === children.length ) {
-	        var child = _.first( children );
-            
-            if ( 'tailor_row' === model.get( 'tag' ) ) {
-                child.trigger( 'container:collapse', child, this.where( { parent : child.get( 'id' ) } ) );
-            }
-        }
-    },
-
-    /**
-     * Destroys a container element if it is empty.
-     *
-     * @since 1.0.0
-     *
-     * @param model
-     * @private
-     */
-	_checkChildren : function( model ) {
-		var children = this.where( { parent : model.get( 'id' ) } );
-		if ( 0 === children.length ) {
-			model.trigger( 'destroy', model );
-		}
-	},
-
 	/**
      * Adds a model to the collection.
      * 
@@ -337,56 +305,6 @@ var ElementCollection = Backbone.Collection.extend( {
         options = options || {};
 
         return this.add( models, options );
-    },
-
-	/**
-	 * Returns the library collection.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @returns {*}
-	 */
-    getElementDefinitions : function() {
-          return this.library || app.channel.request( 'sidebar:library' );
-    },
-
-    /**
-     * Applies default values to the element model.
-     *
-     * @since 1.0.0
-     *
-     * @param model
-     * @returns {*}
-     */
-    applyDefaults : function( model ) {
-        if ( model instanceof Backbone.Model ) {
-            model = model.toJSON();
-        }
-
-        var item = this.getElementDefinitions().findWhere( { tag : model.tag } );
-        var defaults = {
-            label : item.get( 'label' ),
-            type : item.get( 'type' )
-        };
-
-        var child = item.get( 'child' );
-        if ( child ) {
-            defaults.child = child;
-        }
-
-        var childViewContainer = item.get( 'child_container' );
-        if ( childViewContainer ) {
-            defaults.child_container = childViewContainer;
-        }
-
-        model.atts = model.atts || {};
-        _.each( item.get( 'settings' ), function( setting ) {
-            if ( ! _.isEmpty( setting['value'] ) && ! model.atts.hasOwnProperty( setting['id'] ) ) {
-                model.atts[ setting['id'] ] = setting['value'];
-            }
-        } );
-
-        return _.extend( model, defaults );
     },
 
     /**
@@ -461,6 +379,86 @@ var ElementCollection = Backbone.Collection.extend( {
     },
 
     /**
+     * Creates a new container.
+     *
+     * @since 1.0.0
+     *
+     * @param model
+     * @param parentId
+     * @param order
+     * @param descendants
+     */
+    createContainer : function( model, parentId, order, descendants ) {
+        var tag = model.get( 'tag' );
+        var container = _.first( this.create( [ {
+            tag : tag,
+            parent : parentId,
+            order : order
+        } ], {
+            at : order,
+            silent : true
+        } ) );
+
+        var childTag = model.get( 'child' );
+        var children = this.create( [ {
+            tag : childTag,
+            parent : container.get( 'id' ),
+            order : 0
+        }, {
+            tag : childTag,
+            parent : container.get( 'id' ),
+            order : 1
+
+        } ], {
+            silent : true
+        } );
+
+        if ( descendants ) {
+            _.first( descendants ).set( 'parent', _.first( children ).get( 'id' ), { silent : true } );
+            _.last( descendants ).set( 'parent', _.last( children ).get( 'id' ), { silent : true } );
+        }
+
+        this.trigger( 'add', container, this, {} );
+    },
+
+    /**
+     * Creates and returns a new wrapper element.
+     *
+     * @since 1.0.0
+     *
+     * @param tag
+     * @param parentId
+     * @param order
+     * @param child
+     * @returns {*}
+     */
+    createWrapper : function( tag, parentId, order, child ) {
+        var wrapper = _.first( this.create( [ {
+            tag : tag,
+            parent : parentId,
+            order : order
+        } ], {
+            silent : true
+        } ) );
+        if ( 'undefined' == typeof child ) {
+            this.create( [ {
+                tag : 'tailor_content',
+                parent : wrapper.get( 'id' ),
+                order : 0
+            } ], {
+                silent : true
+            } )
+        }
+
+        this.trigger( 'add', wrapper, this, {} );
+        if ( 'undefined' != typeof child ) {
+            this.insertChild( child, wrapper );
+        }
+
+        return wrapper;
+    },
+
+    /**
      * Adds a child into the specified parent.
      *
      * @since 1.7.3
@@ -509,84 +507,86 @@ var ElementCollection = Backbone.Collection.extend( {
         child.set( 'parent', parent.get( 'id' ) );
     },
 
-	/**
-	 * Creates a new container.
+    /**
+     * Re-balances the columns in a given row.
      *
      * @since 1.0.0
      *
      * @param model
-     * @param parentId
-     * @param order
-     * @param descendants
      */
-    createContainer : function( model, parentId, order, descendants ) {
-        var tag = model.get( 'tag' );
-        var container = _.first( this.create( [ {
-            tag : tag,
-            parent : parentId,
-            order : order
-        } ], {
-            at : order,
-            silent : true
-        } ) );
+    _reBalanceColumns : function( model ) {
+        var children = this.where( { parent : model.get( 'id' ) } );
+        var numberChildren = children.length;
 
-        var childTag = model.get( 'child' );
-        var children = this.create( [ {
-            tag : childTag,
-            parent : container.get( 'id' ),
-            order : 0
-        }, {
-            tag : childTag,
-            parent : container.get( 'id' ),
-            order : 1
+        _.each( children, function( child ) {
+            var atts = _.clone( child.get( 'atts' ) );
+            atts.width = 12 / numberChildren;
 
-        } ], {
-            silent : true
-        } );
-
-        if ( descendants ) {
-            _.first( descendants ).set( 'parent', _.first( children ).get( 'id' ), { silent : true } );
-            _.last( descendants ).set( 'parent', _.last( children ).get( 'id' ), { silent : true } );
-        }
-
-        this.trigger( 'add', container, this, {} );
+            child.set( 'atts', atts, { silent : true } );
+            child.trigger( 'change:width', model, atts.width );
+        }, this );
     },
 
-	/**
-     * Creates and returns a new wrapper element.
+    /**
+     * Performs checks on the previous parent when an element changes parent.
      *
      * @since 1.0.0
      *
-     * @param tag
-     * @param parentId
-     * @param order
-     * @param child
-     * @returns {*}
+     * @param model
      */
-    createWrapper : function( tag, parentId, order, child ) {
-        var wrapper = _.first( this.create( [ {
-            tag : tag,
-            parent : parentId,
-            order : order
-        } ], {
-            silent : true
-        } ) );
-        if ( 'undefined' == typeof child ) {
-            this.create( [ {
-                tag : 'tailor_content',
-                parent : wrapper.get( 'id' ),
-                order : 0
-            } ], {
-                silent : true
-            } )
+    _checkParent : function( model ) {
+        if ( ! model ) {
+            return;
+        }
+        if ( 'container' == model.get( 'type' ) ) {
+            this._checkCollapsibleContainer( model );
+        }
+        this._checkChildren( model );
+    },
+
+    /**
+     * Destroys a container element if it is empty.
+     *
+     * @since 1.0.0
+     *
+     * @param model
+     * @private
+     */
+    _checkChildren : function( model ) {
+        var children = this.where( { parent : model.get( 'id' ) } );
+        if ( 0 === children.length ) {
+            model.trigger( 'destroy', model );
+        }
+    },
+
+    /**
+     * Checks whether a collapsible container is still valid.
+     *
+     * @since 1.0.0
+     *
+     * @param model
+     * @private
+     */
+    _checkCollapsibleContainer : function( model ) {
+        var childTag = this.getElementDefinitions().findWhere( { tag : model.get( 'tag' ) } ).get( 'child' ) ;
+        var containerId = model.get( 'id' );
+        var children = this.filter( function( element ) {
+            return containerId === element.get( 'parent' ) && childTag === element.get( 'tag' );
+        } );
+
+        // Collapse the container
+        if ( 0 === children.length ) {
+            model.trigger( 'container:collapse', model, this.where( { parent : containerId } ) );
         }
 
-        this.trigger( 'add', wrapper, this, {} );
-        if ( 'undefined' != typeof child ) {
-            this.insertChild( child, wrapper );
-        }
+        // Collapse the only remaining column
+        else if ( 1 === children.length ) {
+            var child = _.first( children );
 
-        return wrapper;
+            if ( 'tailor_row' === model.get( 'tag' ) ) {
+                child.trigger( 'container:collapse', child, this.where( { parent : child.get( 'id' ) } ) );
+            }
+        }
     }
 
 } );

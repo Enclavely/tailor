@@ -15,36 +15,3 @@ Tailor.Api.Setting.onChange( 'sidebar:_post_title', function( to, from ) {
 
     document.title = window._l10n.tailoring + to;
 } );
-
-var $buttons = $( '.devices button' );
-var preview = document.querySelector( '.tailor-preview' );
-var viewport = document.querySelector( '.tailor-preview__viewport' );
-var mediaQueries = window._media_queries;
-
-// Change the viewport size based on which device preview size is selected
-$buttons
-    .on( 'click', function( e ) {
-        var button = e.target;
-
-        $buttons.each( function() {
-            if ( this == button ) {
-                var device = button.getAttribute( 'data-device' );
-                this.classList.add( 'is-active' );
-                this.setAttribute( 'aria-pressed', 'true' );
-                preview.className = 'tailor-preview ' + device + '-screens';
-
-                if ( mediaQueries.hasOwnProperty( device ) && mediaQueries[ device ].max ) {
-                    viewport.style.maxWidth = mediaQueries[ device ].max;
-                }
-                else {
-                    viewport.style.maxWidth ='';
-                }
-            }
-            else {
-                this.classList.remove( 'is-active' );
-                this.setAttribute( 'aria-pressed', 'false' );
-            }
-        } );
-
-    } )
-    .first().click();
