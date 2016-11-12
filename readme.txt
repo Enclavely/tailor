@@ -2,7 +2,7 @@
 Contributors: andrew.worsfold
 Donate link: http://gettailor.com/donate/
 Tags: page, layout, builder, frontend, content, page builder, drag and drop builder, home page builder, landing page builder, layout builder, frontend builder, frontend editor, responsive, visual composer, beaver builder
-Stable tag: 1.7.4
+Stable tag: 1.7.5
 Requires at least: 4.3
 Tested up to: 4.7
 License: GPLv3 or later
@@ -40,6 +40,7 @@ To get started:
 
 Because Tailor works with any theme, choosing one that you like is now the hardest part of creating a website.
 
+- Want more elements and features?  Try the free [Advanced Features extension](https://github.com/andrew-worsfold/tailor-advanced/).
 - Need to show off your creative side?  Check out the free [Portfolio extension](https://wordpress.org/plugins/tailor-portfolio/).
 - Have an online store?  The free [WooCommerce extension](https://wordpress.org/plugins/tailor-woocommerce/) is what you need.
 
@@ -132,6 +133,14 @@ Yes.  Tailored pages can be migrated like any other type of page using the [dupl
 Yes, however, users should be directed to the WordPress plugin repository to install the latest version of the plugin.  Consider using a tool like [TGM Plugin Activation](http://tgmpluginactivation.com/) to guide users through the installation process.
 
 == Changelog ==
+
+= 1.7.5 =
+* Added - Option to delete the Tailor layout for a given post [GitHub 44](https://github.com/andrew-worsfold/tailor/issues/44).
+* Added - Abstract component for easily building custom UI components.
+* Improved - UI components now extend the new, faster abstract component.
+* Improved - iFrames can now be added using the Content element editor [GitHub 71](https://github.com/andrew-worsfold/tailor/issues/71).
+* Fixed - Maximum width setting defaulting to zero if an empty value is provided [GitHub 69](https://github.com/andrew-worsfold/tailor/issues/69).
+* Fixed - Column width not correctly specified for new columns in row with two or more existing columns.
 
 = 1.7.4 =
 * Added - Nested rows and columns [GitHub 49](https://github.com/andrew-worsfold/tailor/issues/49) [Read more](https://medium.com/@tailorwp/columns-on-steroids-df5a5a957d89).

@@ -1,6 +1,8 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 
-var app = window.app,
+var $ = window.jQuery,
+    $win = $( window ),
+    app = window.app,
     cssModule,
     callbacks = {
         'sidebar' : [],
@@ -40,6 +42,9 @@ var onSidebarChange = function( setting ) {
     _.each( callbacks['sidebar'][ settingId ], function( callback ) {
         callback.apply( window, [ setting.get( 'value' ), setting.previous( 'value' ) ] );
     } );
+
+    // Trigger a resize even on the window when a sidebar setting changes
+    $win.trigger( 'resize' );
 };
 
 /**
@@ -884,7 +889,7 @@ SidebarApplication = Marionette.Application.extend( {
 	        'element:add',
             'element:move',
             'element:resize',
-            'element:change:order',
+            'navigation:reorder',
             'element:copy',
             'element:delete',
             
@@ -927,7 +932,7 @@ SidebarApplication = Marionette.Application.extend( {
             'element:add',              // When an element is added
             'element:move',             // When an element is moved
             'element:resize',           // When an element (e.g., column) is resized
-            'element:change:order',     // When an element (e.g., tab) is reordered
+            'navigation:reorder',       // When an element (e.g., tab) is reordered using navigation
             'element:copy',             // When an element is copied
             'element:delete',           // When an element is deleted
             'modal:apply',              // When changes to an element are applied
@@ -1037,7 +1042,7 @@ SidebarApplication = Marionette.Application.extend( {
             } );
         } );
 
-        sidebar.listenToOnce( sidebar.channel, 'canvas:handshake', sidebar.registerRemoteChannel );
+        sidebar.listenTo( sidebar.channel, 'canvas:handshake', sidebar.registerRemoteChannel );
 
         /**
          * Restores the next history snapshot, if available.
@@ -6823,7 +6828,7 @@ HistoryModule = Marionette.Module.extend( {
         this.listenTo( app.channel, 'modal:apply', this.onEditElement );
         this.listenTo( app.channel, 'element:delete', this.onDeleteElement );
         this.listenTo( app.channel, 'element:resize', this.onResizeElement );
-        this.listenTo( app.channel, 'element:change:order', this.onReorderElement );
+        this.listenTo( app.channel, 'navigation:reorder', this.onReorderElement );
         this.listenTo( app.channel, 'template:add', this.onAddTemplate );
         this.listenTo( app.channel, 'history:restore', this.restoreSnapshot );
         this.listenTo( app.channel, 'history:undo', this.undoStep );

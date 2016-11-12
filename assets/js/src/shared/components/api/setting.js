@@ -1,5 +1,7 @@
 
-var app = window.app,
+var $ = window.jQuery,
+    $win = $( window ),
+    app = window.app,
     cssModule,
     callbacks = {
         'sidebar' : [],
@@ -39,6 +41,9 @@ var onSidebarChange = function( setting ) {
     _.each( callbacks['sidebar'][ settingId ], function( callback ) {
         callback.apply( window, [ setting.get( 'value' ), setting.previous( 'value' ) ] );
     } );
+
+    // Trigger a resize even on the window when a sidebar setting changes
+    $win.trigger( 'resize' );
 };
 
 /**

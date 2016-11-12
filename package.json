@@ -1,6 +1,6 @@
 {
   "name": "tailor",
-  "version": "1.7.3",
+  "version": "1.7.5",
   "scripts": {
     "bundle-js": "./.bin/bundle-js && ./.bin/bundle-min-js",
     "build-css": "./.bin/build-css && ./.bin/build-min-css",
@@ -9,6 +9,10 @@
   },
   "author": "Andrew Worsfold (http://andrewworsfold.com)",
   "license": "gpl3",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/andrew-worsfold/tailor/tree/master"
+  },
   "devDependencies": {
     "browserify": "^13.1.1",
     "node-sass": "^3.10.1",

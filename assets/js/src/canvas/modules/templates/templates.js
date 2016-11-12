@@ -10,9 +10,7 @@ TemplateModule = Marionette.Module.extend( {
      */
 	onStart : function() {
         var module = this;
-
         this.collection = app.channel.request( 'canvas:elements' );
-
         var api = {
 
             /**
@@ -49,7 +47,6 @@ TemplateModule = Marionette.Module.extend( {
 
                         // Record the template HTML and append it to the page
                         templates = response.templates;
-
                         $body.append( templates );
                         
                         /**
@@ -94,8 +91,6 @@ TemplateModule = Marionette.Module.extend( {
                              * @since 1.0.0
                              */
                             app.channel.trigger( 'template:add', model );
-
-                            $win.trigger( 'resize' );
                         }
 
                         canvas.classList.remove( 'is-loading' );

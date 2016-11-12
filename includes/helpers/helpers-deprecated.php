@@ -62,3 +62,27 @@ if ( ! function_exists( 'tailor_get_previewable_devices' ) ) {
 		return $devices;
 	}
 }
+
+if ( ! function_exists( 'tailor_pluralize_string' ) ) {
+
+	/**
+	 * Pluralizes a given string.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @access private
+	 * @param $string
+	 * @return string
+	 */
+	function tailor_pluralize_string( $string ) {
+		$last = $string[ strlen( $string ) - 1 ];
+		if ( 'y' == $last ) {
+			$cut = substr( $string, 0, -1 );
+			$plural = $cut . 'ies';
+		}
+		else {
+			$plural = $string . 's';
+		}
+		return $plural;
+	}
+}

@@ -91,7 +91,6 @@ ElementView = Marionette.ItemView.extend( {
 		this.setElement( el );
 
 		this.el.setAttribute( 'draggable', true );
-
 		this.el.classList.add( 'tailor-' + this.model.id );
 		this.el.title = _l10n.edit_element;
 		
@@ -223,11 +222,27 @@ ElementView = Marionette.ItemView.extend( {
 		if ( refresh ) {
 
 			/**
-			 * Fires when an element setting configured to be updated using JavaScript changes.
+			 * Fires before the element is refreshed using JavaScript.
+			 *
+			 * @since 1.7.5
+			 */
+			this.triggerAll( 'before:element:jsRefresh', this, this.model.get( 'atts' ) );
+			
+			/**
+			 * Fires when an element setting is changed.
+			 *
+			 * This is only fired when the setting is configured for JavaScript updates.
 			 *
 			 * @since 1.5.0
 			 */
 			app.channel.trigger( 'element:setting:change', setting, this );
+
+			/**
+			 * Fires after the element is refreshed using JavaScript.
+			 *
+			 * @since 1.7.5
+			 */
+			this.triggerAll( 'element:jsRefresh', this, this.model.get( 'atts' ) );
 		}
 	},
 

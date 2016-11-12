@@ -50,6 +50,11 @@ if ( ! class_exists( 'Tailor_Widgets' ) ) {
 	    public function register_widgets( $element_manager ) {
 		    global $wp_widget_factory;
 		    foreach ( $wp_widget_factory->widgets as $widget_class_name => $wp_widget ) {
+			    
+			    if ( ! array_key_exists( 'description', $wp_widget->widget_options ) ) {
+				    $wp_widget->widget_options['description'] = '';
+			    }
+			    
 			    $element_manager->add_element( 'tailor_widget_' . $wp_widget->id_base, array(
 				    'label'                 =>  $wp_widget->name,
 				    'description'           =>  $wp_widget->widget_options['description'],

@@ -12,16 +12,6 @@
     require( './shared/utility/polyfills/transitions' );
     require( './shared/utility/ajax' );
 
-    // Include components
-    require( './shared/components/ui/tabs' );
-    require( './shared/components/ui/toggles' );
-    require( './shared/components/ui/map' );
-    require( './shared/components/ui/masonry' );
-    require( './shared/components/ui/slideshow' );
-    require( './shared/components/ui/lightbox' );
-    require( './shared/components/ui/parallax' );
-    require( './canvas/components/ui/carousel' );
-    require( './canvas/components/ui/carousel-simple' );
     Marionette.Behaviors.behaviorsLookup = function() {
         return {
             Container:          require( './canvas/components/behaviors/container' ),
@@ -37,16 +27,57 @@
     window.app = new App();
 
     // Create the Tailor object
+    var abstractComponent = require( './shared/components/ui/abstract' );
     window.Tailor = {
-        Api : {
-            Setting :   require( './shared/components/api/setting' ),
-            Element :   require( './canvas/components/api/element' )
+        Api:            {
+            Setting:        require( './shared/components/api/setting' ),
+            Element:        require( './canvas/components/api/element' )
         },
-        CSS :       require( './shared/utility/css' ),
-        Models :    {},
-        Views :     {},
-        Settings :  {}
+        CSS:            require( './shared/utility/css' ),
+        Models:         {},
+        Views:          {},
+        Settings:       {},
+        Components:     {
+
+	        /**
+	         * Creates a new component.
+             *
+             * @since 1.7.5
+             *
+             * @param prototype
+             * @returns {component}
+             */
+            create: function( prototype )  {
+                var originalPrototype = prototype;
+                var component = function( el, options, callbacks ) {
+                    abstractComponent.call( this, el, options, callbacks );
+                };
+                component.prototype = Object.create( abstractComponent.prototype );
+                for ( var key in originalPrototype )  {
+                    component.prototype[ key ] = originalPrototype[ key ];
+                }
+                Object.defineProperty( component.prototype, 'constructor', {
+                    enumerable: false,
+                    value: component
+                } );
+                return component;
+            }
+        }
     };
+
+    // Shared components
+    window.Tailor.Components.Abstract = abstractComponent;
+    window.Tailor.Components.Lightbox = require( './shared/components/ui/lightbox' );
+    window.Tailor.Components.Map = require( './shared/components/ui/map' );
+    window.Tailor.Components.Masonry = require( './shared/components/ui/masonry' );
+    window.Tailor.Components.Parallax = require( './shared/components/ui/parallax' );
+    window.Tailor.Components.Slideshow = require( './shared/components/ui/slideshow' );
+    window.Tailor.Components.Tabs = require( './shared/components/ui/tabs' );
+    window.Tailor.Components.Toggles = require( './shared/components/ui/toggles' );
+
+    // Canvas components
+    window.Tailor.Components.Carousel = require( './canvas/components/ui/carousel' );
+    window.Tailor.Components.SimpleCarousel = require( './canvas/components/ui/carousel-simple' );
 
     app.addRegions( {
         canvasRegion : {
@@ -77,7 +108,6 @@
         Tailor.Models.Default =             require( './canvas/entities/models/element' );
 
         // Load views
-        Tailor.Views.Section =              require( './canvas/components/elements/wrappers/section' );
         Tailor.Views.Column =               require( './canvas/components/elements/children/column' );
         Tailor.Views.Tab =                  require( './canvas/components/elements/children/tab' );
         Tailor.Views.CarouselItem =         require( './canvas/components/elements/children/carousel-item' );

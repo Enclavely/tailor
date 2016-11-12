@@ -97,10 +97,6 @@ SelectMenuView = Marionette.CompositeView.extend( {
         if ( menu && controls ) {
             var menuRect = menu.getBoundingClientRect();
             var controlsRect = controls.getBoundingClientRect();
-
-            console.log( menuRect.width + controlsRect.width );
-            console.log( parseInt( this.el.style.width, 10 ) );
-
             if ( ( menuRect.width + controlsRect.width ) > parseInt( this.el.style.width, 10 ) ) {
                 this.el.classList.add( 'is-minimal' );
             }

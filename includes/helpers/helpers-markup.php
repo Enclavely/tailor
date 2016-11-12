@@ -83,6 +83,12 @@ if ( ! function_exists( 'tailor_filter_allowed_html' ) ) {
 			$allowed['div']['data-arrows'] = true;
 			$allowed['div']['data-dots'] = true;
 			$allowed['div']['data-fade'] = true;
+
+			$allowed['iframe']['src'] = true;
+			$allowed['iframe']['width'] = true;
+			$allowed['iframe']['height'] = true;
+			$allowed['iframe']['allowfullscreen'] = true;
+			$allowed['iframe']['frameborder'] = true;
 		}
 
 		return $allowed;
@@ -215,13 +221,11 @@ if ( ! function_exists( 'tailor_clean_content' ) ) {
 	 * @return string
 	 */
 	function tailor_clean_content( $content ) {
-
 		$array = array (
 			'<p>['      => '[',
 			']</p>'     => ']',
 			']<br />'   => ']'
 		);
-
 		return strtr( $content, $array );
 	}
 
@@ -300,30 +304,6 @@ if ( ! function_exists( 'tailor_get_attributes' ) ) {
 	}
 }
 
-if ( ! function_exists( 'tailor_pluralize_string' ) ) {
-
-	/**
-	 * Pluralizes a given string.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @access private
-	 * @param $string
-	 * @return string
-	 */
-	function tailor_pluralize_string( $string ) {
-		$last = $string[ strlen( $string ) - 1 ];
-		if ( 'y' == $last ) {
-			$cut = substr( $string, 0, -1 );
-			$plural = $cut . 'ies';
-		}
-		else {
-			$plural = $string . 's';
-		}
-		return $plural;
-	}
-}
-
 if ( ! function_exists( 'tailor_screen_reader_text' ) ) {
 
 	/**
@@ -355,20 +335,17 @@ if ( ! function_exists( 'tailor_responsive_wrap_oembed_dataparse' ) ) {
 	 * @return mixed|string
 	 */
 	function tailor_responsive_wrap_oembed_dataparse( $html, $data ) {
-
 		if ( empty( $data->type ) || ! is_object( $data ) || 'video' != $data->type ) {
 			return $html;
 		}
 
 		$aspect_ratio = $data->width / $data->height;
 		$class_name = 'tailor-responsive-embed';
-
 		if ( abs( $aspect_ratio - ( 4 / 3 ) ) < abs( $aspect_ratio - ( 16 / 9 ) ) ) {
 			$class_name .= ' tailor-responsive-embed-4by3';
 		}
 
 		$html = preg_replace( '/(width|height)="\d*"\s/', "", $html );
-
 		return "<div class=\"{$class_name}\">{$html}</div>";
 	}
 

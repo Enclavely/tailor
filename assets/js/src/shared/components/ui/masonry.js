@@ -1,159 +1,45 @@
 /**
- * Tailor.Objects.Masonry
+ * Tailor.Components.Masonry
  *
- * A masonry module for managing Shuffle elements.
+ * A masonry component for managing Shuffle elements.
  *
  * @class
  */
 var $ = window.jQuery,
+    Components = window.Tailor.Components,
     Masonry;
 
-/**
- * The Masonry object.
- *
- * @since 1.0.0
- *
- * @param el
- * @param options
- * @param callbacks
- *
- * @constructor
- */
-Masonry = function( el, options, callbacks ) {
-    this.el = el;
-    this.$el = $( el );
-    this.$wrap = this.$el.find( '.tailor-grid--masonry' );
+Masonry = Components.create( {
 
-	this.options = $.extend( {}, this.defaults, this.$el.data(), options );
-    this.callbacks = $.extend( {}, this.callbacks, callbacks );
+    shuffleActive : false,
 
-    this.initialize();
-};
-
-Masonry.prototype = {
-
-    defaults : {
-        itemSelector : '.tailor-grid__item'
+    getDefaults: function() {
+        return {
+            itemSelector : '.tailor-grid__item'
+        };
     },
-
-    callbacks : {
-
-        /**
-         * Callback function to be run when the Carousel instance is initialized.
-         *
-         * @since 1.0.0
-         */
-        onInitialize : function () {},
-
-        /**
-         * Callback function to be run when the Carousel instance is destroyed.
-         *
-         * @since 1.0.0
-         */
-        onDestroy : function () {}
-    },
-
+    
     /**
-     * Initializes the Carousel instance.
+     * Initializes the component.
      *
-     * @since 1.0.0
+     * @since 1.7.5
      */
-    initialize : function() {
+    onInitialize: function() {
+        this.$wrap = this.$el.find( '.tailor-grid--masonry' );
         this.shuffle();
-
-        if ( 'function' == typeof this.callbacks.onInitialize ) {
-            this.callbacks.onInitialize.call( this );
-        }
     },
 
     /**
-     * Adds the required event listeners.
-     *
-     * @since 1.0.0
-     */
-    addEventListeners : function() {
-        this.$el
-
-            // Fires before the element template is refreshed
-            .on( 'before:element:refresh', $.proxy( this.maybeDestroy, this ) )
-
-            // Fires when the element parent changes
-            .on( 'element:change:parent', $.proxy( this.refreshShuffle, this ) )
-
-            // Fires before and after the element is copied
-            .on( 'before:element:copy', $.proxy( this.maybeUnShuffle, this ) )
-            .on( 'element:copy', $.proxy( this.maybeShuffle, this ) )
-
-            // Fires before the element is destroyed
-            .on( 'before:element:destroy', $.proxy( this.maybeDestroy, this ) )
-
-            // Fires after the parent element is modified
-            .on( 'element:parent:change', $.proxy( this.refreshShuffle, this ) );
-    },
-
-    /**
-     * Re-initializes the Shuffle instance if the event was triggered on the masonry element.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     */
-    maybeShuffle : function( e ) {
-        if ( e.target == this.el ) {
-            this.shuffle();
-        }
-    },
-
-    /**
-     * Refreshes the Shuffle instance if the event was triggered on the masonry element.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     */
-    maybeRefreshShuffle : function( e ) {
-        if ( e.target == this.el ) {
-            this.refreshShuffle();
-        }
-    },
-
-    /**
-     * Destroys the Shuffle instance if the event was triggered on the masonry element.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     */
-    maybeUnShuffle : function( e ) {
-        if ( e.target == this.el ) {
-            this.unShuffle();
-        }
-    },
-
-    /**
-     * Destroys the Shuffle instance immediately before the element/view is destroyed.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     */
-    maybeDestroy : function( e ) {
-        if ( e.target == this.el ) {
-            this.destroy( e );
-        }
-    },
-
-    /**
-     * Creates a new Shuffle instance.
+     * Initializes the Shuffle instance.
      *
      * @since 1.0.0
      */
     shuffle : function() {
-	    var masonry = this;
-	    this.$wrap.imagesLoaded( function() {
-		    masonry.$wrap.shuffle( masonry.options );
-		    masonry.addEventListeners();
-	    } );
+        var component = this;
+        this.$wrap.imagesLoaded( function() {
+            component.$wrap.shuffle( component.options );
+            component.shuffleActive = true;
+        } );
     },
 
     /**
@@ -171,23 +57,41 @@ Masonry.prototype = {
      * @since 1.0.0
      */
     unShuffle : function() {
-	    this.$wrap.shuffle( 'destroy' );
+        this.$wrap.shuffle( 'destroy' );
+        this.shuffleActive = false;
     },
 
     /**
-     * Destroys the the Shuffle instance.
-     *
-     * @since 1.0.0
+     * Element listeners
      */
-    destroy : function( e ) {
-        this.unShuffle();
-	    this.$el.off();
+    onMove: function() {
+        if ( this.shuffleActive ) {
+            this.refreshShuffle();
+        }
+    },
 
-        if ( 'function' == typeof this.callbacks.onDestroy ) {
-            this.callbacks.onDestroy.call( this );
+    onChangeParent: function() {
+        if ( this.shuffleActive ) {
+            this.shuffle();
+        }
+    },
+
+    onDestroy: function() {
+        if ( this.shuffleActive ) {
+            this.unShuffle();
+        }
+    },
+    
+    /**
+     * Window listeners
+     */
+    onResize: function() {
+        if ( this.shuffleActive ) {
+            this.refreshShuffle();
         }
     }
-};
+    
+} );
 
 /**
  * Masonry jQuery plugin.

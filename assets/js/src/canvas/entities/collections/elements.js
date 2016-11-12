@@ -194,7 +194,7 @@ var ElementCollection = Backbone.Collection.extend( {
 
 	    //console.log( '\n Added ' + model.get( 'id' ) + ' at ' + model.get( 'order' ) );
         
-		if ( 'tailor_column' == model.get( 'tag' ) && options.rebalance ) {
+		if ( 'tailor_column' == model.get( 'tag' ) ) {
 			this._reBalanceColumns( this.get( model.get( 'parent' ) ) );
 		}
     },
@@ -365,15 +365,11 @@ var ElementCollection = Backbone.Collection.extend( {
      * @returns {*}
      */
     createColumn : function( parentId, order ) {
-        var columns = this.where( { parent : parentId } );
         return _.first( this.create( [ {
 			tag : 'tailor_column',
-			atts : { width : ( 12 / ( columns.length + 1 ) ) },
 			parent : parentId,
 			order : order
-		} ], {
-			rebalance : true
-		} ) );
+		} ] ) );
 
 	    //console.log( '\n Created column ' + column.get( 'id' ) + ' at ' + order );
     },
@@ -521,9 +517,8 @@ var ElementCollection = Backbone.Collection.extend( {
         _.each( children, function( child ) {
             var atts = _.clone( child.get( 'atts' ) );
             atts.width = 12 / numberChildren;
-
             child.set( 'atts', atts, { silent : true } );
-            child.trigger( 'change:width', model, atts.width );
+            child.trigger( 'change:width', child, atts );
         }, this );
     },
 

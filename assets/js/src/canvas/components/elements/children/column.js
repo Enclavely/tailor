@@ -23,7 +23,7 @@ ColumnView = ContainerView.extend( {
      * @since 1.0.0
      */
     onRenderCollection : function() {
-        //this.updateClassName( this.model.get( 'atts' ).width );
+        this.updateClassName( this.model.get( 'atts' ) );
         this.$el
             .attr( 'draggable', true )
             .prepend(
@@ -137,9 +137,9 @@ ColumnView = ContainerView.extend( {
 	    /**
 	     * Fires after the column width has changed.
 	     *
-	     * @since 1.0.0
+	     * @since 1.7.5
 	     */
-	    this.triggerAll( 'element:parent:change', this );
+	    this.triggerAll( 'element:refresh', this );
 	},
 
     /**
@@ -153,9 +153,10 @@ ColumnView = ContainerView.extend( {
 	    this.$el.removeClass( function( index, css ) {
 		    return ( css.match( /(^|\s)columns-\S+/g) || [] ).join( ' ' );
 	    } );
-
-	    var device = app.channel.request( 'sidebar:device' );
+	    
 	    this.el.classList.add( 'columns-' + atts.width );
+	    
+	    var device = app.channel.request( 'sidebar:device' );
 	    if ( atts.hasOwnProperty( 'width_tablet' ) && 'undefined' != typeof atts['width_tablet'] ) {
 		    this.el.classList.add( ( 'columns-tablet-' + atts.width_tablet ) );
 	    }

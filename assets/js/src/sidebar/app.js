@@ -27,7 +27,7 @@ SidebarApplication = Marionette.Application.extend( {
 	        'element:add',
             'element:move',
             'element:resize',
-            'element:change:order',
+            'navigation:reorder',
             'element:copy',
             'element:delete',
             
@@ -70,7 +70,7 @@ SidebarApplication = Marionette.Application.extend( {
             'element:add',              // When an element is added
             'element:move',             // When an element is moved
             'element:resize',           // When an element (e.g., column) is resized
-            'element:change:order',     // When an element (e.g., tab) is reordered
+            'navigation:reorder',       // When an element (e.g., tab) is reordered using navigation
             'element:copy',             // When an element is copied
             'element:delete',           // When an element is deleted
             'modal:apply',              // When changes to an element are applied
@@ -180,7 +180,7 @@ SidebarApplication = Marionette.Application.extend( {
             } );
         } );
 
-        sidebar.listenToOnce( sidebar.channel, 'canvas:handshake', sidebar.registerRemoteChannel );
+        sidebar.listenTo( sidebar.channel, 'canvas:handshake', sidebar.registerRemoteChannel );
 
         /**
          * Restores the next history snapshot, if available.

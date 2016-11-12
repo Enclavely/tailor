@@ -139,7 +139,6 @@ $guide-background-color: $global-primary-color !default;
 			&.is-minimal .select {
 
 				&__menu {
-					right: 1px;
 					z-index: 2;
 
 					.select__item {
@@ -156,6 +155,7 @@ $guide-background-color: $global-primary-color !default;
 				&__controls {
 					top: 31px;
 					left: 1px;
+					right: auto;
 					z-index: 1;
 					background-color: $guide-background-color;
 				}

@@ -1349,6 +1349,7 @@ ul {
 .tailor-ui .control__message {
   margin: 2rem 0 2rem;
   text-align: center;
+  word-break: break-all;
 }
 
 .tailor-ui .control .actions {

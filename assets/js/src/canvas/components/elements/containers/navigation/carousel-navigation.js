@@ -36,8 +36,8 @@ module.exports = Marionette.CollectionView.extend( {
      * @since 1.0.0
      */
     onRender : function() {
-        var navigation = this;
-        this.sortable = new Sortable( navigation.el, {
+        var view = this;
+        this.sortable = new Sortable( view.el, {
             draggable : 'li',
             animation : 150,
 
@@ -47,28 +47,28 @@ module.exports = Marionette.CollectionView.extend( {
 	         * @since 1.0.0
 	         */
             onUpdate : function( e ) {
-                var $container = navigation.$el.parent();
+		        var cid = e.item.getAttribute( 'data-id' );
 
-                /**
-                 * Fires before a carousel item is reordered.
-                 *
-                 * @since 1.0.0
-                 */
-                $container.trigger( 'before:element:change:order' );
+		        /**
+		         * Fires before the element is reordered.
+		         *
+		         * @since 1.7.5
+		         */
+		        view.$el.trigger( 'before:navigation:reorder', [ cid, e.newIndex, e.oldIndex ] );
 
-	            /**
-                 * Fires when a carousel item is reordered.
-                 *
-                 * @since 1.0.0
-                 */
-                $container.trigger( 'element:change:order', [ e.item.getAttribute( 'data-id' ), e.newIndex, e.oldIndex ] );
+		        /**
+		         * Fires when the element is reordered.
+		         *
+		         * @since 1.7.5
+		         */
+		        view.$el.trigger( 'navigation:reorder', [ cid, e.newIndex, e.oldIndex ] );
 
-                /**
-                 * Fires when a carousel item is reordered.
-                 *
-                 * @since 1.0.0
-                 */
-                app.channel.trigger( 'element:change:order', navigation.model );
+		        /**
+		         * Fires when the element is reordered.
+		         *
+		         * @since 1.7.5
+		         */
+		        app.channel.trigger( 'navigation:reorder', view.model );
             }
         } );
     },

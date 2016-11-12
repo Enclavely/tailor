@@ -10,28 +10,9 @@ var CompositeView = Marionette.CompositeView.extend( {
 
 	modelEvents : {
 		'change:atts' : 'onChangeAttributes',
+		'change:order' : 'onChangeOrder',
 		'change:parent' : 'onChangeParent',
 		'change:setting' : 'onChangeSetting'
-	},
-
-	events : {
-		'element:parent:change' : 'stopEventPropagation',
-		'before:element:ready' : 'stopEventPropagation',
-		'element:ready' : 'stopEventPropagation',
-		'before:element:refresh' : 'stopEventPropagation',
-		'element:refresh' : 'stopEventPropagation',
-		'before:element:destroy' : 'stopEventPropagation',
-		'element:destroy' : 'stopEventPropagation',
-		'before:element:copy' : 'stopEventPropagation',
-		'element:copy' : 'stopEventPropagation',
-		'element:child:add' : 'onDescendantAdded',
-		'element:child:remove' : 'onDescendantRemoved',
-		'before:element:child:ready' : 'stopEventPropagation',
-		'element:child:ready' : 'onDescendantReady',
-		'before:element:child:refresh' : 'stopEventPropagation',
-		'element:child:refresh' : 'stopEventPropagation',
-		'before:element:child:destroy' : 'stopEventPropagation',
-		'element:child:destroy' : 'onDescendantDestroyed'
 	},
 
 	childEvents : {
@@ -39,8 +20,234 @@ var CompositeView = Marionette.CompositeView.extend( {
 		'element:ready' : 'childElementReady',
 		'before:element:refresh' : 'beforeChildElementRefreshed',
 		'element:refresh' : 'childElementRefreshed',
+		'before:element:jsRefresh' : 'beforeChildElementJSRefreshed',
+		'element:jsRefresh' : 'childElementJSRefreshed',
+		'element:change:parent' : 'childElementChangeParent',
+		'element:change:order' : 'childElementChangeOrder',
 		'before:element:destroy' : 'beforeChildElementDestroyed',
 		'element:destroy' : 'childElementDestroyed'
+	},
+	
+	events : {
+		'before:element:ready' : 'stopEventPropagation',
+		'element:ready' : 'stopEventPropagation',
+		'before:element:refresh' : 'stopEventPropagation',
+		'element:refresh' : 'stopEventPropagation',
+		'before:element:copy' : 'stopEventPropagation',
+		'element:copy' : 'stopEventPropagation',
+		'element:child:change:parent' : 'onDescendantChangeParent',
+		'element:child:change:order' : 'onDescendantChangeOrder',
+		'before:element:destroy' : 'stopEventPropagation',
+		'element:destroy' : 'stopEventPropagation',
+		'element:child:add' : 'onDescendantAdded',
+		'element:child:remove' : 'onDescendantRemoved',
+		'before:element:child:ready' : 'onBeforeDescendantReady',
+		'element:child:ready' : 'onDescendantReady',
+		'before:element:child:refresh' : 'onBeforeDescendantRefreshed',
+		'element:child:refresh' : 'onDescendantRefreshed',
+		'before:element:child:jsRefresh' : 'onBeforeDescendantJSRefreshed',
+		'element:child:jsRefresh' : 'onDescendantJSRefreshed',
+		'before:element:child:destroy' : 'onBeforeDescendantDestroyed',
+		'element:child:destroy' : 'onDescendantDestroyed',
+		'before:navigation:reorder' : 'stopEventPropagation',
+		'navigation:reorder' : 'onReorder'
+	},
+
+	/**
+	 * Updates children when they are reordered using navigation.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param index
+	 * @param oldIndex
+	 */
+	onReorder: function( e, cid, index, oldIndex ) {
+		var view = this.children.findByModelCid( cid );
+		var otherView = this.children.find( function( childView ) { return childView.model.get( 'order' ) == index; } );
+
+		// Update the DOM
+		if ( oldIndex - index < 0 ) {
+			view.$el.insertAfter( otherView.$el );
+		}
+		else {
+			view.$el.insertBefore( otherView.$el );
+		}
+
+		// Update the view and model
+		this.children.each( function( childView ) {
+			var childIndex = childView.$el.index();
+			childView._index = childIndex;
+			childView.model.set( 'order', childIndex );
+		} );
+
+		view.model.collection.sort();
+		e.stopPropagation();
+	},
+
+	/**
+	 * Refreshes the element template when its attributes change.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param model
+	 * @param atts
+	 */
+	onChangeAttributes : _.debounce( function( model, atts ) {
+		model = this.model.toJSON();
+		model.atts = atts ? atts : {};
+
+		var view = this;
+		view.el.classList.add( 'is-rendering' );
+
+		window.ajax.send( 'tailor_render', {
+			data : {
+				model : JSON.stringify( model ),
+				nonce : window._nonces.render
+			},
+
+			/**
+			 * Attaches the refreshed template to the page.
+			 *
+			 * @since 1.0.0
+			 *
+			 * @param response
+			 */
+			success : function( response ) {
+				view.updateTemplate( response.html );
+				var id = view.model.get( 'id' );
+
+				/**
+				 * Fires when the custom CSS rules for a given element are updated.
+				 *
+				 * @since 1.0.0
+				 *
+				 * @param id
+				 * @param response.css
+				 */
+				app.channel.trigger( 'css:update', id, response.css );
+			},
+
+			/**
+			 * Catches template rendering errors.
+			 *
+			 * @since 1.0.0
+			 */
+			error : function() {
+				view.updateTemplate( 'The template for ' + view.cid + ' could not be refreshed' );
+			},
+
+			/**
+			 * Renders the element with the new template.
+			 *
+			 * @since 1.0.0
+			 */
+			complete : function() {
+				var isEditing = view.$el.hasClass( 'is-editing' );
+				var isSelected = view.$el.hasClass( 'is-selected' );
+
+				view.$el.removeClass( 'is-rendering' );
+
+				/**
+				 * Fires before the container template is refreshed.
+				 *
+				 * @since 1.0.0
+				 *
+				 * @param compositeView
+				 * @param model.atts
+				 */
+				view.triggerAll( 'before:element:refresh', view, model.atts );
+
+				view.renderTemplate();
+
+				/**
+				 * Fires after the container template is refreshed.
+				 *
+				 * @since 1.0.0
+				 *
+				 * @param compositeView
+				 * @param model.atts
+				 */
+				view.triggerAll( 'element:refresh', view, model.atts );
+
+				//view.refreshChildren();
+
+				if ( isEditing ) {
+					view.$el.addClass( 'is-editing' );
+				}
+
+				if ( isSelected ) {
+					view.$el.addClass( 'is-selected' );
+				}
+			}
+		} );
+
+	}, 250 ),
+
+	/**
+	 * Triggers events before a descendant element is refreshed.
+	 *
+	 * @since 1.7.5
+	 */
+	onChangeOrder : function() {
+
+		/**
+		 * Fires when the order of the element changes.
+		 *
+		 * @since 1.7.5
+		 */
+		this.triggerAll( 'element:change:order', this );
+	},
+
+	/**
+	 * Triggers events and refreshes all child elements when the element parent changes.
+	 *
+	 * @since 1.0.0
+	 */
+	onChangeParent : function() {
+
+		/**
+		 * Fires when the parent attributes of the element changes.
+		 *
+		 * @since 1.0.0
+		 */
+		this.triggerAll( 'element:change:parent', this );
+	},
+
+	/**
+	 * Triggers an event to update the DOM, if the setting is configured to update via JavaScript.
+	 *
+	 * @since 1.5.0
+	 *
+	 * @param setting
+	 * @param refresh
+	 */
+	onChangeSetting: function( setting, refresh ) {
+		if ( refresh ) {
+
+			/**
+			 * Fires before the element is refreshed using JavaScript.
+			 *
+			 * @since 1.7.5
+			 */
+			this.triggerAll( 'before:element:jsRefresh', this, this.model.get( 'atts' ) );
+
+			/**
+			 * Fires when an element setting is changed.
+			 *
+			 * This is only fired when the setting is configured for JavaScript updates.
+			 *
+			 * @since 1.5.0
+			 */
+			app.channel.trigger( 'element:setting:change', setting, this );
+
+			/**
+			 * Fires after the element is refreshed using JavaScript.
+			 *
+			 * @since 1.7.5
+			 */
+			this.triggerAll( 'element:jsRefresh', this, this.model.get( 'atts' ) );
+		}
 	},
 
     /**
@@ -209,38 +416,6 @@ var CompositeView = Marionette.CompositeView.extend( {
         return this;
     },
 
-    /**
-     * Updated Marionette function : changed to update the 'order' attribute along with the view _index.
-     *
-     * @since 1.0.0
-     *
-     * @param view
-     * @param increment
-     * @param index
-     * @private
-     */
-    _updateIndices : function( view, increment, index ) {
-
-        if ( increment ) {
-            view._index = index;
-
-            //console.log( '\n Updated index of view ' + view.model.get( 'id' ) + ' ' + view.model.get( 'id' ) + ' to ' + index );
-
-            view.model._changing = false;
-            view.model.set( 'order', index );
-        }
-
-        this.children.each( function( laterView ) {
-            if ( laterView._index >= view._index ) {
-                laterView._index += increment ? 1 : -1;
-
-                //console.log( '\n Updated index of view ' + laterView.model.get( 'tag' ) + ' ' + laterView.model.get( 'id' ) + ' to ' + laterView._index );
-
-                laterView.model.set( 'order', laterView._index );
-            }
-        }, this );
-    },
-
 	/**
 	 * Triggers events before the element is ready.
 	 *
@@ -284,154 +459,24 @@ var CompositeView = Marionette.CompositeView.extend( {
 	},
 	
 	/**
-	 * Refreshes the element template when its attributes change.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param model
-	 * @param atts
-	 */
-	onChangeAttributes : _.debounce( function( model, atts ) {
-		model = this.model.toJSON();
-		model.atts = atts ? atts : {};
-
-		var view = this;
-		view.el.classList.add( 'is-rendering' );
-		
-		window.ajax.send( 'tailor_render', {
-			data : {
-				model : JSON.stringify( model ),
-				nonce : window._nonces.render
-			},
-
-			/**
-			 * Attaches the refreshed template to the page.
-			 *
-			 * @since 1.0.0
-			 *
-			 * @param response
-			 */
-			success : function( response ) {
-				view.updateTemplate( response.html );
-				var id = view.model.get( 'id' );
-				
-				/**
-				 * Fires when the custom CSS rules for a given element are updated.
-				 *
-				 * @since 1.0.0
-				 *
-				 * @param id
-				 * @param response.css
-				 */
-				app.channel.trigger( 'css:update', id, response.css );
-			},
-
-			/**
-			 * Catches template rendering errors.
-			 *
-			 * @since 1.0.0
-			 */
-			error : function() {
-				view.updateTemplate( 'The template for ' + view.cid + ' could not be refreshed' );
-			},
-
-			/**
-			 * Renders the element with the new template.
-			 *
-			 * @since 1.0.0
-			 */
-			complete : function() {
-				var isEditing = view.$el.hasClass( 'is-editing' );
-				var isSelected = view.$el.hasClass( 'is-selected' );
-
-				view.$el.removeClass( 'is-rendering' );
-
-				/**
-				 * Fires before the container template is refreshed.
-				 *
-				 * @since 1.0.0
-				 *
-				 * @param compositeView
-				 * @param model.atts
-				 */
-				view.triggerAll( 'before:element:refresh', view, model.atts );
-
-				view.renderTemplate();
-
-				/**
-				 * Fires after the container template is refreshed.
-				 *
-				 * @since 1.0.0
-				 *
-				 * @param compositeView
-				 * @param model.atts
-				 */
-				view.triggerAll( 'element:refresh', view, model.atts );
-
-				view.refreshChildren();
-
-				if ( isEditing ) {
-					view.$el.addClass( 'is-editing' );
-				}
-
-				if ( isSelected ) {
-					view.$el.addClass( 'is-selected' );
-				}
-			}
-		} );
-
-	}, 250 ),
-
-	/**
-	 * Triggers an event to update the DOM, if the setting is configured to update via JavaScript.
-	 *
-	 * @since 1.5.0
-	 *
-	 * @param setting
-	 * @param refresh
-	 */
-	onChangeSetting: function( setting, refresh ) {
-		if ( refresh ) {
-
-			/**
-			 * Fires when an element setting configured to be updated using JavaScript changes.
-			 *
-			 * @since 1.5.0
-			 */
-			app.channel.trigger( 'element:setting:change', setting, this );
-		}
-	},
-
-	/**
-	 * Triggers events and refreshes all child elements when the element parent changes.
-	 *
-	 * @since 1.0.0
-	 */
-	onChangeParent : function() {
-
-		/**
-		 * Fires when the parent attributes of the element changes.
-		 *
-		 * @since 1.0.0
-		 */
-		this.triggerAll( 'element:change:parent', this );
-
-		this.refreshChildren();
-	},
-	
-	/**
 	 * Triggers an event before a child element is ready.
 	 *
 	 * @since 1.0.0
 	 */
 	beforeChildElementReady : function( childView ) {
-		if ( this._isReady ) {
+		if ( this._isReady && this.children.contains( childView ) ) {
+
+			/**
+			 * Fires before a child element is refreshed.
+			 *
+			 * @since 1.7.5
+			 */
 			this.triggerAll( 'before:element:child:ready', childView );
 		}
 	},
 
 	/**
-	 * Triggers events after a child element is ready.
+	 * Triggers events when a child element is ready.
 	 *
 	 * If all children are ready, the element is also considered ready.
 	 *
@@ -440,33 +485,33 @@ var CompositeView = Marionette.CompositeView.extend( {
 	 * @param childView
 	 */
 	childElementReady : function( childView ) {
-		if ( ! this._isReady ) {
+		if ( this.children.contains( childView ) ) {
+			if ( ! this._isReady ) {
+				var readyChildren = this.children.filter( function( childView ) {
+					return childView._isReady;
+				} ).length;
 
-			var readyChildren = this.children.filter( function( childView ) {
-				return childView._isReady;
-			} ).length;
+				if ( this.children.length == readyChildren ) {
+					this._isReady = true;
 
-			if ( this.children.length == readyChildren ) {
-				this._isReady = true;
+					/**
+					 * Fires when all child elements are ready (the container is fully rendered).
+					 *
+					 * @since 1.0.0
+					 */
+					this.triggerAll( 'element:ready', this );
+					//this.refreshChildren();
+				}
+			}
+			else  {
 
 				/**
-				 * Fires when all child elements are ready (i.e., the container is fully-rendered).
+				 * Fires when a child element is ready (after the container is fully rendered).
 				 *
 				 * @since 1.0.0
 				 */
-				this.triggerAll( 'element:ready', this );
-
-				this.refreshChildren();
+				this.triggerAll( 'element:child:ready', childView );
 			}
-		}
-		else  {
-
-			/**
-			 * Fires when a child element within this fully-rendered container is ready.
-			 *
-			 * @since 1.0.0
-			 */
-			this.triggerAll( 'element:child:ready', childView );
 		}
 	},
 
@@ -478,18 +523,110 @@ var CompositeView = Marionette.CompositeView.extend( {
 	 * @param childView
 	 */
 	beforeChildElementRefreshed : function( childView ) {
-		this.triggerAll( 'before:element:child:refresh', childView );
-	},
+		if ( this.children.contains( childView ) ) {
 
+			/**
+			 * Fires before a child element is refreshed.
+			 *
+			 * @since 1.7.5
+			 */
+			this.triggerAll( 'before:element:child:refresh', childView );
+		}
+	},
+	
 	/**
-	 * Triggers events after a child element template is refreshed.
+	 * Triggers events when a child element template is refreshed.
 	 *
 	 * @since 1.0.0
 	 *
 	 * @param childView
 	 */
 	childElementRefreshed : function( childView ) {
-		this.triggerAll( 'element:child:refresh', childView );
+		if ( this.children.contains( childView ) ) {
+
+			/**
+			 * Fires when a child element is refreshed.
+			 *
+			 * @since 1.7.5
+			 */
+			this.triggerAll( 'element:child:refresh', childView );
+		}
+	},
+
+	/**
+	 * Triggers events before a child element template is refreshed using JavaScript.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param childView
+	 */
+	beforeChildElementJSRefreshed : function( childView ) {
+		if ( this.children.contains( childView ) ) {
+
+			/**
+			 * Fires before a child element is refreshed using JavaScript.
+			 *
+			 * @since 1.7.5
+			 */
+			this.triggerAll( 'before:element:child:jsRefresh', childView );
+		}
+	},
+	
+	/**
+	 * Triggers events when a child element is refreshed using JavaScript.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param childView
+	 */
+	childElementJSRefreshed : function( childView ) {
+		if ( this.children.contains( childView ) ) {
+
+			/**
+			 * Fires when a child element is refreshed using JavaScript.
+			 *
+			 * @since 1.7.5
+			 */
+			this.triggerAll( 'element:child:jsRefresh', childView );
+		}
+	},
+
+	/**
+	 * Triggers events when a child element order is changed.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param childView
+	 */
+	childElementChangeOrder: function( childView ) {
+		if ( this.children.contains( childView ) ) {
+
+			/**
+			 * Fires when a child element order changes.
+			 *
+			 * @since 1.7.5
+			 */
+			this.triggerAll( 'element:child:change:order', childView );
+		}
+	},
+
+	/**
+	 * Triggers events when a child element parent is changed.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param childView
+	 */
+	childElementChangeParent: function( childView ) {
+		if ( this.children.contains( childView ) ) {
+
+			/**
+			 * Fires when a child element parent changes.
+			 *
+			 * @since 1.7.5
+			 */
+			this.triggerAll( 'element:child:change:parent', childView );
+		}
 	},
 
 	/**
@@ -501,6 +638,12 @@ var CompositeView = Marionette.CompositeView.extend( {
 	 */
 	beforeChildElementDestroyed : function( childView ) {
 		if ( ! this._isBeingDestroyed ) {
+
+			/**
+			 * Fires before a child element is destroyed.
+			 *
+			 * @since 1.7.5
+			 */
 			this.triggerAll( 'before:element:child:destroy', childView );
 		}
 	},
@@ -513,157 +656,254 @@ var CompositeView = Marionette.CompositeView.extend( {
 	 * @param childView
 	 */
 	childElementDestroyed : function( childView ) {
-		if ( ! this._isBeingDestroyed && this.children.length > 1 ) {
+		if ( ! this._isBeingDestroyed  ) {
+
+			/**
+			 * Fires when a child element is destroyed.
+			 *
+			 * @since 1.7.5
+			 */
 			this.triggerAll( 'element:child:destroy', childView );
 		}
 	},
 
 	/**
-	 * Refreshes all child elements when the parent element is modified.
-	 *
-	 * @since 1.0.0
-	 */
-	onElementParentChange : function() {
-		this.refreshChildren();
-	},
-
-	/**
-	 * Refreshes all child elements when the a child element is destroyed.
-	 *
-	 * @since 1.0.0
-	 */
-	onElementChildDestroy : function() {
-		this.refreshChildren();
-	},
-
-	/**
-	 * Triggers events after a child element is added.
-	 *
-	 * If this container is not fully rendered (i.e., it was created to contain the child element), the element is considered ready.
+	 * Triggers events when a descendant element is added.
 	 *
 	 * @since 1.0.0
 	 *
 	 * @param e
-	 * @param descendantView
+	 * @param view
 	 */
-	onDescendantAdded : function( e, descendantView ) {
-		if ( ! this._isReady ) {
+	onDescendantAdded : function( e, view ) {
 
-			var readyChildren = this.children.filter( function( childView ) {
-				return childView._isReady;
-			} ).length;
-
-			if ( this.children.length == readyChildren ) {
-				this._isReady = true;
-
-				/**
-				 * Fires when all child elements are ready (i.e., the container is fully-rendered).
-				 *
-				 * @since 1.0.0
-				 */
-				this.triggerAll( 'element:ready', this );
-			}
-
-			e.stopImmediatePropagation();
-		}
-		else  {
-
-			/**
-			 * Fires when a descendant element within this fully-rendered container is ready.
-			 *
-			 * @since 1.0.0
-			 */
-			this.triggerAll( 'element:descendant:add', descendantView );
-
-			e.stopPropagation();
-		}
-	},
-
-	/**
-	 * Triggers events after a child element is removed.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param e
-	 * @param descendantView
-	 */
-	onDescendantRemoved : function( e, descendantView ) {
-		if ( ( 'container' == this.model.get( 'type' ) && this.children.length > 1 ) || this.children.length > 0 ) {
-			this.triggerAll( 'element:descendant:remove', descendantView );
-		}
-
+		/**
+		 * Fires when a descendant element is added.
+		 *
+		 * @since 1.0.0
+		 */
+		this.triggerAll( 'element:descendant:add', view );
 		e.stopPropagation();
 	},
 
 	/**
-	 * Triggers events after a child element is ready.
+	 * Triggers events when a descendant element is removed.
 	 *
 	 * @since 1.0.0
 	 *
 	 * @param e
-	 * @param descendantView
+	 * @param view
 	 */
-	onDescendantReady : function( e, descendantView ) {
-		if ( ! this._isReady ) {
-			if ( this.children.length == 1 && this.children.contains( descendantView ) ) {
-				this._isReady = true;
+	onDescendantRemoved : function( e, view ) {
 
-				/**
-				 * Fires when all child elements are ready (i.e., the container is fully-rendered).
-				 *
-				 * @since 1.0.0
-				 */
-				this.triggerAll( 'element:ready', this );
-			}
-			e.stopImmediatePropagation();
-		}
-		else  {
-
-			/**
-			 * Fires when a descendant element is created in this fully-rendered container.
-			 *
-			 * @since 1.0.0
-			 */
-			this.triggerAll( 'element:descendant:add', descendantView );
-
-			// @todo Find a better way of refreshing complex content elements like carousel galleries
-			this.refreshChildren();
-
-			e.stopPropagation();
-		}
-	},
-
-	/**
-	 * Triggers events after a child element is destroyed.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param e
-	 * @param descendantView
-	 */
-	onDescendantDestroyed : function( e, descendantView ) {
-		if ( ( 'container' == this.model.get( 'type' ) && this.children.length > 1 ) || this.children.length > 0 ) {
-
-			/**
-			 * Fires when a descendant element within in this fully-rendered container is destroyed.
-			 *
-			 * @since 1.0.0
-			 */
-			this.triggerAll( 'element:descendant:destroy', descendantView );
-		}
-
+		/**
+		 * Fires when a descendant element is removed.
+		 *
+		 * @since 1.0.0
+		 */
+		this.triggerAll( 'element:descendant:remove', view );
 		e.stopPropagation();
 	},
 
 	/**
-	 * Refreshes all child elements.
+	 * Triggers events before a descendant element is ready.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onBeforeDescendantReady : function( e, view ) {
+
+		/**
+		 * Fires before a descendant element is ready.
+		 *
+		 * @since 1.7.5
+		 */
+		this.triggerAll( 'before:element:descendant:ready', view );
+		e.stopPropagation();
+	},
+
+	/**
+	 * Triggers events when a descendant element is ready.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onDescendantReady : function( e, view ) {
+
+		/**
+		 * Fires when a descendant element is ready.
+		 *
+		 * @since 1.7.5
+		 */
+		this.triggerAll( 'element:descendant:ready', view );
+		e.stopPropagation();
+	},
+
+	/**
+	 * Triggers events before a descendant element is refreshed.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onBeforeDescendantRefreshed : function( e, view ) {
+
+		/**
+		 * Fires before a descendant element is refreshed.
+		 *
+		 * @since 1.7.5
+		 */
+		this.triggerAll( 'before:element:descendant:refresh', view );
+		e.stopPropagation();
+	},
+
+	/**
+	 * Triggers events when a descendant element is refreshed.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onDescendantRefreshed : function( e, view ) {
+
+		/**
+		 * Fires when a descendant element is refreshed.
+		 *
+		 * @since 1.7.5
+		 */
+		this.triggerAll( 'element:descendant:refresh', view );
+		e.stopPropagation();
+	},
+
+	/**
+	 * Triggers events before a descendant element is refreshed using JavaScript.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onBeforeDescendantJSRefreshed: function( e, view ) {
+
+		/**
+		 * Fires before a descendant element is refreshed using JavaScript.
+		 *
+		 * @since 1.7.5
+		 */
+		this.triggerAll( 'before:element:descendant:jsRefresh', view );
+		e.stopPropagation();
+	},
+
+	/**
+	 * Triggers events when a descendant element is refreshed using JavaScript.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onDescendantJSRefreshed : function( e, view ) {
+
+		/**
+		 * Fires when a descendant element is refreshed using JavaScript.
+		 *
+		 * @since 1.7.5
+		 */
+		this.triggerAll( 'element:descendant:jsRefresh', view );
+		e.stopPropagation();
+	},
+
+	/**
+	 * Triggers events when a descendant element order is changed.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onDescendantChangeOrder : function( e, view ) {
+
+		/**
+		 * Fires when a descendant element order changes.
+		 *
+		 * @since 1.7.5
+		 */
+		this.triggerAll( 'element:descendant:change:order', view );
+		e.stopPropagation();
+	},
+
+	/**
+	 * Triggers events when a descendant element parent is changed.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onDescendantChangeParent : function( e, view ) {
+
+		/**
+		 * Fires when a descendant element parent changes.
+		 *
+		 * @since 1.7.5
+		 */
+		this.triggerAll( 'element:descendant:change:parent', view );
+		e.stopPropagation();
+	},
+
+	/**
+	 * Triggers events before a descendant element is destroyed.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onBeforeDescendantDestroyed : function( e, view ) {
+
+		/**
+		 * Fires when a descendant element is destroyed.
+		 *
+		 * @since 1.7.5
+		 */
+		this.triggerAll( 'before:element:descendant:destroy', view );
+		e.stopPropagation();
+	},
+
+	/**
+	 * Triggers events when a descendant element is destroyed.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onDescendantDestroyed : function( e, view ) {
+
+		/**
+		 * Fires when a descendant element is destroyed.
+		 *
+		 * @since 1.7.5
+		 */
+		this.triggerAll( 'element:descendant:destroy', view );
+		e.stopPropagation();
+	},
+
+	/**
+	 * Stops the event from bubbling up the DOM tree.
 	 *
 	 * @since 1.0.0
+	 *
+	 * @param e
 	 */
-	refreshChildren : function() {
-		this.children.each( function( childView ) {
-			childView.triggerAll( 'element:parent:change', childView );
-		}, this );
+	stopEventPropagation : function( e ) {
+		e.stopPropagation();
 	},
 
 	/**
@@ -688,14 +928,34 @@ var CompositeView = Marionette.CompositeView.extend( {
 	},
 
 	/**
-	 * Stops the event from bubbling up the DOM tree.
+	 * Updated Marionette function : changed to update the 'order' attribute along with the view _index.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param e
+	 * @param view
+	 * @param increment
+	 * @param index
+	 * @private
 	 */
-	stopEventPropagation : function( e ) {
-		e.stopPropagation();
+	_updateIndices : function( view, increment, index ) {
+		if ( increment ) {
+			view._index = index;
+
+			//console.log( '\n Updated index of view ' + view.model.get( 'id' ) + ' ' + view.model.get( 'id' ) + ' to ' + index );
+
+			view.model._changing = false;
+			view.model.set( 'order', index );
+		}
+
+		this.children.each( function( laterView ) {
+			if ( laterView._index >= view._index ) {
+				laterView._index += increment ? 1 : -1;
+
+				//console.log( '\n Updated index of view ' + laterView.model.get( 'tag' ) + ' ' + laterView.model.get( 'id' ) + ' to ' + laterView._index );
+
+				laterView.model.set( 'order', laterView._index );
+			}
+		}, this );
 	}
 
 } );

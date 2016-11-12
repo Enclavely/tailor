@@ -1,188 +1,101 @@
 /**
- * Tailor.Objects.Parallax
+ * Tailor.Components.Parallax
  *
- * A parallax module.
+ * A parallax component.
  *
  * @class
  */
 var $ = window.jQuery,
+	$win = $( window ),
+	Components = window.Tailor.Components,
 	Parallax;
 
-/**
- * De-bounces events using requestAnimationFrame
- *
- * @param callback
- * @constructor
- */
-function DeBouncer( callback ) {
-	this.callback = callback;
-	this.ticking = false;
-}
 
-DeBouncer.prototype = {
+Parallax = Components.create( {
 
-	/**
-	 * dispatches the event to the supplied callback
-	 * @private
-	 */
-	update : function () {
-		this.callback && this.callback();
-		this.ticking = false;
+	getDefaults : function () {
+		return {
+			ratio : 0.25,
+			selector : '.tailor-section__background'
+		};
 	},
 
 	/**
-	 * ensures events don't get stacked
-	 * @private
+	 * Initializes the component.
+	 * 
+	 * @since 1.7.5
 	 */
-	requestTick : function () {
-		if ( ! this.ticking ) {
-			requestAnimationFrame( this.rafCallback || ( this.rafCallback = this.update.bind( this ) ) );
-			this.ticking = true;
+	onInitialize : function () {
+		this.position = {};
+		this.background = this.el.querySelector( this.options.selector );
+		if ( ! this.background ) {
+			return;
 		}
+
+		this.addEvents();
+		this.refreshParallax();
 	},
-
-	/**
-	 * Attach this as the event listeners
-	 */
-	handleEvent : function () {
-		this.requestTick();
-	}
-};
-
-var id = 0;
-
-/**
- * Translates an element on scroll to create a parallax effect.
- *
- * @param el
- * @param options
- * @constructor
- */
-Parallax = function( el, options ) {
-	this.id = 'tailor.parallax.' + id ++;
-	this.options = $.extend( this.defaults, options );
-	this.el = el.querySelector( this.options.selector );
-	if ( ! this.el ) {
-		return;
-	}
-
-	this.$el = $( el );
-	this.$win = $( window );
-	this.container = {
-		el: el
-	};
-
-	this.initialize();
-};
-
-Parallax.prototype = {
-
-	defaults : {
-		ratio : 0.25,
-		selector : '.tailor-section__background'
-	},
-
-	/**
-	 * Initializes the Parallax element.
-	 */
-	initialize : function() {
-
-		this.onResizeCallback = $.proxy( this.onResize, this );
-		this.onScrollCallback = $.proxy( this.onScroll, this );
-
-		this.addEventListeners();
-		this.onResize();
-	},
-
-
+	
 	/**
 	 * Adds the required event listeners.
-	 * 
-	 * @since 1.4.0
+	 *
+	 * @since 1.7.5
 	 */
-	addEventListeners : function() {
-		this.$win
-			.on( 'resize.' + this.id, this.onResizeCallback )
-			.on( 'scroll.' + this.id, this.onScrollCallback );
-
-		this.$el
-
-			// Fires before the element template is refreshed
-			.on( 'before:element:refresh', $.proxy( this.maybeDestroy, this ) )
-
-			// Fires before the element is destroyed
-			.on( 'before:element:destroy', $.proxy( this.maybeDestroy, this ) )
-
-			/**
-			 * Child event listeners
-			 */
-
-			// Fires before and after a child element is added
-			.on( 'element:child:ready', this.onResizeCallback )
-
-			// Fires after a child element is added
-			.on( 'element:child:add', this.onResizeCallback )
-
-			// Fires after a child element is removed
-			.on( 'element:child:remove', this.onResizeCallback )
-
-			// Fires before and after a child element is refreshed
-			.on( 'element:child:refresh', this.onResizeCallback )
-
-			// Fires before and after the position of an item is changed
-			.on( 'element:change:order', this.onResizeCallback )
-
-			// Fires before and after a child element is destroyed
-			.on( 'element:child:destroy', this.onResizeCallback )
+	addEvents: function() {
+		this.onScrollCallback = this.onScroll.bind( this );
+		$win.on( 'scroll.' + this.id, this.onScrollCallback );
 	},
 
 	/**
-	 * Removes all registered event listeners.
+	 * Record the initial window position.
 	 *
 	 * @since 1.4.0
 	 */
-	removeEventListeners: function() {
-		this.$win
-			.off( 'resize.' + this.id, this.onResizeCallback )
-			.off( 'scroll.' + this.id, this.onScrollCallback );
-
-		this.$el.off();
-	},
-
-	/**
-	 * Perform checks and do parallax when the window is resized.
-	 *
-	 * @since 1.4.0
-	 */
-	onResize : function() {
-		this.setup();
-		this.doParallax();
-	},
-
-	onScroll : function() {
-		requestAnimationFrame( this.doParallax.bind( this ) );
-	},
-
-	/**
-	 * Get and set attributes w
-	 */
-	setup : function() {
+	doSetup : function() {
 
 		// Store window height
 		this.windowHeight = Math.max( document.documentElement.clientHeight, window.innerHeight || 0 );
 
 		// Store container attributes
-		var containerRect = this.container.el.getBoundingClientRect();
-		var containerHeight = this.container.el.offsetHeight;
-		var containerTop = containerRect.top + window.pageYOffset;
+		var rect = this.el.getBoundingClientRect();
+		var height = this.el.offsetHeight;
+		var top = rect.top + window.pageYOffset;
 
-		this.container.top = containerTop;
-		this.container.height = containerHeight;
-		this.container.bottom = containerTop + containerHeight;
+		this.position.top = top;
+		this.position.height = height;
+		this.position.bottom = top + height;
 
-		// Adjust the element height
-		this.el.style.top = '0px';
-		this.el.style.height = Math.round( ( containerHeight + ( containerHeight * this.options.ratio ) ) ) + 'px';
+		// Adjust the background height
+		this.background.style.top = '0px';
+		this.background.style.height = Math.round( ( height + ( height * this.options.ratio ) ) ) + 'px';
+	},
+
+	/**
+	 * Translate the element relative to its container to achieve the parallax effect.
+	 *
+	 * @since 1.4.0
+	 */
+	doParallax : function() {
+		if ( ! this.inViewport() ) {
+			return; // Do nothing if the parent is not in view
+		}
+
+		var amountScrolled = 1 - (
+				( this.position.bottom - window.pageYOffset  ) /
+				( this.position.height + this.windowHeight )
+			);
+		var translateY = Math.round( ( amountScrolled * this.position.height * this.options.ratio ) * 100 ) / 100;
+		this.background.style[ Modernizr.prefixed( 'transform' ) ] = 'translate3d( 0px, -' + translateY + 'px, 0px )';
+	},
+
+	/**
+	 * Refreshes the parallax effect.
+	 *
+	 * @since 1.7.5
+	 */
+	refreshParallax: function() {
+		this.doSetup();
+		this.doParallax();
 	},
 
 	/**
@@ -195,58 +108,54 @@ Parallax.prototype = {
 	inViewport : function() {
 		var winTop = window.pageYOffset;
 		var winBottom = winTop + this.windowHeight;
-		var containerBottom = this.container.top + this.container.height;
-
+		var containerBottom = this.position.top + this.position.height;
 		return (
-			this.container.top < winBottom &&   // Top of element is above the bottom of the window
+			this.position.top < winBottom &&    // Top of element is above the bottom of the window
 			winTop < containerBottom            // Bottom of element is below top of the window
 		);
 	},
 
 	/**
-	 * Translate the element relative to its container to achieve the parallax effect.
-	 * 
-	 * @since 1.4.0
+	 * Element listeners
 	 */
-	doParallax : function() {
-
-		// Do nothing if the parent is not in view
-		if ( ! this.inViewport() ) {
-			return;
-		}
-
-		var amountScrolled = 1 - (
-				( this.container.bottom - window.pageYOffset  ) /
-				( this.container.height + this.windowHeight )
-			);
-
-		var translateY = Math.round( ( amountScrolled * this.container.height * this.options.ratio ) * 100 ) / 100;
-
-		this.el.style[ Modernizr.prefixed( 'transform' ) ] = 'translate3d( 0px, -' + translateY + 'px, 0px )';
+	onJSRefresh: function() {
+		this.refreshParallax();
 	},
 
 	/**
-	 * Destroys the parallax instance if the event target is the parallax element.
-	 *
-	 * @since 1.4.0
-	 *
-	 * @param e
+	 * Child listeners
 	 */
-	maybeDestroy : function( e ) {
-		if ( e.target == this.container.el ) {
-			this.destroy();
-		}
+	onChangeChild : function() {
+		this.refreshParallax();
 	},
 
 	/**
-	 * Destroys the parallax instance.
-	 *
-	 * @since 1.4.0
+	 * Descendant listeners
 	 */
-	destroy: function() {
-		this.removeEventListeners();
+	onChangeDescendant : function() {
+		this.refreshParallax();
+	},
+
+	/**
+	 * Window listeners
+	 */
+	onResize : function() {
+		this.refreshParallax();
+	},
+
+	onScroll : function() {
+		requestAnimationFrame( this.doParallax.bind( this ) );
+	},
+	
+	/**
+	 * Element listeners
+	 */
+	onDestroy: function() {
+		$win.off( 'scroll.' + this.id, this.onScrollCallback );
+		this.background.removeAttribute('style');
 	}
-};
+
+} );
 
 /**
  * Parallax jQuery plugin.

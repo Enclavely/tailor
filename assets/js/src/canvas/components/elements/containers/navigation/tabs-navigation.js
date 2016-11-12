@@ -56,9 +56,9 @@ module.exports = Marionette.CollectionView.extend( {
      * @since 1.0.0
      */
     onRender : function() {
-        var navigation = this;
-        this.sortable = new Sortable( navigation.el, {
-            draggable : '.tailor-tabs__navigation-item',
+        var view = this;
+        this.sortable = new Sortable( view.el, {
+            draggable : 'li',
             animation : 150,
 
             /**
@@ -67,28 +67,28 @@ module.exports = Marionette.CollectionView.extend( {
              * @since 1.0.0
              */
             onUpdate : function( e ) {
-                var $container = navigation.$el.parent();
-
-                /**
-                 * Fires before a tab is reordered.
-                 *
-                 * @since 1.0.0
-                 */
-                $container.trigger( 'before:element:change:order' );
-
-                /**
-                 * Fires when a tab is reordered.
-                 *
-                 * @since 1.0.0
-                 */
-                $container.trigger( 'element:change:order', [ e.item.getAttribute( 'data-id' ), e.newIndex, e.oldIndex ] );
+	            var cid = e.item.getAttribute( 'data-id' );
 
 	            /**
-	             * Fires when a tab is reordered.
-	             *
-	             * @since 1.0.0
+	             * Fires before the element is reordered.
+	             * 
+	             * @since 1.7.5
 	             */
-	            app.channel.trigger( 'element:change:order', navigation.model );
+	            view.$el.trigger( 'before:navigation:reorder', [ cid, e.newIndex, e.oldIndex ] );
+
+	            /**
+	             * Fires when the element is reordered.
+	             *
+	             * @since 1.7.5
+	             */
+	            view.$el.trigger( 'navigation:reorder', [ cid, e.newIndex, e.oldIndex ] );
+	            
+	            /**
+	             * Fires when the element is reordered.
+	             *
+	             * @since 1.7.5
+	             */
+	            app.channel.trigger( 'navigation:reorder', view.model );
             }
 
         } );

@@ -13,16 +13,6 @@
     require( './shared/utility/polyfills/transitions' );
     require( './shared/utility/ajax' );
 
-    // Include components
-    require( './shared/components/ui/tabs' );
-    require( './shared/components/ui/toggles' );
-    require( './shared/components/ui/map' );
-    require( './shared/components/ui/masonry' );
-    require( './shared/components/ui/slideshow' );
-    require( './shared/components/ui/lightbox' );
-    require( './shared/components/ui/parallax' );
-    require( './canvas/components/ui/carousel' );
-    require( './canvas/components/ui/carousel-simple' );
     Marionette.Behaviors.behaviorsLookup = function() {
         return {
             Container:          require( './canvas/components/behaviors/container' ),
@@ -38,16 +28,57 @@
     window.app = new App();
 
     // Create the Tailor object
+    var abstractComponent = require( './shared/components/ui/abstract' );
     window.Tailor = {
-        Api : {
-            Setting :   require( './shared/components/api/setting' ),
-            Element :   require( './canvas/components/api/element' )
+        Api:            {
+            Setting:        require( './shared/components/api/setting' ),
+            Element:        require( './canvas/components/api/element' )
         },
-        CSS :       require( './shared/utility/css' ),
-        Models :    {},
-        Views :     {},
-        Settings :  {}
+        CSS:            require( './shared/utility/css' ),
+        Models:         {},
+        Views:          {},
+        Settings:       {},
+        Components:     {
+
+	        /**
+	         * Creates a new component.
+             *
+             * @since 1.7.5
+             *
+             * @param prototype
+             * @returns {component}
+             */
+            create: function( prototype )  {
+                var originalPrototype = prototype;
+                var component = function( el, options, callbacks ) {
+                    abstractComponent.call( this, el, options, callbacks );
+                };
+                component.prototype = Object.create( abstractComponent.prototype );
+                for ( var key in originalPrototype )  {
+                    component.prototype[ key ] = originalPrototype[ key ];
+                }
+                Object.defineProperty( component.prototype, 'constructor', {
+                    enumerable: false,
+                    value: component
+                } );
+                return component;
+            }
+        }
     };
+
+    // Shared components
+    window.Tailor.Components.Abstract = abstractComponent;
+    window.Tailor.Components.Lightbox = require( './shared/components/ui/lightbox' );
+    window.Tailor.Components.Map = require( './shared/components/ui/map' );
+    window.Tailor.Components.Masonry = require( './shared/components/ui/masonry' );
+    window.Tailor.Components.Parallax = require( './shared/components/ui/parallax' );
+    window.Tailor.Components.Slideshow = require( './shared/components/ui/slideshow' );
+    window.Tailor.Components.Tabs = require( './shared/components/ui/tabs' );
+    window.Tailor.Components.Toggles = require( './shared/components/ui/toggles' );
+
+    // Canvas components
+    window.Tailor.Components.Carousel = require( './canvas/components/ui/carousel' );
+    window.Tailor.Components.SimpleCarousel = require( './canvas/components/ui/carousel-simple' );
 
     app.addRegions( {
         canvasRegion : {
@@ -78,7 +109,6 @@
         Tailor.Models.Default =             require( './canvas/entities/models/element' );
 
         // Load views
-        Tailor.Views.Section =              require( './canvas/components/elements/wrappers/section' );
         Tailor.Views.Column =               require( './canvas/components/elements/children/column' );
         Tailor.Views.Tab =                  require( './canvas/components/elements/children/tab' );
         Tailor.Views.CarouselItem =         require( './canvas/components/elements/children/carousel-item' );
@@ -170,7 +200,7 @@
 } ( window, Backbone.$ ) );
 
 //require( './utility/debug' );
-},{"./canvas/app":2,"./canvas/components/api/element":3,"./canvas/components/behaviors/container":4,"./canvas/components/behaviors/droppable":5,"./canvas/components/behaviors/editable":6,"./canvas/components/behaviors/movable":7,"./canvas/components/elements/children/carousel-item":8,"./canvas/components/elements/children/column":9,"./canvas/components/elements/children/tab":10,"./canvas/components/elements/containers/carousel":11,"./canvas/components/elements/containers/tabs":16,"./canvas/components/elements/element":18,"./canvas/components/elements/element-container":17,"./canvas/components/elements/wrappers/section":19,"./canvas/components/ui/carousel":21,"./canvas/components/ui/carousel-simple":20,"./canvas/entities/models/children/column":23,"./canvas/entities/models/children/grid-item":24,"./canvas/entities/models/containers/carousel":25,"./canvas/entities/models/containers/row":26,"./canvas/entities/models/containers/tabs":27,"./canvas/entities/models/element":33,"./canvas/entities/models/element-child":29,"./canvas/entities/models/element-container":31,"./canvas/entities/models/element-wrapper":32,"./canvas/entities/models/wrappers/section":34,"./canvas/modules/canvas/canvas":36,"./canvas/modules/canvas/canvas-region":35,"./canvas/modules/css/css":38,"./canvas/modules/elements/elements":40,"./canvas/modules/templates/templates":41,"./canvas/modules/tools/select-region":42,"./canvas/modules/tools/tools":46,"./canvas/preview":47,"./shared/components/api/setting":48,"./shared/components/behaviors/draggable":49,"./shared/components/ui/lightbox":50,"./shared/components/ui/map":51,"./shared/components/ui/masonry":52,"./shared/components/ui/parallax":53,"./shared/components/ui/slideshow":54,"./shared/components/ui/tabs":55,"./shared/components/ui/toggles":56,"./shared/utility/ajax":57,"./shared/utility/css":58,"./shared/utility/polyfills/classlist":59,"./shared/utility/polyfills/raf":60,"./shared/utility/polyfills/transitions":61}],2:[function(require,module,exports){
+},{"./canvas/app":2,"./canvas/components/api/element":3,"./canvas/components/behaviors/container":4,"./canvas/components/behaviors/droppable":5,"./canvas/components/behaviors/editable":6,"./canvas/components/behaviors/movable":7,"./canvas/components/elements/children/carousel-item":8,"./canvas/components/elements/children/column":9,"./canvas/components/elements/children/tab":10,"./canvas/components/elements/containers/carousel":11,"./canvas/components/elements/containers/tabs":16,"./canvas/components/elements/element":18,"./canvas/components/elements/element-container":17,"./canvas/components/ui/carousel":20,"./canvas/components/ui/carousel-simple":19,"./canvas/entities/models/children/column":22,"./canvas/entities/models/children/grid-item":23,"./canvas/entities/models/containers/carousel":24,"./canvas/entities/models/containers/row":25,"./canvas/entities/models/containers/tabs":26,"./canvas/entities/models/element":32,"./canvas/entities/models/element-child":28,"./canvas/entities/models/element-container":30,"./canvas/entities/models/element-wrapper":31,"./canvas/entities/models/wrappers/section":33,"./canvas/modules/canvas/canvas":35,"./canvas/modules/canvas/canvas-region":34,"./canvas/modules/css/css":37,"./canvas/modules/elements/elements":39,"./canvas/modules/templates/templates":40,"./canvas/modules/tools/select-region":41,"./canvas/modules/tools/tools":45,"./canvas/preview":46,"./shared/components/api/setting":50,"./shared/components/behaviors/draggable":51,"./shared/components/ui/abstract":52,"./shared/components/ui/lightbox":53,"./shared/components/ui/map":54,"./shared/components/ui/masonry":55,"./shared/components/ui/parallax":56,"./shared/components/ui/slideshow":57,"./shared/components/ui/tabs":58,"./shared/components/ui/toggles":59,"./shared/utility/ajax":60,"./shared/utility/css":61,"./shared/utility/polyfills/classlist":62,"./shared/utility/polyfills/raf":63,"./shared/utility/polyfills/transitions":64}],2:[function(require,module,exports){
 /**
  * The Canvas Marionette application.
  */
@@ -854,7 +884,7 @@ ColumnView = ContainerView.extend( {
      * @since 1.0.0
      */
     onRenderCollection : function() {
-        //this.updateClassName( this.model.get( 'atts' ).width );
+        this.updateClassName( this.model.get( 'atts' ) );
         this.$el
             .attr( 'draggable', true )
             .prepend(
@@ -968,9 +998,9 @@ ColumnView = ContainerView.extend( {
 	    /**
 	     * Fires after the column width has changed.
 	     *
-	     * @since 1.0.0
+	     * @since 1.7.5
 	     */
-	    this.triggerAll( 'element:parent:change', this );
+	    this.triggerAll( 'element:refresh', this );
 	},
 
     /**
@@ -984,9 +1014,10 @@ ColumnView = ContainerView.extend( {
 	    this.$el.removeClass( function( index, css ) {
 		    return ( css.match( /(^|\s)columns-\S+/g) || [] ).join( ' ' );
 	    } );
-
-	    var device = app.channel.request( 'sidebar:device' );
+	    
 	    this.el.classList.add( 'columns-' + atts.width );
+	    
+	    var device = app.channel.request( 'sidebar:device' );
 	    if ( atts.hasOwnProperty( 'width_tablet' ) && 'undefined' != typeof atts['width_tablet'] ) {
 		    this.el.classList.add( ( 'columns-tablet-' + atts.width_tablet ) );
 	    }
@@ -1024,51 +1055,6 @@ var ContainerView = require( './../element-container' ),
 
 CarouselView = ContainerView.extend( {
 	
-    events : {
-        'element:change:order' : 'onReorderElement'
-    },
-
-	/**
-	 * Handles the reordering of carousel items.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param e
-	 * @param id
-	 * @param newIndex
-	 * @param oldIndex
-	 */
-    onReorderElement : function( e, id, newIndex, oldIndex ) {
-        if ( newIndex - oldIndex < 0 ) {
-            this.children.each( function( view ) {
-                if ( view._index >= newIndex && view._index <= oldIndex ) {
-                    if ( view._index == oldIndex ) {
-                        view._index = newIndex;
-                    }
-                    else {
-                        view._index++;
-                    }
-                    view.model.set( 'order', view._index );
-                }
-            }, this );
-        }
-        else {
-            this.children.each( function( view ) {
-                if ( view._index >= oldIndex && view._index <= newIndex ) {
-                    if ( view._index == oldIndex ) {
-                        view._index = newIndex;
-                    }
-                    else {
-                        view._index--;
-                    }
-                    view.model.set( 'order', view._index );
-                }
-            }, this );
-        }
-
-        this.model.collection.sort();
-    },
-
 	/**
 	 * Destroys the carousel navigation dots before the template is refreshed.
 	 *
@@ -1171,8 +1157,8 @@ module.exports = Marionette.CollectionView.extend( {
      * @since 1.0.0
      */
     onRender : function() {
-        var navigation = this;
-        this.sortable = new Sortable( navigation.el, {
+        var view = this;
+        this.sortable = new Sortable( view.el, {
             draggable : 'li',
             animation : 150,
 
@@ -1182,28 +1168,28 @@ module.exports = Marionette.CollectionView.extend( {
 	         * @since 1.0.0
 	         */
             onUpdate : function( e ) {
-                var $container = navigation.$el.parent();
+		        var cid = e.item.getAttribute( 'data-id' );
 
-                /**
-                 * Fires before a carousel item is reordered.
-                 *
-                 * @since 1.0.0
-                 */
-                $container.trigger( 'before:element:change:order' );
+		        /**
+		         * Fires before the element is reordered.
+		         *
+		         * @since 1.7.5
+		         */
+		        view.$el.trigger( 'before:navigation:reorder', [ cid, e.newIndex, e.oldIndex ] );
 
-	            /**
-                 * Fires when a carousel item is reordered.
-                 *
-                 * @since 1.0.0
-                 */
-                $container.trigger( 'element:change:order', [ e.item.getAttribute( 'data-id' ), e.newIndex, e.oldIndex ] );
+		        /**
+		         * Fires when the element is reordered.
+		         *
+		         * @since 1.7.5
+		         */
+		        view.$el.trigger( 'navigation:reorder', [ cid, e.newIndex, e.oldIndex ] );
 
-                /**
-                 * Fires when a carousel item is reordered.
-                 *
-                 * @since 1.0.0
-                 */
-                app.channel.trigger( 'element:change:order', navigation.model );
+		        /**
+		         * Fires when the element is reordered.
+		         *
+		         * @since 1.7.5
+		         */
+		        app.channel.trigger( 'navigation:reorder', view.model );
             }
         } );
     },
@@ -1376,9 +1362,9 @@ module.exports = Marionette.CollectionView.extend( {
      * @since 1.0.0
      */
     onRender : function() {
-        var navigation = this;
-        this.sortable = new Sortable( navigation.el, {
-            draggable : '.tailor-tabs__navigation-item',
+        var view = this;
+        this.sortable = new Sortable( view.el, {
+            draggable : 'li',
             animation : 150,
 
             /**
@@ -1387,28 +1373,28 @@ module.exports = Marionette.CollectionView.extend( {
              * @since 1.0.0
              */
             onUpdate : function( e ) {
-                var $container = navigation.$el.parent();
-
-                /**
-                 * Fires before a tab is reordered.
-                 *
-                 * @since 1.0.0
-                 */
-                $container.trigger( 'before:element:change:order' );
-
-                /**
-                 * Fires when a tab is reordered.
-                 *
-                 * @since 1.0.0
-                 */
-                $container.trigger( 'element:change:order', [ e.item.getAttribute( 'data-id' ), e.newIndex, e.oldIndex ] );
+	            var cid = e.item.getAttribute( 'data-id' );
 
 	            /**
-	             * Fires when a tab is reordered.
-	             *
-	             * @since 1.0.0
+	             * Fires before the element is reordered.
+	             * 
+	             * @since 1.7.5
 	             */
-	            app.channel.trigger( 'element:change:order', navigation.model );
+	            view.$el.trigger( 'before:navigation:reorder', [ cid, e.newIndex, e.oldIndex ] );
+
+	            /**
+	             * Fires when the element is reordered.
+	             *
+	             * @since 1.7.5
+	             */
+	            view.$el.trigger( 'navigation:reorder', [ cid, e.newIndex, e.oldIndex ] );
+	            
+	            /**
+	             * Fires when the element is reordered.
+	             *
+	             * @since 1.7.5
+	             */
+	            app.channel.trigger( 'navigation:reorder', view.model );
             }
 
         } );
@@ -1433,51 +1419,6 @@ TabsView = ContainerView.extend( {
 
     ui : {
         navigation : '.tailor-tabs__navigation'
-    },
-	
-    events : {
-        'element:change:order' : 'onReorderElement'
-    },
-
-	/**
-	 * Handles the reordering of tabs.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param e
-	 * @param id
-	 * @param newIndex
-	 * @param oldIndex
-	 */
-    onReorderElement : function( e, id, newIndex, oldIndex ) {
-        if ( newIndex - oldIndex < 0 ) {
-            this.children.each( function( view ) {
-                if ( view._index >= newIndex && view._index <= oldIndex ) {
-                    if ( view._index == oldIndex ) {
-                        view._index = newIndex;
-                    }
-                    else {
-                        view._index++;
-                    }
-                    view.model.set( 'order', view._index );
-                }
-            }, this );
-        }
-        else {
-            this.children.each( function( view ) {
-                if ( view._index >= oldIndex && view._index <= newIndex ) {
-                    if ( view._index == oldIndex ) {
-                        view._index = newIndex;
-                    }
-                    else {
-                        view._index--;
-                    }
-                    view.model.set( 'order', view._index );
-                }
-            }, this );
-        }
-
-        this.model.collection.sort();
     },
 
 	/**
@@ -1547,28 +1488,9 @@ var CompositeView = Marionette.CompositeView.extend( {
 
 	modelEvents : {
 		'change:atts' : 'onChangeAttributes',
+		'change:order' : 'onChangeOrder',
 		'change:parent' : 'onChangeParent',
 		'change:setting' : 'onChangeSetting'
-	},
-
-	events : {
-		'element:parent:change' : 'stopEventPropagation',
-		'before:element:ready' : 'stopEventPropagation',
-		'element:ready' : 'stopEventPropagation',
-		'before:element:refresh' : 'stopEventPropagation',
-		'element:refresh' : 'stopEventPropagation',
-		'before:element:destroy' : 'stopEventPropagation',
-		'element:destroy' : 'stopEventPropagation',
-		'before:element:copy' : 'stopEventPropagation',
-		'element:copy' : 'stopEventPropagation',
-		'element:child:add' : 'onDescendantAdded',
-		'element:child:remove' : 'onDescendantRemoved',
-		'before:element:child:ready' : 'stopEventPropagation',
-		'element:child:ready' : 'onDescendantReady',
-		'before:element:child:refresh' : 'stopEventPropagation',
-		'element:child:refresh' : 'stopEventPropagation',
-		'before:element:child:destroy' : 'stopEventPropagation',
-		'element:child:destroy' : 'onDescendantDestroyed'
 	},
 
 	childEvents : {
@@ -1576,8 +1498,234 @@ var CompositeView = Marionette.CompositeView.extend( {
 		'element:ready' : 'childElementReady',
 		'before:element:refresh' : 'beforeChildElementRefreshed',
 		'element:refresh' : 'childElementRefreshed',
+		'before:element:jsRefresh' : 'beforeChildElementJSRefreshed',
+		'element:jsRefresh' : 'childElementJSRefreshed',
+		'element:change:parent' : 'childElementChangeParent',
+		'element:change:order' : 'childElementChangeOrder',
 		'before:element:destroy' : 'beforeChildElementDestroyed',
 		'element:destroy' : 'childElementDestroyed'
+	},
+	
+	events : {
+		'before:element:ready' : 'stopEventPropagation',
+		'element:ready' : 'stopEventPropagation',
+		'before:element:refresh' : 'stopEventPropagation',
+		'element:refresh' : 'stopEventPropagation',
+		'before:element:copy' : 'stopEventPropagation',
+		'element:copy' : 'stopEventPropagation',
+		'element:child:change:parent' : 'onDescendantChangeParent',
+		'element:child:change:order' : 'onDescendantChangeOrder',
+		'before:element:destroy' : 'stopEventPropagation',
+		'element:destroy' : 'stopEventPropagation',
+		'element:child:add' : 'onDescendantAdded',
+		'element:child:remove' : 'onDescendantRemoved',
+		'before:element:child:ready' : 'onBeforeDescendantReady',
+		'element:child:ready' : 'onDescendantReady',
+		'before:element:child:refresh' : 'onBeforeDescendantRefreshed',
+		'element:child:refresh' : 'onDescendantRefreshed',
+		'before:element:child:jsRefresh' : 'onBeforeDescendantJSRefreshed',
+		'element:child:jsRefresh' : 'onDescendantJSRefreshed',
+		'before:element:child:destroy' : 'onBeforeDescendantDestroyed',
+		'element:child:destroy' : 'onDescendantDestroyed',
+		'before:navigation:reorder' : 'stopEventPropagation',
+		'navigation:reorder' : 'onReorder'
+	},
+
+	/**
+	 * Updates children when they are reordered using navigation.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param index
+	 * @param oldIndex
+	 */
+	onReorder: function( e, cid, index, oldIndex ) {
+		var view = this.children.findByModelCid( cid );
+		var otherView = this.children.find( function( childView ) { return childView.model.get( 'order' ) == index; } );
+
+		// Update the DOM
+		if ( oldIndex - index < 0 ) {
+			view.$el.insertAfter( otherView.$el );
+		}
+		else {
+			view.$el.insertBefore( otherView.$el );
+		}
+
+		// Update the view and model
+		this.children.each( function( childView ) {
+			var childIndex = childView.$el.index();
+			childView._index = childIndex;
+			childView.model.set( 'order', childIndex );
+		} );
+
+		view.model.collection.sort();
+		e.stopPropagation();
+	},
+
+	/**
+	 * Refreshes the element template when its attributes change.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param model
+	 * @param atts
+	 */
+	onChangeAttributes : _.debounce( function( model, atts ) {
+		model = this.model.toJSON();
+		model.atts = atts ? atts : {};
+
+		var view = this;
+		view.el.classList.add( 'is-rendering' );
+
+		window.ajax.send( 'tailor_render', {
+			data : {
+				model : JSON.stringify( model ),
+				nonce : window._nonces.render
+			},
+
+			/**
+			 * Attaches the refreshed template to the page.
+			 *
+			 * @since 1.0.0
+			 *
+			 * @param response
+			 */
+			success : function( response ) {
+				view.updateTemplate( response.html );
+				var id = view.model.get( 'id' );
+
+				/**
+				 * Fires when the custom CSS rules for a given element are updated.
+				 *
+				 * @since 1.0.0
+				 *
+				 * @param id
+				 * @param response.css
+				 */
+				app.channel.trigger( 'css:update', id, response.css );
+			},
+
+			/**
+			 * Catches template rendering errors.
+			 *
+			 * @since 1.0.0
+			 */
+			error : function() {
+				view.updateTemplate( 'The template for ' + view.cid + ' could not be refreshed' );
+			},
+
+			/**
+			 * Renders the element with the new template.
+			 *
+			 * @since 1.0.0
+			 */
+			complete : function() {
+				var isEditing = view.$el.hasClass( 'is-editing' );
+				var isSelected = view.$el.hasClass( 'is-selected' );
+
+				view.$el.removeClass( 'is-rendering' );
+
+				/**
+				 * Fires before the container template is refreshed.
+				 *
+				 * @since 1.0.0
+				 *
+				 * @param compositeView
+				 * @param model.atts
+				 */
+				view.triggerAll( 'before:element:refresh', view, model.atts );
+
+				view.renderTemplate();
+
+				/**
+				 * Fires after the container template is refreshed.
+				 *
+				 * @since 1.0.0
+				 *
+				 * @param compositeView
+				 * @param model.atts
+				 */
+				view.triggerAll( 'element:refresh', view, model.atts );
+
+				//view.refreshChildren();
+
+				if ( isEditing ) {
+					view.$el.addClass( 'is-editing' );
+				}
+
+				if ( isSelected ) {
+					view.$el.addClass( 'is-selected' );
+				}
+			}
+		} );
+
+	}, 250 ),
+
+	/**
+	 * Triggers events before a descendant element is refreshed.
+	 *
+	 * @since 1.7.5
+	 */
+	onChangeOrder : function() {
+
+		/**
+		 * Fires when the order of the element changes.
+		 *
+		 * @since 1.7.5
+		 */
+		this.triggerAll( 'element:change:order', this );
+	},
+
+	/**
+	 * Triggers events and refreshes all child elements when the element parent changes.
+	 *
+	 * @since 1.0.0
+	 */
+	onChangeParent : function() {
+
+		/**
+		 * Fires when the parent attributes of the element changes.
+		 *
+		 * @since 1.0.0
+		 */
+		this.triggerAll( 'element:change:parent', this );
+	},
+
+	/**
+	 * Triggers an event to update the DOM, if the setting is configured to update via JavaScript.
+	 *
+	 * @since 1.5.0
+	 *
+	 * @param setting
+	 * @param refresh
+	 */
+	onChangeSetting: function( setting, refresh ) {
+		if ( refresh ) {
+
+			/**
+			 * Fires before the element is refreshed using JavaScript.
+			 *
+			 * @since 1.7.5
+			 */
+			this.triggerAll( 'before:element:jsRefresh', this, this.model.get( 'atts' ) );
+
+			/**
+			 * Fires when an element setting is changed.
+			 *
+			 * This is only fired when the setting is configured for JavaScript updates.
+			 *
+			 * @since 1.5.0
+			 */
+			app.channel.trigger( 'element:setting:change', setting, this );
+
+			/**
+			 * Fires after the element is refreshed using JavaScript.
+			 *
+			 * @since 1.7.5
+			 */
+			this.triggerAll( 'element:jsRefresh', this, this.model.get( 'atts' ) );
+		}
 	},
 
     /**
@@ -1746,38 +1894,6 @@ var CompositeView = Marionette.CompositeView.extend( {
         return this;
     },
 
-    /**
-     * Updated Marionette function : changed to update the 'order' attribute along with the view _index.
-     *
-     * @since 1.0.0
-     *
-     * @param view
-     * @param increment
-     * @param index
-     * @private
-     */
-    _updateIndices : function( view, increment, index ) {
-
-        if ( increment ) {
-            view._index = index;
-
-            //console.log( '\n Updated index of view ' + view.model.get( 'id' ) + ' ' + view.model.get( 'id' ) + ' to ' + index );
-
-            view.model._changing = false;
-            view.model.set( 'order', index );
-        }
-
-        this.children.each( function( laterView ) {
-            if ( laterView._index >= view._index ) {
-                laterView._index += increment ? 1 : -1;
-
-                //console.log( '\n Updated index of view ' + laterView.model.get( 'tag' ) + ' ' + laterView.model.get( 'id' ) + ' to ' + laterView._index );
-
-                laterView.model.set( 'order', laterView._index );
-            }
-        }, this );
-    },
-
 	/**
 	 * Triggers events before the element is ready.
 	 *
@@ -1821,154 +1937,24 @@ var CompositeView = Marionette.CompositeView.extend( {
 	},
 	
 	/**
-	 * Refreshes the element template when its attributes change.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param model
-	 * @param atts
-	 */
-	onChangeAttributes : _.debounce( function( model, atts ) {
-		model = this.model.toJSON();
-		model.atts = atts ? atts : {};
-
-		var view = this;
-		view.el.classList.add( 'is-rendering' );
-		
-		window.ajax.send( 'tailor_render', {
-			data : {
-				model : JSON.stringify( model ),
-				nonce : window._nonces.render
-			},
-
-			/**
-			 * Attaches the refreshed template to the page.
-			 *
-			 * @since 1.0.0
-			 *
-			 * @param response
-			 */
-			success : function( response ) {
-				view.updateTemplate( response.html );
-				var id = view.model.get( 'id' );
-				
-				/**
-				 * Fires when the custom CSS rules for a given element are updated.
-				 *
-				 * @since 1.0.0
-				 *
-				 * @param id
-				 * @param response.css
-				 */
-				app.channel.trigger( 'css:update', id, response.css );
-			},
-
-			/**
-			 * Catches template rendering errors.
-			 *
-			 * @since 1.0.0
-			 */
-			error : function() {
-				view.updateTemplate( 'The template for ' + view.cid + ' could not be refreshed' );
-			},
-
-			/**
-			 * Renders the element with the new template.
-			 *
-			 * @since 1.0.0
-			 */
-			complete : function() {
-				var isEditing = view.$el.hasClass( 'is-editing' );
-				var isSelected = view.$el.hasClass( 'is-selected' );
-
-				view.$el.removeClass( 'is-rendering' );
-
-				/**
-				 * Fires before the container template is refreshed.
-				 *
-				 * @since 1.0.0
-				 *
-				 * @param compositeView
-				 * @param model.atts
-				 */
-				view.triggerAll( 'before:element:refresh', view, model.atts );
-
-				view.renderTemplate();
-
-				/**
-				 * Fires after the container template is refreshed.
-				 *
-				 * @since 1.0.0
-				 *
-				 * @param compositeView
-				 * @param model.atts
-				 */
-				view.triggerAll( 'element:refresh', view, model.atts );
-
-				view.refreshChildren();
-
-				if ( isEditing ) {
-					view.$el.addClass( 'is-editing' );
-				}
-
-				if ( isSelected ) {
-					view.$el.addClass( 'is-selected' );
-				}
-			}
-		} );
-
-	}, 250 ),
-
-	/**
-	 * Triggers an event to update the DOM, if the setting is configured to update via JavaScript.
-	 *
-	 * @since 1.5.0
-	 *
-	 * @param setting
-	 * @param refresh
-	 */
-	onChangeSetting: function( setting, refresh ) {
-		if ( refresh ) {
-
-			/**
-			 * Fires when an element setting configured to be updated using JavaScript changes.
-			 *
-			 * @since 1.5.0
-			 */
-			app.channel.trigger( 'element:setting:change', setting, this );
-		}
-	},
-
-	/**
-	 * Triggers events and refreshes all child elements when the element parent changes.
-	 *
-	 * @since 1.0.0
-	 */
-	onChangeParent : function() {
-
-		/**
-		 * Fires when the parent attributes of the element changes.
-		 *
-		 * @since 1.0.0
-		 */
-		this.triggerAll( 'element:change:parent', this );
-
-		this.refreshChildren();
-	},
-	
-	/**
 	 * Triggers an event before a child element is ready.
 	 *
 	 * @since 1.0.0
 	 */
 	beforeChildElementReady : function( childView ) {
-		if ( this._isReady ) {
+		if ( this._isReady && this.children.contains( childView ) ) {
+
+			/**
+			 * Fires before a child element is refreshed.
+			 *
+			 * @since 1.7.5
+			 */
 			this.triggerAll( 'before:element:child:ready', childView );
 		}
 	},
 
 	/**
-	 * Triggers events after a child element is ready.
+	 * Triggers events when a child element is ready.
 	 *
 	 * If all children are ready, the element is also considered ready.
 	 *
@@ -1977,33 +1963,33 @@ var CompositeView = Marionette.CompositeView.extend( {
 	 * @param childView
 	 */
 	childElementReady : function( childView ) {
-		if ( ! this._isReady ) {
+		if ( this.children.contains( childView ) ) {
+			if ( ! this._isReady ) {
+				var readyChildren = this.children.filter( function( childView ) {
+					return childView._isReady;
+				} ).length;
 
-			var readyChildren = this.children.filter( function( childView ) {
-				return childView._isReady;
-			} ).length;
+				if ( this.children.length == readyChildren ) {
+					this._isReady = true;
 
-			if ( this.children.length == readyChildren ) {
-				this._isReady = true;
+					/**
+					 * Fires when all child elements are ready (the container is fully rendered).
+					 *
+					 * @since 1.0.0
+					 */
+					this.triggerAll( 'element:ready', this );
+					//this.refreshChildren();
+				}
+			}
+			else  {
 
 				/**
-				 * Fires when all child elements are ready (i.e., the container is fully-rendered).
+				 * Fires when a child element is ready (after the container is fully rendered).
 				 *
 				 * @since 1.0.0
 				 */
-				this.triggerAll( 'element:ready', this );
-
-				this.refreshChildren();
+				this.triggerAll( 'element:child:ready', childView );
 			}
-		}
-		else  {
-
-			/**
-			 * Fires when a child element within this fully-rendered container is ready.
-			 *
-			 * @since 1.0.0
-			 */
-			this.triggerAll( 'element:child:ready', childView );
 		}
 	},
 
@@ -2015,18 +2001,110 @@ var CompositeView = Marionette.CompositeView.extend( {
 	 * @param childView
 	 */
 	beforeChildElementRefreshed : function( childView ) {
-		this.triggerAll( 'before:element:child:refresh', childView );
-	},
+		if ( this.children.contains( childView ) ) {
 
+			/**
+			 * Fires before a child element is refreshed.
+			 *
+			 * @since 1.7.5
+			 */
+			this.triggerAll( 'before:element:child:refresh', childView );
+		}
+	},
+	
 	/**
-	 * Triggers events after a child element template is refreshed.
+	 * Triggers events when a child element template is refreshed.
 	 *
 	 * @since 1.0.0
 	 *
 	 * @param childView
 	 */
 	childElementRefreshed : function( childView ) {
-		this.triggerAll( 'element:child:refresh', childView );
+		if ( this.children.contains( childView ) ) {
+
+			/**
+			 * Fires when a child element is refreshed.
+			 *
+			 * @since 1.7.5
+			 */
+			this.triggerAll( 'element:child:refresh', childView );
+		}
+	},
+
+	/**
+	 * Triggers events before a child element template is refreshed using JavaScript.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param childView
+	 */
+	beforeChildElementJSRefreshed : function( childView ) {
+		if ( this.children.contains( childView ) ) {
+
+			/**
+			 * Fires before a child element is refreshed using JavaScript.
+			 *
+			 * @since 1.7.5
+			 */
+			this.triggerAll( 'before:element:child:jsRefresh', childView );
+		}
+	},
+	
+	/**
+	 * Triggers events when a child element is refreshed using JavaScript.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param childView
+	 */
+	childElementJSRefreshed : function( childView ) {
+		if ( this.children.contains( childView ) ) {
+
+			/**
+			 * Fires when a child element is refreshed using JavaScript.
+			 *
+			 * @since 1.7.5
+			 */
+			this.triggerAll( 'element:child:jsRefresh', childView );
+		}
+	},
+
+	/**
+	 * Triggers events when a child element order is changed.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param childView
+	 */
+	childElementChangeOrder: function( childView ) {
+		if ( this.children.contains( childView ) ) {
+
+			/**
+			 * Fires when a child element order changes.
+			 *
+			 * @since 1.7.5
+			 */
+			this.triggerAll( 'element:child:change:order', childView );
+		}
+	},
+
+	/**
+	 * Triggers events when a child element parent is changed.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param childView
+	 */
+	childElementChangeParent: function( childView ) {
+		if ( this.children.contains( childView ) ) {
+
+			/**
+			 * Fires when a child element parent changes.
+			 *
+			 * @since 1.7.5
+			 */
+			this.triggerAll( 'element:child:change:parent', childView );
+		}
 	},
 
 	/**
@@ -2038,6 +2116,12 @@ var CompositeView = Marionette.CompositeView.extend( {
 	 */
 	beforeChildElementDestroyed : function( childView ) {
 		if ( ! this._isBeingDestroyed ) {
+
+			/**
+			 * Fires before a child element is destroyed.
+			 *
+			 * @since 1.7.5
+			 */
 			this.triggerAll( 'before:element:child:destroy', childView );
 		}
 	},
@@ -2050,157 +2134,254 @@ var CompositeView = Marionette.CompositeView.extend( {
 	 * @param childView
 	 */
 	childElementDestroyed : function( childView ) {
-		if ( ! this._isBeingDestroyed && this.children.length > 1 ) {
+		if ( ! this._isBeingDestroyed  ) {
+
+			/**
+			 * Fires when a child element is destroyed.
+			 *
+			 * @since 1.7.5
+			 */
 			this.triggerAll( 'element:child:destroy', childView );
 		}
 	},
 
 	/**
-	 * Refreshes all child elements when the parent element is modified.
-	 *
-	 * @since 1.0.0
-	 */
-	onElementParentChange : function() {
-		this.refreshChildren();
-	},
-
-	/**
-	 * Refreshes all child elements when the a child element is destroyed.
-	 *
-	 * @since 1.0.0
-	 */
-	onElementChildDestroy : function() {
-		this.refreshChildren();
-	},
-
-	/**
-	 * Triggers events after a child element is added.
-	 *
-	 * If this container is not fully rendered (i.e., it was created to contain the child element), the element is considered ready.
+	 * Triggers events when a descendant element is added.
 	 *
 	 * @since 1.0.0
 	 *
 	 * @param e
-	 * @param descendantView
+	 * @param view
 	 */
-	onDescendantAdded : function( e, descendantView ) {
-		if ( ! this._isReady ) {
+	onDescendantAdded : function( e, view ) {
 
-			var readyChildren = this.children.filter( function( childView ) {
-				return childView._isReady;
-			} ).length;
-
-			if ( this.children.length == readyChildren ) {
-				this._isReady = true;
-
-				/**
-				 * Fires when all child elements are ready (i.e., the container is fully-rendered).
-				 *
-				 * @since 1.0.0
-				 */
-				this.triggerAll( 'element:ready', this );
-			}
-
-			e.stopImmediatePropagation();
-		}
-		else  {
-
-			/**
-			 * Fires when a descendant element within this fully-rendered container is ready.
-			 *
-			 * @since 1.0.0
-			 */
-			this.triggerAll( 'element:descendant:add', descendantView );
-
-			e.stopPropagation();
-		}
-	},
-
-	/**
-	 * Triggers events after a child element is removed.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param e
-	 * @param descendantView
-	 */
-	onDescendantRemoved : function( e, descendantView ) {
-		if ( ( 'container' == this.model.get( 'type' ) && this.children.length > 1 ) || this.children.length > 0 ) {
-			this.triggerAll( 'element:descendant:remove', descendantView );
-		}
-
+		/**
+		 * Fires when a descendant element is added.
+		 *
+		 * @since 1.0.0
+		 */
+		this.triggerAll( 'element:descendant:add', view );
 		e.stopPropagation();
 	},
 
 	/**
-	 * Triggers events after a child element is ready.
+	 * Triggers events when a descendant element is removed.
 	 *
 	 * @since 1.0.0
 	 *
 	 * @param e
-	 * @param descendantView
+	 * @param view
 	 */
-	onDescendantReady : function( e, descendantView ) {
-		if ( ! this._isReady ) {
-			if ( this.children.length == 1 && this.children.contains( descendantView ) ) {
-				this._isReady = true;
+	onDescendantRemoved : function( e, view ) {
 
-				/**
-				 * Fires when all child elements are ready (i.e., the container is fully-rendered).
-				 *
-				 * @since 1.0.0
-				 */
-				this.triggerAll( 'element:ready', this );
-			}
-			e.stopImmediatePropagation();
-		}
-		else  {
-
-			/**
-			 * Fires when a descendant element is created in this fully-rendered container.
-			 *
-			 * @since 1.0.0
-			 */
-			this.triggerAll( 'element:descendant:add', descendantView );
-
-			// @todo Find a better way of refreshing complex content elements like carousel galleries
-			this.refreshChildren();
-
-			e.stopPropagation();
-		}
-	},
-
-	/**
-	 * Triggers events after a child element is destroyed.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param e
-	 * @param descendantView
-	 */
-	onDescendantDestroyed : function( e, descendantView ) {
-		if ( ( 'container' == this.model.get( 'type' ) && this.children.length > 1 ) || this.children.length > 0 ) {
-
-			/**
-			 * Fires when a descendant element within in this fully-rendered container is destroyed.
-			 *
-			 * @since 1.0.0
-			 */
-			this.triggerAll( 'element:descendant:destroy', descendantView );
-		}
-
+		/**
+		 * Fires when a descendant element is removed.
+		 *
+		 * @since 1.0.0
+		 */
+		this.triggerAll( 'element:descendant:remove', view );
 		e.stopPropagation();
 	},
 
 	/**
-	 * Refreshes all child elements.
+	 * Triggers events before a descendant element is ready.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onBeforeDescendantReady : function( e, view ) {
+
+		/**
+		 * Fires before a descendant element is ready.
+		 *
+		 * @since 1.7.5
+		 */
+		this.triggerAll( 'before:element:descendant:ready', view );
+		e.stopPropagation();
+	},
+
+	/**
+	 * Triggers events when a descendant element is ready.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onDescendantReady : function( e, view ) {
+
+		/**
+		 * Fires when a descendant element is ready.
+		 *
+		 * @since 1.7.5
+		 */
+		this.triggerAll( 'element:descendant:ready', view );
+		e.stopPropagation();
+	},
+
+	/**
+	 * Triggers events before a descendant element is refreshed.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onBeforeDescendantRefreshed : function( e, view ) {
+
+		/**
+		 * Fires before a descendant element is refreshed.
+		 *
+		 * @since 1.7.5
+		 */
+		this.triggerAll( 'before:element:descendant:refresh', view );
+		e.stopPropagation();
+	},
+
+	/**
+	 * Triggers events when a descendant element is refreshed.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onDescendantRefreshed : function( e, view ) {
+
+		/**
+		 * Fires when a descendant element is refreshed.
+		 *
+		 * @since 1.7.5
+		 */
+		this.triggerAll( 'element:descendant:refresh', view );
+		e.stopPropagation();
+	},
+
+	/**
+	 * Triggers events before a descendant element is refreshed using JavaScript.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onBeforeDescendantJSRefreshed: function( e, view ) {
+
+		/**
+		 * Fires before a descendant element is refreshed using JavaScript.
+		 *
+		 * @since 1.7.5
+		 */
+		this.triggerAll( 'before:element:descendant:jsRefresh', view );
+		e.stopPropagation();
+	},
+
+	/**
+	 * Triggers events when a descendant element is refreshed using JavaScript.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onDescendantJSRefreshed : function( e, view ) {
+
+		/**
+		 * Fires when a descendant element is refreshed using JavaScript.
+		 *
+		 * @since 1.7.5
+		 */
+		this.triggerAll( 'element:descendant:jsRefresh', view );
+		e.stopPropagation();
+	},
+
+	/**
+	 * Triggers events when a descendant element order is changed.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onDescendantChangeOrder : function( e, view ) {
+
+		/**
+		 * Fires when a descendant element order changes.
+		 *
+		 * @since 1.7.5
+		 */
+		this.triggerAll( 'element:descendant:change:order', view );
+		e.stopPropagation();
+	},
+
+	/**
+	 * Triggers events when a descendant element parent is changed.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onDescendantChangeParent : function( e, view ) {
+
+		/**
+		 * Fires when a descendant element parent changes.
+		 *
+		 * @since 1.7.5
+		 */
+		this.triggerAll( 'element:descendant:change:parent', view );
+		e.stopPropagation();
+	},
+
+	/**
+	 * Triggers events before a descendant element is destroyed.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onBeforeDescendantDestroyed : function( e, view ) {
+
+		/**
+		 * Fires when a descendant element is destroyed.
+		 *
+		 * @since 1.7.5
+		 */
+		this.triggerAll( 'before:element:descendant:destroy', view );
+		e.stopPropagation();
+	},
+
+	/**
+	 * Triggers events when a descendant element is destroyed.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onDescendantDestroyed : function( e, view ) {
+
+		/**
+		 * Fires when a descendant element is destroyed.
+		 *
+		 * @since 1.7.5
+		 */
+		this.triggerAll( 'element:descendant:destroy', view );
+		e.stopPropagation();
+	},
+
+	/**
+	 * Stops the event from bubbling up the DOM tree.
 	 *
 	 * @since 1.0.0
+	 *
+	 * @param e
 	 */
-	refreshChildren : function() {
-		this.children.each( function( childView ) {
-			childView.triggerAll( 'element:parent:change', childView );
-		}, this );
+	stopEventPropagation : function( e ) {
+		e.stopPropagation();
 	},
 
 	/**
@@ -2225,14 +2406,34 @@ var CompositeView = Marionette.CompositeView.extend( {
 	},
 
 	/**
-	 * Stops the event from bubbling up the DOM tree.
+	 * Updated Marionette function : changed to update the 'order' attribute along with the view _index.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param e
+	 * @param view
+	 * @param increment
+	 * @param index
+	 * @private
 	 */
-	stopEventPropagation : function( e ) {
-		e.stopPropagation();
+	_updateIndices : function( view, increment, index ) {
+		if ( increment ) {
+			view._index = index;
+
+			//console.log( '\n Updated index of view ' + view.model.get( 'id' ) + ' ' + view.model.get( 'id' ) + ' to ' + index );
+
+			view.model._changing = false;
+			view.model.set( 'order', index );
+		}
+
+		this.children.each( function( laterView ) {
+			if ( laterView._index >= view._index ) {
+				laterView._index += increment ? 1 : -1;
+
+				//console.log( '\n Updated index of view ' + laterView.model.get( 'tag' ) + ' ' + laterView.model.get( 'id' ) + ' to ' + laterView._index );
+
+				laterView.model.set( 'order', laterView._index );
+			}
+		}, this );
 	}
 
 } );
@@ -2332,7 +2533,6 @@ ElementView = Marionette.ItemView.extend( {
 		this.setElement( el );
 
 		this.el.setAttribute( 'draggable', true );
-
 		this.el.classList.add( 'tailor-' + this.model.id );
 		this.el.title = _l10n.edit_element;
 		
@@ -2464,11 +2664,27 @@ ElementView = Marionette.ItemView.extend( {
 		if ( refresh ) {
 
 			/**
-			 * Fires when an element setting configured to be updated using JavaScript changes.
+			 * Fires before the element is refreshed using JavaScript.
+			 *
+			 * @since 1.7.5
+			 */
+			this.triggerAll( 'before:element:jsRefresh', this, this.model.get( 'atts' ) );
+			
+			/**
+			 * Fires when an element setting is changed.
+			 *
+			 * This is only fired when the setting is configured for JavaScript updates.
 			 *
 			 * @since 1.5.0
 			 */
 			app.channel.trigger( 'element:setting:change', setting, this );
+
+			/**
+			 * Fires after the element is refreshed using JavaScript.
+			 *
+			 * @since 1.7.5
+			 */
+			this.triggerAll( 'element:jsRefresh', this, this.model.get( 'atts' ) );
 		}
 	},
 
@@ -2575,233 +2791,121 @@ ElementView = Marionette.ItemView.extend( {
 
 module.exports = ElementView;
 },{}],19:[function(require,module,exports){
-var ContainerView = require( './../element-container' ),
-	SectionView;
-
-SectionView = ContainerView.extend( {
-
-	attributes : {
-		draggable : true
-	},
-
-    modelEvents : {
-        'change:atts' : 'onChangeAttributes',
-        'change:order' : 'onChangeOrder',
-        'change:setting' : 'onChangeSetting'
-    },
-	
-	onChangeOrder : function() {
-		jQuery( window ).trigger( 'resize' );
-	}
-
-} );
-
-module.exports = SectionView;
-},{"./../element-container":17}],20:[function(require,module,exports){
+/**
+ * Tailor.Components.SimpleCarousel
+ *
+ * A simplified carousel component.
+ *
+ * @class
+ */
 var $ = window.jQuery,
+	Components = window.Tailor.Components,
     Carousel;
 
-/**
- * The Carousel object.
- *
- * @since 1.0.0
- *
- * @param el
- * @param options
- * @param callbacks
- *
- * @constructor
- */
-Carousel = function( el, options, callbacks ) {
-    this.el = el;
-    this.$el = $( el );
-	this.$wrap = this.$el.find( '.tailor-carousel__wrap' ).first();
+Carousel = Components.create( {
 
-	this.options = $.extend( {}, this.defaults, options );
-	if ( document.documentElement.dir && 'rtl' == document.documentElement.dir ) {
-		this.options.rtl = true;
-	}
+	slickActive: false,
 	
-    this.callbacks = $.extend( {}, this.callbacks, callbacks );
+	getDefaults : function () {
+		return {
+			items : '.tailor-carousel__item',
+			prevArrow : '<button type="button" data-role="none" class="slick-prev" aria-label="Previous" tabindex="0" role="button"></button>',
+			nextArrow : '<button type="button" data-role="none" class="slick-next" aria-label="Next" tabindex="0" role="button"></button>',
+			adaptiveHeight : true,
+			draggable : false,
+			speed : 250,
+			slidesToShow : 1,
+			slidesToScroll : 1,
+			autoplay : false,
+			arrows : false,
+			dots : true,
+			fade : false
+		};
+	},
 
-    this.initialize();
-};
-
-Carousel.prototype = {
-
-    defaults : {
-        items : '.tailor-carousel__item',
-        prevArrow: '<button type="button" data-role="none" class="slick-prev" aria-label="Previous" tabindex="0" role="button"></button>',
-        nextArrow: '<button type="button" data-role="none" class="slick-next" aria-label="Next" tabindex="0" role="button"></button>',
-        adaptiveHeight : true,
-        draggable : false,
-        speed : 250,
-        slidesToShow : 1,
-        slidesToScroll : 1,
-        autoplay : false,
-        arrows : false,
-        dots : true,
-        fade : false
-    },
-
-    callbacks : {
-
-        /**
-         * Callback function to be run when the Carousel instance is initialized.
-         *
-         * @since 1.0.0
-         */
-        onInitialize : function () {},
-
-        /**
-         * Callback function to be run when the Carousel instance is destroyed.
-         *
-         * @since 1.0.0
-         */
-        onDestroy : function () {}
-    },
-
-    /**
-     * Initializes the carousel.
-     *
-     * @since 1.0.0
-     */
-    initialize : function() {
-	    this.slick( this.addEventListeners );
-
-        if ( 'function' == typeof this.callbacks.onInitialize ) {
-            this.callbacks.onInitialize.call( this );
-        }
-    },
-
-    /**
-     * Adds the required event listeners.
-     *
-     * @since 1.0.0
-     */
-    addEventListeners : function() {
-	    this.$el
-
-	        // Fires before the element template is refreshed
-	        .on( 'before:element:refresh', $.proxy( this.unSlick, this ) )
-
-	        // Fires when the element is moved into a new container
-	        .on( 'element:change:parent', $.proxy( this.maybeRefreshSlick, this ) )
-
-	        // Fires before and after the element is copied
-	        .on( 'before:element:copy', $.proxy( this.unSlick, this ) )
-	        .on( 'element:copy', $.proxy( this.slick, this ) )
-
-	        // Fires before the element is destroyed
-	        .on( 'before:element:destroy', $.proxy( this.maybeDestroy, this ) )
-
-	        // Fires after the parent element is modified
-	        .on( 'element:parent:change', $.proxy( this.maybeRefreshSlick, this ) );
-    },
-
+	onInitialize : function () {
+		this.$wrap = this.$el.find( '.tailor-carousel__wrap' ).first();
+		this.slick();
+	},
+	
 	/**
-	 * Re-initializes the carousel if the event was triggered on the element.
+	 * Creates a new Slick Slider instance.
 	 *
 	 * @since 1.0.0
-	 *
-	 * @param e
 	 */
-    maybeSlick : function( e ) {
-        if ( e.target == this.el ) {
-            this.slick();
-        }
-    },
+	slick : function() {
+		var component = this;
+		component.$el.imagesLoaded( function() {
+			component.$wrap.slick( component.options );
+			component.slickActive = true;
+		} );
+	},
 
 	/**
-	 * Refreshes the carousel if the event was triggered on the carousel DOM element.
+	 * Refreshes the Slick Slider instance.
 	 *
 	 * @since 1.0.0
-	 *
-	 * @param e
 	 */
-	maybeRefreshSlick : function( e ) {
-		if ( e.target == this.el ) {
+	refreshSlick : function() {
+		this.$wrap.slick( 'refresh' );
+	},
+
+	/**
+	 * Destroys the Slick Slider instance.
+	 *
+	 * @since 1.0.0
+	 */
+	unSlick : function() {
+		this.$wrap.slick( 'unslick' );
+	},
+
+	/**
+	 * Element listeners
+	 */
+	onMove: function() {
+		if ( this.slickActive ) {
 			this.refreshSlick();
 		}
 	},
 
-	/**
-	 * Destroys the carousel if the event was triggered on the carousel DOM element.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param e
-	 */
-    maybeUnSlick : function( e ) {
-        if ( e.target == this.el ) {
-            this.unSlick();
-        }
-    },
+	onBeforeCopy: function() {
+		if ( this.slickActive ) {
+			this.unSlick();
+		}
+	},
+	
+	onCopy: function() {
+		if ( ! this.slickActive ) {
+			this.slick();
+		}
+	},
+
+	onBeforeRefresh: function() {
+		if ( this.slickActive ) {
+			this.unSlick();
+		}
+	},
+
+	onChangeParent: function() {
+		this.refreshSlick();
+	},
+	
+	onDestroy : function() {
+		if ( this.slickActive ) {
+			this.unSlick();
+		}
+	},
 
 	/**
-	 * Destroys the carousel immediately before the view/DOM element is destroyed.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param e
+	 * Window listeners
 	 */
-    maybeDestroy : function( e ) {
-        if ( e.target == this.el ) {
-            this.destroy( e );
-        }
-    },
+	onResize: function() {
+		if ( this.slickActive ) {
+			this.refreshSlick();
+		}
+	}
 
-    /**
-     * Creates a new Slick Slider instance.
-     *
-     * @since 1.0.0
-     *
-     * @param callback
-     */
-    slick : function( callback ) {
-		var carousel = this;
-
-	    this.$el.imagesLoaded( function() {
-	        carousel.$wrap.slick( carousel.options );
-
-		    if ( 'function' == typeof callback ) {
-			    callback.call( carousel );
-		    }
-	    } );
-    },
-
-    /**
-     * Refreshes the Slick Slider instance.
-     *
-     * @since 1.0.0
-     */
-    refreshSlick : function() {
-	    this.$wrap.slick( 'refresh' );
-    },
-
-    /**
-     * Destroys the Slick Slider instance.
-     *
-     * @since 1.0.0
-     */
-    unSlick : function() {
-        this.$wrap.slick( 'unslick' );
-    },
-
-    /**
-     * Destroys the carousel.
-     *
-     * @since 1.0.0
-     */
-    destroy : function() {
-        this.$el.off();
-        this.unSlick();
-
-        if ( 'function' == typeof this.callbacks.onDestroy ) {
-            this.callbacks.onDestroy.call( this );
-        }
-    }
-};
+} );	
 
 /**
  * Simple carousel jQuery plugin.
@@ -2820,329 +2924,43 @@ $.fn.tailorSimpleCarousel = function( options, callbacks ) {
         }
     } );
 };
-},{}],21:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
+/**
+ * Tailor.Components.Carousel
+ *
+ * A carousel component.
+ *
+ * @class
+ */
 var $ = window.jQuery,
+	Components = window.Tailor.Components,
     Carousel;
 
-/**
- * The Carousel object.
- *
- * @since 1.0.0
- *
- * @param el
- * @param options
- * @param callbacks
- *
- * @constructor
- */
-Carousel = function( el, options, callbacks ) {
-    this.el = el;
-    this.$el = $( el );
-	this.$wrap = this.$el.find( '.tailor-carousel__wrap' ).first();
+Carousel = Components.create( {
 
-	this.options = $.extend( {}, this.defaults, options );
-	if ( document.documentElement.dir && 'rtl' == document.documentElement.dir ) {
-		this.options.rtl = true;
-	}
-	
-    this.callbacks = $.extend( {}, this.callbacks, callbacks );
-
-    this.initialize();
-};
-
-Carousel.prototype = {
-
-	defaults : {
-		items : '.tailor-carousel__item',
-		prevArrow: '<button type="button" data-role="none" class="slick-prev" aria-label="Previous" tabindex="0" role="button"></button>',
-		nextArrow: '<button type="button" data-role="none" class="slick-next" aria-label="Next" tabindex="0" role="button"></button>',
-		adaptiveHeight : false,
-		draggable : false,
-		speed : 250,
-		slidesToShow : 1,
-		slidesToScroll : 1,
-		initialSlide : 0,
-		autoplay : false,
-		arrows : false,
-		dots : false,
-		fade : false,
-		infinite : false
+	getDefaults: function() {
+		return {
+			items : '.tailor-carousel__item',
+			prevArrow: '<button type="button" data-role="none" class="slick-prev" aria-label="Previous" tabindex="0" role="button"></button>',
+			nextArrow: '<button type="button" data-role="none" class="slick-next" aria-label="Next" tabindex="0" role="button"></button>',
+			adaptiveHeight : false,
+			draggable : false,
+			speed : 250,
+			slidesToShow : 1,
+			slidesToScroll : 1,
+			initialSlide : 0,
+			autoplay : false,
+			arrows : false,
+			dots : false,
+			fade : false,
+			infinite : false
+		};
 	},
 
-    callbacks : {
-
-        /**
-         * Callback function to be run when the object is initialized.
-         *
-         * @since 1.0.0
-         */
-        onInitialize : function () {},
-
-        /**
-         * Callback function to be run when the object is destroyed.
-         *
-         * @since 1.0.0
-         */
-        onDestroy : function () {}
-    },
-
-    /**
-     * Initializes the carousel.
-     *
-     * @since 1.0.0
-     */
-    initialize : function() {
-	    this.slickAt( 0, this.addEventListeners );
-
-        if ( 'function' == typeof this.callbacks.onInitialize ) {
-            this.callbacks.onInitialize.call( this );
-        }
-    },
-
-    /**
-     * Adds the required event listeners.
-     *
-     * @since 1.0.0
-     */
-    addEventListeners : function() {
-
-	    var showEl = true;
-
-        this.$el
-
-	        // Fires before the element template is refreshed
-            .on( 'before:element:refresh', $.proxy( this.maybeUnSlick, this ) )
-	        .on( 'element:refresh', $.proxy( this.refreshSlick, this ) )
-
-	        // Fires when the element parent changes
-	        .on( 'element:change:parent', $.proxy( this.maybeRefreshSlick, this ) )
-
-	        // Fires before and after the element is copied
-	        .on( 'before:element:copy', $.proxy( this.maybeUnSlick, this ) )
-	        .on( 'element:copy', $.proxy( this.maybeSlick, this ) )
-
-	        // Fires after the parent element is modified
-	        .on( 'element:parent:change', $.proxy( this.maybeRefreshSlick, this ) )
-
-	        // Fires before the element is destroyed
-	        .on( 'before:element:destroy', $.proxy( this.maybeDestroy, this ) )
-
-	        /**
-	         * Child event listeners
-	         */
-
-	        // Fires before and after a child element is added
-	        .on( 'before:element:child:ready', $.proxy( this.maybeUnSlick, this ) )
-	        .on( 'element:child:ready', $.proxy( this.onReadyChild, this ) )
-
-	        // Fires after a child element is added
-	        .on( 'element:child:add', $.proxy( this.refreshSlick, this ) )
-
-	        // Fires after a child element is removed
-	        .on( 'element:child:remove', $.proxy( this.onDestroyDescendant, this ) )
-
-	        // Fires before and after a child element is refreshed
-	        .on( 'before:element:child:refresh', $.proxy( this.maybeUnSlick, this ) )
-	        .on( 'element:child:refresh', $.proxy( this.maybeSlick, this ) )
-
-	        // Fires before and after the position of an item is changed
-	        .on( 'before:element:change:order', $.proxy( this.maybeUnSlick, this ) ) // @todo rename to reflect child
-	        .on( 'element:change:order', $.proxy( this.onReorderChild, this ) ) // @todo rename to reflect child
-
-	        // Fires before and after a child element is destroyed
-	        .on( 'before:element:child:destroy', $.proxy( this.maybeUnSlick, this ) )
-	        .on( 'element:child:destroy', $.proxy( this.onDestroyChild, this ) )
-
-	        /**
-	         * Descendant event listeners
-	         */
-
-	        // Fires after a descendant element is added
-	        .on( 'element:descendant:add', $.proxy( this.refreshSlick, this ) )
-
-	        // Fires after a descendant element is removed
-	        .on( 'element:descendant:remove', $.proxy( this.refreshSlick, this ) )
-
-	        // Fires after a descendant element is ready
-	        .on( 'element:descendant:ready', $.proxy( this.refreshSlick, this ) )
-
-	        // Fires after a descendant element is destroyed
-	        .on( 'element:descendant:destroy', $.proxy( this.onDestroyDescendant, this ) );
-    },
-
-    /**
-     * Refreshes the dot and item caches and defines the current slide.
-     *
-     * @since 1.0.0
-     */
-    querySelectors : function() {
-        if ( this.$dots ) {
-            this.$dots.off();
-        }
-
-	    var carousel = this;
-
-	    carousel.$items = carousel.$wrap.find( ' > ' + carousel.options.items );
-	    carousel.$dots = carousel.$el.children( '.slick-dots' ).find( ' > li' );
-	    carousel.$dots.on( 'click', function( e ) {
-            var $dot = $( e.currentTarget );
-
-		    carousel.currentSlide = $dot.data( 'id' );
-		    carousel.$wrap.slick( 'slickGoTo', $dot.index() );
-            e.preventDefault();
-        } );
-
-        if ( ! carousel.currentSlide ) {
-            var $activeSlide = carousel.$items.filter( function() {
-                return this.classList.contains( 'slick-current' );
-            } );
-	        carousel.currentSlide = $activeSlide.length ? $activeSlide.id : carousel.$items[0].id;
-        }
-    },
-
-    /**
-     * Sets the dot with the given index as active.
-     *
-     * @since 1.0.0
-     *
-     * @param index
-     */
-    updateDots : function( index ) {
-        this.$dots.each( function( i, el ) {
-            if ( index == i ) {
-                el.classList.add( 'slick-active' );
-            }
-            else {
-                el.classList.remove( 'slick-active' );
-            }
-        } );
-
-	    this.$dots.toggle( ( this.$dots.length / this.options.slidesToShow ) > 1 );
-    },
-
-	/**
-	 * Adds a new child element to the carousel.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param e
-	 * @param childView
-	 */
-	onReadyChild : function( e, childView ) {
-		if ( e.target == this.el ) {
-			this.slickAt( childView.$el.index() );
-		}
-		else {
-			this.refreshSlick();
-		}
+	onInitialize: function() {
+		this.$wrap = this.$el.find( '.tailor-carousel__wrap' ).first();
+		this.slickAt( 0, this.addEventListeners );
 	},
-
-	/**
-	 * Reorders a child element in the carousel.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param e
-	 * @param id
-	 * @param newIndex
-	 * @param oldIndex
-	 */
-	onReorderChild : function( e, id, newIndex, oldIndex ) {
-		if ( e.target !== this.el ) {
-			return;
-		}
-
-		this.querySelectors();
-
-		var $item = this.$items.filter( function() { return this.id == id } );
-		if ( oldIndex - newIndex < 0 ) {
-			$item.insertAfter( this.$items[ newIndex ] );
-		}
-		else {
-			$item.insertBefore( this.$items[ newIndex ] );
-		}
-
-		this.slickAt( newIndex );
-	},
-
-	/**
-	 * Removes a child element from the carousel.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param e
-	 * @param childView
-	 */
-	onDestroyChild : function( e, childView ) {
-		var index = childView.$el.index();
-		childView.$el.remove();
-		this.slickAt( index );
-	},
-
-	/**
-	 * Refreshes the carousel when a descendant element is destroyed.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param e
-	 * @param childView
-	 */
-	onDestroyDescendant : function( e, childView ) {
-		childView.$el.detach();
-		this.refreshSlick();
-	},
-
-    /**
-     * Re-initializes the carousel if the event was triggered on the element.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     */
-    maybeSlick : function( e ) {
-	    if ( e.target == this.el ) {
-		    this.slick();
-	    }
-    },
-
-    /**
-     * Refreshes the carousel if the event was triggered on the carousel DOM element.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     */
-    maybeRefreshSlick : function( e ) {
-        if ( e.target == this.el ) {
-	        this.refreshSlick();
-        }
-    },
-
-    /**
-     * Destroys the carousel if the event was triggered on the carousel DOM element.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     */
-    maybeUnSlick : function( e ) {
-	    if ( e.target == this.el ) {
-            this.unSlick();
-        }
-    },
-
-    /**
-     * Destroys the carousel immediately before the view/DOM element is destroyed.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     */
-    maybeDestroy : function( e ) {
-        if ( e.target == this.el ) {
-            this.destroy( e );
-        }
-    },
 
 	/**
 	 * Initializes the Slick Slider plugin at a given index.
@@ -3172,68 +2990,225 @@ Carousel.prototype = {
 		this.updateDots( index );
 	},
 
-    /**
-     * Initializes the Slick Slider plugin.
-     *
-     * @since 1.0.0
-     *
-     * @param callback
-     */
-    slick : function( callback ) {
-        var carousel = this;
-	    var currentSlide = this.currentSlide;
-	    var currentIndex = this.$dots.filter( function() { return this.getAttribute( 'data-id' ) == currentSlide; } ).index();
-	    var options = $.extend( {}, this.options, {
-		    autoplay : false,
-		    fade : false,
-		    initialSlide : currentIndex
-	    } );
-	    
-        carousel.$wrap
-            .slick( options )
-            .on( 'beforeChange', function( event, slick, currentSlide, nextSlide ) {
-                if ( slick.$slider[0] == carousel.$wrap[0] && currentSlide != nextSlide ) {
-                    carousel.updateDots( nextSlide );
-                }
-            } );
+	/**
+	 * Initializes the Slick Slider plugin.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param callback
+	 */
+	slick : function( callback ) {
+		var component = this;
+		var currentSlide = this.currentSlide;
+		var currentIndex = this.$dots.filter( function() { return this.getAttribute( 'data-id' ) == currentSlide; } ).index();
+		var options = $.extend( {}, this.options, {
+			autoplay : false,
+			fade : false,
+			initialSlide : currentIndex
+		} );
 
-        if ( 'function' == typeof callback ) {
-	        callback.call( carousel );
-        }
-    },
+		component.$wrap
+			.slick( options )
+			.on( 'beforeChange', function( event, slick, currentSlide, nextSlide ) {
+				if ( slick.$slider[0] == component.$wrap[0] && currentSlide != nextSlide ) {
+					component.updateDots( nextSlide );
+				}
+			} );
 
-    /**
-     * Refreshes the Slick Slider instance.
-     *
-     * @since 1.0.0
-     */
-    refreshSlick : function() {
-	    this.$wrap.slick( 'refresh' );
-    },
+		if ( 'function' == typeof callback ) {
+			callback.call( component );
+		}
+	},
 
-    /**
-     * Destroys the Slick Slider instance.
-     *
-     * @since 1.0.0
-     */
-    unSlick : function() {
-        this.$wrap.slick( 'unslick' );
-    },
+	/**
+	 * Refreshes the Slick Slider instance.
+	 *
+	 * @since 1.0.0
+	 */
+	refreshSlick : function() {
+		this.$wrap.slick( 'refresh' );
+	},
 
-    /**
-     * Destroys the carousel.
-     *
-     * @since 1.0.0
-     */
-    destroy : function() {
-        this.$el.off();
-        this.unSlick();
+	/**
+	 * Destroys the Slick Slider instance.
+	 *
+	 * @since 1.0.0
+	 */
+	unSlick : function() {
+		this.$wrap.slick( 'unslick' );
+	},
 
-        if ( 'function' == typeof this.callbacks.onDestroy ) {
-            this.callbacks.onDestroy.call( this );
-        }
-    }
-};
+	/**
+	 * Refreshes the dot and item caches and defines the current slide.
+	 *
+	 * @since 1.0.0
+	 */
+	querySelectors : function() {
+		if ( this.$dots ) {
+			this.$dots.off();
+		}
+
+		var component = this;
+		component.$items = component.$wrap.find( ' > ' + component.options.items );
+		component.$dots = component.$el.children( '.slick-dots' ).find( ' > li' );
+		component.$dots.on( 'click', function( e ) {
+			var $dot = $( e.currentTarget );
+			component.currentSlide = $dot.data( 'id' );
+			component.$wrap.slick( 'slickGoTo', $dot.index() );
+			e.preventDefault();
+		} );
+
+		if ( ! component.currentSlide ) {
+			var $activeSlide = component.$items.filter( function() {
+				return this.classList.contains( 'slick-current' );
+			} );
+			component.currentSlide = $activeSlide.length ? $activeSlide.id : component.$items[0].id;
+		}
+	},
+
+	/**
+	 * Sets the dot with the given index as active.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param index
+	 */
+	updateDots : function( index ) {
+		this.$dots.each( function( i, el ) {
+			if ( index == i ) {
+				el.classList.add( 'slick-active' );
+			}
+			else {
+				el.classList.remove( 'slick-active' );
+			}
+		} );
+		this.$dots.toggle( ( this.$dots.length / this.options.slidesToShow ) > 1 );
+	},
+
+
+	/**
+	 * Element listeners
+	 */
+	onMove: function() {
+		this.refreshSlick();
+	},
+
+	onBeforeCopy: function() {
+		this.unSlick();
+	},
+
+	onBeforeRefresh: function() {
+		this.unSlick();
+	},
+
+	onRefresh: function() {
+		this.refreshSlick();
+	},
+
+	onJSRefresh: function() {
+		this.refreshSlick();
+	},
+	
+	onChangeParent: function() {
+		this.refreshSlick();
+	},
+
+	onDestroy : function() {
+		this.unSlick();
+	},
+
+
+	/**
+	 * Child listeners
+	 */
+	onAddChild: function() {
+		this.refreshSlick();
+	},
+
+	onRemoveChild: function( e, childView ) {
+		childView.$el.detach();
+		this.refreshSlick();
+	},
+
+	onBeforeReadyChild : function( e, childView ) {
+		this.unSlick();
+	},
+
+	onReadyChild : function( e, childView ) {
+		this.slickAt( childView.$el.index() );
+	},
+	
+	onBeforeReorderChild: function() {
+		this.unSlick();
+	},
+
+	onReorderChild: function( e, cid, index, oldIndex ) {
+		this.querySelectors();
+		this.slickAt( index );
+	},
+
+	onBeforeRefreshChild: function() {
+		this.unSlick();
+	},
+
+	onRefreshChild: function( e, childView ) {
+		this.slickAt( childView.$el.index() );
+	},
+
+	onBeforeJSRefreshChild: function() {
+		this.unSlick();
+	},
+
+	onJSRefreshChild: function( e, childView ) {
+		this.slickAt( childView.$el.index() );
+	},
+
+	onBeforeDestroyChild: function() {
+		this.unSlick();
+	},
+
+	onDestroyChild : function( e, childView ) {
+		var index = childView.$el.index();
+		childView.$el.remove();
+		this.slickAt( index );
+	},
+
+
+	/**
+	 * Descendant listeners
+	 */
+	onAddDescendant: function() {
+		this.refreshSlick();
+	},
+
+	onRemoveDescendant: function() {
+		this.refreshSlick();
+	},
+
+	onReadyDescendant: function() {
+		this.refreshSlick();
+	},
+
+	onRefreshDescendant: function() {
+		this.refreshSlick();
+	},
+
+	onJSRefreshDescendant: function() {
+		this.refreshSlick();
+	},
+
+	onDestroyDescendant : function() {
+		this.refreshSlick();
+	},
+
+	/**
+	 * Window listeners
+	 */
+	onResize: function() {
+		this.refreshSlick();
+	}
+
+} );
 
 /**
  * Carousel jQuery plugin.
@@ -3252,7 +3227,7 @@ $.fn.tailorCarousel = function( options, callbacks ) {
         }
     } );
 };
-},{}],22:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 var ElementCollection = Backbone.Collection.extend( {
 
     /**
@@ -3449,7 +3424,7 @@ var ElementCollection = Backbone.Collection.extend( {
 
 	    //console.log( '\n Added ' + model.get( 'id' ) + ' at ' + model.get( 'order' ) );
         
-		if ( 'tailor_column' == model.get( 'tag' ) && options.rebalance ) {
+		if ( 'tailor_column' == model.get( 'tag' ) ) {
 			this._reBalanceColumns( this.get( model.get( 'parent' ) ) );
 		}
     },
@@ -3620,15 +3595,11 @@ var ElementCollection = Backbone.Collection.extend( {
      * @returns {*}
      */
     createColumn : function( parentId, order ) {
-        var columns = this.where( { parent : parentId } );
         return _.first( this.create( [ {
 			tag : 'tailor_column',
-			atts : { width : ( 12 / ( columns.length + 1 ) ) },
 			parent : parentId,
 			order : order
-		} ], {
-			rebalance : true
-		} ) );
+		} ] ) );
 
 	    //console.log( '\n Created column ' + column.get( 'id' ) + ' at ' + order );
     },
@@ -3776,9 +3747,8 @@ var ElementCollection = Backbone.Collection.extend( {
         _.each( children, function( child ) {
             var atts = _.clone( child.get( 'atts' ) );
             atts.width = 12 / numberChildren;
-
             child.set( 'atts', atts, { silent : true } );
-            child.trigger( 'change:width', model, atts.width );
+            child.trigger( 'change:width', child, atts );
         }, this );
     },
 
@@ -3848,7 +3818,7 @@ var ElementCollection = Backbone.Collection.extend( {
 
 module.exports = ElementCollection;
 
-},{}],23:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 var ChildModel = require( './../element-child' ),
     ColumnModel;
 
@@ -3878,7 +3848,7 @@ ColumnModel = ChildModel.extend( {
 } );
 
 module.exports = ColumnModel;
-},{"./../element-child":29}],24:[function(require,module,exports){
+},{"./../element-child":28}],23:[function(require,module,exports){
 var ChildModel = require( './../element-child' ),
     GridItemModel;
 
@@ -3908,7 +3878,7 @@ GridItemModel = ChildModel.extend( {
 } );
 
 module.exports = GridItemModel;
-},{"./../element-child":29}],25:[function(require,module,exports){
+},{"./../element-child":28}],24:[function(require,module,exports){
 var ContainerModel = require( './../element-container' ),
 	CarouselModel;
 
@@ -3946,7 +3916,7 @@ CarouselModel = ContainerModel.extend( {
 } );
 
 module.exports = CarouselModel;
-},{"./../element-container":31}],26:[function(require,module,exports){
+},{"./../element-container":30}],25:[function(require,module,exports){
 var ContainerModel = require( './../element-container' ),
     RowModel;
 
@@ -3971,7 +3941,7 @@ RowModel = ContainerModel.extend( {
 } );
 
 module.exports = RowModel;
-},{"./../element-container":31}],27:[function(require,module,exports){
+},{"./../element-container":30}],26:[function(require,module,exports){
 var ContainerModel = require( './../element-container' ),
     TabsModel;
 
@@ -4010,7 +3980,7 @@ TabsModel = ContainerModel.extend( {
 } );
 
 module.exports = TabsModel;
-},{"./../element-container":31}],28:[function(require,module,exports){
+},{"./../element-container":30}],27:[function(require,module,exports){
 var Model;
 
 /**
@@ -4333,7 +4303,7 @@ Model = Backbone.Model.extend( {
 
 module.exports = Model;
 
-},{}],29:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 var CompositeModel = require( './element-composite' ),
     ChildModel;
 
@@ -4389,7 +4359,7 @@ ChildModel = CompositeModel.extend( {
 } );
 
 module.exports = ChildModel;
-},{"./element-composite":30}],30:[function(require,module,exports){
+},{"./element-composite":29}],29:[function(require,module,exports){
 var BaseModel = require( './element-base' ),
     CompositeModel;
 
@@ -4556,7 +4526,7 @@ CompositeModel = BaseModel.extend( {
 } );
 
 module.exports = CompositeModel;
-},{"./element-base":28}],31:[function(require,module,exports){
+},{"./element-base":27}],30:[function(require,module,exports){
 var CompositeModel = require( './element-composite' ),
     ContainerModel;
 
@@ -4623,7 +4593,7 @@ ContainerModel = CompositeModel.extend( {
 } );
 
 module.exports = ContainerModel;
-},{"./element-composite":30}],32:[function(require,module,exports){
+},{"./element-composite":29}],31:[function(require,module,exports){
 var CompositeModel = require( './element-composite' ),
     WrapperModel;
 
@@ -4722,7 +4692,7 @@ WrapperModel = CompositeModel.extend( {
 } );
 
 module.exports = WrapperModel;
-},{"./element-composite":30}],33:[function(require,module,exports){
+},{"./element-composite":29}],32:[function(require,module,exports){
 var BaseModel = require( './element-base' ),
 	ElementModel;
 
@@ -4962,7 +4932,7 @@ ElementModel = BaseModel.extend( {
 } );
 
 module.exports = ElementModel;
-},{"./element-base":28}],34:[function(require,module,exports){
+},{"./element-base":27}],33:[function(require,module,exports){
 var WrapperModel = require( './../element-wrapper' ),
     SectionModel;
 
@@ -4983,7 +4953,7 @@ SectionModel = WrapperModel.extend( {
 } );
 
 module.exports = SectionModel;
-},{"./../element-wrapper":32}],35:[function(require,module,exports){
+},{"./../element-wrapper":31}],34:[function(require,module,exports){
 var CanvasRegion = Backbone.Marionette.Region.extend( {
 
 	/**
@@ -5025,7 +4995,7 @@ var CanvasRegion = Backbone.Marionette.Region.extend( {
 } );
 
 module.exports = CanvasRegion;
-},{}],36:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 var $ = Backbone.$,
     $win = $( window ),
     $doc = $( document ),
@@ -5311,7 +5281,7 @@ CanvasModule = Marionette.Module.extend( {
 } );
 
 module.exports = CanvasModule;
-},{"./show/canvas-view":37}],37:[function(require,module,exports){
+},{"./show/canvas-view":36}],36:[function(require,module,exports){
 module.exports = Marionette.CollectionView.extend( {
 
 	behaviors : {
@@ -5417,7 +5387,7 @@ module.exports = Marionette.CollectionView.extend( {
 
 } );
 
-},{}],38:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 var Stylesheet = require( './stylesheet' ),
 	CSSModule;
 
@@ -5648,7 +5618,7 @@ CSSModule = Marionette.Module.extend( {
 } );
 
 module.exports = CSSModule;
-},{"./stylesheet":39}],39:[function(require,module,exports){
+},{"./stylesheet":38}],38:[function(require,module,exports){
 /**
  * Stylesheet object for managing CSS.
  *
@@ -5842,7 +5812,7 @@ Stylesheet.prototype = {
 };
 
 module.exports = Stylesheet;
-},{}],40:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 var $ = Backbone.$,
     $body = $( 'body' ),
     $win = $( window ),
@@ -5992,7 +5962,7 @@ ElementModule = Marionette.Module.extend( {
 } );
 
 module.exports = ElementModule;
-},{"../../entities/collections/elements":22}],41:[function(require,module,exports){
+},{"../../entities/collections/elements":21}],40:[function(require,module,exports){
 var $ = Backbone.$,
     $body = $( 'body' ),
     $win = $( window ),
@@ -6005,9 +5975,7 @@ TemplateModule = Marionette.Module.extend( {
      */
 	onStart : function() {
         var module = this;
-
         this.collection = app.channel.request( 'canvas:elements' );
-
         var api = {
 
             /**
@@ -6044,7 +6012,6 @@ TemplateModule = Marionette.Module.extend( {
 
                         // Record the template HTML and append it to the page
                         templates = response.templates;
-
                         $body.append( templates );
                         
                         /**
@@ -6089,8 +6056,6 @@ TemplateModule = Marionette.Module.extend( {
                              * @since 1.0.0
                              */
                             app.channel.trigger( 'template:add', model );
-
-                            $win.trigger( 'resize' );
                         }
 
                         canvas.classList.remove( 'is-loading' );
@@ -6114,7 +6079,7 @@ TemplateModule = Marionette.Module.extend( {
 } );
 
 module.exports = TemplateModule;
-},{}],42:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 var SelectRegion = Backbone.Marionette.Region.extend( {
 
     /**
@@ -6146,7 +6111,7 @@ var SelectRegion = Backbone.Marionette.Region.extend( {
 } );
 
 module.exports = SelectRegion;
-},{}],43:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 var GuideView = Marionette.ItemView.extend( {
 
 	template : false,
@@ -6186,7 +6151,7 @@ var GuideView = Marionette.ItemView.extend( {
 } );
 
 module.exports = GuideView;
-},{}],44:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 var SelectMenuItemView = Marionette.ItemView.extend( {
 
     tagName : 'a',
@@ -6234,7 +6199,7 @@ var SelectMenuItemView = Marionette.ItemView.extend( {
 } );
 
 module.exports = SelectMenuItemView;
-},{}],45:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 var SelectMenuItemView = require( './select-menu-item' ),
     SelectMenuView;
 
@@ -6334,10 +6299,6 @@ SelectMenuView = Marionette.CompositeView.extend( {
         if ( menu && controls ) {
             var menuRect = menu.getBoundingClientRect();
             var controlsRect = controls.getBoundingClientRect();
-
-            console.log( menuRect.width + controlsRect.width );
-            console.log( parseInt( this.el.style.width, 10 ) );
-
             if ( ( menuRect.width + controlsRect.width ) > parseInt( this.el.style.width, 10 ) ) {
                 this.el.classList.add( 'is-minimal' );
             }
@@ -6432,7 +6393,7 @@ SelectMenuView = Marionette.CompositeView.extend( {
 } );
 
 module.exports = SelectMenuView;
-},{"./select-menu-item":44}],46:[function(require,module,exports){
+},{"./select-menu-item":43}],45:[function(require,module,exports){
 var GuideView = require( './show/guide' ),
     SelectorView = require( './show/select-menu' ),
     ToolsModule;
@@ -6521,14 +6482,12 @@ ToolsModule = Marionette.Module.extend( {
 } );
 
 module.exports = ToolsModule;
-},{"./show/guide":43,"./show/select-menu":45}],47:[function(require,module,exports){
-var $ = Backbone.$,
-	$win = $( window );
-
-/**
- * Element behaviors.
- */
-( function( app, SettingAPI, ElementAPI ) {
+},{"./show/guide":42,"./show/select-menu":44}],46:[function(require,module,exports){
+require( './preview/helpers' );
+require( './preview/behaviors' );
+require( './preview/css' );
+},{"./preview/behaviors":47,"./preview/css":48,"./preview/helpers":49}],47:[function(require,module,exports){
+( function( $, app, SettingAPI, ElementAPI ) {
 
 	ElementAPI.onRender( 'tailor_carousel', function( atts, model ) {
 		var carousel = this;
@@ -6542,19 +6501,6 @@ var $ = Backbone.$,
 		};
 
 		carousel.$el.tailorCarousel( options );
-
-		SettingAPI.onChange( 'sidebar:_tailor_element_spacing', function( to, from ) {
-			carousel.triggerAll( 'element:parent:change', carousel );
-		} );
-	} );
-
-	ElementAPI.onRender( 'tailor_column', function( atts, model ) {
-		var column = this;
-
-		// Refreshes all child elements when the column spacing setting changes
-		SettingAPI.onChange( 'sidebar:_tailor_column_spacing', function( to, from ) {
-			column.triggerAll( 'element:parent:change', column );
-		} );
 	} );
 
 	ElementAPI.onRender( 'tailor_content', function( atts, model ) {
@@ -6623,7 +6569,6 @@ var $ = Backbone.$,
 	ElementAPI.onRender( 'tailor_posts', function( atts, model ) {
 		var $el = this.$el;
 		var options;
-
 		if ( 'carousel' == atts.layout ) {
 			options = {
 				autoplay : '1' == atts.autoplay,
@@ -6633,7 +6578,6 @@ var $ = Backbone.$,
 				infinite: false,
 				slidesToShow : parseInt( atts.items_per_row, 10 ) || 2
 			};
-
 			this.$el.tailorSimpleCarousel( options ) ;
 		}
 		else if ( atts.masonry ) {
@@ -6642,16 +6586,8 @@ var $ = Backbone.$,
 	} );
 
 	ElementAPI.onRender( 'tailor_section', function( atts, model ) {
-		var section = this;
-
-		// Refreshes all child elements when the section width setting changes
-		SettingAPI.onChange( 'sidebar:_tailor_section_width', function( to, from ) {
-			section.triggerAll( 'element:parent:change', section );
-		} );
-
-		var ratio = this.el.getAttribute( 'data-ratio' );
-		if ( atts.parallax && ratio ) {
-			this.$el.tailorParallax( { ratio: ratio } );
+		if ( atts['background_image'] && atts['parallax'] ) {
+			this.$el.tailorParallax();
 		}
 	} );
 
@@ -6663,11 +6599,11 @@ var $ = Backbone.$,
 		this.$el.tailorToggles();
 	} );
 
-} ( window.app, window.Tailor.Api.Setting, window.Tailor.Api.Element ) );
+} ( window.jQuery, window.app, window.Tailor.Api.Setting, window.Tailor.Api.Element ) );
+},{}],48:[function(require,module,exports){
+var $ = Backbone.$,
+	$win = $( window );
 
-/**
- * Live setting and dynamic CSS updates.
- */
 ( function( window,  app, SettingAPI ) {
 
 	// CSS rule sets associated with sidebar settings
@@ -6717,36 +6653,6 @@ var $ = Backbone.$,
 	}
 
 	/**
-	 * Returns the unit within a given string.
-	 *
-	 * @since 1.7.2
-	 *
-	 * @param string
-	 * @returns {*}
-	 */
-	function getUnit( string ) {
-		var map = [
-			"px",
-			"%",
-			"in",
-			"cm",
-			"mm",
-			"pt",
-			"pc",
-			"em",
-			"rem",
-			"ex",
-			'vw',
-			'vh'
-		];
-		var matches = string.match( new RegExp( '/' + map.join( '|') + '/' ) );
-		if ( matches ) {
-			return matches[0];
-		}
-		return 'px';
-	}
-
-	/**
 	 * Returns the media query for a given setting ID.
 	 *
 	 * @since 1.7.2
@@ -6763,78 +6669,6 @@ var $ = Backbone.$,
 		} );
 		return query;
 	}
-
-	/**
-	 * Ensures a string does not contain numeric values.
-	 *
-	 * @since 1.7.2
-	 *
-	 * @param string
-	 * @returns {*|void|{style, text, priority, click}|XML}
-	 */
-	window.tailorValidateString = function( string ) {
-		return string.replace( /[0-9]/g, '' );
-	};
-
-	/**
-	 * Ensures a string contains only numeric values.
-	 *
-	 * @since 1.7.2
-	 *
-	 * @param string
-	 * @returns {*|void|{style, text, priority, click}|XML}
-	 */
-	window.tailorValidateNumber = function( string ) {
-		string = string.replace( /[^0-9,.]+/i, '' );
-		return ! _.isEmpty( string ) ? string : '0';
-	};
-
-	/**
-	 * Ensures a hex or RGBA color value is valid.
-	 *
-	 * Since 1.7.2
-	 *
-	 * @param color
-	 * @returns {*}
-	 */
-	window.tailorValidateColor = function( color ) {
-		if ( /^#[0-9a-f]{3}(?:[0-9a-f]{3})?$/i.test( color ) ) {
-			return color;
-		}
-		if ( isRGBA( color ) ) {
-			return color;
-		}
-		return '';
-	};
-
-	/**
-	 * Returns true if the given color is RGBA.
-	 *
-	 * @since 1.7.2
-	 *
-	 * @param color
-	 * @returns {boolean}
-	 */
-	function isRGBA( color ) {
-		return /^rgba\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3}),\s*(\d*(?:\.\d+)?)\)$/.test( color )
-	}
-
-	/**
-	 * Ensures a string contains a valid numeric value and unit.
-	 *
-	 * @since 1.7.2
-	 *
-	 * @param value
-	 * @returns {string}
-	 */
-	window.tailorValidateUnit = function( value ) {
-		var sign = '';
-		if ( '-' == value.charAt( 0 ) ) {
-			sign = '-';
-			value = value.substring(1);
-		}
-		return ( sign + tailorValidateNumber( value ) + getUnit( value ) );
-	};
 
 	/**
 	 * Generates CSS for a given setting.
@@ -7066,6 +6900,10 @@ var $ = Backbone.$,
 					definition = getDefinition( model.get( 'tag' ), id, definition );
 					if ( 'function' == typeof definition ) {
 						return definition.call( this, to, from, model );
+					}
+
+					if ( '' == to ) {
+						return [];
 					}
 					
 					var rule = {
@@ -7516,9 +7354,113 @@ var $ = Backbone.$,
 	} );
 
 } ( window, window.app, window.Tailor.Api.Setting ) );
-},{}],48:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
+/**
+ * Ensures a string does not contain numeric values.
+ *
+ * @since 1.7.2
+ *
+ * @param string
+ * @returns {*|void|{style, text, priority, click}|XML}
+ */
+window.tailorValidateString = function( string ) {
+	return string.replace( /[0-9]/g, '' );
+};
 
-var app = window.app,
+/**
+ * Ensures a string contains only numeric values.
+ *
+ * @since 1.7.2
+ *
+ * @param string
+ * @returns {*|void|{style, text, priority, click}|XML}
+ */
+window.tailorValidateNumber = function( string ) {
+	string = string.replace( /[^0-9,.]+/i, '' );
+	return ! _.isEmpty( string ) ? string : '0';
+};
+
+/**
+ * Ensures a hex or RGBA color value is valid.
+ *
+ * Since 1.7.2
+ *
+ * @param color
+ * @returns {*}
+ */
+window.tailorValidateColor = function( color ) {
+	if ( /^#[0-9a-f]{3}(?:[0-9a-f]{3})?$/i.test( color ) ) {
+		return color;
+	}
+	if ( isRGBA( color ) ) {
+		return color;
+	}
+	return '';
+};
+
+/**
+ * Returns true if the given color is RGBA.
+ *
+ * @since 1.7.2
+ *
+ * @param color
+ * @returns {boolean}
+ */
+function isRGBA( color ) {
+	return /^rgba\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3}),\s*(\d*(?:\.\d+)?)\)$/.test( color )
+}
+
+/**
+ * Ensures a string contains a valid numeric value and unit.
+ *
+ * @since 1.7.2
+ *
+ * @param value
+ * @returns {string}
+ */
+window.tailorValidateUnit = function( value ) {
+	var sign = '';
+	if ( '-' == value.charAt( 0 ) ) {
+		sign = '-';
+		value = value.substring(1);
+	}
+	return ( sign + tailorValidateNumber( value ) + getUnit( value ) );
+};
+
+/**
+ * Returns the unit within a given string.
+ *
+ * @since 1.7.2
+ *
+ * @param string
+ * @returns {*}
+ */
+function getUnit( string ) {
+	var map = [
+		"px",
+		"%",
+		"in",
+		"cm",
+		"mm",
+		"pt",
+		"pc",
+		"em",
+		"rem",
+		"ex",
+		'vw',
+		'vh'
+	];
+	var matches = string.match( new RegExp( '/' + map.join( '|') + '/' ) );
+	if ( matches ) {
+		return matches[0];
+	}
+	return 'px';
+}
+},{}],50:[function(require,module,exports){
+
+var $ = window.jQuery,
+    $win = $( window ),
+    app = window.app,
     cssModule,
     callbacks = {
         'sidebar' : [],
@@ -7558,6 +7500,9 @@ var onSidebarChange = function( setting ) {
     _.each( callbacks['sidebar'][ settingId ], function( callback ) {
         callback.apply( window, [ setting.get( 'value' ), setting.previous( 'value' ) ] );
     } );
+
+    // Trigger a resize even on the window when a sidebar setting changes
+    $win.trigger( 'resize' );
 };
 
 /**
@@ -7656,7 +7601,7 @@ module.exports = {
         }
     }
 };
-},{}],49:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 var DraggableBehaviors = Marionette.Behavior.extend( {
 
 	events : {
@@ -7701,21 +7646,24 @@ var DraggableBehaviors = Marionette.Behavior.extend( {
 } );
 
 module.exports = DraggableBehaviors;
-},{}],50:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 /**
- * Tailor.Objects.Lightbox
+ * Tailor.Components.Abstract
  *
- * A lightbox module.
+ * An abstract component.
  *
  * @class
  */
 var $ = window.jQuery,
-    Lightbox;
+	$win = $( window ),
+	$doc = $( document ),
+    AbstractComponent,
+	id = 0;
 
 /**
- * The Lightbox object.
+ * An abstract component.
  *
- * @since 1.0.0
+ * @since 1.7.5
  *
  * @param el
  * @param options
@@ -7723,103 +7671,781 @@ var $ = window.jQuery,
  *
  * @constructor
  */
-Lightbox = function( el, options, callbacks ) {
+AbstractComponent = function( el, options, callbacks ) {
+	this.id = 'tailor.' + id ++;
     this.el = el;
-    this.$el = $( el );
-
-	this.options = $.extend( {}, this.defaults, this.$el.data(), options );
-    this.callbacks = $.extend( {}, this.callbacks, callbacks );
-
+    this.$el = $( this.el );
+	this.callbacks = $.extend( {}, this.callbacks, callbacks );
+	this.options = $.extend( {}, this.getDefaults(), this.$el.data(), options );
+	if ( document.documentElement.dir && 'rtl' == document.documentElement.dir ) {
+		this.options.rtl = true;
+	}
+	
     this.initialize();
 };
 
-Lightbox.prototype = {
+AbstractComponent.prototype = {
 
-    defaults : {
-        type : 'image',
-        delegate : '.is-lightbox-image',
-        closeMarkup : '<button title="%title%" type="button" class="not-a-button mfp-close">&#215;</button>',
-        gallery : {
-            enabled : true,
-            arrowMarkup: '<button title="%title%" type="button" class="not-a-button mfp-arrow mfp-arrow-%dir%"></button>'
-        },
-        image : {
-            titleSrc: function( item ) {
-                return item.el.find( 'figcaption' ).text();
-            }
-        }
-        //zoom: {
-        //    enabled: true,
-        //    duration: 300
-        //}
-    },
+	callbacks : {
 
-    callbacks : {
+		/**
+		 * Fired after the component has been initialized.
+		 *
+		 * @since 1.7.5
+		 */
+		onInitialize : function () {},
 
-        /**
-         * Callback function to be run when the object is initialized.
-         *
-         * @since 1.0.0
-         */
-        onInitialize : function () {},
+		/**
+		 * Fired after the component has been destroyed.
+		 *
+		 * @since 1.7.5
+		 */
+		onDestroy : function () {}
+	},
 
-        /**
-         * Callback function to be run when the object is destroyed.
-         *
-         * @since 1.0.0
-         */
-        onDestroy : function () {}
-    },
+	/**
+	 * Returns the default values for the component.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @returns {{}}
+	 */
+	getDefaults : function() { return {}; },
 
-    /**
-     * Initializes the Carousel instance.
-     *
-     * @since 1.0.0
-     */
+	/**
+	 * Initializes the component.
+	 *
+	 * @since 1.7.5
+	 */
     initialize : function() {
-        this.magnificPopup();
-        this.addEventListeners();
+	    this.addEventListeners();
 
+	    // Fires once the element listeners have been added
+	    this.onInitialize();
         if ( 'function' == typeof this.callbacks.onInitialize ) {
             this.callbacks.onInitialize.call( this );
         }
     },
 
+	/**
+	 * Adds the required event listeners.
+	 *
+	 * @since 1.7.5
+	 */
+	addEventListeners : function() {
+	    var component = this;
+	    this.onResizeCallback = _.throttle( this.onResize.bind( this ) , 100 );
+
+	    /**
+	     * Element listeners
+	     */
+
+	    // Element ready
+	    this.$el
+		    .on( 'before:element:ready', function( e, view ) {
+			    if ( e.target == component.el ) {
+				    component.onBeforeReady( e, view );
+			    }
+		    } )
+		    .on( 'element:ready', function( e, view ) {
+			    if ( e.target == component.el ) {
+				    component.onReady( e, view );
+			    }
+		    } );
+		
+	    // Element moved
+	    this.$el.on( 'element:change:order element:change:parent', function( e, view ) {
+		    if ( e.target == component.el ) {
+			    component.onMove( e, view );
+		    }
+	    } );
+		
+	    // Element copied
+	    this.$el
+		    .on( 'before:element:copy', function( e, view ) {
+			    if ( e.target == component.el ) {
+				    component.onBeforeCopy( e, view );
+			    }
+		    } )
+		    .on( 'element:copy', function( e, view ) {
+			    if ( e.target == component.el ) {
+				    component.onCopy( e, view );
+			    }
+		    } );
+
+	    // Element refreshed
+	    this.$el.on( 'before:element:refresh', function( e, view ) {
+		    if ( e.target == component.el ) {
+			    component.destroy();
+			    component.onBeforeRefresh( e, view );
+		    }
+	    } );
+
+	    // Element refreshed using JavaScript
+	    this.$el
+		    .on( 'before:element:jsRefresh', function( e, view ) {
+			    if ( e.target == component.el ) {
+				    component.onBeforeJSRefresh( e, view );
+			    }
+		    } )
+		    .on( 'element:jsRefresh', function( e, view ) {
+			    if ( e.target == component.el ) {
+				    component.onJSRefresh( e, view );
+			    }
+		    } );
+
+	    // Element destroyed
+	    this.$el
+		    .on( 'before:element:destroy', function( e, view ) {
+			    if ( e.target == component.el ) {
+				    component.onBeforeDestroy( e, view );
+			    }
+		    } )
+		    .on( 'element:destroy', function( e, view ) {
+			    if ( e.target == component.el ) {
+				    component.destroy();
+			    }
+		    } );
+
+	    /**
+	     * Child listeners
+	     */
+
+	    // Child added
+	    this.$el.on( 'element:child:add', function( e, view ) {
+		    if ( e.target == component.el ) {
+			    component.onAddChild( e, view );
+		    }
+	    } );
+
+	    // Child removed
+	    this.$el.on( 'element:child:remove', function( e, view ) {
+		    if ( e.target == component.el ) {
+			    component.onRemoveChild( e, view );
+		    }
+	    } );
+		
+		// Child ready
+		this.$el
+			.on( 'before:element:child:ready', function( e, view ) {
+				component.onBeforeReadyChild( e, view );
+			} )
+			.on( 'element:child:ready', function( e, view ) {
+				component.onReadyChild( e, view );
+			} );
+
+		// Child moved
+		this.$el.on( 'element:child:change:order element:child:change:parent', function( e, view ) {
+			component.onMoveChild( e, view );
+		} );
+		
+		// Child reordered (using navigation)
+		this.$el
+			.on( 'before:navigation:reorder', function( e, cid, index, oldIndex ) {
+				component.onBeforeReorderChild( e, cid, index, oldIndex  );
+			} )
+			.on( 'navigation:reorder', function( e, cid, index, oldIndex  ) {
+				component.onReorderChild( e, cid, index, oldIndex );
+				component.onReorderChild( e, cid, index, oldIndex );
+			} );
+		
+		// Child refreshed
+		this.$el
+			.on( 'before:element:child:refresh', function( e, view ) {
+				component.onBeforeRefreshChild( e, view );
+			} )
+			.on( 'element:child:refresh', function( e, view ) {
+				component.onRefreshChild( e, view );
+			} );
+		
+	    // Child refreshed using JavaScript
+	    this.$el
+		    .on( 'before:element:child:jsRefresh', function( e, view ) {
+			    component.onBeforeJSRefreshChild( e, view );
+		    } )
+		    .on( 'element:child:jsRefresh', function( e, view ) {
+			    component.onJSRefreshChild( e, view );
+		    } );
+
+	    // Child destroyed
+	    this.$el
+		    .on( 'before:element:child:destroy', function( e, view ) {
+			    component.onBeforeDestroyChild( e, view );
+		    } )
+		    .on( 'element:child:destroy', function( e, view ) {
+			    component.onDestroyChild( e, view );
+		    } );
+
+		// All child changes
+		this.$el.on( 'element:child:add element:child:remove element:child:ready element:child:refresh element:child:jsRefresh element:child:destroy', function( e, view ) {
+			component.onChangeChild( e, view );
+		} );
+
+	    /**
+	     * Descendant listeners
+	     */
+
+	    // Descendant added
+	    this.$el.on( 'element:descendant:add', function( e, view ) {
+		    if ( e.target != component.el ) {
+			    component.onAddDescendant( e, view );
+		    }
+	    } );
+
+	    // Descendant removed
+	    this.$el.on( 'element:descendant:remove', function( e, view ) {
+		    if ( e.target != component.el ) {
+			    component.onRemoveDescendant( e, view );
+		    }
+	    } );
+		
+		// Descendant ready
+		this.$el
+			.on( 'before:element:descendant:ready', function( e, view ) {
+				if ( e.target != component.el ) {
+					component.onBeforeReadyDescendant( e, view );
+				}
+			} )
+			.on( 'element:descendant:ready', function( e, view ) {
+				if ( e.target != component.el ) {
+					component.onReadyDescendant( e, view );
+				}
+			} );
+
+		// Descendant refreshed
+	    this.$el
+		    .on( 'before:element:descendant:refresh', function( e, view ) {
+			    if ( e.target != component.el ) {
+				    component.onBeforeRefreshDescendant( e, view );
+			    }
+		    } )
+		    .on( 'element:descendant:refresh', function( e, view ) {
+			    if ( e.target != component.el ) {
+				    component.onRefreshDescendant( e, view );
+			    }
+		    } );
+
+	    // Descendant refreshed using JavaScript
+	    this.$el
+		    .on( 'before:element:descendant:jsRefresh', function( e, view ) {
+			    if ( e.target != component.el ) {
+				    component.onBeforeJSRefreshDescendant( e, view );
+			    }
+		    } )
+		    .on( 'element:descendant:jsRefresh', function( e, view ) {
+			    if ( e.target != component.el ) {
+				    component.onJSRefreshDescendant( e, view );
+			    }
+		    } );
+
+	    // Descendant destroyed
+	    this.$el
+		    .on( 'before:element:descendant:destroy', function( e, view ) {
+			    if ( e.target != component.el ) {
+				    component.onBeforeDestroyDescendant( e, view );
+			    }
+		    } )
+		    .on( 'element:descendant:destroy', function( e, view ) {
+			    if ( e.target != component.el ) {
+				    component.onDestroyDescendant( e, view );
+			    }
+		    } );
+
+		// All descendant changes
+		this.$el.on( 'element:descendant:add element:descendant:remove element:descendant:ready element:descendant:refresh element:descendant:jsRefresh element:descendant:destroy', function( e, view ) {
+			component.onChangeDescendant( e, view );
+		} );
+
+	    /**
+	     * Parent listeners.
+	     */
+	    $doc
+		    .on( 'element:descendant:add element:descendant:remove element:descendant:ready element:descendant:destroy', function( e, view ) {
+			    if ( e.target.contains( component.el ) && e.target != component.el && view.el != component.el ) {
+				    component.onChangeParent();
+			    }
+		    } )
+		    .on( 'element:refresh element:jsRefresh element:descendant:refresh element:descendant:jsRefresh', function( e, view ) {
+			    if ( e.target.contains( component.el ) && e.target != component.el && view.el != component.el ) {
+				    component.onChangeParent();
+			    }
+		    } );
+
+	    /**
+	     * Window listeners.
+	     */
+	    $win.on( 'resize.' + component.id, component.onResizeCallback );
+    },
+
+	/**
+	 * Removes registered event listeners.
+	 *
+	 * @since 1.7.5
+	 */
+	removeEventListeners : function() {
+		this.$el.off( '**' );
+		$win.off( 'resize.' + this.id, this.onResizeCallback );
+	},
+
+	/**
+	 * Fires when the element is initialized.
+	 *
+	 * @since 1.7.5
+	 */
+	onInitialize: function() {},
+
+	/**
+	 * Fires before the element is ready.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onBeforeReady : function( e, view ) {},
+
+	/**
+	 * Fires when the element is ready.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onReady: function( e, view ) {},
+	
+	/**
+	 * Fires when the element is moved.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onMove: function( e, view ) {},
+
+	/**
+	 * Fires before the element is copied.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onBeforeCopy: function( e, view ) {},
+
+	/**
+	 * Fires when the element is copied.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onCopy: function( e, view ) {},
+
+	/**
+	 * Fires before the element is refreshed.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onBeforeRefresh: function( e, view ) {},
+
+	/**
+	 * Fires before the element is refreshed using JavaScript.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onBeforeJSRefresh : function( e, view ) {},
+
+	/**
+	 * Fires when the element is refreshed using JavaScript.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onJSRefresh : function( e, view ) {},
+	
+	/**
+	 * Fires before the element is destroyed.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onBeforeDestroy: function( e, view ) {},
+
+	/**
+	 * Destroys the element.
+	 * 
+	 * @since 1.7.5
+	 */
+	destroy: function() {
+		this.removeEventListeners();
+		this.onDestroy();
+		if ( 'function' == typeof this.callbacks.onDestroy ) {
+			this.callbacks.onDestroy.call( this );
+		}
+	},
+	
+	/**
+	 * Fires when the element is destroyed.
+	 *
+	 * @since 1.7.5
+	 */
+	onDestroy: function() {},
+
+	/**
+	 * Fires when a child is added.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onAddChild: function( e, view ) {},
+
+	/**
+	 * Fires when a child is removed.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onRemoveChild: function( e, view ) {},
+
+	/**
+	 * Fires before a child is ready.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onBeforeReadyChild: function( e, view ) {},
+
+	/**
+	 * Fires when a child is ready.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onReadyChild: function( e, view ) {},
+
+	/**
+	 * Fires when a child is moved.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onMoveChild: function( e, view ) {},
+	
+	/**
+	 * Fires before a child is reordered (using navigation).
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param index
+	 * @param oldIndex
+	 */
+	onBeforeReorderChild: function( e, index, oldIndex ) {},
+	
+	/**
+	 * Fires when a child is reordered (using navigation).
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param index
+	 * @param oldIndex
+	 */
+	onReorderChild: function( e, index, oldIndex ) {},
+	
+	/**
+	 * Fires before a child is refreshed.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onBeforeRefreshChild: function( e, view ) {},
+	
+	/**
+	 * Fires when a child is refreshed.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onRefreshChild : function( e, view ) {},
+
+	/**
+	 * Fires before a child is refreshed using JavaScript.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onBeforeJSRefreshChild : function( e, view ) {},
+
+	/**
+	 * Fires when a child is refreshed using JavaScript.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onJSRefreshChild : function( e, view ) {},
+
+	/**
+	 * Fires before a child is destroyed.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onBeforeDestroyChild: function( e, view ) {},
+
+	/**
+	 * Fires when a child is destroyed.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onDestroyChild: function( e, view ) {},
+
+	/**
+	 * Fires when a child:
+	 *  - Is added
+	 *  - Is removed
+	 *  - Is ready
+	 *  - Is refreshed
+	 *  - Is refreshed using JavaScript
+	 *  - Is destroyed
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onChangeChild: function( e, view ) {},
+
+	/**
+	 * Fires when a descendant is added.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onAddDescendant: function( e, view ) {},
+
+	/**
+	 * Fires when a descendant is removed.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onRemoveDescendant: function( e, view ) {},
+
+	/**
+	 * Fires before a descendant is ready.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onBeforeReadyDescendant: function( e, view ) {},
+
+	/**
+	 * Fires when a descendant is ready.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onReadyDescendant: function( e, view ) {},
+
+	/**
+	 * Fires before a descendant is refreshed.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onBeforeRefreshDescendant: function( e, view ) {},
+
+	/**
+	 * Fires when a descendant is refreshed.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onRefreshDescendant: function( e, view ) {},
+
+	/**
+	 * Fires before a descendant is refreshed using JavaScript.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onBeforeJSRefreshDescendant: function( e, view ) {},
+
+	/**
+	 * Fires when a descendant is refreshed using JavaScript.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onJSRefreshDescendant: function( e, view ) {},
+
+	/**
+	 * Fires before a descendant is destroyed.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onBeforeDestroyDescendant: function( e, view ) {},
+
+	/**
+	 * Fires when a descendant is destroyed.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onDestroyDescendant: function( e, view ) {},
+
+	/**
+	 * Fires when a descendant:
+	 *  - Is added
+	 *  - Is removed
+	 *  - Is ready
+	 *  - Is refreshed
+	 *  - Is refreshed using JavaScript
+	 *  - Is destroyed
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onChangeDescendant: function( e, view ) {},
+
+	/**
+	 * Fires when:
+	 *  - A child or descendant is added to the parent (other than one associated with this component).
+	 *  - A child or descendant is removed from the parent (other than one associated with this component).
+	 *  - A child or descendant is ready within the parent (other than one associated with this component).
+	 *  - A child or descendant is refreshed within the parent (other than one associated with this component).
+	 *  - A child or descendant is refreshed using JavaScript within the parent (other than one associated with this component).
+	 *  - A child or descendant is destroyed within the parent (other than one associated with this component).
+	 *  - The parent is refreshed.
+	 *  - The parent is refreshed using JavaScript.
+	 *
+	 *  @since 1.7.5
+	 */
+	onChangeParent: function() {},
+
+	/**
+	 * Fires when the window is resized.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onResize : function( e, view ) {}
+
+};
+
+module.exports = AbstractComponent;
+},{}],53:[function(require,module,exports){
+/**
+ * Tailor.Components.Lightbox
+ *
+ * A lightbox component.
+ *
+ * @class
+ */
+var $ = window.jQuery,
+    Components = window.Tailor.Components,
+    Lightbox;
+
+Lightbox = Components.create( {
+
+    getDefaults: function() {
+        return {
+            type : 'image',
+            delegate : '.is-lightbox-image',
+            closeMarkup : '<button title="%title%" type="button" class="not-a-button mfp-close">&#215;</button>',
+            gallery : {
+                enabled : true,
+                arrowMarkup: '<button title="%title%" type="button" class="not-a-button mfp-arrow mfp-arrow-%dir%"></button>'
+            },
+            image : {
+                titleSrc: function( item ) {
+                    return item.el.find( 'figcaption' ).text();
+                }
+            }
+        };
+    },
+
     /**
-     * Adds the required event listeners.
+     * Initializes the component.
      *
-     * @since 1.0.0
+     * @since 1.7.5
      */
-    addEventListeners : function() {
-        this.$el.on( 'before:element:destroy', $.proxy( this.destroy, this ) );
+    onInitialize: function() {
+        this.magnificPopup();
     },
 
     /**
      * Initializes the Magnific Popup plugin.
      *
-     * @since 1.0.0
+     * @since 1.7.5
      */
     magnificPopup : function() {
         this.$el.magnificPopup( this.options );
-    },
-
-    /**
-     * Destroys the object.
-     *
-     * @since 1.0.0
-     */
-    destroy : function( e ) {
-        if ( e.target != this.el ) {
-            return;
-        }
-
-        this.$el.off();
-
-        if ( 'function' == typeof this.callbacks.onDestroy ) {
-            this.callbacks.onDestroy.call( this );
-        }
     }
-};
+
+} );
 
 /**
  * Lightbox jQuery plugin.
@@ -7839,73 +8465,37 @@ $.fn.tailorLightbox = function( options, callbacks ) {
     } );
 };
 
-},{}],51:[function(require,module,exports){
+module.exports = Lightbox;
+},{}],54:[function(require,module,exports){
 /**
- * Tailor.Objects.Map
+ * Tailor.Components.Map
  *
- * A map module.
+ * A map component.
  *
  * @class
  */
 var $ = window.jQuery,
+    Components = window.Tailor.Components,
     Map;
 
-/**
- * The Map object.
- *
- * @since 1.0.0
- *
- * @param el
- * @param options
- * @param callbacks
- *
- * @constructor
- */
-Map = function( el, options, callbacks ) {
-    this.el = el;
-    this.$el = $( el );
-    this.$win = $( window );
+Map = Components.create( {
 
-	this.options = _.extend( {}, this.defaults, this.$el.data(), options );
-	this.callbacks = _.extend( {}, this.callbacks, callbacks );
-
-    this.initialize();
-};
-
-Map.prototype = {
-
-    defaults : {
-        height : 450,
-        address : '',
-        latitude : '',
-        longitude : '',
-        zoom : 12,
-        draggable : 1,
-        scrollwheel : 0,
-        controls : 0,
-        hue : null,
-        saturation : 0
+    getDefaults: function() {
+        return {
+            height : 450,
+            address : '',
+            latitude : '',
+            longitude : '',
+            zoom : 12,
+            draggable : 1,
+            scrollwheel : 0,
+            controls : 0,
+            hue : null,
+            saturation : 0
+        };
     },
 
-	callbacks : {
-
-		/**
-		 * Callback function to be run when the object is initialized.
-		 *
-		 * @since 1.0.0
-		 */
-		onInitialize : function () {},
-
-		/**
-		 * Callback function to be run when the object is destroyed.
-		 *
-		 * @since 1.0.0
-		 */
-		onDestroy : function () {}
-	},
-
     getStyles : function( saturation, hue ) {
-
         return  [
             {
                 featureType : 'all',
@@ -7935,127 +8525,59 @@ Map.prototype = {
     },
 
     /**
-     * Initializes the Map instance.
+     * Initializes the component.
      *
-     * @since 1.0.0
+     * @since 1.7.5
      */
-    initialize : function() {
-        var map = this;
-
+    onInitialize : function() {
+        var component = this;
         this.markers = [];
         this.infoWindows = [];
         this.$canvas = this.$el.find( '.tailor-map__canvas').height( this.options.height );
 
-        this.getCoordinates( this.options ).then( function( coordinates ) {
-            map.center = coordinates;
-
-            var controls = map.options.controls;
-            var settings = {
-                zoom : map.options.zoom,
-                draggable : map.options.draggable,
-                scrollwheel : map.options.scrollwheel,
-                center : coordinates,
-                mapTypeId : google.maps.MapTypeId.ROADMAP,
-                disableDefaultUI: ! controls,
-                panControl: controls,
-                rotateControl : controls,
-                scaleControl: controls,
-                zoomControl: controls,
-                mapTypeControl: controls,
-                mapTypeControlOptions: {
-                    style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
-                    position: google.maps.ControlPosition.TOP_CENTER
-                }
-            };
-            var styles = map.getStyles( map.options.saturation, map.options.hue );
-
-            map.map = new google.maps.Map( map.$canvas[0], settings );
-            map.map.mapTypes.set( 'map_style', new google.maps.StyledMapType( styles, { name : 'Styled Map' } ) );
-            map.map.setMapTypeId( 'map_style' );
-
-            map.setupMarkers( map.$el, map.map );
-            map.addEventListeners();
-
-	        if ( 'function' == typeof map.callbacks.onInitialize ) {
-		        map.callbacks.onInitialize.call( map );
-	        }
-        } );
-    },
-
-    /**
-     * Adds the required event listeners.
-     *
-     * @since 1.0.0
-     */
-    addEventListeners : function() {
-        this.$el
-
-	        // Fires before the element is destroyed
-	        //.on( 'before:element:refresh', $.proxy( this.maybeDestroy, this ) )
-
-            // Fires when the element parent changes
-            .on( 'element:change:parent', $.proxy( this.refresh, this ) )
-
-            // Fires before the element is destroyed
-            .on( 'before:element:destroy', $.proxy( this.maybeDestroy, this ) )
-
-            // Fires after the parent element is modified
-            .on( 'element:parent:change', $.proxy( this.refresh, this ) );
-
-	    this.$win.on( 'resize', $.proxy( this.refresh, this ) );
-    },
-
-    /**
-     * Refreshes the map if the event target is the map element.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     */
-    maybeRefresh : function( e ) {
-        if ( e.target == this.el ) {
-            this.refresh();
-        }
-    },
-
-    /**
-     * Refreshes the map.
-     *
-     * @since 1.0.0
-     */
-    refresh : function() {
-        google.maps.event.trigger( this.map, 'resize' );
-        this.map.setCenter( this.center );
-    },
-
-    /**
-     * Destroys the map if the event target is the map element.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     */
-    maybeDestroy : function( e ) {
-        if ( e.target == this.el ) {
-            this.destroy();
-        }
+        this.getCoordinates( this.options )
+            .then( function( coordinates ) {
+                component.center = coordinates;
+                var controls = component.options.controls;
+                var settings = {
+                    zoom : component.options.zoom,
+                    draggable : component.options.draggable,
+                    scrollwheel : component.options.scrollwheel,
+                    center : coordinates,
+                    mapTypeId : google.maps.MapTypeId.ROADMAP,
+                    disableDefaultUI: ! controls,
+                    panControl: controls,
+                    rotateControl : controls,
+                    scaleControl: controls,
+                    zoomControl: controls,
+                    mapTypeControl: controls,
+                    mapTypeControlOptions: {
+                        style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+                        position: google.maps.ControlPosition.TOP_CENTER
+                    }
+                };
+                var styles = component.getStyles( component.options.saturation, component.options.hue );
+    
+                component.map = new google.maps.Map( component.$canvas[0], settings );
+                component.map.mapTypes.set( 'map_style', new google.maps.StyledMapType( styles, { name : 'Styled Map' } ) );
+                component.map.setMapTypeId( 'map_style' );
+                component.setupMarkers( component.$el, component.map );
+            } );
     },
 
     /**
      * Returns the map coordinates.
      *
      * @since 1.0.0
-     * 
+     *
      * @param options
      * @returns {*}
      */
     getCoordinates : function( options ) {
         return $.Deferred( function( deferred ) {
-
             if ( 'undefined' == typeof google ) {
                 deferred.reject( new Error( 'The Google Maps API is currently unavailable' ) );
             }
-
             else if ( '' != options.address ) {
                 var geocoder = new google.maps.Geocoder();
                 geocoder.geocode( { address : options.address }, function( results, status ) {
@@ -8069,13 +8591,12 @@ Map.prototype = {
                         deferred.reject( new Error( status ) );
                     }
                 } );
-
             }
             else if ( options.latitude && options.longitude ) {
                 deferred.resolve( new google.maps.LatLng( options.latitude, options.longitude ) );
             }
             else {
-                deferred.reject( new Error( 'No address or map coordinates provided'  ) );
+                deferred.reject( new Error( 'No address or map coordinates provided' ) );
             }
         } ).promise();
     },
@@ -8125,25 +8646,47 @@ Map.prototype = {
         } );
     },
 
-    /**
-     * Destroys the the Map instance.
-     *
-     * @since 1.0.0
+	/**
+     * Refreshes and centers the map.
+     * 
+     * @since 1.7.5
      */
-    destroy : function() {
+    refreshMap: function() {
+        if (  this.map ) {
+            google.maps.event.trigger( this.map, 'resize' );
+            this.map.setCenter( this.center );
+        }
+    },
+
+    /**
+     * Element listeners
+     */
+    onMove: function() {
+        this.refreshMap();
+    },
+
+    onRefresh: function() {
+        this.refreshMap();
+    },
+
+    onChangeParent: function() {
+        this.refreshMap();
+    },
+    
+    onDestroy : function() {
         delete this.map;
         delete this.markers;
         delete this.infoWindows;
+    },
 
-	    //this.$canvas.remove();
-	    this.$el.off();
-	    this.$win.off( 'resize', $.proxy( this.refresh, this ) );
-
-	    if ( 'function' == typeof this.callbacks.onDestroy ) {
-		    this.callbacks.onDestroy.call( this );
-	    }
+    /**
+     * Window listeners
+     */
+    onResize: function() {
+        this.refreshMap();
     }
-};
+
+} );
 
 /**
  * Google Map jQuery plugin.
@@ -8151,6 +8694,7 @@ Map.prototype = {
  * @since 1.0.0
  *
  * @param options
+ * @param callbacks
  * @returns {*}
  */
 $.fn.tailorGoogleMap = function( options, callbacks ) {
@@ -8163,164 +8707,49 @@ $.fn.tailorGoogleMap = function( options, callbacks ) {
 };
 
 module.exports = Map;
-
-},{}],52:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 /**
- * Tailor.Objects.Masonry
+ * Tailor.Components.Masonry
  *
- * A masonry module for managing Shuffle elements.
+ * A masonry component for managing Shuffle elements.
  *
  * @class
  */
 var $ = window.jQuery,
+    Components = window.Tailor.Components,
     Masonry;
 
-/**
- * The Masonry object.
- *
- * @since 1.0.0
- *
- * @param el
- * @param options
- * @param callbacks
- *
- * @constructor
- */
-Masonry = function( el, options, callbacks ) {
-    this.el = el;
-    this.$el = $( el );
-    this.$wrap = this.$el.find( '.tailor-grid--masonry' );
+Masonry = Components.create( {
 
-	this.options = $.extend( {}, this.defaults, this.$el.data(), options );
-    this.callbacks = $.extend( {}, this.callbacks, callbacks );
+    shuffleActive : false,
 
-    this.initialize();
-};
-
-Masonry.prototype = {
-
-    defaults : {
-        itemSelector : '.tailor-grid__item'
+    getDefaults: function() {
+        return {
+            itemSelector : '.tailor-grid__item'
+        };
     },
-
-    callbacks : {
-
-        /**
-         * Callback function to be run when the Carousel instance is initialized.
-         *
-         * @since 1.0.0
-         */
-        onInitialize : function () {},
-
-        /**
-         * Callback function to be run when the Carousel instance is destroyed.
-         *
-         * @since 1.0.0
-         */
-        onDestroy : function () {}
-    },
-
+    
     /**
-     * Initializes the Carousel instance.
+     * Initializes the component.
      *
-     * @since 1.0.0
+     * @since 1.7.5
      */
-    initialize : function() {
+    onInitialize: function() {
+        this.$wrap = this.$el.find( '.tailor-grid--masonry' );
         this.shuffle();
-
-        if ( 'function' == typeof this.callbacks.onInitialize ) {
-            this.callbacks.onInitialize.call( this );
-        }
     },
 
     /**
-     * Adds the required event listeners.
-     *
-     * @since 1.0.0
-     */
-    addEventListeners : function() {
-        this.$el
-
-            // Fires before the element template is refreshed
-            .on( 'before:element:refresh', $.proxy( this.maybeDestroy, this ) )
-
-            // Fires when the element parent changes
-            .on( 'element:change:parent', $.proxy( this.refreshShuffle, this ) )
-
-            // Fires before and after the element is copied
-            .on( 'before:element:copy', $.proxy( this.maybeUnShuffle, this ) )
-            .on( 'element:copy', $.proxy( this.maybeShuffle, this ) )
-
-            // Fires before the element is destroyed
-            .on( 'before:element:destroy', $.proxy( this.maybeDestroy, this ) )
-
-            // Fires after the parent element is modified
-            .on( 'element:parent:change', $.proxy( this.refreshShuffle, this ) );
-    },
-
-    /**
-     * Re-initializes the Shuffle instance if the event was triggered on the masonry element.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     */
-    maybeShuffle : function( e ) {
-        if ( e.target == this.el ) {
-            this.shuffle();
-        }
-    },
-
-    /**
-     * Refreshes the Shuffle instance if the event was triggered on the masonry element.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     */
-    maybeRefreshShuffle : function( e ) {
-        if ( e.target == this.el ) {
-            this.refreshShuffle();
-        }
-    },
-
-    /**
-     * Destroys the Shuffle instance if the event was triggered on the masonry element.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     */
-    maybeUnShuffle : function( e ) {
-        if ( e.target == this.el ) {
-            this.unShuffle();
-        }
-    },
-
-    /**
-     * Destroys the Shuffle instance immediately before the element/view is destroyed.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     */
-    maybeDestroy : function( e ) {
-        if ( e.target == this.el ) {
-            this.destroy( e );
-        }
-    },
-
-    /**
-     * Creates a new Shuffle instance.
+     * Initializes the Shuffle instance.
      *
      * @since 1.0.0
      */
     shuffle : function() {
-	    var masonry = this;
-	    this.$wrap.imagesLoaded( function() {
-		    masonry.$wrap.shuffle( masonry.options );
-		    masonry.addEventListeners();
-	    } );
+        var component = this;
+        this.$wrap.imagesLoaded( function() {
+            component.$wrap.shuffle( component.options );
+            component.shuffleActive = true;
+        } );
     },
 
     /**
@@ -8338,23 +8767,41 @@ Masonry.prototype = {
      * @since 1.0.0
      */
     unShuffle : function() {
-	    this.$wrap.shuffle( 'destroy' );
+        this.$wrap.shuffle( 'destroy' );
+        this.shuffleActive = false;
     },
 
     /**
-     * Destroys the the Shuffle instance.
-     *
-     * @since 1.0.0
+     * Element listeners
      */
-    destroy : function( e ) {
-        this.unShuffle();
-	    this.$el.off();
+    onMove: function() {
+        if ( this.shuffleActive ) {
+            this.refreshShuffle();
+        }
+    },
 
-        if ( 'function' == typeof this.callbacks.onDestroy ) {
-            this.callbacks.onDestroy.call( this );
+    onChangeParent: function() {
+        if ( this.shuffleActive ) {
+            this.shuffle();
+        }
+    },
+
+    onDestroy: function() {
+        if ( this.shuffleActive ) {
+            this.unShuffle();
+        }
+    },
+    
+    /**
+     * Window listeners
+     */
+    onResize: function() {
+        if ( this.shuffleActive ) {
+            this.refreshShuffle();
         }
     }
-};
+    
+} );
 
 /**
  * Masonry jQuery plugin.
@@ -8376,192 +8823,105 @@ $.fn.tailorMasonry = function( options, callbacks ) {
 
 module.exports = Masonry;
 
-},{}],53:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 /**
- * Tailor.Objects.Parallax
+ * Tailor.Components.Parallax
  *
- * A parallax module.
+ * A parallax component.
  *
  * @class
  */
 var $ = window.jQuery,
+	$win = $( window ),
+	Components = window.Tailor.Components,
 	Parallax;
 
-/**
- * De-bounces events using requestAnimationFrame
- *
- * @param callback
- * @constructor
- */
-function DeBouncer( callback ) {
-	this.callback = callback;
-	this.ticking = false;
-}
 
-DeBouncer.prototype = {
+Parallax = Components.create( {
 
-	/**
-	 * dispatches the event to the supplied callback
-	 * @private
-	 */
-	update : function () {
-		this.callback && this.callback();
-		this.ticking = false;
+	getDefaults : function () {
+		return {
+			ratio : 0.25,
+			selector : '.tailor-section__background'
+		};
 	},
 
 	/**
-	 * ensures events don't get stacked
-	 * @private
+	 * Initializes the component.
+	 * 
+	 * @since 1.7.5
 	 */
-	requestTick : function () {
-		if ( ! this.ticking ) {
-			requestAnimationFrame( this.rafCallback || ( this.rafCallback = this.update.bind( this ) ) );
-			this.ticking = true;
+	onInitialize : function () {
+		this.position = {};
+		this.background = this.el.querySelector( this.options.selector );
+		if ( ! this.background ) {
+			return;
 		}
+
+		this.addEvents();
+		this.refreshParallax();
 	},
-
-	/**
-	 * Attach this as the event listeners
-	 */
-	handleEvent : function () {
-		this.requestTick();
-	}
-};
-
-var id = 0;
-
-/**
- * Translates an element on scroll to create a parallax effect.
- *
- * @param el
- * @param options
- * @constructor
- */
-Parallax = function( el, options ) {
-	this.id = 'tailor.parallax.' + id ++;
-	this.options = $.extend( this.defaults, options );
-	this.el = el.querySelector( this.options.selector );
-	if ( ! this.el ) {
-		return;
-	}
-
-	this.$el = $( el );
-	this.$win = $( window );
-	this.container = {
-		el: el
-	};
-
-	this.initialize();
-};
-
-Parallax.prototype = {
-
-	defaults : {
-		ratio : 0.25,
-		selector : '.tailor-section__background'
-	},
-
-	/**
-	 * Initializes the Parallax element.
-	 */
-	initialize : function() {
-
-		this.onResizeCallback = $.proxy( this.onResize, this );
-		this.onScrollCallback = $.proxy( this.onScroll, this );
-
-		this.addEventListeners();
-		this.onResize();
-	},
-
-
+	
 	/**
 	 * Adds the required event listeners.
-	 * 
-	 * @since 1.4.0
+	 *
+	 * @since 1.7.5
 	 */
-	addEventListeners : function() {
-		this.$win
-			.on( 'resize.' + this.id, this.onResizeCallback )
-			.on( 'scroll.' + this.id, this.onScrollCallback );
-
-		this.$el
-
-			// Fires before the element template is refreshed
-			.on( 'before:element:refresh', $.proxy( this.maybeDestroy, this ) )
-
-			// Fires before the element is destroyed
-			.on( 'before:element:destroy', $.proxy( this.maybeDestroy, this ) )
-
-			/**
-			 * Child event listeners
-			 */
-
-			// Fires before and after a child element is added
-			.on( 'element:child:ready', this.onResizeCallback )
-
-			// Fires after a child element is added
-			.on( 'element:child:add', this.onResizeCallback )
-
-			// Fires after a child element is removed
-			.on( 'element:child:remove', this.onResizeCallback )
-
-			// Fires before and after a child element is refreshed
-			.on( 'element:child:refresh', this.onResizeCallback )
-
-			// Fires before and after the position of an item is changed
-			.on( 'element:change:order', this.onResizeCallback )
-
-			// Fires before and after a child element is destroyed
-			.on( 'element:child:destroy', this.onResizeCallback )
+	addEvents: function() {
+		this.onScrollCallback = this.onScroll.bind( this );
+		$win.on( 'scroll.' + this.id, this.onScrollCallback );
 	},
 
 	/**
-	 * Removes all registered event listeners.
+	 * Record the initial window position.
 	 *
 	 * @since 1.4.0
 	 */
-	removeEventListeners: function() {
-		this.$win
-			.off( 'resize.' + this.id, this.onResizeCallback )
-			.off( 'scroll.' + this.id, this.onScrollCallback );
-
-		this.$el.off();
-	},
-
-	/**
-	 * Perform checks and do parallax when the window is resized.
-	 *
-	 * @since 1.4.0
-	 */
-	onResize : function() {
-		this.setup();
-		this.doParallax();
-	},
-
-	onScroll : function() {
-		requestAnimationFrame( this.doParallax.bind( this ) );
-	},
-
-	/**
-	 * Get and set attributes w
-	 */
-	setup : function() {
+	doSetup : function() {
 
 		// Store window height
 		this.windowHeight = Math.max( document.documentElement.clientHeight, window.innerHeight || 0 );
 
 		// Store container attributes
-		var containerRect = this.container.el.getBoundingClientRect();
-		var containerHeight = this.container.el.offsetHeight;
-		var containerTop = containerRect.top + window.pageYOffset;
+		var rect = this.el.getBoundingClientRect();
+		var height = this.el.offsetHeight;
+		var top = rect.top + window.pageYOffset;
 
-		this.container.top = containerTop;
-		this.container.height = containerHeight;
-		this.container.bottom = containerTop + containerHeight;
+		this.position.top = top;
+		this.position.height = height;
+		this.position.bottom = top + height;
 
-		// Adjust the element height
-		this.el.style.top = '0px';
-		this.el.style.height = Math.round( ( containerHeight + ( containerHeight * this.options.ratio ) ) ) + 'px';
+		// Adjust the background height
+		this.background.style.top = '0px';
+		this.background.style.height = Math.round( ( height + ( height * this.options.ratio ) ) ) + 'px';
+	},
+
+	/**
+	 * Translate the element relative to its container to achieve the parallax effect.
+	 *
+	 * @since 1.4.0
+	 */
+	doParallax : function() {
+		if ( ! this.inViewport() ) {
+			return; // Do nothing if the parent is not in view
+		}
+
+		var amountScrolled = 1 - (
+				( this.position.bottom - window.pageYOffset  ) /
+				( this.position.height + this.windowHeight )
+			);
+		var translateY = Math.round( ( amountScrolled * this.position.height * this.options.ratio ) * 100 ) / 100;
+		this.background.style[ Modernizr.prefixed( 'transform' ) ] = 'translate3d( 0px, -' + translateY + 'px, 0px )';
+	},
+
+	/**
+	 * Refreshes the parallax effect.
+	 *
+	 * @since 1.7.5
+	 */
+	refreshParallax: function() {
+		this.doSetup();
+		this.doParallax();
 	},
 
 	/**
@@ -8574,58 +8934,54 @@ Parallax.prototype = {
 	inViewport : function() {
 		var winTop = window.pageYOffset;
 		var winBottom = winTop + this.windowHeight;
-		var containerBottom = this.container.top + this.container.height;
-
+		var containerBottom = this.position.top + this.position.height;
 		return (
-			this.container.top < winBottom &&   // Top of element is above the bottom of the window
+			this.position.top < winBottom &&    // Top of element is above the bottom of the window
 			winTop < containerBottom            // Bottom of element is below top of the window
 		);
 	},
 
 	/**
-	 * Translate the element relative to its container to achieve the parallax effect.
-	 * 
-	 * @since 1.4.0
+	 * Element listeners
 	 */
-	doParallax : function() {
-
-		// Do nothing if the parent is not in view
-		if ( ! this.inViewport() ) {
-			return;
-		}
-
-		var amountScrolled = 1 - (
-				( this.container.bottom - window.pageYOffset  ) /
-				( this.container.height + this.windowHeight )
-			);
-
-		var translateY = Math.round( ( amountScrolled * this.container.height * this.options.ratio ) * 100 ) / 100;
-
-		this.el.style[ Modernizr.prefixed( 'transform' ) ] = 'translate3d( 0px, -' + translateY + 'px, 0px )';
+	onJSRefresh: function() {
+		this.refreshParallax();
 	},
 
 	/**
-	 * Destroys the parallax instance if the event target is the parallax element.
-	 *
-	 * @since 1.4.0
-	 *
-	 * @param e
+	 * Child listeners
 	 */
-	maybeDestroy : function( e ) {
-		if ( e.target == this.container.el ) {
-			this.destroy();
-		}
+	onChangeChild : function() {
+		this.refreshParallax();
 	},
 
 	/**
-	 * Destroys the parallax instance.
-	 *
-	 * @since 1.4.0
+	 * Descendant listeners
 	 */
-	destroy: function() {
-		this.removeEventListeners();
+	onChangeDescendant : function() {
+		this.refreshParallax();
+	},
+
+	/**
+	 * Window listeners
+	 */
+	onResize : function() {
+		this.refreshParallax();
+	},
+
+	onScroll : function() {
+		requestAnimationFrame( this.doParallax.bind( this ) );
+	},
+	
+	/**
+	 * Element listeners
+	 */
+	onDestroy: function() {
+		$win.off( 'scroll.' + this.id, this.onScrollCallback );
+		this.background.removeAttribute('style');
 	}
-};
+
+} );
 
 /**
  * Parallax jQuery plugin.
@@ -8646,179 +9002,55 @@ $.fn.tailorParallax = function( options, callbacks ) {
 };
 
 module.exports = Parallax;
-
-},{}],54:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 /**
- * Tailor.Objects.Slideshow
+ * Tailor.Components.Slideshow
  *
- * A slideshow module.
+ * A slideshow component.
  *
  * @class
  */
 var $ = window.jQuery,
+    Components = window.Tailor.Components,
     Slideshow;
 
-/**
- * The Slideshow object.
- *
- * @since 1.0.0
- *
- * @param el
- * @param options
- * @param callbacks
- *
- * @constructor
- */
-Slideshow = function( el, options, callbacks ) {
-    this.el = el;
-    this.$el = $( el );
-    this.$wrap = this.$el.find( '.tailor-slideshow__slides' );
-
-	this.options = $.extend( {}, this.defaults, this.$el.data(), options );
-    if ( document.documentElement.dir && 'rtl' == document.documentElement.dir ) {
-        this.options.rtl = true;
-    }
+Slideshow = Components.create( {
     
-    this.callbacks = $.extend( {}, this.callbacks, callbacks );
-
-    this.initialize();
-};
-
-Slideshow.prototype = {
-
-    defaults : {
-        items : '.tailor-slideshow__slide',
-        prevArrow: '<button type="button" data-role="none" class="slick-prev" aria-label="Previous" tabindex="0" role="button"></button>',
-        nextArrow: '<button type="button" data-role="none" class="slick-next" aria-label="Next" tabindex="0" role="button"></button>',
-        adaptiveHeight : true,
-        draggable : false,
-        speed : 250,
-        slidesToShow : 1,
-        slidesToScroll : 1,
-        autoplay : false,
-        arrows : false,
-        dots : false,
-        fade : true
+    slickActive: false,
+    
+    getDefaults: function() {
+        return {
+            items : '.tailor-slideshow__slide',
+            prevArrow: '<button type="button" data-role="none" class="slick-prev" aria-label="Previous" tabindex="0" role="button"></button>',
+            nextArrow: '<button type="button" data-role="none" class="slick-next" aria-label="Next" tabindex="0" role="button"></button>',
+            adaptiveHeight : true,
+            draggable : false,
+            speed : 250,
+            slidesToShow : 1,
+            slidesToScroll : 1,
+            autoplay : false,
+            arrows : false,
+            dots : false,
+            fade : true
+        };
     },
 
-    callbacks : {
-
-        /**
-         * Callback function to be run when the object is initialized.
-         *
-         * @since 1.0.0
-         */
-        onInitialize : function () {},
-
-        /**
-         * Callback function to be run when the object is destroyed.
-         *
-         * @since 1.0.0
-         */
-        onDestroy : function () {}
-    },
-
-    /**
-     * Initializes the object.
-     *
-     * @since 1.0.0
-     */
-    initialize : function() {
+    onInitialize: function() {
+        this.$wrap = this.$el.find( '.tailor-slideshow__slides' );
         this.slick();
-
-        if ( 'function' == typeof this.callbacks.onInitialize ) {
-            this.callbacks.onInitialize.call( this );
-        }
     },
-
-    /**
-     * Adds the required event listeners.
-     *
-     * @since 1.0.0
-     */
-    addEventListeners : function() {
-        this.$el
-
-            // Fires before the element template is refreshed
-            .on( 'before:element:refresh', $.proxy( this.unSlick, this ) )
-
-            // Fires when the element parent changes
-            .on( 'element:change:parent', $.proxy( this.maybeRefreshSlick, this ) )
-
-            // Fires before and after the element is copied
-            .on( 'before:element:copy', $.proxy( this.unSlick, this ) )
-            .on( 'element:copy', $.proxy( this.slick, this ) )
-
-            // Fires before the element is destroyed
-            .on( 'before:element:destroy', $.proxy( this.maybeDestroy, this ) )
-
-            // Fires after the parent element is modified
-            .on( 'element:parent:change', $.proxy( this.maybeRefreshSlick, this ) );
-    },
-
-    /**
-     * Re-initializes the object if the event was triggered on the element.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     */
-    maybeSlick : function( e ) {
-        if ( e.target == this.el ) {
-            this.slick();
-        }
-    },
-
-    /**
-     * Refreshes the object if the event was triggered on the element.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     */
-    maybeRefreshSlick : function( e ) {
-        if ( e.target == this.el ) {
-            this.refreshSlick();
-        }
-    },
-
-    /**
-     * Destroys the object if the event was triggered on the element.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     */
-    maybeUnSlick : function( e ) {
-        if ( e.target == this.el ) {
-            this.unSlick();
-        }
-    },
-
-    /**
-     * Destroys the object immediately before the element/view is destroyed.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     */
-    maybeDestroy : function( e ) {
-        if ( e.target == this.el ) {
-            this.destroy( e );
-        }
-    },
-
+    
     /**
      * Initializes the Slick Slider plugin.
      *
      * @since 1.0.0
      */
     slick : function() {
-	    var slideshow = this;
-	    this.$el.imagesLoaded( function() {
-		    slideshow.addEventListeners();
-		    slideshow.$wrap.slick( slideshow.options );
-	    } );
+        var component = this;
+        this.$el.imagesLoaded( function() {
+            component.$wrap.slick( component.options );
+            component.slickActive = true;
+        } );
     },
 
     /**
@@ -8827,7 +9059,9 @@ Slideshow.prototype = {
      * @since 1.0.0
      */
     refreshSlick : function() {
-        this.$wrap.slick( 'refresh' );
+        if ( this.slickActive ) {
+            this.$wrap.slick( 'refresh' );
+        }
     },
 
     /**
@@ -8836,24 +9070,38 @@ Slideshow.prototype = {
      * @since 1.0.0
      */
     unSlick : function() {
-        this.$wrap.slick( 'unslick' );
+        if ( this.slickActive ) {
+            this.$wrap.slick( 'unslick' );
+        }
+    },
+    
+    /**
+     * Element listeners
+     */
+    onMove: function() {
+        this.refreshSlick();
+    },
+    
+    onBeforeCopy: function() {
+        this.unSlick();
+    },
+    
+    onChangeParent: function() {
+        this.refreshSlick();
+    },
+
+    onDestroy : function() {
+        this.unSlick();
     },
 
     /**
-     * Destroys the object.
-     *
-     * @since 1.0.0
+     * Window listeners
      */
-    destroy : function( e ) {
-        this.$el.off();
-
-        this.unSlick();
-
-        if ( 'function' == typeof this.callbacks.onDestroy ) {
-            this.callbacks.onDestroy.call( this );
-        }
+    onResize: function() {
+        this.refreshSlick();
     }
-};
+    
+} );
 
 /**
  * Slideshow jQuery plugin.
@@ -8873,277 +9121,162 @@ $.fn.tailorSlideshow = function( options, callbacks ) {
     } );
 };
 
-},{}],55:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 /**
- * Tailor.Objects.Tabs
+ * Tailor.Components.Tabs
  *
- * A tabs module.
+ * A tabs component.
  *
  * @class
  */
 var $ = window.jQuery,
+	$win = $( window ),
+	Components = window.Tailor.Components,
     Tabs;
 
-/**
- * The Tabs object.
- *
- * @since 1.0.0
- *
- * @param el
- * @param options
- * @param callbacks
- * @constructor
- */
-Tabs = function( el, options, callbacks ) {
-    this.el = el;
-    this.$el = $( el );
-	this.options = $.extend( {}, this.defaults, this.$el.data(), options );
-    this.callbacks = $.extend( {}, this.callbacks, callbacks );
-
-    this.initialize();
-};
-
-Tabs.prototype = {
-
-    defaults : {
-        tabs : '.tailor-tabs__navigation .tailor-tabs__navigation-item',
-        content : '.tailor-tabs__content .tailor-tab',
-        initial : 1
-    },
-
-	callbacks : {
-
-		/**
-		 * Callback function to be run when the object is initialized.
-		 *
-		 * @since 1.0.0
-		 */
-		onInitialize : function () {},
-
-		/**
-		 * Callback function to be run when the object is destroyed.
-		 *
-		 * @since 1.0.0
-		 */
-		onDestroy : function () {}
+Tabs = Components.create( {
+	
+	getDefaults: function() {
+		return {
+			tabs : '.tailor-tabs__navigation .tailor-tabs__navigation-item',
+			content : '.tailor-tabs__content .tailor-tab',
+			initial : 1
+		};
 	},
 
-    /**
-     * Initializes the Tabs instance.
-     *
-     * @since 1.0.0
-     */
-    initialize : function() {
-        this.querySelectors();
-        this.setActive();
-        this.addEventListeners();
-
-	    if ( 'function' == typeof this.callbacks.onInitialize ) {
-		    this.callbacks.onInitialize.call( this );
-	    }
-    },
-
-    /**
-     * Adds the required event listeners.
-     *
-     * @since 1.0.0
-     */
-    addEventListeners : function() {
-        this.$el
-
-	        // Fires before the element template is refreshed
-	        .on( 'before:element:refresh', $.proxy( this.maybeDestroy, this ) )
-
-	        // Fires before the element is destroyed
-	        .on( 'before:element:destroy', $.proxy( this.maybeDestroy, this ) )
-
-	        // Fires before and after a child element is added
-	        .on( 'element:child:add element:child:ready', $.proxy( this.onChangeChild, this ) )
-
-	        // Fires before and after a child element is refreshed
-	        .on( 'element:child:refresh', $.proxy( this.onChangeChild, this ) )
-
-	        // Fires before and after a child element is destroyed
-	        .on( 'element:child:destroy', $.proxy( this.onDestroyChild, this ) )
-
-	        // Fires before and after the position of an item is changed
-	        .on( 'element:change:order', $.proxy( this.onReorderChild, this ) );
-    },
-
-    /**
-     * Caches the tabs and tab content.
-     *
-     * @since 1.0.0
-     */
-    querySelectors : function() {
-        if ( this.$tabs ) {
-            this.$tabs.off();
-        }
-
-        this.$content = this.$el.find( this.options.content );
-        this.$tabs = this.$el
-            .find( this.options.tabs )
-            .on( 'click', $.proxy( this.onClick, this ) );
-    },
-
-    /**
-     * Sets the active tab on after (re)initialization.
-     *
-     * @since 1.0.0
-     */
-    setActive : function() {
-        var active = this.$content.filter( function() {
-            return this.classList.contains( 'is-active' );
-        } );
-
-        var el;
-        if ( 0 == active.length ) {
-            var initial = ( this.options.initial - 1 );
-            if ( this.$content[ initial ] ) {
-                el = this.$content[ initial ];
-            }
-        }
-        else {
-            el = active[0];
-        }
-
-        if ( el ) {
-            this.activate( el.id );
-        }
-    },
-
-    /**
-     * Activates a tab when it is clicked.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     */
-    onClick : function( e ) {
-        this.activate( e.target.getAttribute( 'data-id' ) );
-        e.preventDefault();
-    },
-
-    /**
-     * Refreshes the selectors when a tab is added, removed or refreshed.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     * @param childView
-     */
-    onChangeChild : function( e, childView ) {
-        if ( e.target == this.el ) {
-            this.querySelectors();
-            this.activate( childView.el.id );
-        }
-    },
+	/**
+	 * Initializes the component.
+	 *
+	 * @since 1.7.5
+	 */
+	onInitialize : function() {
+		this.querySelectors();
+		this.setActive();
+	},
 
 	/**
-	 * Updates the tabs container when the position of a tab is changed.
+	 * Caches the tabs and tab content.
+	 *
+	 * @since 1.0.0
+	 */
+	querySelectors : function() {
+		if ( this.$tabs ) {
+			this.$tabs.off();
+		}
+
+		this.$content = this.$el.find( this.options.content );
+		this.$tabs = this.$el
+			.find( this.options.tabs )
+			.on( 'click', $.proxy( this.onClick, this ) );
+	},
+
+	/**
+	 * Sets the active tab on after (re)initialization.
+	 *
+	 * @since 1.0.0
+	 */
+	setActive : function() {
+		var active = this.$content.filter( function() {
+			return this.classList.contains( 'is-active' );
+		} );
+
+		var el;
+		if ( 0 == active.length ) {
+			var initial = ( this.options.initial - 1 );
+			if ( this.$content[ initial ] ) {
+				el = this.$content[ initial ];
+			}
+		}
+		else {
+			el = active[0];
+		}
+		if ( el ) {
+			this.activate( el.id );
+		}
+	},
+
+	/**
+	 * Activates a given tab.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param id
+	 */
+	activate : function( id ) {
+		this.$tabs.each( function() {
+			this.classList.toggle( 'is-active', this.getAttribute( 'data-id' ) == id );
+		} );
+
+		this.$content.each( function() {
+			$( this )
+				.toggle( this.id == id )
+				.toggleClass( 'is-active', this.id == id );
+		} );
+		
+		$win.trigger( 'resize' );
+	},
+
+	/**
+	 * Refreshes the tabs.
 	 *
 	 * @since 1.0.0
 	 *
 	 * @param e
-	 * @param id
-	 * @param newIndex
-	 * @param oldIndex
+	 * @param childView
 	 */
-    onReorderChild : function( e, id, newIndex, oldIndex ) {
-        if ( e.target == this.el ) {
-            var $item = this.$content.filter( function() { return this.id == id; } );
+	refreshTabs : function( e, childView ) {
+		this.querySelectors();
+		this.activate( childView.el.id );
+	},
 
-            if ( oldIndex - newIndex < 0 ) {
-                $item.insertAfter( this.$content[ newIndex ] );
-            }
-            else {
-                $item.insertBefore( this.$content[ newIndex ] );
-            }
+	onClick : function( e ) {
+		this.activate( e.target.getAttribute( 'data-id' ) );
+		e.preventDefault();
+	},
+	
+	/**
+	 * Element listeners
+	 */
+	onDestroy: function() {
+		this.$tabs.off();
+	},
+	
+	/**
+	 * Child listeners
+	 */
+	onAddChild: function( e, childView ) {
+		this.refreshTabs( e, childView );
+	},
 
-            this.activate( id );
-        }
-    },
+	onReadyChild: function( e, childView ) {
+		this.refreshTabs( e, childView );
+	},
+	
+	onRemoveChild: function( e, childView ) {
+		this.refreshTabs( e, childView );
+	},
+	
+	onRefreshChild: function( e, childView ) {
+		this.refreshTabs( e, childView );
+	},
 
-    /**
-     * Refreshes the selectors when a tab is added, removed or refreshed.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     * @param childView
-     */
-    onDestroyChild : function( e, childView ) {
-        if ( e.target !== this.el ) {
+	onReorderChild: function( e, id, newIndex, oldIndex ) {
+		this.activate( id );
+	},
+
+	onDestroyChild : function( e, childView ) {
+		if ( ( 0 == childView.$el.index() && ! childView.el.nextSibling ) ) {
 			return;
-        }
+		}
 
-	    if ( ( 0 == childView.$el.index() && ! childView.el.nextSibling ) ) {
-		    return;
-	    }
+		var id = childView.el.nextSibling ? childView.el.nextSibling.id : childView.el.previousSibling.id;
+		childView.$el.remove();
 
-	    var id = childView.el.nextSibling ? childView.el.nextSibling.id : childView.el.previousSibling.id;
-	    childView.$el.remove();
-
-	    this.querySelectors();
-	    this.activate( id );
-    },
-
-    /**
-     * Activates a given tab.
-     *
-     * @since 1.0.0
-     *
-     * @param id
-     */
-    activate : function( id ) {
-        this.$tabs.each( function() {
-            this.classList.toggle( 'is-active', this.getAttribute( 'data-id' ) == id );
-        } );
-
-        this.$content.each( function() {
-            $( this )
-                .toggle( this.id == id )
-                .toggleClass( 'is-active', this.id == id )
-                .children().each( function( index, el ) {
-					var $el = $( el );
-
-		            /**
-		             * Fires after the tab is displayed.
-		             *
-		             * @since 1.0.0
-		             */
-		            $el.trigger( 'element:parent:change', $el );
-                } );
-        } );
-    },
-
-    /**
-     * Destroys the Tabs instance immediately before the element/view is destroyed.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     */
-    maybeDestroy : function( e ) {
-        if ( e.target == this.el ) {
-            this.destroy( e );
-        }
-    },
-
-    /**
-     * Destroys the the Tabs instance.
-     *
-     * @since 1.0.0
-     */
-    destroy : function( e ) {
-	    this.$el.off();
-	    this.$tabs.off();
-
-	    if ( 'function' == typeof this.callbacks.onDestroy ) {
-		    this.callbacks.onDestroy.call( this );
-	    }
-    }
-};
+		this.querySelectors();
+		this.activate( id );
+	}
+	
+} );
 
 /**
  * Carousel jQuery plugin.
@@ -9165,232 +9298,122 @@ $.fn.tailorTabs = function( options, callbacks ) {
 
 module.exports = Tabs;
 
-},{}],56:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 /**
- * Tailor.Objects.Toggles
+ * Tailor.Components.Toggles
  *
- * A toggles module.
+ * A toggles component.
  *
  * @class
  */
 var $ = window.jQuery,
+	$win = $( window ),
+	Components = window.Tailor.Components,
     Toggles;
 
-/**
- * The Toggles object.
- *
- * @since 1.0.0
- *
- * @param el
- * @param options
- * @param callbacks
- * @constructor
- */
-Toggles = function( el, options, callbacks ) {
-    this.el = el;
-    this.$el = $( el );
+Toggles = Components.create( {
 
-    this.options = $.extend( {}, this.defaults, this.$el.data(), options );
-    this.callbacks = $.extend( {}, this.callbacks, callbacks );
-
-    this.initialize();
-};
-
-Toggles.prototype = {
-
-    defaults : {
-        toggles : '.tailor-toggle__title',
-        content : '.tailor-toggle__body',
-        accordion : false,
-        initial : 0,
-        speed : 150
-    },
-
-	callbacks : {
-
-		/**
-		 * Callback function to be run when the object is initialized.
-		 *
-		 * @since 1.0.0
-		 */
-		onInitialize : function () {},
-
-		/**
-		 * Callback function to be run when the object is destroyed.
-		 *
-		 * @since 1.0.0
-		 */
-		onDestroy : function () {}
+	getDefaults : function () {
+		return {
+			toggles : '.tailor-toggle__title',
+			content : '.tailor-toggle__body',
+			accordion : false,
+			initial : 0,
+			speed : 150
+		};
 	},
 
-    /**
-     * Initializes the object.
-     *
-     * @since 1.0.0
-     */
-    initialize : function() {
-        this.querySelectors();
-        this.addEventListeners();
+	/**
+	 * Initializes the component.
+	 *
+	 * @since 1.7.5
+	 */
+	onInitialize : function() {
+		this.querySelectors();
 
-	    var initial = this.options.initial - 1;
-	    if ( initial >= 0 && this.$toggles.length > initial ) {
-		    this.activate( this.$toggles[ initial ] );
-	    }
+		var initial = this.options.initial - 1;
+		if ( initial >= 0 && this.$toggles.length > initial ) {
+			this.activate( this.$toggles[ initial ] );
+		}
+	},
 
-	    if ( 'function' == typeof this.callbacks.onInitialize ) {
-		    this.callbacks.onInitialize.call( this );
-	    }
-    },
+	/**
+	 * Caches the toggles and toggle content.
+	 *
+	 * @since 1.0.0
+	 */
+	querySelectors : function() {
+		this.$content = this.$el.find( this.options.content ).hide();
+		this.$toggles = this.$el
+			.find( this.options.toggles )
+			.off()
+			.on( 'click', $.proxy( this.onClick, this ) );
+	},
 
-    /**
-     * Adds the required event listeners.
-     *
-     * @since 1.0.0
-     */
-    addEventListeners : function() {
-        this.$el
+	/**
+	 * Activates a given toggle.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param el
+	 */
+	activate: function( el ) {
+		var speed = this.options.speed;
+		var $el = $( el );
 
-            // Fires before the element template is refreshed
-            .on( 'before:element:refresh', $.proxy( this.maybeDestroy, this ) )
+		if ( this.options.accordion ) {
+			this.$toggles.filter( function() {
+				return this !== el;
+			} ).removeClass( 'is-active' );
 
-            // Fires before the element is destroyed
-            .on( 'before:element:destroy', $.proxy( this.maybeDestroy, this ) )
+			this.$content.each( function() {
+				var $toggle = $( this );
+				if ( el.nextElementSibling == this ) {
+					$toggle.slideToggle( speed );
+				}
+				else {
+					$toggle.slideUp( speed );
+				}
+			} );
+		}
+		else {
+			this.$content
+				.filter( function() { return el.nextElementSibling == this; } )
+				.slideToggle( speed );
+		}
 
-            // Fires after a child element is added
-            .on( 'element:child:add element:child:ready', $.proxy( this.onChangeChild, this ) )
+		$el.toggleClass( 'is-active' );
 
-            // Fires after a child element is refreshed
-            .on( 'element:child:refresh', $.proxy( this.onChangeChild, this ) )
+		$win.trigger( 'resize' );
+	},
 
-            // Fires after a child element is destroyed
-            .on( 'element:child:destroy', $.proxy( this.onChangeChild, this ) )
-    },
+	/**
+	 * Activates a toggle when it is clicked.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 */
+	onClick: function( e ) {
+		this.activate( e.target );
+		e.preventDefault();
+	},
 
-    /**
-     * Caches the toggles and toggle content.
-     *
-     * @since 1.0.0
-     */
-    querySelectors : function() {
-        this.$content = this.$el.find( this.options.content ).hide();
-        this.$toggles = this.$el
-            .find( this.options.toggles )
-            .off()
-            .on( 'click', $.proxy( this.onClick, this ) );
-    },
+	/**
+	 * Element listeners
+	 */
+	onDestroy: function( e ) {
+		this.$toggles.off();
+	},
 
-    /**
-     * Activates a toggle when it is clicked.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     */
-    onClick : function( e ) {
-        this.activate( e.target );
-        e.preventDefault();
-    },
-
-    /**
-     * Refreshes the selectors when a toggle is added, removed or refreshed.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     * @param childView
-     */
-    onChangeChild : function( e, childView ) {
-        if ( e.target == this.el ) {
-            this.querySelectors();
-        }
-    },
-
-    /**
-     * Activates a given toggle.
-     *
-     * @since 1.0.0
-     *
-     * @param el
-     */
-    activate : function( el ) {
-        var speed = this.options.speed;
-        var $el = $( el );
-
-        if ( this.options.accordion ) {
-            this.$toggles.filter( function() {
-                return this !== el;
-            } ).removeClass( 'is-active' );
-
-            this.$content.each( function() {
-                var $toggle = $( this );
-                if ( el.nextElementSibling == this ) {
-                    $toggle
-	                    .slideToggle( speed )
-	                    .children().each( function( index, el ) {
-		                    var $el = $( el );
-
-		                    /**
-		                     * Fires after the toggle is displayed.
-		                     *
-		                     * @since 1.0.0
-		                     */
-		                    $el.trigger( 'element:parent:change', $el );
-	                    } );
-                }
-                else {
-                    $toggle.slideUp( speed );
-                }
-            } );
-        }
-        else {
-            this.$content
-                .filter( function() { return el.nextElementSibling == this; } )
-                .slideToggle( speed )
-	            .each( function() {
-		            $( this ).children().each( function( index, el ) {
-			            var $el = $( el );
-
-			            /**
-			             * Fires after the toggle is displayed.
-			             *
-			             * @since 1.0.0
-			             */
-			            $el.trigger( 'element:parent:change', $el );
-		            } );
-	            } );
-        }
-
-        $el.toggleClass( 'is-active' );
-    },
-
-    /**
-     * Destroys the Toggles instance immediately before the element/view is destroyed.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     */
-    maybeDestroy : function( e ) {
-        if ( e.target == this.el ) {
-            this.destroy( e );
-        }
-    },
-
-    /**
-     * Destroys the the Toggles instance.
-     *
-     * @since 1.0.0
-     */
-    destroy : function( e ) {
-        this.$el.off();
-        this.$toggles.off();
-
-	    if ( 'function' == typeof this.callbacks.onDestroy ) {
-		    this.callbacks.onDestroy.call( this );
-	    }
-    }
-
-};
+	/**
+	 * Child listeners
+	 */
+	onChangeChild: function() {
+		this.querySelectors();
+	}
+	
+} );
 
 /**
  * Toggles jQuery plugin.
@@ -9412,7 +9435,7 @@ $.fn.tailorToggles = function( options, callbacks ) {
 
 module.exports = Toggles;
 
-},{}],57:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 /**
  * window.ajax
  *
@@ -9534,7 +9557,7 @@ Ajax = {
 window.ajax = Ajax;
 
 module.exports = Ajax;
-},{}],58:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 /**
  * Tailor.CSS
  *
@@ -9642,7 +9665,7 @@ var CSS = {
 };
 
 module.exports = CSS;
-},{}],59:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 /**
  * classList Polyfill
  *
@@ -9732,7 +9755,7 @@ module.exports = CSS;
 
 } )();
 
-},{}],60:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 /**
  * requestAnimationFrame polyfill.
  *
@@ -9771,7 +9794,7 @@ module.exports = CSS;
 
 } ) ( window );
 
-},{}],61:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 /**
  * Makes animation and transition support status and end names available as global variables.
  */

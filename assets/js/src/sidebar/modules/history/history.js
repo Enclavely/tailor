@@ -66,7 +66,7 @@ HistoryModule = Marionette.Module.extend( {
         this.listenTo( app.channel, 'modal:apply', this.onEditElement );
         this.listenTo( app.channel, 'element:delete', this.onDeleteElement );
         this.listenTo( app.channel, 'element:resize', this.onResizeElement );
-        this.listenTo( app.channel, 'element:change:order', this.onReorderElement );
+        this.listenTo( app.channel, 'navigation:reorder', this.onReorderElement );
         this.listenTo( app.channel, 'template:add', this.onAddTemplate );
         this.listenTo( app.channel, 'history:restore', this.restoreSnapshot );
         this.listenTo( app.channel, 'history:undo', this.undoStep );

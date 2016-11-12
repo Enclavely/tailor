@@ -1,69 +1,32 @@
 /**
- * Tailor.Objects.Map
+ * Tailor.Components.Map
  *
- * A map module.
+ * A map component.
  *
  * @class
  */
 var $ = window.jQuery,
+    Components = window.Tailor.Components,
     Map;
 
-/**
- * The Map object.
- *
- * @since 1.0.0
- *
- * @param el
- * @param options
- * @param callbacks
- *
- * @constructor
- */
-Map = function( el, options, callbacks ) {
-    this.el = el;
-    this.$el = $( el );
-    this.$win = $( window );
+Map = Components.create( {
 
-	this.options = _.extend( {}, this.defaults, this.$el.data(), options );
-	this.callbacks = _.extend( {}, this.callbacks, callbacks );
-
-    this.initialize();
-};
-
-Map.prototype = {
-
-    defaults : {
-        height : 450,
-        address : '',
-        latitude : '',
-        longitude : '',
-        zoom : 12,
-        draggable : 1,
-        scrollwheel : 0,
-        controls : 0,
-        hue : null,
-        saturation : 0
+    getDefaults: function() {
+        return {
+            height : 450,
+            address : '',
+            latitude : '',
+            longitude : '',
+            zoom : 12,
+            draggable : 1,
+            scrollwheel : 0,
+            controls : 0,
+            hue : null,
+            saturation : 0
+        };
     },
 
-	callbacks : {
-
-		/**
-		 * Callback function to be run when the object is initialized.
-		 *
-		 * @since 1.0.0
-		 */
-		onInitialize : function () {},
-
-		/**
-		 * Callback function to be run when the object is destroyed.
-		 *
-		 * @since 1.0.0
-		 */
-		onDestroy : function () {}
-	},
-
     getStyles : function( saturation, hue ) {
-
         return  [
             {
                 featureType : 'all',
@@ -93,127 +56,59 @@ Map.prototype = {
     },
 
     /**
-     * Initializes the Map instance.
+     * Initializes the component.
      *
-     * @since 1.0.0
+     * @since 1.7.5
      */
-    initialize : function() {
-        var map = this;
-
+    onInitialize : function() {
+        var component = this;
         this.markers = [];
         this.infoWindows = [];
         this.$canvas = this.$el.find( '.tailor-map__canvas').height( this.options.height );
 
-        this.getCoordinates( this.options ).then( function( coordinates ) {
-            map.center = coordinates;
-
-            var controls = map.options.controls;
-            var settings = {
-                zoom : map.options.zoom,
-                draggable : map.options.draggable,
-                scrollwheel : map.options.scrollwheel,
-                center : coordinates,
-                mapTypeId : google.maps.MapTypeId.ROADMAP,
-                disableDefaultUI: ! controls,
-                panControl: controls,
-                rotateControl : controls,
-                scaleControl: controls,
-                zoomControl: controls,
-                mapTypeControl: controls,
-                mapTypeControlOptions: {
-                    style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
-                    position: google.maps.ControlPosition.TOP_CENTER
-                }
-            };
-            var styles = map.getStyles( map.options.saturation, map.options.hue );
-
-            map.map = new google.maps.Map( map.$canvas[0], settings );
-            map.map.mapTypes.set( 'map_style', new google.maps.StyledMapType( styles, { name : 'Styled Map' } ) );
-            map.map.setMapTypeId( 'map_style' );
-
-            map.setupMarkers( map.$el, map.map );
-            map.addEventListeners();
-
-	        if ( 'function' == typeof map.callbacks.onInitialize ) {
-		        map.callbacks.onInitialize.call( map );
-	        }
-        } );
-    },
-
-    /**
-     * Adds the required event listeners.
-     *
-     * @since 1.0.0
-     */
-    addEventListeners : function() {
-        this.$el
-
-	        // Fires before the element is destroyed
-	        //.on( 'before:element:refresh', $.proxy( this.maybeDestroy, this ) )
-
-            // Fires when the element parent changes
-            .on( 'element:change:parent', $.proxy( this.refresh, this ) )
-
-            // Fires before the element is destroyed
-            .on( 'before:element:destroy', $.proxy( this.maybeDestroy, this ) )
-
-            // Fires after the parent element is modified
-            .on( 'element:parent:change', $.proxy( this.refresh, this ) );
-
-	    this.$win.on( 'resize', $.proxy( this.refresh, this ) );
-    },
-
-    /**
-     * Refreshes the map if the event target is the map element.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     */
-    maybeRefresh : function( e ) {
-        if ( e.target == this.el ) {
-            this.refresh();
-        }
-    },
-
-    /**
-     * Refreshes the map.
-     *
-     * @since 1.0.0
-     */
-    refresh : function() {
-        google.maps.event.trigger( this.map, 'resize' );
-        this.map.setCenter( this.center );
-    },
-
-    /**
-     * Destroys the map if the event target is the map element.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     */
-    maybeDestroy : function( e ) {
-        if ( e.target == this.el ) {
-            this.destroy();
-        }
+        this.getCoordinates( this.options )
+            .then( function( coordinates ) {
+                component.center = coordinates;
+                var controls = component.options.controls;
+                var settings = {
+                    zoom : component.options.zoom,
+                    draggable : component.options.draggable,
+                    scrollwheel : component.options.scrollwheel,
+                    center : coordinates,
+                    mapTypeId : google.maps.MapTypeId.ROADMAP,
+                    disableDefaultUI: ! controls,
+                    panControl: controls,
+                    rotateControl : controls,
+                    scaleControl: controls,
+                    zoomControl: controls,
+                    mapTypeControl: controls,
+                    mapTypeControlOptions: {
+                        style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+                        position: google.maps.ControlPosition.TOP_CENTER
+                    }
+                };
+                var styles = component.getStyles( component.options.saturation, component.options.hue );
+    
+                component.map = new google.maps.Map( component.$canvas[0], settings );
+                component.map.mapTypes.set( 'map_style', new google.maps.StyledMapType( styles, { name : 'Styled Map' } ) );
+                component.map.setMapTypeId( 'map_style' );
+                component.setupMarkers( component.$el, component.map );
+            } );
     },
 
     /**
      * Returns the map coordinates.
      *
      * @since 1.0.0
-     * 
+     *
      * @param options
      * @returns {*}
      */
     getCoordinates : function( options ) {
         return $.Deferred( function( deferred ) {
-
             if ( 'undefined' == typeof google ) {
                 deferred.reject( new Error( 'The Google Maps API is currently unavailable' ) );
             }
-
             else if ( '' != options.address ) {
                 var geocoder = new google.maps.Geocoder();
                 geocoder.geocode( { address : options.address }, function( results, status ) {
@@ -227,13 +122,12 @@ Map.prototype = {
                         deferred.reject( new Error( status ) );
                     }
                 } );
-
             }
             else if ( options.latitude && options.longitude ) {
                 deferred.resolve( new google.maps.LatLng( options.latitude, options.longitude ) );
             }
             else {
-                deferred.reject( new Error( 'No address or map coordinates provided'  ) );
+                deferred.reject( new Error( 'No address or map coordinates provided' ) );
             }
         } ).promise();
     },
@@ -283,25 +177,47 @@ Map.prototype = {
         } );
     },
 
-    /**
-     * Destroys the the Map instance.
-     *
-     * @since 1.0.0
+	/**
+     * Refreshes and centers the map.
+     * 
+     * @since 1.7.5
      */
-    destroy : function() {
+    refreshMap: function() {
+        if (  this.map ) {
+            google.maps.event.trigger( this.map, 'resize' );
+            this.map.setCenter( this.center );
+        }
+    },
+
+    /**
+     * Element listeners
+     */
+    onMove: function() {
+        this.refreshMap();
+    },
+
+    onRefresh: function() {
+        this.refreshMap();
+    },
+
+    onChangeParent: function() {
+        this.refreshMap();
+    },
+    
+    onDestroy : function() {
         delete this.map;
         delete this.markers;
         delete this.infoWindows;
+    },
 
-	    //this.$canvas.remove();
-	    this.$el.off();
-	    this.$win.off( 'resize', $.proxy( this.refresh, this ) );
-
-	    if ( 'function' == typeof this.callbacks.onDestroy ) {
-		    this.callbacks.onDestroy.call( this );
-	    }
+    /**
+     * Window listeners
+     */
+    onResize: function() {
+        this.refreshMap();
     }
-};
+
+} );
 
 /**
  * Google Map jQuery plugin.
@@ -309,6 +225,7 @@ Map.prototype = {
  * @since 1.0.0
  *
  * @param options
+ * @param callbacks
  * @returns {*}
  */
 $.fn.tailorGoogleMap = function( options, callbacks ) {

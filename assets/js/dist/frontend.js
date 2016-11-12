@@ -1,111 +1,142 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var $ = window.jQuery;
 
-window.Tailor = window.Tailor || {};
-
 // Include polyfills
 require( './shared/utility/polyfills/classlist' );
 require( './shared/utility/polyfills/raf' );
 require( './shared/utility/polyfills/transitions' );
 
-// Include shared components
-require( './shared/components/ui/tabs' );
-require( './shared/components/ui/toggles' );
-require( './shared/components/ui/map' );
-require( './shared/components/ui/lightbox' );
-require( './shared/components/ui/slideshow' );
-require( './shared/components/ui/parallax' );
+// Create the Tailor object
+var abstractComponent = require( './shared/components/ui/abstract' );
+window.Tailor = {
+	
+	Components:     {
 
-// Include frontend-only components
-require( './frontend/components/ui/carousel' );
-
-window.Tailor.initElements = function() {
-
-	// Parallax sections
-	$( '.tailor-section[data-ratio]' ).each( function() {
-		var $el = $( this );
-		$el.tailorParallax( { ratio: $el.data( 'ratio' ) } );
-	} );
-
-	// Tabs
-	$( '.tailor-tabs' ).tailorTabs();
-
-	// Toggles
-	$( '.tailor-toggles' ).tailorToggles();
-
-	// Google Maps
-	$( '.tailor-map' ).tailorGoogleMap();
-
-	// Carousels
-	$( '.tailor-carousel' ).each( function() {
-		var $el = $( this );
-		var $data = $el.data();
-
-		$el.tailorCarousel( {
-			slidesToShow : $data.slides || 1,
-			fade : ( $data.fade && 1 == $data.slides ),
-			infinite : this.classList.contains( 'tailor-posts' ) || this.classList.contains( 'tailor-gallery' )
-		} );
-	} );
-
-	// Masonry layouts
-	$( '.tailor-grid--masonry' ).each( function() {
-		var $el = $( this );
-
-		$el.imagesLoaded( function() {
-			$el.shuffle( {
-				itemSelector: '.tailor-grid__item'
-			} );
-		} );
-	} );
-
-	// Slideshows
-	$( '.tailor-slideshow--gallery' ).each( function() {
-		var $el = $( this );
-		var $data = $el.data() || {};
-		var options = {
-			autoplay : $data.autoplay || false,
-			arrows : $data.arrows || false,
-			draggable : true
-		};
-
-		if ( '1' == $data.thumbnails ) {
-			options.customPaging = function( slider, i ) {
-				var thumb = $( slider.$slides[ i ] ).data( 'thumb' );
-				return '<img class="slick-thumbnail" src="' + thumb + '">';
+		/**
+		 * Creates a new component.
+		 *
+		 * @since 1.7.5
+		 *
+		 * @param prototype
+		 * @returns {component}
+		 */
+		create: function( prototype )  {
+			var originalPrototype = prototype;
+			var component = function( el, options, callbacks ) {
+				abstractComponent.call( this, el, options, callbacks );
 			};
-			options.dots = true;
-		}
+			component.prototype = Object.create( abstractComponent.prototype );
+			for ( var key in originalPrototype )  {
+				component.prototype[ key ] = originalPrototype[ key ];
+			}
 
-		$el.tailorSlideshow( options );
-	} );
-
-	// Lightboxes
-	$( '.is-lightbox-gallery' ).each( function() {
-		var $el = $( this );
-
-		if ( $el.hasClass( 'tailor-carousel' ) ) {
-			$el.tailorLightbox( {
-				delegate : '.slick-slide:not( .slick-cloned ) .is-lightbox-image'
+			Object.defineProperty( component.prototype, 'constructor', {
+				enumerable: false,
+				value: component
 			} );
-		}
-		else {
-			$el.tailorLightbox();
-		}
-	} );
 
-	$( '.is-lightbox-image' ).each( function() {
-		$( this ).tailorLightbox( {
-			delegate : false
+			return component;
+		}
+	},
+
+	/**
+	 * Initializes all frontend elements.
+	 * 
+	 * Available for reuse when content is added to the page using AJAX.
+	 * 
+	 * @since 1.5.6
+	 */
+	initElements : function() {
+		
+		// Parallax sections
+		$( '.tailor-section[data-ratio]' ).tailorParallax();
+
+		// Tabs
+		$( '.tailor-tabs' ).tailorTabs();
+
+		// Toggles
+		$( '.tailor-toggles' ).tailorToggles();
+
+		// Google Maps
+		$( '.tailor-map' ).tailorGoogleMap();
+
+		// Carousels
+		$( '.tailor-carousel' ).each( function() {
+			var $el = $( this );
+			var $data = $el.data();
+			$el.tailorCarousel( {
+				slidesToShow : $data.slides || 1,
+				fade : ( $data.fade && 1 == $data.slides ),
+				infinite : this.classList.contains( 'tailor-posts' ) || this.classList.contains( 'tailor-gallery' )
+			} );
 		} );
-	} );
+
+		// Masonry layouts
+		$( '.tailor-grid--masonry' ).each( function() {
+			var $el = $( this );
+			$el.imagesLoaded( function() {
+				$el.shuffle( {
+					itemSelector: '.tailor-grid__item'
+				} );
+			} );
+		} );
+
+		// Slideshows
+		$( '.tailor-slideshow--gallery' ).each( function() {
+			var $el = $( this );
+			var $data = $el.data() || {};
+			var options = {
+				autoplay : $data.autoplay || false,
+				arrows : $data.arrows || false,
+				draggable : true
+			};
+
+			if ( '1' == $data.thumbnails ) {
+				options.customPaging = function( slider, i ) {
+					var thumb = $( slider.$slides[ i ] ).data( 'thumb' );
+					return '<img class="slick-thumbnail" src="' + thumb + '">';
+				};
+				options.dots = true;
+			}
+
+			$el.tailorSlideshow( options );
+		} );
+
+		// Lightboxes
+		$( '.is-lightbox-gallery' ).each( function() {
+			var $el = $( this );
+			if ( $el.hasClass( 'tailor-carousel' ) ) {
+				$el.tailorLightbox( {
+					delegate : '.slick-slide:not( .slick-cloned ) .is-lightbox-image'
+				} );
+			}
+			else {
+				$el.tailorLightbox();
+			}
+		} );
+
+		$( '.is-lightbox-image' ).tailorLightbox( { delegate : false } );
+	}
 };
+
+// Shared components
+window.Tailor.Components.Abstract = abstractComponent;
+window.Tailor.Components.Lightbox = require( './shared/components/ui/lightbox' );
+window.Tailor.Components.Map = require( './shared/components/ui/map' );
+window.Tailor.Components.Masonry = require( './shared/components/ui/masonry' );
+window.Tailor.Components.Parallax = require( './shared/components/ui/parallax' );
+window.Tailor.Components.Slideshow = require( './shared/components/ui/slideshow' );
+window.Tailor.Components.Tabs = require( './shared/components/ui/tabs' );
+window.Tailor.Components.Toggles = require( './shared/components/ui/toggles' );
+
+// Frontend components
+require( './frontend/components/ui/carousel' );
 
 // Initialize elements when the document is ready
 $( document ).ready( function() {
 	window.Tailor.initElements();
 } );
-},{"./frontend/components/ui/carousel":2,"./shared/components/ui/lightbox":3,"./shared/components/ui/map":4,"./shared/components/ui/parallax":5,"./shared/components/ui/slideshow":6,"./shared/components/ui/tabs":7,"./shared/components/ui/toggles":8,"./shared/utility/polyfills/classlist":9,"./shared/utility/polyfills/raf":10,"./shared/utility/polyfills/transitions":11}],2:[function(require,module,exports){
+},{"./frontend/components/ui/carousel":2,"./shared/components/ui/abstract":3,"./shared/components/ui/lightbox":4,"./shared/components/ui/map":5,"./shared/components/ui/masonry":6,"./shared/components/ui/parallax":7,"./shared/components/ui/slideshow":8,"./shared/components/ui/tabs":9,"./shared/components/ui/toggles":10,"./shared/utility/polyfills/classlist":11,"./shared/utility/polyfills/raf":12,"./shared/utility/polyfills/transitions":13}],2:[function(require,module,exports){
 /**
  * A frontend carousel module for managing Slick Slider elements.
  *
@@ -245,19 +276,22 @@ $.fn.tailorCarousel = function( options, callbacks ) {
 
 },{}],3:[function(require,module,exports){
 /**
- * Tailor.Objects.Lightbox
+ * Tailor.Components.Abstract
  *
- * A lightbox module.
+ * An abstract component.
  *
  * @class
  */
 var $ = window.jQuery,
-    Lightbox;
+	$win = $( window ),
+	$doc = $( document ),
+    AbstractComponent,
+	id = 0;
 
 /**
- * The Lightbox object.
+ * An abstract component.
  *
- * @since 1.0.0
+ * @since 1.7.5
  *
  * @param el
  * @param options
@@ -265,103 +299,781 @@ var $ = window.jQuery,
  *
  * @constructor
  */
-Lightbox = function( el, options, callbacks ) {
+AbstractComponent = function( el, options, callbacks ) {
+	this.id = 'tailor.' + id ++;
     this.el = el;
-    this.$el = $( el );
-
-	this.options = $.extend( {}, this.defaults, this.$el.data(), options );
-    this.callbacks = $.extend( {}, this.callbacks, callbacks );
-
+    this.$el = $( this.el );
+	this.callbacks = $.extend( {}, this.callbacks, callbacks );
+	this.options = $.extend( {}, this.getDefaults(), this.$el.data(), options );
+	if ( document.documentElement.dir && 'rtl' == document.documentElement.dir ) {
+		this.options.rtl = true;
+	}
+	
     this.initialize();
 };
 
-Lightbox.prototype = {
+AbstractComponent.prototype = {
 
-    defaults : {
-        type : 'image',
-        delegate : '.is-lightbox-image',
-        closeMarkup : '<button title="%title%" type="button" class="not-a-button mfp-close">&#215;</button>',
-        gallery : {
-            enabled : true,
-            arrowMarkup: '<button title="%title%" type="button" class="not-a-button mfp-arrow mfp-arrow-%dir%"></button>'
-        },
-        image : {
-            titleSrc: function( item ) {
-                return item.el.find( 'figcaption' ).text();
-            }
-        }
-        //zoom: {
-        //    enabled: true,
-        //    duration: 300
-        //}
-    },
+	callbacks : {
 
-    callbacks : {
+		/**
+		 * Fired after the component has been initialized.
+		 *
+		 * @since 1.7.5
+		 */
+		onInitialize : function () {},
 
-        /**
-         * Callback function to be run when the object is initialized.
-         *
-         * @since 1.0.0
-         */
-        onInitialize : function () {},
+		/**
+		 * Fired after the component has been destroyed.
+		 *
+		 * @since 1.7.5
+		 */
+		onDestroy : function () {}
+	},
 
-        /**
-         * Callback function to be run when the object is destroyed.
-         *
-         * @since 1.0.0
-         */
-        onDestroy : function () {}
-    },
+	/**
+	 * Returns the default values for the component.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @returns {{}}
+	 */
+	getDefaults : function() { return {}; },
 
-    /**
-     * Initializes the Carousel instance.
-     *
-     * @since 1.0.0
-     */
+	/**
+	 * Initializes the component.
+	 *
+	 * @since 1.7.5
+	 */
     initialize : function() {
-        this.magnificPopup();
-        this.addEventListeners();
+	    this.addEventListeners();
 
+	    // Fires once the element listeners have been added
+	    this.onInitialize();
         if ( 'function' == typeof this.callbacks.onInitialize ) {
             this.callbacks.onInitialize.call( this );
         }
     },
 
+	/**
+	 * Adds the required event listeners.
+	 *
+	 * @since 1.7.5
+	 */
+	addEventListeners : function() {
+	    var component = this;
+	    this.onResizeCallback = _.throttle( this.onResize.bind( this ) , 100 );
+
+	    /**
+	     * Element listeners
+	     */
+
+	    // Element ready
+	    this.$el
+		    .on( 'before:element:ready', function( e, view ) {
+			    if ( e.target == component.el ) {
+				    component.onBeforeReady( e, view );
+			    }
+		    } )
+		    .on( 'element:ready', function( e, view ) {
+			    if ( e.target == component.el ) {
+				    component.onReady( e, view );
+			    }
+		    } );
+		
+	    // Element moved
+	    this.$el.on( 'element:change:order element:change:parent', function( e, view ) {
+		    if ( e.target == component.el ) {
+			    component.onMove( e, view );
+		    }
+	    } );
+		
+	    // Element copied
+	    this.$el
+		    .on( 'before:element:copy', function( e, view ) {
+			    if ( e.target == component.el ) {
+				    component.onBeforeCopy( e, view );
+			    }
+		    } )
+		    .on( 'element:copy', function( e, view ) {
+			    if ( e.target == component.el ) {
+				    component.onCopy( e, view );
+			    }
+		    } );
+
+	    // Element refreshed
+	    this.$el.on( 'before:element:refresh', function( e, view ) {
+		    if ( e.target == component.el ) {
+			    component.destroy();
+			    component.onBeforeRefresh( e, view );
+		    }
+	    } );
+
+	    // Element refreshed using JavaScript
+	    this.$el
+		    .on( 'before:element:jsRefresh', function( e, view ) {
+			    if ( e.target == component.el ) {
+				    component.onBeforeJSRefresh( e, view );
+			    }
+		    } )
+		    .on( 'element:jsRefresh', function( e, view ) {
+			    if ( e.target == component.el ) {
+				    component.onJSRefresh( e, view );
+			    }
+		    } );
+
+	    // Element destroyed
+	    this.$el
+		    .on( 'before:element:destroy', function( e, view ) {
+			    if ( e.target == component.el ) {
+				    component.onBeforeDestroy( e, view );
+			    }
+		    } )
+		    .on( 'element:destroy', function( e, view ) {
+			    if ( e.target == component.el ) {
+				    component.destroy();
+			    }
+		    } );
+
+	    /**
+	     * Child listeners
+	     */
+
+	    // Child added
+	    this.$el.on( 'element:child:add', function( e, view ) {
+		    if ( e.target == component.el ) {
+			    component.onAddChild( e, view );
+		    }
+	    } );
+
+	    // Child removed
+	    this.$el.on( 'element:child:remove', function( e, view ) {
+		    if ( e.target == component.el ) {
+			    component.onRemoveChild( e, view );
+		    }
+	    } );
+		
+		// Child ready
+		this.$el
+			.on( 'before:element:child:ready', function( e, view ) {
+				component.onBeforeReadyChild( e, view );
+			} )
+			.on( 'element:child:ready', function( e, view ) {
+				component.onReadyChild( e, view );
+			} );
+
+		// Child moved
+		this.$el.on( 'element:child:change:order element:child:change:parent', function( e, view ) {
+			component.onMoveChild( e, view );
+		} );
+		
+		// Child reordered (using navigation)
+		this.$el
+			.on( 'before:navigation:reorder', function( e, cid, index, oldIndex ) {
+				component.onBeforeReorderChild( e, cid, index, oldIndex  );
+			} )
+			.on( 'navigation:reorder', function( e, cid, index, oldIndex  ) {
+				component.onReorderChild( e, cid, index, oldIndex );
+				component.onReorderChild( e, cid, index, oldIndex );
+			} );
+		
+		// Child refreshed
+		this.$el
+			.on( 'before:element:child:refresh', function( e, view ) {
+				component.onBeforeRefreshChild( e, view );
+			} )
+			.on( 'element:child:refresh', function( e, view ) {
+				component.onRefreshChild( e, view );
+			} );
+		
+	    // Child refreshed using JavaScript
+	    this.$el
+		    .on( 'before:element:child:jsRefresh', function( e, view ) {
+			    component.onBeforeJSRefreshChild( e, view );
+		    } )
+		    .on( 'element:child:jsRefresh', function( e, view ) {
+			    component.onJSRefreshChild( e, view );
+		    } );
+
+	    // Child destroyed
+	    this.$el
+		    .on( 'before:element:child:destroy', function( e, view ) {
+			    component.onBeforeDestroyChild( e, view );
+		    } )
+		    .on( 'element:child:destroy', function( e, view ) {
+			    component.onDestroyChild( e, view );
+		    } );
+
+		// All child changes
+		this.$el.on( 'element:child:add element:child:remove element:child:ready element:child:refresh element:child:jsRefresh element:child:destroy', function( e, view ) {
+			component.onChangeChild( e, view );
+		} );
+
+	    /**
+	     * Descendant listeners
+	     */
+
+	    // Descendant added
+	    this.$el.on( 'element:descendant:add', function( e, view ) {
+		    if ( e.target != component.el ) {
+			    component.onAddDescendant( e, view );
+		    }
+	    } );
+
+	    // Descendant removed
+	    this.$el.on( 'element:descendant:remove', function( e, view ) {
+		    if ( e.target != component.el ) {
+			    component.onRemoveDescendant( e, view );
+		    }
+	    } );
+		
+		// Descendant ready
+		this.$el
+			.on( 'before:element:descendant:ready', function( e, view ) {
+				if ( e.target != component.el ) {
+					component.onBeforeReadyDescendant( e, view );
+				}
+			} )
+			.on( 'element:descendant:ready', function( e, view ) {
+				if ( e.target != component.el ) {
+					component.onReadyDescendant( e, view );
+				}
+			} );
+
+		// Descendant refreshed
+	    this.$el
+		    .on( 'before:element:descendant:refresh', function( e, view ) {
+			    if ( e.target != component.el ) {
+				    component.onBeforeRefreshDescendant( e, view );
+			    }
+		    } )
+		    .on( 'element:descendant:refresh', function( e, view ) {
+			    if ( e.target != component.el ) {
+				    component.onRefreshDescendant( e, view );
+			    }
+		    } );
+
+	    // Descendant refreshed using JavaScript
+	    this.$el
+		    .on( 'before:element:descendant:jsRefresh', function( e, view ) {
+			    if ( e.target != component.el ) {
+				    component.onBeforeJSRefreshDescendant( e, view );
+			    }
+		    } )
+		    .on( 'element:descendant:jsRefresh', function( e, view ) {
+			    if ( e.target != component.el ) {
+				    component.onJSRefreshDescendant( e, view );
+			    }
+		    } );
+
+	    // Descendant destroyed
+	    this.$el
+		    .on( 'before:element:descendant:destroy', function( e, view ) {
+			    if ( e.target != component.el ) {
+				    component.onBeforeDestroyDescendant( e, view );
+			    }
+		    } )
+		    .on( 'element:descendant:destroy', function( e, view ) {
+			    if ( e.target != component.el ) {
+				    component.onDestroyDescendant( e, view );
+			    }
+		    } );
+
+		// All descendant changes
+		this.$el.on( 'element:descendant:add element:descendant:remove element:descendant:ready element:descendant:refresh element:descendant:jsRefresh element:descendant:destroy', function( e, view ) {
+			component.onChangeDescendant( e, view );
+		} );
+
+	    /**
+	     * Parent listeners.
+	     */
+	    $doc
+		    .on( 'element:descendant:add element:descendant:remove element:descendant:ready element:descendant:destroy', function( e, view ) {
+			    if ( e.target.contains( component.el ) && e.target != component.el && view.el != component.el ) {
+				    component.onChangeParent();
+			    }
+		    } )
+		    .on( 'element:refresh element:jsRefresh element:descendant:refresh element:descendant:jsRefresh', function( e, view ) {
+			    if ( e.target.contains( component.el ) && e.target != component.el && view.el != component.el ) {
+				    component.onChangeParent();
+			    }
+		    } );
+
+	    /**
+	     * Window listeners.
+	     */
+	    $win.on( 'resize.' + component.id, component.onResizeCallback );
+    },
+
+	/**
+	 * Removes registered event listeners.
+	 *
+	 * @since 1.7.5
+	 */
+	removeEventListeners : function() {
+		this.$el.off( '**' );
+		$win.off( 'resize.' + this.id, this.onResizeCallback );
+	},
+
+	/**
+	 * Fires when the element is initialized.
+	 *
+	 * @since 1.7.5
+	 */
+	onInitialize: function() {},
+
+	/**
+	 * Fires before the element is ready.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onBeforeReady : function( e, view ) {},
+
+	/**
+	 * Fires when the element is ready.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onReady: function( e, view ) {},
+	
+	/**
+	 * Fires when the element is moved.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onMove: function( e, view ) {},
+
+	/**
+	 * Fires before the element is copied.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onBeforeCopy: function( e, view ) {},
+
+	/**
+	 * Fires when the element is copied.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onCopy: function( e, view ) {},
+
+	/**
+	 * Fires before the element is refreshed.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onBeforeRefresh: function( e, view ) {},
+
+	/**
+	 * Fires before the element is refreshed using JavaScript.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onBeforeJSRefresh : function( e, view ) {},
+
+	/**
+	 * Fires when the element is refreshed using JavaScript.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onJSRefresh : function( e, view ) {},
+	
+	/**
+	 * Fires before the element is destroyed.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onBeforeDestroy: function( e, view ) {},
+
+	/**
+	 * Destroys the element.
+	 * 
+	 * @since 1.7.5
+	 */
+	destroy: function() {
+		this.removeEventListeners();
+		this.onDestroy();
+		if ( 'function' == typeof this.callbacks.onDestroy ) {
+			this.callbacks.onDestroy.call( this );
+		}
+	},
+	
+	/**
+	 * Fires when the element is destroyed.
+	 *
+	 * @since 1.7.5
+	 */
+	onDestroy: function() {},
+
+	/**
+	 * Fires when a child is added.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onAddChild: function( e, view ) {},
+
+	/**
+	 * Fires when a child is removed.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onRemoveChild: function( e, view ) {},
+
+	/**
+	 * Fires before a child is ready.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onBeforeReadyChild: function( e, view ) {},
+
+	/**
+	 * Fires when a child is ready.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onReadyChild: function( e, view ) {},
+
+	/**
+	 * Fires when a child is moved.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onMoveChild: function( e, view ) {},
+	
+	/**
+	 * Fires before a child is reordered (using navigation).
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param index
+	 * @param oldIndex
+	 */
+	onBeforeReorderChild: function( e, index, oldIndex ) {},
+	
+	/**
+	 * Fires when a child is reordered (using navigation).
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param index
+	 * @param oldIndex
+	 */
+	onReorderChild: function( e, index, oldIndex ) {},
+	
+	/**
+	 * Fires before a child is refreshed.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onBeforeRefreshChild: function( e, view ) {},
+	
+	/**
+	 * Fires when a child is refreshed.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onRefreshChild : function( e, view ) {},
+
+	/**
+	 * Fires before a child is refreshed using JavaScript.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onBeforeJSRefreshChild : function( e, view ) {},
+
+	/**
+	 * Fires when a child is refreshed using JavaScript.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onJSRefreshChild : function( e, view ) {},
+
+	/**
+	 * Fires before a child is destroyed.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onBeforeDestroyChild: function( e, view ) {},
+
+	/**
+	 * Fires when a child is destroyed.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onDestroyChild: function( e, view ) {},
+
+	/**
+	 * Fires when a child:
+	 *  - Is added
+	 *  - Is removed
+	 *  - Is ready
+	 *  - Is refreshed
+	 *  - Is refreshed using JavaScript
+	 *  - Is destroyed
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onChangeChild: function( e, view ) {},
+
+	/**
+	 * Fires when a descendant is added.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onAddDescendant: function( e, view ) {},
+
+	/**
+	 * Fires when a descendant is removed.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onRemoveDescendant: function( e, view ) {},
+
+	/**
+	 * Fires before a descendant is ready.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onBeforeReadyDescendant: function( e, view ) {},
+
+	/**
+	 * Fires when a descendant is ready.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onReadyDescendant: function( e, view ) {},
+
+	/**
+	 * Fires before a descendant is refreshed.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onBeforeRefreshDescendant: function( e, view ) {},
+
+	/**
+	 * Fires when a descendant is refreshed.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onRefreshDescendant: function( e, view ) {},
+
+	/**
+	 * Fires before a descendant is refreshed using JavaScript.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onBeforeJSRefreshDescendant: function( e, view ) {},
+
+	/**
+	 * Fires when a descendant is refreshed using JavaScript.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onJSRefreshDescendant: function( e, view ) {},
+
+	/**
+	 * Fires before a descendant is destroyed.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onBeforeDestroyDescendant: function( e, view ) {},
+
+	/**
+	 * Fires when a descendant is destroyed.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onDestroyDescendant: function( e, view ) {},
+
+	/**
+	 * Fires when a descendant:
+	 *  - Is added
+	 *  - Is removed
+	 *  - Is ready
+	 *  - Is refreshed
+	 *  - Is refreshed using JavaScript
+	 *  - Is destroyed
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onChangeDescendant: function( e, view ) {},
+
+	/**
+	 * Fires when:
+	 *  - A child or descendant is added to the parent (other than one associated with this component).
+	 *  - A child or descendant is removed from the parent (other than one associated with this component).
+	 *  - A child or descendant is ready within the parent (other than one associated with this component).
+	 *  - A child or descendant is refreshed within the parent (other than one associated with this component).
+	 *  - A child or descendant is refreshed using JavaScript within the parent (other than one associated with this component).
+	 *  - A child or descendant is destroyed within the parent (other than one associated with this component).
+	 *  - The parent is refreshed.
+	 *  - The parent is refreshed using JavaScript.
+	 *
+	 *  @since 1.7.5
+	 */
+	onChangeParent: function() {},
+
+	/**
+	 * Fires when the window is resized.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 * @param view
+	 */
+	onResize : function( e, view ) {}
+
+};
+
+module.exports = AbstractComponent;
+},{}],4:[function(require,module,exports){
+/**
+ * Tailor.Components.Lightbox
+ *
+ * A lightbox component.
+ *
+ * @class
+ */
+var $ = window.jQuery,
+    Components = window.Tailor.Components,
+    Lightbox;
+
+Lightbox = Components.create( {
+
+    getDefaults: function() {
+        return {
+            type : 'image',
+            delegate : '.is-lightbox-image',
+            closeMarkup : '<button title="%title%" type="button" class="not-a-button mfp-close">&#215;</button>',
+            gallery : {
+                enabled : true,
+                arrowMarkup: '<button title="%title%" type="button" class="not-a-button mfp-arrow mfp-arrow-%dir%"></button>'
+            },
+            image : {
+                titleSrc: function( item ) {
+                    return item.el.find( 'figcaption' ).text();
+                }
+            }
+        };
+    },
+
     /**
-     * Adds the required event listeners.
+     * Initializes the component.
      *
-     * @since 1.0.0
+     * @since 1.7.5
      */
-    addEventListeners : function() {
-        this.$el.on( 'before:element:destroy', $.proxy( this.destroy, this ) );
+    onInitialize: function() {
+        this.magnificPopup();
     },
 
     /**
      * Initializes the Magnific Popup plugin.
      *
-     * @since 1.0.0
+     * @since 1.7.5
      */
     magnificPopup : function() {
         this.$el.magnificPopup( this.options );
-    },
-
-    /**
-     * Destroys the object.
-     *
-     * @since 1.0.0
-     */
-    destroy : function( e ) {
-        if ( e.target != this.el ) {
-            return;
-        }
-
-        this.$el.off();
-
-        if ( 'function' == typeof this.callbacks.onDestroy ) {
-            this.callbacks.onDestroy.call( this );
-        }
     }
-};
+
+} );
 
 /**
  * Lightbox jQuery plugin.
@@ -381,73 +1093,37 @@ $.fn.tailorLightbox = function( options, callbacks ) {
     } );
 };
 
-},{}],4:[function(require,module,exports){
+module.exports = Lightbox;
+},{}],5:[function(require,module,exports){
 /**
- * Tailor.Objects.Map
+ * Tailor.Components.Map
  *
- * A map module.
+ * A map component.
  *
  * @class
  */
 var $ = window.jQuery,
+    Components = window.Tailor.Components,
     Map;
 
-/**
- * The Map object.
- *
- * @since 1.0.0
- *
- * @param el
- * @param options
- * @param callbacks
- *
- * @constructor
- */
-Map = function( el, options, callbacks ) {
-    this.el = el;
-    this.$el = $( el );
-    this.$win = $( window );
+Map = Components.create( {
 
-	this.options = _.extend( {}, this.defaults, this.$el.data(), options );
-	this.callbacks = _.extend( {}, this.callbacks, callbacks );
-
-    this.initialize();
-};
-
-Map.prototype = {
-
-    defaults : {
-        height : 450,
-        address : '',
-        latitude : '',
-        longitude : '',
-        zoom : 12,
-        draggable : 1,
-        scrollwheel : 0,
-        controls : 0,
-        hue : null,
-        saturation : 0
+    getDefaults: function() {
+        return {
+            height : 450,
+            address : '',
+            latitude : '',
+            longitude : '',
+            zoom : 12,
+            draggable : 1,
+            scrollwheel : 0,
+            controls : 0,
+            hue : null,
+            saturation : 0
+        };
     },
 
-	callbacks : {
-
-		/**
-		 * Callback function to be run when the object is initialized.
-		 *
-		 * @since 1.0.0
-		 */
-		onInitialize : function () {},
-
-		/**
-		 * Callback function to be run when the object is destroyed.
-		 *
-		 * @since 1.0.0
-		 */
-		onDestroy : function () {}
-	},
-
     getStyles : function( saturation, hue ) {
-
         return  [
             {
                 featureType : 'all',
@@ -477,127 +1153,59 @@ Map.prototype = {
     },
 
     /**
-     * Initializes the Map instance.
+     * Initializes the component.
      *
-     * @since 1.0.0
+     * @since 1.7.5
      */
-    initialize : function() {
-        var map = this;
-
+    onInitialize : function() {
+        var component = this;
         this.markers = [];
         this.infoWindows = [];
         this.$canvas = this.$el.find( '.tailor-map__canvas').height( this.options.height );
 
-        this.getCoordinates( this.options ).then( function( coordinates ) {
-            map.center = coordinates;
-
-            var controls = map.options.controls;
-            var settings = {
-                zoom : map.options.zoom,
-                draggable : map.options.draggable,
-                scrollwheel : map.options.scrollwheel,
-                center : coordinates,
-                mapTypeId : google.maps.MapTypeId.ROADMAP,
-                disableDefaultUI: ! controls,
-                panControl: controls,
-                rotateControl : controls,
-                scaleControl: controls,
-                zoomControl: controls,
-                mapTypeControl: controls,
-                mapTypeControlOptions: {
-                    style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
-                    position: google.maps.ControlPosition.TOP_CENTER
-                }
-            };
-            var styles = map.getStyles( map.options.saturation, map.options.hue );
-
-            map.map = new google.maps.Map( map.$canvas[0], settings );
-            map.map.mapTypes.set( 'map_style', new google.maps.StyledMapType( styles, { name : 'Styled Map' } ) );
-            map.map.setMapTypeId( 'map_style' );
-
-            map.setupMarkers( map.$el, map.map );
-            map.addEventListeners();
-
-	        if ( 'function' == typeof map.callbacks.onInitialize ) {
-		        map.callbacks.onInitialize.call( map );
-	        }
-        } );
-    },
-
-    /**
-     * Adds the required event listeners.
-     *
-     * @since 1.0.0
-     */
-    addEventListeners : function() {
-        this.$el
-
-	        // Fires before the element is destroyed
-	        //.on( 'before:element:refresh', $.proxy( this.maybeDestroy, this ) )
-
-            // Fires when the element parent changes
-            .on( 'element:change:parent', $.proxy( this.refresh, this ) )
-
-            // Fires before the element is destroyed
-            .on( 'before:element:destroy', $.proxy( this.maybeDestroy, this ) )
-
-            // Fires after the parent element is modified
-            .on( 'element:parent:change', $.proxy( this.refresh, this ) );
-
-	    this.$win.on( 'resize', $.proxy( this.refresh, this ) );
-    },
-
-    /**
-     * Refreshes the map if the event target is the map element.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     */
-    maybeRefresh : function( e ) {
-        if ( e.target == this.el ) {
-            this.refresh();
-        }
-    },
-
-    /**
-     * Refreshes the map.
-     *
-     * @since 1.0.0
-     */
-    refresh : function() {
-        google.maps.event.trigger( this.map, 'resize' );
-        this.map.setCenter( this.center );
-    },
-
-    /**
-     * Destroys the map if the event target is the map element.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     */
-    maybeDestroy : function( e ) {
-        if ( e.target == this.el ) {
-            this.destroy();
-        }
+        this.getCoordinates( this.options )
+            .then( function( coordinates ) {
+                component.center = coordinates;
+                var controls = component.options.controls;
+                var settings = {
+                    zoom : component.options.zoom,
+                    draggable : component.options.draggable,
+                    scrollwheel : component.options.scrollwheel,
+                    center : coordinates,
+                    mapTypeId : google.maps.MapTypeId.ROADMAP,
+                    disableDefaultUI: ! controls,
+                    panControl: controls,
+                    rotateControl : controls,
+                    scaleControl: controls,
+                    zoomControl: controls,
+                    mapTypeControl: controls,
+                    mapTypeControlOptions: {
+                        style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+                        position: google.maps.ControlPosition.TOP_CENTER
+                    }
+                };
+                var styles = component.getStyles( component.options.saturation, component.options.hue );
+    
+                component.map = new google.maps.Map( component.$canvas[0], settings );
+                component.map.mapTypes.set( 'map_style', new google.maps.StyledMapType( styles, { name : 'Styled Map' } ) );
+                component.map.setMapTypeId( 'map_style' );
+                component.setupMarkers( component.$el, component.map );
+            } );
     },
 
     /**
      * Returns the map coordinates.
      *
      * @since 1.0.0
-     * 
+     *
      * @param options
      * @returns {*}
      */
     getCoordinates : function( options ) {
         return $.Deferred( function( deferred ) {
-
             if ( 'undefined' == typeof google ) {
                 deferred.reject( new Error( 'The Google Maps API is currently unavailable' ) );
             }
-
             else if ( '' != options.address ) {
                 var geocoder = new google.maps.Geocoder();
                 geocoder.geocode( { address : options.address }, function( results, status ) {
@@ -611,13 +1219,12 @@ Map.prototype = {
                         deferred.reject( new Error( status ) );
                     }
                 } );
-
             }
             else if ( options.latitude && options.longitude ) {
                 deferred.resolve( new google.maps.LatLng( options.latitude, options.longitude ) );
             }
             else {
-                deferred.reject( new Error( 'No address or map coordinates provided'  ) );
+                deferred.reject( new Error( 'No address or map coordinates provided' ) );
             }
         } ).promise();
     },
@@ -667,25 +1274,47 @@ Map.prototype = {
         } );
     },
 
-    /**
-     * Destroys the the Map instance.
-     *
-     * @since 1.0.0
+	/**
+     * Refreshes and centers the map.
+     * 
+     * @since 1.7.5
      */
-    destroy : function() {
+    refreshMap: function() {
+        if (  this.map ) {
+            google.maps.event.trigger( this.map, 'resize' );
+            this.map.setCenter( this.center );
+        }
+    },
+
+    /**
+     * Element listeners
+     */
+    onMove: function() {
+        this.refreshMap();
+    },
+
+    onRefresh: function() {
+        this.refreshMap();
+    },
+
+    onChangeParent: function() {
+        this.refreshMap();
+    },
+    
+    onDestroy : function() {
         delete this.map;
         delete this.markers;
         delete this.infoWindows;
+    },
 
-	    //this.$canvas.remove();
-	    this.$el.off();
-	    this.$win.off( 'resize', $.proxy( this.refresh, this ) );
-
-	    if ( 'function' == typeof this.callbacks.onDestroy ) {
-		    this.callbacks.onDestroy.call( this );
-	    }
+    /**
+     * Window listeners
+     */
+    onResize: function() {
+        this.refreshMap();
     }
-};
+
+} );
 
 /**
  * Google Map jQuery plugin.
@@ -693,6 +1322,7 @@ Map.prototype = {
  * @since 1.0.0
  *
  * @param options
+ * @param callbacks
  * @returns {*}
  */
 $.fn.tailorGoogleMap = function( options, callbacks ) {
@@ -705,193 +1335,221 @@ $.fn.tailorGoogleMap = function( options, callbacks ) {
 };
 
 module.exports = Map;
-
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 /**
- * Tailor.Objects.Parallax
+ * Tailor.Components.Masonry
  *
- * A parallax module.
+ * A masonry component for managing Shuffle elements.
  *
  * @class
  */
 var $ = window.jQuery,
+    Components = window.Tailor.Components,
+    Masonry;
+
+Masonry = Components.create( {
+
+    shuffleActive : false,
+
+    getDefaults: function() {
+        return {
+            itemSelector : '.tailor-grid__item'
+        };
+    },
+    
+    /**
+     * Initializes the component.
+     *
+     * @since 1.7.5
+     */
+    onInitialize: function() {
+        this.$wrap = this.$el.find( '.tailor-grid--masonry' );
+        this.shuffle();
+    },
+
+    /**
+     * Initializes the Shuffle instance.
+     *
+     * @since 1.0.0
+     */
+    shuffle : function() {
+        var component = this;
+        this.$wrap.imagesLoaded( function() {
+            component.$wrap.shuffle( component.options );
+            component.shuffleActive = true;
+        } );
+    },
+
+    /**
+     * Refreshes the Shuffle instance.
+     *
+     * @since 1.0.0
+     */
+    refreshShuffle : function() {
+        this.$wrap.shuffle( 'update' );
+    },
+
+    /**
+     * Destroys the Shuffle instance.
+     *
+     * @since 1.0.0
+     */
+    unShuffle : function() {
+        this.$wrap.shuffle( 'destroy' );
+        this.shuffleActive = false;
+    },
+
+    /**
+     * Element listeners
+     */
+    onMove: function() {
+        if ( this.shuffleActive ) {
+            this.refreshShuffle();
+        }
+    },
+
+    onChangeParent: function() {
+        if ( this.shuffleActive ) {
+            this.shuffle();
+        }
+    },
+
+    onDestroy: function() {
+        if ( this.shuffleActive ) {
+            this.unShuffle();
+        }
+    },
+    
+    /**
+     * Window listeners
+     */
+    onResize: function() {
+        if ( this.shuffleActive ) {
+            this.refreshShuffle();
+        }
+    }
+    
+} );
+
+/**
+ * Masonry jQuery plugin.
+ *
+ * @since 1.0.0
+ *
+ * @param options
+ * @param callbacks
+ * @returns {*}
+ */
+$.fn.tailorMasonry = function( options, callbacks ) {
+    return this.each( function() {
+        var instance = $.data( this, 'tailorMasonry' );
+        if ( ! instance ) {
+            $.data( this, 'tailorMasonry', new Masonry( this, options, callbacks ) );
+        }
+    } );
+};
+
+module.exports = Masonry;
+
+},{}],7:[function(require,module,exports){
+/**
+ * Tailor.Components.Parallax
+ *
+ * A parallax component.
+ *
+ * @class
+ */
+var $ = window.jQuery,
+	$win = $( window ),
+	Components = window.Tailor.Components,
 	Parallax;
 
-/**
- * De-bounces events using requestAnimationFrame
- *
- * @param callback
- * @constructor
- */
-function DeBouncer( callback ) {
-	this.callback = callback;
-	this.ticking = false;
-}
 
-DeBouncer.prototype = {
+Parallax = Components.create( {
 
-	/**
-	 * dispatches the event to the supplied callback
-	 * @private
-	 */
-	update : function () {
-		this.callback && this.callback();
-		this.ticking = false;
+	getDefaults : function () {
+		return {
+			ratio : 0.25,
+			selector : '.tailor-section__background'
+		};
 	},
 
 	/**
-	 * ensures events don't get stacked
-	 * @private
+	 * Initializes the component.
+	 * 
+	 * @since 1.7.5
 	 */
-	requestTick : function () {
-		if ( ! this.ticking ) {
-			requestAnimationFrame( this.rafCallback || ( this.rafCallback = this.update.bind( this ) ) );
-			this.ticking = true;
+	onInitialize : function () {
+		this.position = {};
+		this.background = this.el.querySelector( this.options.selector );
+		if ( ! this.background ) {
+			return;
 		}
+
+		this.addEvents();
+		this.refreshParallax();
 	},
-
-	/**
-	 * Attach this as the event listeners
-	 */
-	handleEvent : function () {
-		this.requestTick();
-	}
-};
-
-var id = 0;
-
-/**
- * Translates an element on scroll to create a parallax effect.
- *
- * @param el
- * @param options
- * @constructor
- */
-Parallax = function( el, options ) {
-	this.id = 'tailor.parallax.' + id ++;
-	this.options = $.extend( this.defaults, options );
-	this.el = el.querySelector( this.options.selector );
-	if ( ! this.el ) {
-		return;
-	}
-
-	this.$el = $( el );
-	this.$win = $( window );
-	this.container = {
-		el: el
-	};
-
-	this.initialize();
-};
-
-Parallax.prototype = {
-
-	defaults : {
-		ratio : 0.25,
-		selector : '.tailor-section__background'
-	},
-
-	/**
-	 * Initializes the Parallax element.
-	 */
-	initialize : function() {
-
-		this.onResizeCallback = $.proxy( this.onResize, this );
-		this.onScrollCallback = $.proxy( this.onScroll, this );
-
-		this.addEventListeners();
-		this.onResize();
-	},
-
-
+	
 	/**
 	 * Adds the required event listeners.
-	 * 
-	 * @since 1.4.0
+	 *
+	 * @since 1.7.5
 	 */
-	addEventListeners : function() {
-		this.$win
-			.on( 'resize.' + this.id, this.onResizeCallback )
-			.on( 'scroll.' + this.id, this.onScrollCallback );
-
-		this.$el
-
-			// Fires before the element template is refreshed
-			.on( 'before:element:refresh', $.proxy( this.maybeDestroy, this ) )
-
-			// Fires before the element is destroyed
-			.on( 'before:element:destroy', $.proxy( this.maybeDestroy, this ) )
-
-			/**
-			 * Child event listeners
-			 */
-
-			// Fires before and after a child element is added
-			.on( 'element:child:ready', this.onResizeCallback )
-
-			// Fires after a child element is added
-			.on( 'element:child:add', this.onResizeCallback )
-
-			// Fires after a child element is removed
-			.on( 'element:child:remove', this.onResizeCallback )
-
-			// Fires before and after a child element is refreshed
-			.on( 'element:child:refresh', this.onResizeCallback )
-
-			// Fires before and after the position of an item is changed
-			.on( 'element:change:order', this.onResizeCallback )
-
-			// Fires before and after a child element is destroyed
-			.on( 'element:child:destroy', this.onResizeCallback )
+	addEvents: function() {
+		this.onScrollCallback = this.onScroll.bind( this );
+		$win.on( 'scroll.' + this.id, this.onScrollCallback );
 	},
 
 	/**
-	 * Removes all registered event listeners.
+	 * Record the initial window position.
 	 *
 	 * @since 1.4.0
 	 */
-	removeEventListeners: function() {
-		this.$win
-			.off( 'resize.' + this.id, this.onResizeCallback )
-			.off( 'scroll.' + this.id, this.onScrollCallback );
-
-		this.$el.off();
-	},
-
-	/**
-	 * Perform checks and do parallax when the window is resized.
-	 *
-	 * @since 1.4.0
-	 */
-	onResize : function() {
-		this.setup();
-		this.doParallax();
-	},
-
-	onScroll : function() {
-		requestAnimationFrame( this.doParallax.bind( this ) );
-	},
-
-	/**
-	 * Get and set attributes w
-	 */
-	setup : function() {
+	doSetup : function() {
 
 		// Store window height
 		this.windowHeight = Math.max( document.documentElement.clientHeight, window.innerHeight || 0 );
 
 		// Store container attributes
-		var containerRect = this.container.el.getBoundingClientRect();
-		var containerHeight = this.container.el.offsetHeight;
-		var containerTop = containerRect.top + window.pageYOffset;
+		var rect = this.el.getBoundingClientRect();
+		var height = this.el.offsetHeight;
+		var top = rect.top + window.pageYOffset;
 
-		this.container.top = containerTop;
-		this.container.height = containerHeight;
-		this.container.bottom = containerTop + containerHeight;
+		this.position.top = top;
+		this.position.height = height;
+		this.position.bottom = top + height;
 
-		// Adjust the element height
-		this.el.style.top = '0px';
-		this.el.style.height = Math.round( ( containerHeight + ( containerHeight * this.options.ratio ) ) ) + 'px';
+		// Adjust the background height
+		this.background.style.top = '0px';
+		this.background.style.height = Math.round( ( height + ( height * this.options.ratio ) ) ) + 'px';
+	},
+
+	/**
+	 * Translate the element relative to its container to achieve the parallax effect.
+	 *
+	 * @since 1.4.0
+	 */
+	doParallax : function() {
+		if ( ! this.inViewport() ) {
+			return; // Do nothing if the parent is not in view
+		}
+
+		var amountScrolled = 1 - (
+				( this.position.bottom - window.pageYOffset  ) /
+				( this.position.height + this.windowHeight )
+			);
+		var translateY = Math.round( ( amountScrolled * this.position.height * this.options.ratio ) * 100 ) / 100;
+		this.background.style[ Modernizr.prefixed( 'transform' ) ] = 'translate3d( 0px, -' + translateY + 'px, 0px )';
+	},
+
+	/**
+	 * Refreshes the parallax effect.
+	 *
+	 * @since 1.7.5
+	 */
+	refreshParallax: function() {
+		this.doSetup();
+		this.doParallax();
 	},
 
 	/**
@@ -904,58 +1562,54 @@ Parallax.prototype = {
 	inViewport : function() {
 		var winTop = window.pageYOffset;
 		var winBottom = winTop + this.windowHeight;
-		var containerBottom = this.container.top + this.container.height;
-
+		var containerBottom = this.position.top + this.position.height;
 		return (
-			this.container.top < winBottom &&   // Top of element is above the bottom of the window
+			this.position.top < winBottom &&    // Top of element is above the bottom of the window
 			winTop < containerBottom            // Bottom of element is below top of the window
 		);
 	},
 
 	/**
-	 * Translate the element relative to its container to achieve the parallax effect.
-	 * 
-	 * @since 1.4.0
+	 * Element listeners
 	 */
-	doParallax : function() {
-
-		// Do nothing if the parent is not in view
-		if ( ! this.inViewport() ) {
-			return;
-		}
-
-		var amountScrolled = 1 - (
-				( this.container.bottom - window.pageYOffset  ) /
-				( this.container.height + this.windowHeight )
-			);
-
-		var translateY = Math.round( ( amountScrolled * this.container.height * this.options.ratio ) * 100 ) / 100;
-
-		this.el.style[ Modernizr.prefixed( 'transform' ) ] = 'translate3d( 0px, -' + translateY + 'px, 0px )';
+	onJSRefresh: function() {
+		this.refreshParallax();
 	},
 
 	/**
-	 * Destroys the parallax instance if the event target is the parallax element.
-	 *
-	 * @since 1.4.0
-	 *
-	 * @param e
+	 * Child listeners
 	 */
-	maybeDestroy : function( e ) {
-		if ( e.target == this.container.el ) {
-			this.destroy();
-		}
+	onChangeChild : function() {
+		this.refreshParallax();
 	},
 
 	/**
-	 * Destroys the parallax instance.
-	 *
-	 * @since 1.4.0
+	 * Descendant listeners
 	 */
-	destroy: function() {
-		this.removeEventListeners();
+	onChangeDescendant : function() {
+		this.refreshParallax();
+	},
+
+	/**
+	 * Window listeners
+	 */
+	onResize : function() {
+		this.refreshParallax();
+	},
+
+	onScroll : function() {
+		requestAnimationFrame( this.doParallax.bind( this ) );
+	},
+	
+	/**
+	 * Element listeners
+	 */
+	onDestroy: function() {
+		$win.off( 'scroll.' + this.id, this.onScrollCallback );
+		this.background.removeAttribute('style');
 	}
-};
+
+} );
 
 /**
  * Parallax jQuery plugin.
@@ -976,179 +1630,55 @@ $.fn.tailorParallax = function( options, callbacks ) {
 };
 
 module.exports = Parallax;
-
-},{}],6:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 /**
- * Tailor.Objects.Slideshow
+ * Tailor.Components.Slideshow
  *
- * A slideshow module.
+ * A slideshow component.
  *
  * @class
  */
 var $ = window.jQuery,
+    Components = window.Tailor.Components,
     Slideshow;
 
-/**
- * The Slideshow object.
- *
- * @since 1.0.0
- *
- * @param el
- * @param options
- * @param callbacks
- *
- * @constructor
- */
-Slideshow = function( el, options, callbacks ) {
-    this.el = el;
-    this.$el = $( el );
-    this.$wrap = this.$el.find( '.tailor-slideshow__slides' );
-
-	this.options = $.extend( {}, this.defaults, this.$el.data(), options );
-    if ( document.documentElement.dir && 'rtl' == document.documentElement.dir ) {
-        this.options.rtl = true;
-    }
+Slideshow = Components.create( {
     
-    this.callbacks = $.extend( {}, this.callbacks, callbacks );
-
-    this.initialize();
-};
-
-Slideshow.prototype = {
-
-    defaults : {
-        items : '.tailor-slideshow__slide',
-        prevArrow: '<button type="button" data-role="none" class="slick-prev" aria-label="Previous" tabindex="0" role="button"></button>',
-        nextArrow: '<button type="button" data-role="none" class="slick-next" aria-label="Next" tabindex="0" role="button"></button>',
-        adaptiveHeight : true,
-        draggable : false,
-        speed : 250,
-        slidesToShow : 1,
-        slidesToScroll : 1,
-        autoplay : false,
-        arrows : false,
-        dots : false,
-        fade : true
+    slickActive: false,
+    
+    getDefaults: function() {
+        return {
+            items : '.tailor-slideshow__slide',
+            prevArrow: '<button type="button" data-role="none" class="slick-prev" aria-label="Previous" tabindex="0" role="button"></button>',
+            nextArrow: '<button type="button" data-role="none" class="slick-next" aria-label="Next" tabindex="0" role="button"></button>',
+            adaptiveHeight : true,
+            draggable : false,
+            speed : 250,
+            slidesToShow : 1,
+            slidesToScroll : 1,
+            autoplay : false,
+            arrows : false,
+            dots : false,
+            fade : true
+        };
     },
 
-    callbacks : {
-
-        /**
-         * Callback function to be run when the object is initialized.
-         *
-         * @since 1.0.0
-         */
-        onInitialize : function () {},
-
-        /**
-         * Callback function to be run when the object is destroyed.
-         *
-         * @since 1.0.0
-         */
-        onDestroy : function () {}
-    },
-
-    /**
-     * Initializes the object.
-     *
-     * @since 1.0.0
-     */
-    initialize : function() {
+    onInitialize: function() {
+        this.$wrap = this.$el.find( '.tailor-slideshow__slides' );
         this.slick();
-
-        if ( 'function' == typeof this.callbacks.onInitialize ) {
-            this.callbacks.onInitialize.call( this );
-        }
     },
-
-    /**
-     * Adds the required event listeners.
-     *
-     * @since 1.0.0
-     */
-    addEventListeners : function() {
-        this.$el
-
-            // Fires before the element template is refreshed
-            .on( 'before:element:refresh', $.proxy( this.unSlick, this ) )
-
-            // Fires when the element parent changes
-            .on( 'element:change:parent', $.proxy( this.maybeRefreshSlick, this ) )
-
-            // Fires before and after the element is copied
-            .on( 'before:element:copy', $.proxy( this.unSlick, this ) )
-            .on( 'element:copy', $.proxy( this.slick, this ) )
-
-            // Fires before the element is destroyed
-            .on( 'before:element:destroy', $.proxy( this.maybeDestroy, this ) )
-
-            // Fires after the parent element is modified
-            .on( 'element:parent:change', $.proxy( this.maybeRefreshSlick, this ) );
-    },
-
-    /**
-     * Re-initializes the object if the event was triggered on the element.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     */
-    maybeSlick : function( e ) {
-        if ( e.target == this.el ) {
-            this.slick();
-        }
-    },
-
-    /**
-     * Refreshes the object if the event was triggered on the element.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     */
-    maybeRefreshSlick : function( e ) {
-        if ( e.target == this.el ) {
-            this.refreshSlick();
-        }
-    },
-
-    /**
-     * Destroys the object if the event was triggered on the element.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     */
-    maybeUnSlick : function( e ) {
-        if ( e.target == this.el ) {
-            this.unSlick();
-        }
-    },
-
-    /**
-     * Destroys the object immediately before the element/view is destroyed.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     */
-    maybeDestroy : function( e ) {
-        if ( e.target == this.el ) {
-            this.destroy( e );
-        }
-    },
-
+    
     /**
      * Initializes the Slick Slider plugin.
      *
      * @since 1.0.0
      */
     slick : function() {
-	    var slideshow = this;
-	    this.$el.imagesLoaded( function() {
-		    slideshow.addEventListeners();
-		    slideshow.$wrap.slick( slideshow.options );
-	    } );
+        var component = this;
+        this.$el.imagesLoaded( function() {
+            component.$wrap.slick( component.options );
+            component.slickActive = true;
+        } );
     },
 
     /**
@@ -1157,7 +1687,9 @@ Slideshow.prototype = {
      * @since 1.0.0
      */
     refreshSlick : function() {
-        this.$wrap.slick( 'refresh' );
+        if ( this.slickActive ) {
+            this.$wrap.slick( 'refresh' );
+        }
     },
 
     /**
@@ -1166,24 +1698,38 @@ Slideshow.prototype = {
      * @since 1.0.0
      */
     unSlick : function() {
-        this.$wrap.slick( 'unslick' );
+        if ( this.slickActive ) {
+            this.$wrap.slick( 'unslick' );
+        }
+    },
+    
+    /**
+     * Element listeners
+     */
+    onMove: function() {
+        this.refreshSlick();
+    },
+    
+    onBeforeCopy: function() {
+        this.unSlick();
+    },
+    
+    onChangeParent: function() {
+        this.refreshSlick();
+    },
+
+    onDestroy : function() {
+        this.unSlick();
     },
 
     /**
-     * Destroys the object.
-     *
-     * @since 1.0.0
+     * Window listeners
      */
-    destroy : function( e ) {
-        this.$el.off();
-
-        this.unSlick();
-
-        if ( 'function' == typeof this.callbacks.onDestroy ) {
-            this.callbacks.onDestroy.call( this );
-        }
+    onResize: function() {
+        this.refreshSlick();
     }
-};
+    
+} );
 
 /**
  * Slideshow jQuery plugin.
@@ -1203,277 +1749,162 @@ $.fn.tailorSlideshow = function( options, callbacks ) {
     } );
 };
 
-},{}],7:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 /**
- * Tailor.Objects.Tabs
+ * Tailor.Components.Tabs
  *
- * A tabs module.
+ * A tabs component.
  *
  * @class
  */
 var $ = window.jQuery,
+	$win = $( window ),
+	Components = window.Tailor.Components,
     Tabs;
 
-/**
- * The Tabs object.
- *
- * @since 1.0.0
- *
- * @param el
- * @param options
- * @param callbacks
- * @constructor
- */
-Tabs = function( el, options, callbacks ) {
-    this.el = el;
-    this.$el = $( el );
-	this.options = $.extend( {}, this.defaults, this.$el.data(), options );
-    this.callbacks = $.extend( {}, this.callbacks, callbacks );
-
-    this.initialize();
-};
-
-Tabs.prototype = {
-
-    defaults : {
-        tabs : '.tailor-tabs__navigation .tailor-tabs__navigation-item',
-        content : '.tailor-tabs__content .tailor-tab',
-        initial : 1
-    },
-
-	callbacks : {
-
-		/**
-		 * Callback function to be run when the object is initialized.
-		 *
-		 * @since 1.0.0
-		 */
-		onInitialize : function () {},
-
-		/**
-		 * Callback function to be run when the object is destroyed.
-		 *
-		 * @since 1.0.0
-		 */
-		onDestroy : function () {}
+Tabs = Components.create( {
+	
+	getDefaults: function() {
+		return {
+			tabs : '.tailor-tabs__navigation .tailor-tabs__navigation-item',
+			content : '.tailor-tabs__content .tailor-tab',
+			initial : 1
+		};
 	},
 
-    /**
-     * Initializes the Tabs instance.
-     *
-     * @since 1.0.0
-     */
-    initialize : function() {
-        this.querySelectors();
-        this.setActive();
-        this.addEventListeners();
-
-	    if ( 'function' == typeof this.callbacks.onInitialize ) {
-		    this.callbacks.onInitialize.call( this );
-	    }
-    },
-
-    /**
-     * Adds the required event listeners.
-     *
-     * @since 1.0.0
-     */
-    addEventListeners : function() {
-        this.$el
-
-	        // Fires before the element template is refreshed
-	        .on( 'before:element:refresh', $.proxy( this.maybeDestroy, this ) )
-
-	        // Fires before the element is destroyed
-	        .on( 'before:element:destroy', $.proxy( this.maybeDestroy, this ) )
-
-	        // Fires before and after a child element is added
-	        .on( 'element:child:add element:child:ready', $.proxy( this.onChangeChild, this ) )
-
-	        // Fires before and after a child element is refreshed
-	        .on( 'element:child:refresh', $.proxy( this.onChangeChild, this ) )
-
-	        // Fires before and after a child element is destroyed
-	        .on( 'element:child:destroy', $.proxy( this.onDestroyChild, this ) )
-
-	        // Fires before and after the position of an item is changed
-	        .on( 'element:change:order', $.proxy( this.onReorderChild, this ) );
-    },
-
-    /**
-     * Caches the tabs and tab content.
-     *
-     * @since 1.0.0
-     */
-    querySelectors : function() {
-        if ( this.$tabs ) {
-            this.$tabs.off();
-        }
-
-        this.$content = this.$el.find( this.options.content );
-        this.$tabs = this.$el
-            .find( this.options.tabs )
-            .on( 'click', $.proxy( this.onClick, this ) );
-    },
-
-    /**
-     * Sets the active tab on after (re)initialization.
-     *
-     * @since 1.0.0
-     */
-    setActive : function() {
-        var active = this.$content.filter( function() {
-            return this.classList.contains( 'is-active' );
-        } );
-
-        var el;
-        if ( 0 == active.length ) {
-            var initial = ( this.options.initial - 1 );
-            if ( this.$content[ initial ] ) {
-                el = this.$content[ initial ];
-            }
-        }
-        else {
-            el = active[0];
-        }
-
-        if ( el ) {
-            this.activate( el.id );
-        }
-    },
-
-    /**
-     * Activates a tab when it is clicked.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     */
-    onClick : function( e ) {
-        this.activate( e.target.getAttribute( 'data-id' ) );
-        e.preventDefault();
-    },
-
-    /**
-     * Refreshes the selectors when a tab is added, removed or refreshed.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     * @param childView
-     */
-    onChangeChild : function( e, childView ) {
-        if ( e.target == this.el ) {
-            this.querySelectors();
-            this.activate( childView.el.id );
-        }
-    },
+	/**
+	 * Initializes the component.
+	 *
+	 * @since 1.7.5
+	 */
+	onInitialize : function() {
+		this.querySelectors();
+		this.setActive();
+	},
 
 	/**
-	 * Updates the tabs container when the position of a tab is changed.
+	 * Caches the tabs and tab content.
+	 *
+	 * @since 1.0.0
+	 */
+	querySelectors : function() {
+		if ( this.$tabs ) {
+			this.$tabs.off();
+		}
+
+		this.$content = this.$el.find( this.options.content );
+		this.$tabs = this.$el
+			.find( this.options.tabs )
+			.on( 'click', $.proxy( this.onClick, this ) );
+	},
+
+	/**
+	 * Sets the active tab on after (re)initialization.
+	 *
+	 * @since 1.0.0
+	 */
+	setActive : function() {
+		var active = this.$content.filter( function() {
+			return this.classList.contains( 'is-active' );
+		} );
+
+		var el;
+		if ( 0 == active.length ) {
+			var initial = ( this.options.initial - 1 );
+			if ( this.$content[ initial ] ) {
+				el = this.$content[ initial ];
+			}
+		}
+		else {
+			el = active[0];
+		}
+		if ( el ) {
+			this.activate( el.id );
+		}
+	},
+
+	/**
+	 * Activates a given tab.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param id
+	 */
+	activate : function( id ) {
+		this.$tabs.each( function() {
+			this.classList.toggle( 'is-active', this.getAttribute( 'data-id' ) == id );
+		} );
+
+		this.$content.each( function() {
+			$( this )
+				.toggle( this.id == id )
+				.toggleClass( 'is-active', this.id == id );
+		} );
+		
+		$win.trigger( 'resize' );
+	},
+
+	/**
+	 * Refreshes the tabs.
 	 *
 	 * @since 1.0.0
 	 *
 	 * @param e
-	 * @param id
-	 * @param newIndex
-	 * @param oldIndex
+	 * @param childView
 	 */
-    onReorderChild : function( e, id, newIndex, oldIndex ) {
-        if ( e.target == this.el ) {
-            var $item = this.$content.filter( function() { return this.id == id; } );
+	refreshTabs : function( e, childView ) {
+		this.querySelectors();
+		this.activate( childView.el.id );
+	},
 
-            if ( oldIndex - newIndex < 0 ) {
-                $item.insertAfter( this.$content[ newIndex ] );
-            }
-            else {
-                $item.insertBefore( this.$content[ newIndex ] );
-            }
+	onClick : function( e ) {
+		this.activate( e.target.getAttribute( 'data-id' ) );
+		e.preventDefault();
+	},
+	
+	/**
+	 * Element listeners
+	 */
+	onDestroy: function() {
+		this.$tabs.off();
+	},
+	
+	/**
+	 * Child listeners
+	 */
+	onAddChild: function( e, childView ) {
+		this.refreshTabs( e, childView );
+	},
 
-            this.activate( id );
-        }
-    },
+	onReadyChild: function( e, childView ) {
+		this.refreshTabs( e, childView );
+	},
+	
+	onRemoveChild: function( e, childView ) {
+		this.refreshTabs( e, childView );
+	},
+	
+	onRefreshChild: function( e, childView ) {
+		this.refreshTabs( e, childView );
+	},
 
-    /**
-     * Refreshes the selectors when a tab is added, removed or refreshed.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     * @param childView
-     */
-    onDestroyChild : function( e, childView ) {
-        if ( e.target !== this.el ) {
+	onReorderChild: function( e, id, newIndex, oldIndex ) {
+		this.activate( id );
+	},
+
+	onDestroyChild : function( e, childView ) {
+		if ( ( 0 == childView.$el.index() && ! childView.el.nextSibling ) ) {
 			return;
-        }
+		}
 
-	    if ( ( 0 == childView.$el.index() && ! childView.el.nextSibling ) ) {
-		    return;
-	    }
+		var id = childView.el.nextSibling ? childView.el.nextSibling.id : childView.el.previousSibling.id;
+		childView.$el.remove();
 
-	    var id = childView.el.nextSibling ? childView.el.nextSibling.id : childView.el.previousSibling.id;
-	    childView.$el.remove();
-
-	    this.querySelectors();
-	    this.activate( id );
-    },
-
-    /**
-     * Activates a given tab.
-     *
-     * @since 1.0.0
-     *
-     * @param id
-     */
-    activate : function( id ) {
-        this.$tabs.each( function() {
-            this.classList.toggle( 'is-active', this.getAttribute( 'data-id' ) == id );
-        } );
-
-        this.$content.each( function() {
-            $( this )
-                .toggle( this.id == id )
-                .toggleClass( 'is-active', this.id == id )
-                .children().each( function( index, el ) {
-					var $el = $( el );
-
-		            /**
-		             * Fires after the tab is displayed.
-		             *
-		             * @since 1.0.0
-		             */
-		            $el.trigger( 'element:parent:change', $el );
-                } );
-        } );
-    },
-
-    /**
-     * Destroys the Tabs instance immediately before the element/view is destroyed.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     */
-    maybeDestroy : function( e ) {
-        if ( e.target == this.el ) {
-            this.destroy( e );
-        }
-    },
-
-    /**
-     * Destroys the the Tabs instance.
-     *
-     * @since 1.0.0
-     */
-    destroy : function( e ) {
-	    this.$el.off();
-	    this.$tabs.off();
-
-	    if ( 'function' == typeof this.callbacks.onDestroy ) {
-		    this.callbacks.onDestroy.call( this );
-	    }
-    }
-};
+		this.querySelectors();
+		this.activate( id );
+	}
+	
+} );
 
 /**
  * Carousel jQuery plugin.
@@ -1495,232 +1926,122 @@ $.fn.tailorTabs = function( options, callbacks ) {
 
 module.exports = Tabs;
 
-},{}],8:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 /**
- * Tailor.Objects.Toggles
+ * Tailor.Components.Toggles
  *
- * A toggles module.
+ * A toggles component.
  *
  * @class
  */
 var $ = window.jQuery,
+	$win = $( window ),
+	Components = window.Tailor.Components,
     Toggles;
 
-/**
- * The Toggles object.
- *
- * @since 1.0.0
- *
- * @param el
- * @param options
- * @param callbacks
- * @constructor
- */
-Toggles = function( el, options, callbacks ) {
-    this.el = el;
-    this.$el = $( el );
+Toggles = Components.create( {
 
-    this.options = $.extend( {}, this.defaults, this.$el.data(), options );
-    this.callbacks = $.extend( {}, this.callbacks, callbacks );
-
-    this.initialize();
-};
-
-Toggles.prototype = {
-
-    defaults : {
-        toggles : '.tailor-toggle__title',
-        content : '.tailor-toggle__body',
-        accordion : false,
-        initial : 0,
-        speed : 150
-    },
-
-	callbacks : {
-
-		/**
-		 * Callback function to be run when the object is initialized.
-		 *
-		 * @since 1.0.0
-		 */
-		onInitialize : function () {},
-
-		/**
-		 * Callback function to be run when the object is destroyed.
-		 *
-		 * @since 1.0.0
-		 */
-		onDestroy : function () {}
+	getDefaults : function () {
+		return {
+			toggles : '.tailor-toggle__title',
+			content : '.tailor-toggle__body',
+			accordion : false,
+			initial : 0,
+			speed : 150
+		};
 	},
 
-    /**
-     * Initializes the object.
-     *
-     * @since 1.0.0
-     */
-    initialize : function() {
-        this.querySelectors();
-        this.addEventListeners();
+	/**
+	 * Initializes the component.
+	 *
+	 * @since 1.7.5
+	 */
+	onInitialize : function() {
+		this.querySelectors();
 
-	    var initial = this.options.initial - 1;
-	    if ( initial >= 0 && this.$toggles.length > initial ) {
-		    this.activate( this.$toggles[ initial ] );
-	    }
+		var initial = this.options.initial - 1;
+		if ( initial >= 0 && this.$toggles.length > initial ) {
+			this.activate( this.$toggles[ initial ] );
+		}
+	},
 
-	    if ( 'function' == typeof this.callbacks.onInitialize ) {
-		    this.callbacks.onInitialize.call( this );
-	    }
-    },
+	/**
+	 * Caches the toggles and toggle content.
+	 *
+	 * @since 1.0.0
+	 */
+	querySelectors : function() {
+		this.$content = this.$el.find( this.options.content ).hide();
+		this.$toggles = this.$el
+			.find( this.options.toggles )
+			.off()
+			.on( 'click', $.proxy( this.onClick, this ) );
+	},
 
-    /**
-     * Adds the required event listeners.
-     *
-     * @since 1.0.0
-     */
-    addEventListeners : function() {
-        this.$el
+	/**
+	 * Activates a given toggle.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param el
+	 */
+	activate: function( el ) {
+		var speed = this.options.speed;
+		var $el = $( el );
 
-            // Fires before the element template is refreshed
-            .on( 'before:element:refresh', $.proxy( this.maybeDestroy, this ) )
+		if ( this.options.accordion ) {
+			this.$toggles.filter( function() {
+				return this !== el;
+			} ).removeClass( 'is-active' );
 
-            // Fires before the element is destroyed
-            .on( 'before:element:destroy', $.proxy( this.maybeDestroy, this ) )
+			this.$content.each( function() {
+				var $toggle = $( this );
+				if ( el.nextElementSibling == this ) {
+					$toggle.slideToggle( speed );
+				}
+				else {
+					$toggle.slideUp( speed );
+				}
+			} );
+		}
+		else {
+			this.$content
+				.filter( function() { return el.nextElementSibling == this; } )
+				.slideToggle( speed );
+		}
 
-            // Fires after a child element is added
-            .on( 'element:child:add element:child:ready', $.proxy( this.onChangeChild, this ) )
+		$el.toggleClass( 'is-active' );
 
-            // Fires after a child element is refreshed
-            .on( 'element:child:refresh', $.proxy( this.onChangeChild, this ) )
+		$win.trigger( 'resize' );
+	},
 
-            // Fires after a child element is destroyed
-            .on( 'element:child:destroy', $.proxy( this.onChangeChild, this ) )
-    },
+	/**
+	 * Activates a toggle when it is clicked.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param e
+	 */
+	onClick: function( e ) {
+		this.activate( e.target );
+		e.preventDefault();
+	},
 
-    /**
-     * Caches the toggles and toggle content.
-     *
-     * @since 1.0.0
-     */
-    querySelectors : function() {
-        this.$content = this.$el.find( this.options.content ).hide();
-        this.$toggles = this.$el
-            .find( this.options.toggles )
-            .off()
-            .on( 'click', $.proxy( this.onClick, this ) );
-    },
+	/**
+	 * Element listeners
+	 */
+	onDestroy: function( e ) {
+		this.$toggles.off();
+	},
 
-    /**
-     * Activates a toggle when it is clicked.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     */
-    onClick : function( e ) {
-        this.activate( e.target );
-        e.preventDefault();
-    },
-
-    /**
-     * Refreshes the selectors when a toggle is added, removed or refreshed.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     * @param childView
-     */
-    onChangeChild : function( e, childView ) {
-        if ( e.target == this.el ) {
-            this.querySelectors();
-        }
-    },
-
-    /**
-     * Activates a given toggle.
-     *
-     * @since 1.0.0
-     *
-     * @param el
-     */
-    activate : function( el ) {
-        var speed = this.options.speed;
-        var $el = $( el );
-
-        if ( this.options.accordion ) {
-            this.$toggles.filter( function() {
-                return this !== el;
-            } ).removeClass( 'is-active' );
-
-            this.$content.each( function() {
-                var $toggle = $( this );
-                if ( el.nextElementSibling == this ) {
-                    $toggle
-	                    .slideToggle( speed )
-	                    .children().each( function( index, el ) {
-		                    var $el = $( el );
-
-		                    /**
-		                     * Fires after the toggle is displayed.
-		                     *
-		                     * @since 1.0.0
-		                     */
-		                    $el.trigger( 'element:parent:change', $el );
-	                    } );
-                }
-                else {
-                    $toggle.slideUp( speed );
-                }
-            } );
-        }
-        else {
-            this.$content
-                .filter( function() { return el.nextElementSibling == this; } )
-                .slideToggle( speed )
-	            .each( function() {
-		            $( this ).children().each( function( index, el ) {
-			            var $el = $( el );
-
-			            /**
-			             * Fires after the toggle is displayed.
-			             *
-			             * @since 1.0.0
-			             */
-			            $el.trigger( 'element:parent:change', $el );
-		            } );
-	            } );
-        }
-
-        $el.toggleClass( 'is-active' );
-    },
-
-    /**
-     * Destroys the Toggles instance immediately before the element/view is destroyed.
-     *
-     * @since 1.0.0
-     *
-     * @param e
-     */
-    maybeDestroy : function( e ) {
-        if ( e.target == this.el ) {
-            this.destroy( e );
-        }
-    },
-
-    /**
-     * Destroys the the Toggles instance.
-     *
-     * @since 1.0.0
-     */
-    destroy : function( e ) {
-        this.$el.off();
-        this.$toggles.off();
-
-	    if ( 'function' == typeof this.callbacks.onDestroy ) {
-		    this.callbacks.onDestroy.call( this );
-	    }
-    }
-
-};
+	/**
+	 * Child listeners
+	 */
+	onChangeChild: function() {
+		this.querySelectors();
+	}
+	
+} );
 
 /**
  * Toggles jQuery plugin.
@@ -1742,7 +2063,7 @@ $.fn.tailorToggles = function( options, callbacks ) {
 
 module.exports = Toggles;
 
-},{}],9:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 /**
  * classList Polyfill
  *
@@ -1832,7 +2153,7 @@ module.exports = Toggles;
 
 } )();
 
-},{}],10:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 /**
  * requestAnimationFrame polyfill.
  *
@@ -1871,7 +2192,7 @@ module.exports = Toggles;
 
 } ) ( window );
 
-},{}],11:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 /**
  * Makes animation and transition support status and end names available as global variables.
  */

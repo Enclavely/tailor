@@ -7,51 +7,6 @@ TabsView = ContainerView.extend( {
     ui : {
         navigation : '.tailor-tabs__navigation'
     },
-	
-    events : {
-        'element:change:order' : 'onReorderElement'
-    },
-
-	/**
-	 * Handles the reordering of tabs.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param e
-	 * @param id
-	 * @param newIndex
-	 * @param oldIndex
-	 */
-    onReorderElement : function( e, id, newIndex, oldIndex ) {
-        if ( newIndex - oldIndex < 0 ) {
-            this.children.each( function( view ) {
-                if ( view._index >= newIndex && view._index <= oldIndex ) {
-                    if ( view._index == oldIndex ) {
-                        view._index = newIndex;
-                    }
-                    else {
-                        view._index++;
-                    }
-                    view.model.set( 'order', view._index );
-                }
-            }, this );
-        }
-        else {
-            this.children.each( function( view ) {
-                if ( view._index >= oldIndex && view._index <= newIndex ) {
-                    if ( view._index == oldIndex ) {
-                        view._index = newIndex;
-                    }
-                    else {
-                        view._index--;
-                    }
-                    view.model.set( 'order', view._index );
-                }
-            }, this );
-        }
-
-        this.model.collection.sort();
-    },
 
 	/**
 	 * Destroys the tabs navigation before the template is refreshed.

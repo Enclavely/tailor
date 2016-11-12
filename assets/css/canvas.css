@@ -157,7 +157,6 @@ html {
 }
 
 .tailor-ui .tools .select.is-minimal .select__menu {
-  right: 1px;
   z-index: 2;
 }
 
@@ -174,6 +173,7 @@ html {
 .tailor-ui .tools .select.is-minimal .select__controls {
   top: 31px;
   left: 1px;
+  right: auto;
   z-index: 1;
   background-color: #0f95ee;
 }
