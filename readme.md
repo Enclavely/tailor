@@ -73,7 +73,7 @@ The following elements are available through the free [WooCommerce extension](ht
 
 ### Advanced elements
 
-The upcoming free Advanced Features extension will provide additional elements as well as exciting new functionality.  Get in touch if you have a feature that you'd like to see added!
+The free [Advanced Features extension](https://github.com/andrew-worsfold/tailor-advanced) extension introduces additional elements and exciting new functionality.  Be sure to try it!
 
 ### Custom elements
 
