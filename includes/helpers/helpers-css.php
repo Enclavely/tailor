@@ -392,6 +392,9 @@ if ( ! function_exists( 'tailor_generate_attribute_css_rules' ) ) {
 			$postfix = empty( $screen_size ) ? '' : "_{$screen_size}";
 			foreach ( $attributes as $setting => $attr_pattern ) {
 				$setting_id = ( $setting . $postfix );
+				if ( ! array_key_exists( $setting_id, $atts ) ) {
+					continue;
+				}
 				$styles = tailor_get_style_values( $atts[ $setting_id ] );
 
 				// Generate declarations
