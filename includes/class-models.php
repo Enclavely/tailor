@@ -651,6 +651,11 @@ if ( ! class_exists( 'Tailor_Models' ) ) {
 	     */
 	    public function generate_shortcodes( $parent_id, $ordered_sanitized_models ) {
 		    $shortcodes = '';
+
+		    if ( ! array_key_exists( $parent_id, $ordered_sanitized_models ) ) {
+			    return $shortcodes;
+		    }
+
 		    foreach ( $ordered_sanitized_models[ $parent_id ] as $sanitized_model ) {
 			    $element = tailor_elements()->get_element( $sanitized_model['tag'] );
 
