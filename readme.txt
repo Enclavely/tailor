@@ -141,6 +141,7 @@ Yes, however, users should be directed to the WordPress plugin repository to ins
 * Improved - iFrames can now be added using the Content element editor [GitHub 71](https://github.com/andrew-worsfold/tailor/issues/71).
 * Fixed - Maximum width setting defaulting to zero if an empty value is provided [GitHub 69](https://github.com/andrew-worsfold/tailor/issues/69).
 * Fixed - Column width not correctly specified for new columns in row with two or more existing columns.
+* Fixed - Changes made using the Text tab of the editor do not update the element [GitHub 72](https://github.com/andrew-worsfold/tailor/issues/72).
 
 = 1.7.4 =
 * Added - Nested rows and columns [GitHub 49](https://github.com/andrew-worsfold/tailor/issues/49) [Read more](https://medium.com/@tailorwp/columns-on-steroids-df5a5a957d89).

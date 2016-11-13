@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the Tailor package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Tailor 1.7.4\n"
+"Project-Id-Version: Tailor 1.7.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/tailor\n"
-"POT-Creation-Date: 2016-11-03 10:56:40+00:00\n"
+"POT-Creation-Date: 2016-11-13 01:42:14+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -12,11 +12,11 @@ msgstr ""
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 
-#: includes/admin/class-admin.php:51
+#: includes/admin/class-admin.php:52
 msgid "Tailor Settings"
 msgstr ""
 
-#: includes/admin/class-admin.php:52 includes/class-panels.php:108
+#: includes/admin/class-admin.php:53 includes/class-panels.php:108
 msgid "Settings"
 msgstr ""
 
@@ -738,11 +738,11 @@ msgstr ""
 msgid "Pullquote Right"
 msgstr ""
 
-#: includes/class-widgets.php:59
+#: includes/class-widgets.php:64
 msgid "Widget"
 msgstr ""
 
-#: includes/class-widgets.php:147 partials/underscore/element-empty.php:17
+#: includes/class-widgets.php:152 partials/underscore/element-empty.php:17
 msgid "Please configure this element as there is currently nothing to display"
 msgstr ""
 
@@ -1751,35 +1751,35 @@ msgid "No %1$s to display"
 msgstr ""
 
 #: includes/helpers/helpers-hooks.php:153
-#: includes/helpers/helpers-hooks.php:197 tailor.php:845
+#: includes/helpers/helpers-hooks.php:197 tailor.php:853
 msgid "Tailor this %s"
 msgstr ""
 
-#: includes/helpers/helpers-markup.php:244
+#: includes/helpers/helpers-markup.php:248
 msgid "This life, which had been the tomb of his virtue and of his honour, is but a walking shadow; a poor player, that struts and frets his hour upon the stage, and then is heard no more: it is a tale told by an idiot, full of sound and fury, signifying nothing."
 msgstr ""
 
-#: includes/helpers/helpers-markup.php:245
+#: includes/helpers/helpers-markup.php:249
 msgid "All the world's a stage, and all the men and women merely players: they have their exits and their entrances; and one man in his time plays many parts, his acts being seven ages."
 msgstr ""
 
-#: includes/helpers/helpers-markup.php:246
+#: includes/helpers/helpers-markup.php:250
 msgid "There is a tide in the affairs of men, Which taken at the flood, leads on to fortune. Omitted, all the voyage of their life is bound in shallows and in miseries. On such a full sea are we now afloat. And we must take the current when it serves, or lose our ventures."
 msgstr ""
 
-#: includes/helpers/helpers-markup.php:247
+#: includes/helpers/helpers-markup.php:251
 msgid "Some are born great, some achieve greatness, and some have greatness thrust upon them."
 msgstr ""
 
-#: includes/helpers/helpers-markup.php:248
+#: includes/helpers/helpers-markup.php:252
 msgid "Good night, good night! Parting is such sweet sorrow, that I shall say good night till it be morrow."
 msgstr ""
 
-#: includes/helpers/helpers-markup.php:249
+#: includes/helpers/helpers-markup.php:253
 msgid "What a piece of work is a man, how noble in reason, how infinite in faculties, in form and moving how express and admirable, in action how like an angel, in apprehension how like a god."
 msgstr ""
 
-#: includes/helpers/helpers-markup.php:250
+#: includes/helpers/helpers-markup.php:254
 msgid "Sweet are the uses of adversity which, like the toad, ugly and venomous, wears yet a precious jewel in his head."
 msgstr ""
 
@@ -1908,12 +1908,20 @@ msgstr ""
 msgid "1{Documentation} can be found on the Tailor website and you can ask questions on the 2{community forum} if you get stuck."
 msgstr ""
 
+#: partials/admin/html/notice-layout-deleted.php:17
+msgid "The Tailor layout was successfully deleted."
+msgstr ""
+
 #: partials/admin/html/notice-missing-rest-api.php:16
 msgid "The Tailor REST API is dependent on the %1$sWordPress REST API v2%2$s."
 msgstr ""
 
 #: partials/admin/html/notice-tailored-content.php:20
-msgid "Changes made to this %s within the editor will not be displayed in Tailor"
+msgid "Changes made to this %s within the editor will not be displayed in Tailor."
+msgstr ""
+
+#: partials/admin/html/notice-tailored-content.php:28
+msgid "Delete layout"
 msgstr ""
 
 #: partials/admin/html/page-settings.php:23

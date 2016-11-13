@@ -11,6 +11,7 @@ var AbstractControl = require( './abstract-control' ),
 EditorControl = AbstractControl.extend( {
 
 	ui : {
+		'input' : 'textarea',
 		'mediaButton' : '.js-setting-group .button',
 		'defaultButton' : '.js-default',
 		'controlGroups' : '.control__body > *'
