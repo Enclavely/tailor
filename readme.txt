@@ -16,6 +16,9 @@ Build beautiful layouts for your content faster and easier than ever before usin
 
 [youtube https://www.youtube.com/watch?v=tfMyLMuaXjI]
 
+> <strong>New extension!</strong><br>
+> Check out the [Advanced Features extension](https://wordpress.org/plugins/tailor-advanced/) for new elements and features. Like Tailor, it's absolutely free!
+
 To get started:
 
 - [Read the user documentation](https://support.gettailor.com/hc/en-us/categories/202586427).
@@ -40,11 +43,9 @@ To get started:
 
 Because Tailor works with any theme, choosing one that you like is now the hardest part of creating a website.
 
-- Want more elements and features?  Try the free [Advanced Features extension](https://github.com/andrew-worsfold/tailor-advanced/).
-- Need to show off your creative side?  Check out the free [Portfolio extension](https://wordpress.org/plugins/tailor-portfolio/).
-- Have an online store?  The free [WooCommerce extension](https://wordpress.org/plugins/tailor-woocommerce/) is what you need.
-
-A free advanced features extension will be released in the coming days, which will add powerful new elements and features!
+- Need to show off your creative side?  Try the free [Portfolio extension](https://wordpress.org/plugins/tailor-portfolio/).
+- Have an online store?  Check out the free [WooCommerce extension](https://wordpress.org/plugins/tailor-woocommerce/).
+- Are you a power user?  The free [Advanced Features extension](https://wordpress.org/plugins/tailor-advanced/) is for you!
 
 = Easy to extend =
 
@@ -55,14 +56,18 @@ Tailor is open source and built based on WordPress' coding standards and best pr
 - An API for adding, changing or removing settings and controls.
 - A [REST API](https://github.com/andrew-worsfold/tailor/blob/master/api.md) to manage elements, templates and models.
 
-For more information:
+= Need more information? =
 
 - Check out our example of how to extend Tailor [using a theme](https://github.com/andrew-worsfold/tailor-sample-theme).
 - Check out our example of how to extend Tailor [using a plugin](https://github.com/andrew-worsfold/tailor-sample-extension).
 - [Read the developer documentation](https://support.gettailor.com/hc/en-us/categories/203117247).
-- Get involved in the [GitHub project](https://github.com/andrew-worsfold/tailor).
 
-If you like the plugin, please consider [rating it](https://wordpress.org/support/view/plugin-reviews/tailor?rate=5#postform) or providing your feedback and suggestions through [Facebook](https://www.facebook.com/tailorwp/), [Twitter](https://twitter.com/tailorwp) or the [Community Forum](https://support.gettailor.com/hc/en-us/community/topics).
+= Want to help? =
+
+- Contribute to the [WordPress Translation project](https://translate.wordpress.org/projects/wp-plugins/tailor).
+- Provide your feedback and suggestions through [Facebook](https://www.facebook.com/tailorwp/), [Twitter](https://twitter.com/tailorwp) or the [Forum](https://support.gettailor.com/hc/en-us/community/topics).
+- Get involved in the [GitHub project](https://github.com/andrew-worsfold/tailor).
+- If you like the plugin, please [submit a review](https://wordpress.org/support/view/plugin-reviews/tailor?rate=5#postform).
 
 == Installation ==
 
@@ -100,9 +105,9 @@ Visit 'Settings > Tailor' to configure:
 
 2. **Editing elements** - Click and hold the Shift button to edit an element (or select it and click on the Edit button).
 
-3. **Editing parent/ancestor elements** - Select a parent/ancestor element from the hierarchy dropdown menu and click on the Edit button to edit it.
+3. **Editing ancestor elements** - Select a parent or ancestor element from the hierarchy menu, then click on the Edit button to edit it.
 
-4. **Adding columns** - Drag an element to the left or right of an existing element to create a row/column structure.  Drag it to the left or right of an existing column to add another column to that row.
+4. **Adding columns** - Drag an element to the left or right of an existing element to create a row/column structure.  Drag an element to the left or right of an existing column to add another column to that row.  Drag an element to the left or right of an existing element within a column to create a nested row/column structure.
 
 5. **Adding templates** - Drag a saved template into the desired position on the page to add it.  The available dropzones will depend on the element(s) in the template.
 
@@ -142,6 +147,7 @@ Yes, however, users should be directed to the WordPress plugin repository to ins
 * Fixed - Maximum width setting defaulting to zero if an empty value is provided [GitHub 69](https://github.com/andrew-worsfold/tailor/issues/69).
 * Fixed - Column width not correctly specified for new columns in row with two or more existing columns.
 * Fixed - Changes made using the Text tab of the editor do not update the element [GitHub 72](https://github.com/andrew-worsfold/tailor/issues/72).
+* Fixed - Live preview for background color setting.
 
 = 1.7.4 =
 * Added - Nested rows and columns [GitHub 49](https://github.com/andrew-worsfold/tailor/issues/49) [Read more](https://medium.com/@tailorwp/columns-on-steroids-df5a5a957d89).

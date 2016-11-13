@@ -446,7 +446,7 @@ var $ = Backbone.$,
 					return false;
 				}
 
-				var definition = getDefinition( model.get( 'tag' ), id, [ [], 'background-color', 'tailorValidateColor' ] );
+				var definition = getDefinition( model.get( 'tag' ), 'background_color', [ [], 'background-color', 'tailorValidateColor' ] );
 				if ( 'function' == typeof definition ) {
 					return definition.call( this, to, from, model );
 				}
