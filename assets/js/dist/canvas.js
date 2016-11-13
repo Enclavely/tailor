@@ -7292,7 +7292,7 @@ var $ = Backbone.$,
 			'background_size' : [ [], 'background-size', 'tailorValidateString' ],
 			'background_attachment' : [ [], 'background-attachment', 'tailorValidateString' ],
 			'shadow' : function( to, from, model ) {
-				var definition = getDefinition( model.get( 'tag' ), 'shadow' [ [] ] );
+				var definition = getDefinition( model.get( 'tag' ), 'shadow', [ [] ] );
 				if ( 'function' == typeof definition ) {
 					return definition.call( this, to, from, model );
 				}
