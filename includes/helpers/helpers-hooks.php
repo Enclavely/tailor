@@ -173,6 +173,9 @@ if ( ! function_exists( 'tailor_content_editor_link' ) ) {
 
 		// Only add the Admin Bar link when editing a post or page
 		if ( is_admin() ) {
+			if ( ! function_exists( 'get_current_screen' ) ) {
+				return;			
+			}
 			$screen = get_current_screen();
 			if ( 'post' !== $screen->base ) {
 				return;
