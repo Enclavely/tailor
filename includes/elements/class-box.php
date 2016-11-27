@@ -192,12 +192,25 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Box_Element' ) 
 		    $css_rules = array();
 		    $excluded_control_types = array();
 		    $css_rules = tailor_css_presets( $css_rules, $atts, $excluded_control_types );
-		    
-		    if ( empty( $atts['graphic_type'] ) ) {
-			    return $css_rules;
+
+		    // Image box
+		    if ( 'image' == $atts['graphic_type'] ) {
+			    if ( empty( $atts['graphic_size'] ) ) {
+				    $unit = tailor_get_unit( $atts['graphic_size'] );
+				    $value = tailor_get_numeric_value( $atts['graphic_size'] );
+				    $css_rules[] = array(
+					    'setting'           =>  'graphic_size',
+					    'selectors'         =>  array( '.tailor-box__graphic' ),
+					    'declarations'      =>  array(
+						    'width'             =>  esc_attr( ( $value . $unit ) ),
+						    'max-width'         =>  '100%',
+					    ),
+				    );
+			    }
 		    }
-		    
-		    if ( 'icon' == $atts['graphic_type'] ) {
+
+		    // Icon box
+		    else {
 			    if ( ! empty( $atts['graphic_color'] ) ) {
 				    $css_rules[] = array(
 					    'setting'           =>  'graphic_color',
@@ -269,18 +282,6 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Box_Element' ) 
 					    ),
 				    );
 			    }
-		    }
-		    else if ( 'image' == $atts['graphic_type'] && ! empty( $atts['graphic_size'] ) ) {
-			    $unit = tailor_get_unit( $atts['graphic_size'] );
-			    $value = tailor_get_numeric_value( $atts['graphic_size'] );
-			    $css_rules[] = array(
-				    'setting'           =>  'graphic_size',
-				    'selectors'         =>  array( '.tailor-box__graphic' ),
-				    'declarations'      =>  array(
-					    'width'             =>  esc_attr( ( $value . $unit ) ),
-					    'max-width'         =>  '100%',
-				    ),
-			    );
 		    }
 
 		    return $css_rules;

@@ -15,11 +15,13 @@
 	} );
 
 	ElementAPI.onRender( 'tailor_content', function( atts, model ) {
-		this.$el.tailorLightbox( {
-			disableOn : function() {
-				return $el.hasClass( 'is-selected' );
-			}
-		} );
+		if ( this.$el.find( '.is-lightbox-image' ).length > 0 ) {
+			this.$el.tailorLightbox( {
+				disableOn : function() {
+					return $el.hasClass( 'is-selected' );
+				}
+			} );
+		}
 	} );
 
 	ElementAPI.onRender( 'tailor_gallery', function( atts, model ) {
@@ -97,7 +99,7 @@
 	} );
 
 	ElementAPI.onRender( 'tailor_section', function( atts, model ) {
-		if ( atts['background_image'] && atts['parallax'] ) {
+		if ( atts['background_image'] && atts['parallax'] && 1 == atts['parallax'] ) {
 			this.$el.tailorParallax();
 		}
 	} );

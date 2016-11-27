@@ -72,7 +72,7 @@ Masonry = Components.create( {
 
     onChangeParent: function() {
         if ( this.shuffleActive ) {
-            this.shuffle();
+            this.refreshShuffle();
         }
     },
 

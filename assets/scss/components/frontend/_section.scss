@@ -15,9 +15,6 @@ $section-border-radius: 0 !default;
 $section-background-color: transparent !default;
 $section-box-shadow: none !default;
 
-// Element specific
-$section-max-width: 75rem !default;
-
 
 //
 // Exported selectors
@@ -37,13 +34,13 @@ $section-max-width: 75rem !default;
 		border: $section-border-width $section-border-style $section-border-color;
 		border-radius: $section-border-radius;
 		box-shadow: $section-box-shadow;
+		overflow: hidden;
 
 		&__content {
 			position: relative;
 			z-index: 2;
 			margin: 0 auto;
 			width: 100%;
-			max-width: $section-max-width;
 
 			@include flex( column );
 		}
@@ -51,7 +48,7 @@ $section-max-width: 75rem !default;
 		&__background {
 			position: absolute;
 			z-index: 1;
-			top: 0;
+			bottom: 0;
 			right: 0;
 			left: 0;
 			height: 100%;

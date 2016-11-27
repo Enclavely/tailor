@@ -401,11 +401,11 @@ class Tailor_Settings {
 	public function render_field( $args ) { ?>
 
 		<fieldset>
-			<legend class="screen-reader-text">
-				<span><?php esc_attr_e( $args['label'] ); ?></span>
-			</legend>
 
 			<?php
+			if ( isset( $args['label'] ) ) {
+				printf( '<legend class="screen-reader-text"><span>%s</span></legend>', esc_attr( $args['label'] ) );
+			}
 
 			tailor_partial( 'admin/field', $args['type'], $args );
 

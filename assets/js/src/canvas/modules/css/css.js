@@ -72,8 +72,8 @@ CSSModule = Marionette.Module.extend( {
 		_.each( mediaQueries, function( atts, id ) {
 			if ( ! _.isEmpty( atts.min ) ) {
 				if ( ! _.isEmpty( atts.max ) ) {
-					this.stylesheets[ id ] = this.createSheet( id, atts.min, atts.max );
 					this.stylesheets[ id + '-up' ] = this.createSheet( id + '-up', atts.min );
+					this.stylesheets[ id ] = this.createSheet( id, atts.min, atts.max );
 				}
 				else {
 					this.stylesheets[ id ] = this.createSheet( id, atts.min );

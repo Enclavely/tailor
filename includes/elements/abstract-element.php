@@ -118,13 +118,25 @@ if ( class_exists( 'Tailor_Setting_Manager' ) && ! class_exists( 'Tailor_Element
 	        $this->tag = $this->id = $tag;
 
 	        if ( $this->active() ) {
-		        $this->register_element_controls();
+		        $this->add_actions();
 		        $this->add_filters();
 	        }
         }
 
 	    /**
-	     * Regsiters the required filters hooks.
+	     * Registers the required action hooks.
+	     *
+	     * @since 1.7.6
+	     */
+	    protected function add_actions() {
+
+		    // Ensure element controls are not loaded too early, but also available when re-rendering elements using AJAX
+		    add_action( 'admin_init', array( $this, 'register_element_controls' ) );
+		    add_action( 'wp', array( $this, 'register_element_controls' ) );
+	    }
+
+	    /**
+	     * Registers the required filter hooks.
 	     * 
 	     * @since 1.6.6
 	     */

@@ -91,6 +91,7 @@ ElementView = Marionette.ItemView.extend( {
 		this.setElement( el );
 
 		this.el.setAttribute( 'draggable', true );
+		this.el.setAttribute( 'tailor-label', this.model.get( 'label' ) );
 		this.el.classList.add( 'tailor-' + this.model.id );
 		this.el.title = _l10n.edit_element;
 		
@@ -168,7 +169,8 @@ ElementView = Marionette.ItemView.extend( {
 			 * @since 1.0.0
 			 */
 			error : function( response ) {
-				view.updateTemplate( 'The template for ' + view.cid + ' could not be refreshed' );
+				view.updateTemplate( '<p class="tailor-notification tailor-notification--error">The template for ' + view.cid + ' could not be refreshed</p>' );
+				console.log( response );
 			},
 
 			/**

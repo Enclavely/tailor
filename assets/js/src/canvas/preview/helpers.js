@@ -65,7 +65,7 @@ window.tailorValidateUnit = function( value ) {
 	var sign = '';
 	if ( '-' == value.charAt( 0 ) ) {
 		sign = '-';
-		value = value.substring(1);
+		value = value.substring( 1 );
 	}
 	return ( sign + tailorValidateNumber( value ) + getUnit( value ) );
 };
@@ -90,10 +90,10 @@ function getUnit( string ) {
 		"em",
 		"rem",
 		"ex",
-		'vw',
-		'vh'
+		"vw",
+		"vh"
 	];
-	var matches = string.match( new RegExp( '/' + map.join( '|') + '/' ) );
+	var matches = string.match( new RegExp( map.join( '|' ) ) );
 	if ( matches ) {
 		return matches[0];
 	}

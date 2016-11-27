@@ -134,7 +134,8 @@ var CompositeView = Marionette.CompositeView.extend( {
 			 * @since 1.0.0
 			 */
 			error : function() {
-				view.updateTemplate( 'The template for ' + view.cid + ' could not be refreshed' );
+				view.updateTemplate( '<p class="tailor-notification tailor-notification--error">The template for ' + view.cid + ' could not be refreshed</p>' );
+				console.log( response );
 			},
 
 			/**
@@ -334,7 +335,7 @@ var CompositeView = Marionette.CompositeView.extend( {
         this.setElement( $el );
 	    
 	    this.el.setAttribute( 'draggable', true );
-
+	    this.el.setAttribute( 'tailor-label', this.model.get( 'label' ) );
 	    this.el.classList.add( 'tailor-' + this.model.cid );
 	    this.el.title = _l10n.edit_element;
 	    

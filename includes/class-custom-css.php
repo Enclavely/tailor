@@ -326,13 +326,12 @@ if ( ! class_exists( 'Tailor_Custom_CSS' ) ) {
 	     * @since 1.4.0
 	     */
 	    public function print_dynamic_css_rules() {
-
 		    if ( did_action( 'tailor_print_dynamic_css_rules' ) ) {
 			    return;
 		    }
 
-		    // Get the saved CSS rules
-		    $css_rule_sets = $this->get_dynamic_css_rules();
+		    $sanitized_models = tailor_models()->get_sanitized_models( get_the_ID() );
+		    $css_rule_sets = $this->generate_dynamic_css_rules( $sanitized_models );
 
 		    if ( false != $css_rule_sets && is_array( $css_rule_sets ) ) {
 			    $css_rule_sets = wp_json_encode( $css_rule_sets );
@@ -667,24 +666,31 @@ if ( ! class_exists( 'Tailor_Custom_CSS' ) ) {
 	     * @return string
 	     */
 	    private function parse_selectors( $element_id, $selectors, $tab = '' ) {
+		    $element_class = ! empty( $element_id ) ? '.tailor-' . $element_id : '';
 		    $n = "\n";
-
-		    $element_class = ! empty( $element_id ) ? '.tailor-ui .tailor-' . $element_id : '';
-
-		    foreach ( $selectors as &$selector ) {
-			    $first_character = substr( $selector, 0, 1 );
-
-			    if ( '&' == $first_character ) {
-				    $selector = substr( $selector, 1, strlen( $selector ) );
+		    $prefix = "{$n}{$tab}.tailor-ui ";
+		    
+		    if ( empty( $selectors ) ) {
+			    return "{$prefix} {$element_class}";
+		    }
+		    
+		    foreach ( $selectors as $key => &$selector ) {
+			    if ( $break = strpos( $selector, '&' ) !== false ) {
+				    $selector = str_replace( '&', $element_class, $selector );
 			    }
-			    else if ( ':' != $first_character ) {
-				    $selector = ' ' . $selector;
+			    else {
+				    $first_character = substr( $selector, 0, 1 );
+				    if ( ':' == $first_character || '::' == $first_character ) {
+					    $selector = "{$element_class}{$selector}";
+				    }
+				    else {
+					    $selector = "{$element_class} {$selector}";
+				    }
 			    }
+			    $selector = $prefix . $selector;
 		    }
 
-		    $output = implode( trim( ",{$n}{$tab}{$element_class}" ), $selectors );
-
-		    return $tab . $element_class . $output;
+		    return $tab . implode( ',', $selectors );
 	    }
 
 	    /**

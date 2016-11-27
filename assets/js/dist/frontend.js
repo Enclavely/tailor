@@ -300,7 +300,7 @@ var $ = window.jQuery,
  * @constructor
  */
 AbstractComponent = function( el, options, callbacks ) {
-	this.id = 'tailor.' + id ++;
+	this.id = 'tailor' + id ++;
     this.el = el;
     this.$el = $( this.el );
 	this.callbacks = $.extend( {}, this.callbacks, callbacks );
@@ -361,7 +361,7 @@ AbstractComponent.prototype = {
 	 * @since 1.7.5
 	 */
 	addEventListeners : function() {
-	    var component = this;
+		var component = this;
 	    this.onResizeCallback = _.throttle( this.onResize.bind( this ) , 100 );
 
 	    /**
@@ -370,19 +370,19 @@ AbstractComponent.prototype = {
 
 	    // Element ready
 	    this.$el
-		    .on( 'before:element:ready', function( e, view ) {
+		    .on( 'before:element:ready.' + component.id, function( e, view ) {
 			    if ( e.target == component.el ) {
 				    component.onBeforeReady( e, view );
 			    }
 		    } )
-		    .on( 'element:ready', function( e, view ) {
+		    .on( 'element:ready.' + component.id, function( e, view ) {
 			    if ( e.target == component.el ) {
 				    component.onReady( e, view );
 			    }
 		    } );
 		
 	    // Element moved
-	    this.$el.on( 'element:change:order element:change:parent', function( e, view ) {
+	    this.$el.on( 'element:change:order.' + component.id + ' element:change:parent.' + component.id, function( e, view ) {
 		    if ( e.target == component.el ) {
 			    component.onMove( e, view );
 		    }
@@ -390,19 +390,19 @@ AbstractComponent.prototype = {
 		
 	    // Element copied
 	    this.$el
-		    .on( 'before:element:copy', function( e, view ) {
+		    .on( 'before:element:copy.' + component.id, function( e, view ) {
 			    if ( e.target == component.el ) {
 				    component.onBeforeCopy( e, view );
 			    }
 		    } )
-		    .on( 'element:copy', function( e, view ) {
+		    .on( 'element:copy.' + component.id, function( e, view ) {
 			    if ( e.target == component.el ) {
 				    component.onCopy( e, view );
 			    }
 		    } );
 
 	    // Element refreshed
-	    this.$el.on( 'before:element:refresh', function( e, view ) {
+	    this.$el.on( 'before:element:refresh.' + component.id, function( e, view ) {
 		    if ( e.target == component.el ) {
 			    component.destroy();
 			    component.onBeforeRefresh( e, view );
@@ -411,12 +411,12 @@ AbstractComponent.prototype = {
 
 	    // Element refreshed using JavaScript
 	    this.$el
-		    .on( 'before:element:jsRefresh', function( e, view ) {
+		    .on( 'before:element:jsRefresh.' + component.id, function( e, view ) {
 			    if ( e.target == component.el ) {
 				    component.onBeforeJSRefresh( e, view );
 			    }
 		    } )
-		    .on( 'element:jsRefresh', function( e, view ) {
+		    .on( 'element:jsRefresh.' + component.id, function( e, view ) {
 			    if ( e.target == component.el ) {
 				    component.onJSRefresh( e, view );
 			    }
@@ -424,12 +424,12 @@ AbstractComponent.prototype = {
 
 	    // Element destroyed
 	    this.$el
-		    .on( 'before:element:destroy', function( e, view ) {
+		    .on( 'before:element:destroy.' + component.id, function( e, view ) {
 			    if ( e.target == component.el ) {
 				    component.onBeforeDestroy( e, view );
 			    }
 		    } )
-		    .on( 'element:destroy', function( e, view ) {
+		    .on( 'element:destroy.' + component.id, function( e, view ) {
 			    if ( e.target == component.el ) {
 				    component.destroy();
 			    }
@@ -440,14 +440,14 @@ AbstractComponent.prototype = {
 	     */
 
 	    // Child added
-	    this.$el.on( 'element:child:add', function( e, view ) {
+	    this.$el.on( 'element:child:add.' + component.id, function( e, view ) {
 		    if ( e.target == component.el ) {
 			    component.onAddChild( e, view );
 		    }
 	    } );
 
 	    // Child removed
-	    this.$el.on( 'element:child:remove', function( e, view ) {
+	    this.$el.on( 'element:child:remove.' + component.id, function( e, view ) {
 		    if ( e.target == component.el ) {
 			    component.onRemoveChild( e, view );
 		    }
@@ -455,73 +455,80 @@ AbstractComponent.prototype = {
 		
 		// Child ready
 		this.$el
-			.on( 'before:element:child:ready', function( e, view ) {
+			.on( 'before:element:child:ready.' + component.id, function( e, view ) {
 				component.onBeforeReadyChild( e, view );
 			} )
-			.on( 'element:child:ready', function( e, view ) {
+			.on( 'element:child:ready.' + component.id, function( e, view ) {
 				component.onReadyChild( e, view );
 			} );
 
 		// Child moved
-		this.$el.on( 'element:child:change:order element:child:change:parent', function( e, view ) {
+		this.$el.on( 'element:child:change:order.' + component.id + ' element:child:change:parent.' + component.id, function( e, view ) {
 			component.onMoveChild( e, view );
 		} );
 		
 		// Child reordered (using navigation)
 		this.$el
-			.on( 'before:navigation:reorder', function( e, cid, index, oldIndex ) {
+			.on( 'before:navigation:reorder.' + component.id, function( e, cid, index, oldIndex ) {
 				component.onBeforeReorderChild( e, cid, index, oldIndex  );
 			} )
-			.on( 'navigation:reorder', function( e, cid, index, oldIndex  ) {
+			.on( 'navigation:reorder.' + component.id, function( e, cid, index, oldIndex  ) {
 				component.onReorderChild( e, cid, index, oldIndex );
 				component.onReorderChild( e, cid, index, oldIndex );
 			} );
 		
 		// Child refreshed
 		this.$el
-			.on( 'before:element:child:refresh', function( e, view ) {
+			.on( 'before:element:child:refresh.' + component.id, function( e, view ) {
 				component.onBeforeRefreshChild( e, view );
 			} )
-			.on( 'element:child:refresh', function( e, view ) {
+			.on( 'element:child:refresh.' + component.id, function( e, view ) {
 				component.onRefreshChild( e, view );
 			} );
 		
 	    // Child refreshed using JavaScript
 	    this.$el
-		    .on( 'before:element:child:jsRefresh', function( e, view ) {
+		    .on( 'before:element:child:jsRefresh.' + component.id, function( e, view ) {
 			    component.onBeforeJSRefreshChild( e, view );
 		    } )
-		    .on( 'element:child:jsRefresh', function( e, view ) {
+		    .on( 'element:child:jsRefresh.' + component.id, function( e, view ) {
 			    component.onJSRefreshChild( e, view );
 		    } );
 
 	    // Child destroyed
 	    this.$el
-		    .on( 'before:element:child:destroy', function( e, view ) {
+		    .on( 'before:element:child:destroy.' + component.id, function( e, view ) {
 			    component.onBeforeDestroyChild( e, view );
 		    } )
-		    .on( 'element:child:destroy', function( e, view ) {
+		    .on( 'element:child:destroy.' + component.id, function( e, view ) {
 			    component.onDestroyChild( e, view );
 		    } );
 
 		// All child changes
-		this.$el.on( 'element:child:add element:child:remove element:child:ready element:child:refresh element:child:jsRefresh element:child:destroy', function( e, view ) {
-			component.onChangeChild( e, view );
-		} );
+		this.$el.on(
+			'element:child:add.' + component.id + ' ' +
+			'element:child:remove.' + component.id + ' ' +
+			'element:child:ready.' + component.id + ' ' +
+			'element:child:refresh.' + component.id + ' ' +
+			'element:child:jsRefresh.' + component.id + ' ' +
+			'element:child:destroy.' + component.id,
+			function( e, view ) {
+				component.onChangeChild( e, view );
+			} );
 
 	    /**
 	     * Descendant listeners
 	     */
 
 	    // Descendant added
-	    this.$el.on( 'element:descendant:add', function( e, view ) {
+	    this.$el.on( 'element:descendant:add.' + component.id, function( e, view ) {
 		    if ( e.target != component.el ) {
 			    component.onAddDescendant( e, view );
 		    }
 	    } );
 
 	    // Descendant removed
-	    this.$el.on( 'element:descendant:remove', function( e, view ) {
+	    this.$el.on( 'element:descendant:remove.' + component.id, function( e, view ) {
 		    if ( e.target != component.el ) {
 			    component.onRemoveDescendant( e, view );
 		    }
@@ -529,12 +536,12 @@ AbstractComponent.prototype = {
 		
 		// Descendant ready
 		this.$el
-			.on( 'before:element:descendant:ready', function( e, view ) {
+			.on( 'before:element:descendant:ready.' + component.id, function( e, view ) {
 				if ( e.target != component.el ) {
 					component.onBeforeReadyDescendant( e, view );
 				}
 			} )
-			.on( 'element:descendant:ready', function( e, view ) {
+			.on( 'element:descendant:ready.' + component.id, function( e, view ) {
 				if ( e.target != component.el ) {
 					component.onReadyDescendant( e, view );
 				}
@@ -542,12 +549,12 @@ AbstractComponent.prototype = {
 
 		// Descendant refreshed
 	    this.$el
-		    .on( 'before:element:descendant:refresh', function( e, view ) {
+		    .on( 'before:element:descendant:refresh.' + component.id, function( e, view ) {
 			    if ( e.target != component.el ) {
 				    component.onBeforeRefreshDescendant( e, view );
 			    }
 		    } )
-		    .on( 'element:descendant:refresh', function( e, view ) {
+		    .on( 'element:descendant:refresh.' + component.id, function( e, view ) {
 			    if ( e.target != component.el ) {
 				    component.onRefreshDescendant( e, view );
 			    }
@@ -555,12 +562,12 @@ AbstractComponent.prototype = {
 
 	    // Descendant refreshed using JavaScript
 	    this.$el
-		    .on( 'before:element:descendant:jsRefresh', function( e, view ) {
+		    .on( 'before:element:descendant:jsRefresh.' + component.id, function( e, view ) {
 			    if ( e.target != component.el ) {
 				    component.onBeforeJSRefreshDescendant( e, view );
 			    }
 		    } )
-		    .on( 'element:descendant:jsRefresh', function( e, view ) {
+		    .on( 'element:descendant:jsRefresh.' + component.id, function( e, view ) {
 			    if ( e.target != component.el ) {
 				    component.onJSRefreshDescendant( e, view );
 			    }
@@ -568,36 +575,53 @@ AbstractComponent.prototype = {
 
 	    // Descendant destroyed
 	    this.$el
-		    .on( 'before:element:descendant:destroy', function( e, view ) {
+		    .on( 'before:element:descendant:destroy.' + component.id, function( e, view ) {
 			    if ( e.target != component.el ) {
 				    component.onBeforeDestroyDescendant( e, view );
 			    }
 		    } )
-		    .on( 'element:descendant:destroy', function( e, view ) {
+		    .on( 'element:descendant:destroy.' + component.id, function( e, view ) {
 			    if ( e.target != component.el ) {
 				    component.onDestroyDescendant( e, view );
 			    }
 		    } );
 
 		// All descendant changes
-		this.$el.on( 'element:descendant:add element:descendant:remove element:descendant:ready element:descendant:refresh element:descendant:jsRefresh element:descendant:destroy', function( e, view ) {
-			component.onChangeDescendant( e, view );
-		} );
+		this.$el.on(
+			'element:descendant:add.' + component.id + ' ' +
+			'element:descendant:remove.' + component.id + ' ' +
+			'element:descendant:ready.' + component.id + ' ' +
+			'element:descendant:refresh.' + component.id + ' ' +
+			'element:descendant:jsRefresh.' + component.id + ' ' +
+			'element:descendant:destroy.' + component.id,
+				function( e, view ) {
+					component.onChangeDescendant( e, view );
+				} );
 
 	    /**
 	     * Parent listeners.
 	     */
 	    $doc
-		    .on( 'element:descendant:add element:descendant:remove element:descendant:ready element:descendant:destroy', function( e, view ) {
-			    if ( e.target.contains( component.el ) && e.target != component.el && view.el != component.el ) {
-				    component.onChangeParent();
-			    }
-		    } )
-		    .on( 'element:refresh element:jsRefresh element:descendant:refresh element:descendant:jsRefresh', function( e, view ) {
-			    if ( e.target.contains( component.el ) && e.target != component.el && view.el != component.el ) {
-				    component.onChangeParent();
-			    }
-		    } );
+		    .on(
+			    'element:descendant:add.' + component.id + ' ' +
+			    'element:descendant:remove.' + component.id + ' ' +
+			    'element:descendant:ready.' + component.id + ' ' +
+			    'element:descendant:destroy.' + component.id,
+			    function( e, view ) {
+				    if ( e.target.contains( component.el ) && e.target != component.el && view.el != component.el ) {
+					    component.onChangeParent();
+				    }
+			    } )
+		    .on(
+			    'element:refresh.' + component.id + ' ' +
+			    'element:jsRefresh.' + component.id + ' ' +
+			    'element:descendant:refresh.' + component.id + ' ' +
+			    'element:descendant:jsRefresh.' + component.id,
+			    function( e, view ) {
+				    if ( e.target.contains( component.el ) && e.target != component.el && view.el != component.el ) {
+					    component.onChangeParent();
+				    }
+			    } );
 
 	    /**
 	     * Window listeners.
@@ -611,7 +635,7 @@ AbstractComponent.prototype = {
 	 * @since 1.7.5
 	 */
 	removeEventListeners : function() {
-		this.$el.off( '**' );
+		this.$el.off( '.' + this.id );
 		$win.off( 'resize.' + this.id, this.onResizeCallback );
 	},
 
@@ -1410,7 +1434,7 @@ Masonry = Components.create( {
 
     onChangeParent: function() {
         if ( this.shuffleActive ) {
-            this.shuffle();
+            this.refreshShuffle();
         }
     },
 
@@ -1520,7 +1544,7 @@ Parallax = Components.create( {
 		this.position.bottom = top + height;
 
 		// Adjust the background height
-		this.background.style.top = '0px';
+		this.background.style.bottom = '0px';
 		this.background.style.height = Math.round( ( height + ( height * this.options.ratio ) ) ) + 'px';
 	},
 
@@ -1539,7 +1563,7 @@ Parallax = Components.create( {
 				( this.position.height + this.windowHeight )
 			);
 		var translateY = Math.round( ( amountScrolled * this.position.height * this.options.ratio ) * 100 ) / 100;
-		this.background.style[ Modernizr.prefixed( 'transform' ) ] = 'translate3d( 0px, -' + translateY + 'px, 0px )';
+		this.background.style[ Modernizr.prefixed( 'transform' ) ] = 'translate3d( 0px, ' + translateY + 'px, 0px )';
 	},
 
 	/**
@@ -1562,10 +1586,9 @@ Parallax = Components.create( {
 	inViewport : function() {
 		var winTop = window.pageYOffset;
 		var winBottom = winTop + this.windowHeight;
-		var containerBottom = this.position.top + this.position.height;
 		return (
-			this.position.top < winBottom &&    // Top of element is above the bottom of the window
-			winTop < containerBottom            // Bottom of element is below top of the window
+			this.position.top < winBottom &&        // Top of element is above the bottom of the window
+			winTop < this.position.bottom           // Bottom of element is below top of the window
 		);
 	},
 

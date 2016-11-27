@@ -344,12 +344,12 @@ var ElementCollection = Backbone.Collection.extend( {
 
         return this.create( [ {
             tag : 'tailor_column',
-            atts : { width : 6 },
+            atts : { width : '50%' },
             parent : row.get( 'id' ),
             order : 0
         }, {
             tag : 'tailor_column',
-            atts : { width : 6 },
+            atts : { width : '50%' },
             parent : row.get( 'id' ),
             order : 1
         } ] );
@@ -516,8 +516,14 @@ var ElementCollection = Backbone.Collection.extend( {
 
         _.each( children, function( child ) {
             var atts = _.clone( child.get( 'atts' ) );
-            atts.width = 12 / numberChildren;
+
+            // Update the attributes
+            atts['width'] = ( Math.round( parseFloat( 1 / numberChildren ) * 1000 ) / 10 ) + '%';
+            delete atts['width_tablet'];
+            delete atts['width_mobile'];
             child.set( 'atts', atts, { silent : true } );
+
+            // Trigger change events on the model
             child.trigger( 'change:width', child, atts );
         }, this );
     },

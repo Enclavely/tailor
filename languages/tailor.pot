@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the Tailor package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Tailor 1.7.5\n"
+"Project-Id-Version: Tailor 1.7.6\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/tailor\n"
-"POT-Creation-Date: 2016-11-13 01:42:14+00:00\n"
+"POT-Creation-Date: 2016-11-27 08:12:12+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -37,7 +37,7 @@ msgstr ""
 #: includes/elements/class-card.php:31
 #: includes/elements/class-carousel-item.php:31
 #: includes/elements/class-carousel.php:39
-#: includes/elements/class-column.php:31
+#: includes/elements/class-column.php:49
 #: includes/elements/class-contact-form-7.php:29
 #: includes/elements/class-content.php:30
 #: includes/elements/class-gallery.php:31
@@ -479,11 +479,11 @@ msgctxt "error message"
 msgid "No valid models were provided"
 msgstr ""
 
-#: includes/class-models.php:719
+#: includes/class-models.php:724
 msgid "%1$sThe %2$s element is not active.%3$s "
 msgstr ""
 
-#: includes/class-models.php:752
+#: includes/class-models.php:757
 msgid "%1$sThe element associated with shortcode %2$s could not be found%3$s "
 msgstr ""
 
@@ -864,7 +864,7 @@ msgstr ""
 #: includes/elements/class-card.php:36
 #: includes/elements/class-carousel-item.php:36
 #: includes/elements/class-carousel.php:44
-#: includes/elements/class-column.php:36
+#: includes/elements/class-column.php:54
 #: includes/elements/class-contact-form-7.php:34
 #: includes/elements/class-content.php:35
 #: includes/elements/class-gallery.php:36
@@ -886,7 +886,7 @@ msgstr ""
 #: includes/elements/class-card.php:41
 #: includes/elements/class-carousel-item.php:41
 #: includes/elements/class-carousel.php:49
-#: includes/elements/class-column.php:41
+#: includes/elements/class-column.php:59
 #: includes/elements/class-contact-form-7.php:39
 #: includes/elements/class-content.php:40
 #: includes/elements/class-gallery.php:41
@@ -936,18 +936,18 @@ msgstr ""
 msgid "This will only take effect in the frontend"
 msgstr ""
 
-#: includes/elements/class-column.php:116
-#: includes/elements/class-column.php:124
+#: includes/elements/class-column.php:134
+#: includes/elements/class-column.php:142
 #: includes/elements/class-list-item.php:190
-#: includes/elements/class-row.php:108 includes/elements/class-section.php:119
+#: includes/elements/class-row.php:108 includes/elements/class-section.php:113
 #: includes/elements/class-tabs.php:55 includes/helpers/helpers-elements.php:27
 msgid "Top"
 msgstr ""
 
-#: includes/elements/class-column.php:117
-#: includes/elements/class-column.php:125
+#: includes/elements/class-column.php:135
+#: includes/elements/class-column.php:143
 #: includes/elements/class-list-item.php:191
-#: includes/elements/class-row.php:109 includes/elements/class-section.php:120
+#: includes/elements/class-row.php:109 includes/elements/class-section.php:114
 #: includes/helpers/helpers-elements.php:29
 msgid "Bottom"
 msgstr ""
@@ -1079,7 +1079,7 @@ msgstr ""
 msgid "Select the smallest screen size on which columns are displayed"
 msgstr ""
 
-#: includes/elements/class-section.php:187
+#: includes/elements/class-section.php:181
 msgid "Enable parallax?"
 msgstr ""
 
@@ -1751,7 +1751,7 @@ msgid "No %1$s to display"
 msgstr ""
 
 #: includes/helpers/helpers-hooks.php:153
-#: includes/helpers/helpers-hooks.php:197 tailor.php:853
+#: includes/helpers/helpers-hooks.php:200 tailor.php:853
 msgid "Tailor this %s"
 msgstr ""
 

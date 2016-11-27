@@ -29,7 +29,7 @@ if ( ! function_exists( 'tailor_get_customizer_settings' ) ) {
                     'description'               =>  __( 'The maximum width for sections.', 'tailor' ),
                     'type'                      =>  'text',
                     'priority'                  =>  10,
-                    'section'                   =>  'layout',
+                    'section'                   =>  'tailor_layout',
                 ),
             ),
             'tailor_column_spacing'     =>  array(
@@ -41,7 +41,7 @@ if ( ! function_exists( 'tailor_get_customizer_settings' ) ) {
                     'description'               =>  __( 'The amount of horizontal space to display between columns.', 'tailor' ),
                     'type'                      =>  'text',
                     'priority'                  =>  20,
-                    'section'                   =>  'layout',
+                    'section'                   =>  'tailor_layout',
                 ),
             ),
             'tailor_element_spacing'    =>  array(
@@ -53,7 +53,7 @@ if ( ! function_exists( 'tailor_get_customizer_settings' ) ) {
                     'description'               =>  __( 'The amount of vertical space to display between elements.', 'tailor' ),
                     'type'                      =>  'text',
                     'priority'                  =>  30,
-                    'section'                   =>  'layout',
+                    'section'                   =>  'tailor_layout',
                 ),
             ),
         );

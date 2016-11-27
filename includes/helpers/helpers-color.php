@@ -20,7 +20,7 @@ if ( ! function_exists( 'tailor_advanced_add_section' ) ) {
 	 * @return array $sections
 	 */
 	function tailor_advanced_add_section( $sections ) {
-		$sections['colors'] = array(
+		$sections['tailor_colors'] = array(
 			'title'                     =>  __( 'Colors', 'tailor-advanced' ),
 			'priority'                  =>  count( $sections ) * 10 + 10,
 			'panel'                     =>  'tailor',
@@ -65,7 +65,7 @@ if ( ! function_exists( 'tailor_advanced_add_settings' ) ) {
 					'label'                     =>  sprintf( __( 'Color %s', 'tailor-advanced' ), $number ),
 					'type'                      =>  'color',
 					'priority'                  =>  $number * 10,
-					'section'                   =>  'colors',
+					'section'                   =>  'tailor_colors',
 				),
 			);
 		}

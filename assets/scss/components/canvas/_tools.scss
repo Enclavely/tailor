@@ -78,21 +78,10 @@ $guide-background-color: $global-primary-color !default;
 
 			&__item {
 				float: left;
-				padding: 2px 6px;
-				margin: 0;
-				border: none;
-				outline: none;
-				cursor: pointer;
-				color: $global-white-color;
-				line-height: 24px;
-				font-size: 13px;
-				font-weight: normal;
-				background-color: $select-background-color;
 				pointer-events: all;
-				white-space: nowrap;
-				text-shadow: none;
-				box-shadow: none;
-				text-decoration: none;
+				cursor: pointer;
+
+				@include label( $select-background-color );
 
 				&:hover,
 				&:focus {
@@ -140,24 +129,22 @@ $guide-background-color: $global-primary-color !default;
 
 				&__menu {
 					z-index: 2;
+				}
+
+				&__controls {
+					top: 29px;
+					left: 1px;
+					right: auto;
+					z-index: 1;
+				}
+
+				&__menu,
+				&__controls {
 
 					.select__item {
 						margin-bottom: 2px;
 						clear: both;
-						width: 100%;
-
-						&:not(:only-child):first-child::after {
-							float: right;
-						}
 					}
-				}
-
-				&__controls {
-					top: 31px;
-					left: 1px;
-					right: auto;
-					z-index: 1;
-					background-color: $guide-background-color;
 				}
 			}
 

@@ -20,7 +20,7 @@ if ( ! function_exists( 'tailor_get_customizer_sections' ) ) {
     function tailor_get_customizer_sections() {
 
         $sections = array(
-            'layout'                    =>  array(
+            'tailor_layout'            =>  array(
                 'title'                     =>  __( 'Layout', 'tailor' ),
                 'priority'                  =>  10,
                 'panel'                     =>  'tailor',

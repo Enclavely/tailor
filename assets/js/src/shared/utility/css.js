@@ -53,34 +53,33 @@ var CSS = {
 	 * @returns {*}
 	 */
     parseSelectors : function( selectors, elementId ) {
-        if ( _.isString( selectors ) ) {
-            return selectors;
-        }
+		if ( _.isString( selectors ) ) {
+			return selectors;
+		}
 
-        var elementClass = elementId ? '.tailor-ui .tailor-' + elementId : '';
-        var selector;
+        var elementClass = elementId ? '.tailor-' + elementId : '';
+		var prefix = '.tailor-ui ';
+		if ( ! selectors.length ) {
+			return prefix + elementClass;
+		}
 
-        if ( ! selectors.length ) {
-            selector = elementClass;
-        }
-        else {
-            if ( elementClass ) {
-                selectors = selectors.map( function( selector ) {
-                    if ( selector.indexOf( '&' ) > -1 ) {
-                        selector = selector.replace( '&', elementClass );
-                    }
-                    else if ( ':' == selector.charAt( 0 ) ) {
-                        selector = elementClass + selector;
-                    }
-                    else {
-                        selector = elementClass + ' ' + selector;
-                    }
-                    return selector;
-                } );
-            }
-            selector = selectors.join( ',' );
-        }
-        return selector;
+		selectors = selectors.map( function( selector ) {
+			if ( selector.indexOf( '&' ) > -1 ) {
+				selector = selector.replace( '&', elementClass );
+			}
+			else {
+				var firstCharacter = selector.charAt( 0 );
+				if ( ':' == firstCharacter || '::' == firstCharacter ) {
+					selector = elementClass + selector;
+				}
+				else {
+					selector = elementClass + ' ' + selector
+				}
+			}
+			return prefix + selector;
+		} );
+
+		return selectors.join( ',' );
     },
 
 	/**

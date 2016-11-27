@@ -30,6 +30,7 @@ var GuideView = Marionette.ItemView.extend( {
      * @since 1.0.0
      */
     reset : function() {
+        this.el.style = '';
         this.el.style.visibility = 'hidden';
         this.el.style.opacity = 0;
     }

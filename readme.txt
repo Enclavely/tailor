@@ -2,7 +2,7 @@
 Contributors: andrew.worsfold
 Donate link: http://gettailor.com/donate/
 Tags: page, layout, builder, frontend, content, page builder, drag and drop builder, home page builder, landing page builder, layout builder, frontend builder, frontend editor, responsive, visual composer, beaver builder
-Stable tag: 1.7.5
+Stable tag: 1.7.6
 Requires at least: 4.3
 Tested up to: 4.7
 License: GPLv3 or later
@@ -138,6 +138,23 @@ Yes.  Tailored pages can be migrated like any other type of page using the [dupl
 Yes, however, users should be directed to the WordPress plugin repository to install the latest version of the plugin.  Consider using a tool like [TGM Plugin Activation](http://tgmpluginactivation.com/) to guide users through the installation process.
 
 == Changelog ==
+
+= 1.7.6 =
+* Added - Element label when hovering over an element in the preview window.
+* Improved - Columns now use percentage widths, instead of a 12 column grid system.
+* Improved - Up to six columns can now be added to a single row instead of four (and of course you can still nest rows).
+* Improved - Background image parallax effect [GitHub 60](https://github.com/andrew-worsfold/tailor/issues/60).
+* Improved - Dynamic element CSS rules now supports SCSS-like syntax (e.g., :, :: and & special characters);
+* Fixed - General color settings appear in the Tailor colors Customizer section for some themes [GitHub 73](https://github.com/andrew-worsfold/tailor/issues/73).
+* Fixed - An error message is displayed if get_current_screen() is not defined [GitHub PR 74](https://github.com/andrew-worsfold/tailor/pull/74).
+* Fixed - Elements are loaded too early, causing an issue with the New User Approve plugin [GitHub 75](https://github.com/andrew-worsfold/tailor/issues/75).
+* Fixed - Graphic color not being displayed correctly when upgrading from early versions of Tailor.
+* Fixed - Some units (for example "vw" and "vh" when setting minimum width and height) not being accepted in preview.
+* Fixed - Masonry-enabled elements do not refresh when their parent element changes.
+* Removed - Maximum 75rem width (CSS property) for Section content (use maximum width setting instead, if required).
+
+> <strong>New extension!</strong><br>
+> Check out the [Advanced Features extension](https://wordpress.org/plugins/tailor-advanced/) for new elements and features. Like Tailor, it's absolutely free!
 
 = 1.7.5 =
 * Added - Option to delete the Tailor layout for a given post [GitHub 44](https://github.com/andrew-worsfold/tailor/issues/44).

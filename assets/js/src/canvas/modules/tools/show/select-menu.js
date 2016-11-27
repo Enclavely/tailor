@@ -86,10 +86,22 @@ SelectMenuView = Marionette.CompositeView.extend( {
         var thisRect = this.el.parentNode.getBoundingClientRect();
         var thatRect = this._view.el.getBoundingClientRect();
 
-        this.el.style.top = thatRect.top - thisRect.top + 'px';
-        this.el.style.left = thatRect.left - thisRect.left + 'px';
-        this.el.style.width = thatRect.width + 'px';
-        this.el.style.height = thatRect.height + 'px';
+        var style = getComputedStyle( this._view.el, null );
+        var borderTop = parseInt( style.getPropertyValue( 'border-top-width' ), 10 );
+        var borderRight = parseInt( style.getPropertyValue( 'border-right-width' ), 10 );
+        var borderBottom = parseInt( style.getPropertyValue( 'border-bottom-width' ), 10 );
+        var borderLeft = parseInt( style.getPropertyValue( 'border-left-width' ), 10 );
+
+        var top = Math.round( parseFloat( thatRect.top - parseFloat( thisRect.top ) ) ) + borderTop;
+        var left = Math.max( -1, Math.round( parseFloat( thatRect.left ) - parseFloat( thisRect.left ) ) + borderLeft );
+        var right = Math.min( window.innerWidth + 1, Math.round( parseFloat( thatRect.left ) + parseFloat( thatRect.width ) ) - borderRight );
+        var width = right - left;
+        var height = Math.round( parseFloat( thatRect.height ) ) - borderTop - borderBottom;
+        
+        this.el.style.top = top + 'px';
+        this.el.style.left = left + 'px';
+        this.el.style.width = width + 'px';
+        this.el.style.height = height + 'px';
 
         var controls = this.el.querySelector( '.select__controls' );
         var menu = this.el.querySelector( '.select__menu' );

@@ -31,7 +31,6 @@ $column-box-shadow: none !default;
 
 // Element specific
 $column-number: 12 !default;
-$column-sizer-width: 1rem !default;
 
 
 //
@@ -83,23 +82,8 @@ $column-sizer-width: 1rem !default;
 
 				@include flex( column );
 
-				&__helper {
-					display: block;
-				}
-
 				> :last-child {
 					margin-bottom: 0;
-				}
-
-				&:last-of-type {
-
-					> .#{$column-class-prefix}column {
-
-						// Hide the column handle for the last column
-						&__helper {
-							display: none;
-						}
-					}
 				}
 			}
 		}
@@ -122,10 +106,6 @@ $column-sizer-width: 1rem !default;
 		border: $row-border-width $row-border-style $row-border-color;
 		border-radius: $row-border-radius;
 		box-shadow: $row-box-shadow;
-
-		&--full-height {
-			min-height: 100vh;
-		}
 	}
 
 	.#{$column-class-prefix}column {
@@ -140,27 +120,6 @@ $column-sizer-width: 1rem !default;
 		border: $column-border-width $column-border-style $column-border-color;
 		border-radius: $column-border-radius;
 		box-shadow: $column-box-shadow;
-
-		&__helper {
-			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			display: none;
-			pointer-events: none;
-		}
-
-		&__sizer {
-			position: absolute;
-			top: 0;
-			bottom: 0;
-			right: - ( $column-sizer-width / 2 );
-			width: $column-sizer-width;
-			cursor: col-resize;
-			z-index: 1001;
-			pointer-events: all;
-		}
 	}
 }
 

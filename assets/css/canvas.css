@@ -53,6 +53,75 @@ html {
   pointer-events: all;
 }
 
+.tailor-ui .is-dragging,
+.tailor-ui .is-rendering {
+  opacity: 0.5 !important;
+}
+
+.tailor-ui .is-editing,
+.tailor-ui .is-hovering,
+.tailor-ui .is-selected {
+  position: relative;
+}
+
+.tailor-ui .is-editing::before,
+.tailor-ui .is-hovering::before,
+.tailor-ui .is-selected::before {
+  position: absolute;
+  z-index: 999;
+  content: '';
+  pointer-events: none;
+  top: 2px;
+  left: 2px;
+  width: calc( 100% - 4px);
+  height: calc( 100% - 4px);
+}
+
+.tailor-ui .is-hovering::before {
+  z-index: 998;
+  outline: 2px solid #ccc;
+}
+
+.tailor-ui .is-hovering::after {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  z-index: 998;
+  content: attr(tailor-label) !important;
+  pointer-events: none;
+  padding: 1px 5px;
+  margin: 0;
+  background-color: #ccc;
+  color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen-Sans", "Ubuntu", "Cantarell", "Helvetica Neue", sans-serif;
+  font-size: 13px;
+  line-height: 24px;
+  font-weight: normal;
+  white-space: nowrap;
+  outline: none;
+  text-shadow: none;
+  box-shadow: none;
+  text-decoration: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.tailor-ui .is-editing::before,
+.tailor-ui .is-selected::before {
+  z-index: 999;
+  outline: 2px solid #0f95ee;
+}
+
+.tailor-ui .is-dragging .is-selected::before {
+  display: none;
+}
+
+.tailor-ui.is-resizing * {
+  pointer-events: none !important;
+}
+
 .tailor-ui .tools {
   pointer-events: none;
   overflow: visible;
@@ -115,21 +184,25 @@ html {
 
 .tailor-ui .tools .select__item {
   float: left;
-  padding: 2px 6px;
-  margin: 0;
-  border: none;
-  outline: none;
-  cursor: pointer;
-  color: #fff;
-  line-height: 24px;
-  font-size: 13px;
-  font-weight: normal;
-  background-color: #0f95ee;
   pointer-events: all;
+  cursor: pointer;
+  padding: 1px 5px;
+  margin: 0;
+  background-color: #0f95ee;
+  color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen-Sans", "Ubuntu", "Cantarell", "Helvetica Neue", sans-serif;
+  font-size: 13px;
+  line-height: 24px;
+  font-weight: normal;
   white-space: nowrap;
+  outline: none;
   text-shadow: none;
   box-shadow: none;
   text-decoration: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -160,22 +233,16 @@ html {
   z-index: 2;
 }
 
-.tailor-ui .tools .select.is-minimal .select__menu .select__item {
-  margin-bottom: 2px;
-  clear: both;
-  width: 100%;
-}
-
-.tailor-ui .tools .select.is-minimal .select__menu .select__item:not(:only-child):first-child::after {
-  float: right;
-}
-
 .tailor-ui .tools .select.is-minimal .select__controls {
-  top: 31px;
+  top: 29px;
   left: 1px;
   right: auto;
   z-index: 1;
-  background-color: #0f95ee;
+}
+
+.tailor-ui .tools .select.is-minimal .select__menu .select__item, .tailor-ui .tools .select.is-minimal .select__controls .select__item {
+  margin-bottom: 2px;
+  clear: both;
 }
 
 .tailor-ui .tools .select.is-minimal.is-expanded .select__controls {
@@ -240,47 +307,62 @@ html {
   background-color: rgba(0, 160, 210, 0.1);
 }
 
-.tailor-ui .is-dragging,
-.tailor-ui .is-rendering {
-  opacity: 0.5 !important;
-}
-
-.tailor-ui .is-editing,
-.tailor-ui .is-hovering,
-.tailor-ui .is-selected {
-  position: relative;
-}
-
-.tailor-ui .is-editing::before,
-.tailor-ui .is-hovering::before,
-.tailor-ui .is-selected::before {
+.tailor-ui .tailor-column__helper, .tailor-ui .tailor-column__sizer, .tailor-ui .tailor-column__width {
   position: absolute;
-  z-index: 999;
-  content: '';
+  top: 0;
+  z-index: 1001;
+}
+
+.tailor-ui .tailor-column__helper {
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
   pointer-events: none;
-  top: 2px;
-  left: 2px;
-  width: calc( 100% - 4px);
-  height: calc( 100% - 4px);
 }
 
-.tailor-ui .is-hovering::before {
-  z-index: 998;
-  outline: 2px solid #ccc;
-}
-
-.tailor-ui .is-editing::before,
-.tailor-ui .is-selected::before {
-  z-index: 999;
-  outline: 2px solid #0f95ee;
-}
-
-.tailor-ui .is-dragging .is-selected::before {
+.tailor-ui .tailor-column:last-of-type > .tailor-column__helper {
   display: none;
 }
 
-.tailor-ui.is-resizing * {
-  pointer-events: none !important;
+.tailor-ui .tailor-column__sizer {
+  bottom: 0;
+  right: -0.5rem;
+  width: 1rem;
+  cursor: col-resize;
+  pointer-events: all;
+}
+
+.tailor-ui .tailor-column__width {
+  position: absolute;
+  top: 1px;
+  pointer-events: none;
+  width: 50px;
+  padding: 1px 5px;
+  margin: 0;
+  background-color: #ccc;
+  color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen-Sans", "Ubuntu", "Cantarell", "Helvetica Neue", sans-serif;
+  font-size: 13px;
+  line-height: 24px;
+  font-weight: normal;
+  white-space: nowrap;
+  outline: none;
+  text-shadow: none;
+  box-shadow: none;
+  text-decoration: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.tailor-ui .tailor-column__width--left {
+  left: 0;
+}
+
+.tailor-ui .tailor-column__width--right {
+  right: 0;
 }
 
 [dir=rtl] .tailor-ui .tools .select__menu {

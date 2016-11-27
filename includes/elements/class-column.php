@@ -20,6 +20,24 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Column_Element'
     class Tailor_Column_Element extends Tailor_Element {
 
 	    /**
+	     * Sanitizes the column width value.
+	     *
+	     * @since 1.7.6
+	     *
+	     * @param string|int $value
+	     *
+	     * @return string
+	     */
+	    public function sanitize_column_width( $value ) {
+
+		    // Convert a column-based width into a percentage
+		    if ( false === strpos( $value, '%' ) ) {
+			    $value = round( ( (int) $value / 12 ) * 100, 2 ) . '%';
+		    }
+		    return tailor_sanitize_text( $value );
+        }
+
+	    /**
 	     * Registers element settings, sections and controls.
 	     *
 	     * @since 1.0.0
@@ -45,20 +63,20 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Column_Element'
 		    $priority = 0;
 
 		    $this->add_setting( 'width', array(
-			    'sanitize_callback'     =>  'tailor_sanitize_number',
+			    'sanitize_callback'     =>  array( $this, 'sanitize_column_width' ),
 			    'refresh'               =>  array(
 				    'method'                =>  'js',
 			    ),
-			    'default'               =>  '6',
+			    'default'               =>  '50%',
 		    ) );
 		    $this->add_setting( 'width_tablet', array(
-			    'sanitize_callback'     =>  'tailor_sanitize_number',
+			    'sanitize_callback'     =>  array( $this, 'sanitize_column_width' ),
 			    'refresh'               =>  array(
 				    'method'                =>  'js',
 			    ),
 		    ) );
 		    $this->add_setting( 'width_mobile', array(
-			    'sanitize_callback'     =>  'tailor_sanitize_number',
+			    'sanitize_callback'     =>  array( $this, 'sanitize_column_width' ),
 			    'refresh'               =>  array(
 				    'method'                =>  'js',
 			    ),
@@ -140,8 +158,51 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Column_Element'
 	     */
 	    public function generate_css( $atts = array() ) {
 		    $css_rules = array();
-		    $excluded_control_types = array();
+		    $excluded_control_types = array(
+			    'width',
+			    'width_tablet',
+			    'width_mobile',
+		    );
 		    $css_rules = tailor_css_presets( $css_rules, $atts, $excluded_control_types );
+
+		    // Desktop width
+		    $desktop_width = $atts['width'];
+		    $unit = tailor_get_unit( $desktop_width, '%' );
+		    $value = tailor_get_numeric_value( $desktop_width );
+		    $css_rules[] = array(
+			    'media'                 =>  'desktop',
+			    'setting'               =>  ( 'width' ),
+			    'selectors'             =>  array(),
+			    'declarations'          =>  array(
+				    'width'                 =>  esc_attr( ( $value . $unit ) ),
+			    ),
+		    );
+
+		    // Tablet-specific width
+		    $tablet_width = empty( $atts['width_tablet'] ) ? $desktop_width : $atts['width_tablet'];
+		    $unit = tailor_get_unit( $tablet_width, '%' );
+		    $value = tailor_get_numeric_value( $tablet_width );
+		    $css_rules[] = array(
+			    'media'                 =>  'tablet',
+			    'setting'               =>  ( 'width_tablet' ),
+			    'selectors'             =>  array( '.mobile-columns &', '.tablet-columns &' ),
+			    'declarations'          =>  array(
+				    'width'                 =>  esc_attr( ( $value . $unit ) ),
+			    ),
+		    );
+
+		    // Mobile-specific width
+		    $mobile_width = empty( $atts['width_mobile'] ) ? $desktop_width : $atts['width_mobile'];
+		    $unit = tailor_get_unit( $mobile_width, '%' );
+		    $value = tailor_get_numeric_value( $mobile_width );
+		    $css_rules[] = array(
+			    'media'                 =>  'mobile',
+			    'setting'               =>  ( 'width_mobile' ),
+			    'selectors'             =>  array( '.mobile-columns &' ),
+			    'declarations'          =>  array(
+				    'width'                 =>  esc_attr( ( $value . $unit ) ),
+			    ),
+		    );
 
 		    return $css_rules;
 	    }

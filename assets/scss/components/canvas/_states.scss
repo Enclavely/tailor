@@ -4,6 +4,27 @@ $element-border-color: $global-border-color !default;
 $element-border-color--hover: #ccc !default;
 $element-opacity--active: 0.5 !default;
 
+//
+// Mixins
+//
+@mixin label( $background-color ) {
+	padding: 1px 5px;
+	margin: 0;
+	background-color: $background-color;
+	color: $global-white-color;
+	font-family: $global-font-family;
+	font-size: 13px;
+	line-height: 24px;
+	font-weight: normal;
+	white-space: nowrap;
+	outline: none;
+	text-shadow: none;
+	box-shadow: none;
+	text-decoration: none;
+
+	@include user-select( none );
+}
+
 .#{$global-class-prefix}ui {
 
 	.is-dragging,
@@ -35,6 +56,17 @@ $element-opacity--active: 0.5 !default;
 		&::before {
 			z-index: 998;
 			outline: $element-border-width $element-border-style $element-border-color--hover;
+		}
+
+		&::after {
+			position: absolute;
+			top: 1px;
+			left: 1px;
+			z-index: 998;
+			content: attr( tailor-label) !important;
+			pointer-events: none;
+
+			@include label( $element-border-color--hover );
 		}
 	}
 

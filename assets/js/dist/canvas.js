@@ -859,8 +859,14 @@ CarouselItemView = ContainerView.extend( {
 
 module.exports = CarouselItemView;
 },{"./../element-container":17}],9:[function(require,module,exports){
-var ContainerView = require( './../element-container' ),
-	ColumnView;
+var $ = window.jQuery,
+	ContainerView = require( './../element-container' ),
+	ColumnView,
+	cssModule;
+
+app.channel.on( 'module:css:stylesheets:ready', function( module ) {
+	cssModule = module;
+} );
 
 ColumnView = ContainerView.extend( {
 
@@ -884,7 +890,11 @@ ColumnView = ContainerView.extend( {
      * @since 1.0.0
      */
     onRenderCollection : function() {
-        this.updateClassName( this.model.get( 'atts' ) );
+
+	    if ( 'undefined' != typeof cssModule ) {
+		    this.updateCSS( this.model.get( 'id' ), this.model.get( 'atts' ) );
+	    }
+
         this.$el
             .attr( 'draggable', true )
             .prepend(
@@ -909,11 +919,24 @@ ColumnView = ContainerView.extend( {
 	    var model = columnView.model;
 	    var nextModel = model.collection.findWhere( {
 		    parent : model.get( 'parent' ),
-		    order : model.get( 'order' ) + 1 }
-	    );
+		    order : model.get( 'order' ) + 1
+	    } );
 
 	    var atts = model.get( 'atts' );
-	    var originalWidth = atts[ setting ] || atts['width'];
+	    var nextAtts = nextModel.get( 'atts' );
+
+	    var width = parseFloat( atts[ setting ] || atts.width );
+	    var nextWidth = parseFloat( nextAtts[ setting ] || nextAtts.width );
+	    var columnsWidth = width + nextWidth;
+	    
+	    var column = columnView.el.getBoundingClientRect();
+
+	    // Add visual indicators
+	    var $first = $( '<span class="tailor-column__width tailor-column__width--right">' + width + '%</span>' );
+	    var $second = $( '<span class="tailor-column__width tailor-column__width--left">' + nextWidth + '%</span>' );
+
+	    $first.prependTo( columnView.$el );
+	    $second.prependTo( columnView.$el.next() );
 
 	    /**
 	     * Handles the resizing of columns.
@@ -926,22 +949,25 @@ ColumnView = ContainerView.extend( {
 			document.body.classList.add( 'is-resizing' );
 			document.body.style.cursor = 'col-resize';
 
-		    var rect = columnView.el.getBoundingClientRect();
+		    var columnWidth = Math.min( columnsWidth - 10, Math.max( 10, Math.round( parseFloat( ( ( e.clientX - column.left ) / column.width ) * width ) * 10 ) / 10 ) );
+		    var nextColumnWidth = Math.round( parseFloat( columnsWidth - columnWidth ) * 10 ) / 10;
+
+		    columnWidth += '%';
+		    nextColumnWidth += '%';
+
+		    // Update the UI
+		    $first.html( columnWidth );
+		    $second.html( nextColumnWidth );
+
+		    // Update the attributes
 		    var atts = _.clone( model.get( 'atts' ) );
 		    var nextAtts = _.clone( nextModel.get( 'atts' ) );
-		    var width = parseInt( atts[ setting ] || atts['width'] );
-		    var nextWidth = parseInt( nextAtts[ setting ] || nextAtts['width'] );
-		    var newWidth = Math.round( ( e.clientX - rect.left ) / ( rect.width ) * width );
-		    if ( newWidth < 1 || ( newWidth + 1 ) > ( width + nextWidth ) || newWidth == width ) {
-			    return;
-		    }
-
-		    atts[ setting ] = newWidth;
-		    nextAtts[ setting ] =  nextWidth - ( newWidth - width );
-
+		    atts[ setting ] = columnWidth;
+		    nextAtts[ setting ] = nextColumnWidth;
 		    model.set( 'atts', atts, { silent : true } );
 		    nextModel.set( 'atts', nextAtts, { silent : true } );
 
+		    // Trigger change events on the models
 		    model.trigger( 'change:width', model, atts );
 		    nextModel.trigger( 'change:width', nextModel, nextAtts );
         }
@@ -950,20 +976,18 @@ ColumnView = ContainerView.extend( {
 	     * Maybe update the widths of affected columns after resizing ends.
 	     *
 	     * @since 1.0.0
-	     *
-	     * @param e
 	     */
-		function onResizeEnd( e ) {
+		function onResizeEnd() {
 			document.removeEventListener( 'mousemove', onResize, false );
 			document.removeEventListener( 'mouseup', onResizeEnd, false );
-
             document.body.classList.remove( 'is-resizing' );
             document.body.style.cursor = 'default';
 
+		    $first.remove();
+		    $second.remove();
+
 		    var atts = model.get( 'atts' );
-		    var device = app.channel.request( 'sidebar:device' );
-		    var setting = ( 'desktop' == device ) ? 'width' : ( 'width_' + device );
-            if ( originalWidth != atts[ setting ] ) {
+            if ( width != atts[ setting ] ) {
 
                 /**
                  * Fires after the column has been resized.
@@ -993,7 +1017,7 @@ ColumnView = ContainerView.extend( {
      * @since 1.0.0
      */
 	onChangeWidth : function( model, atts ) {
-        this.updateClassName( atts );
+	    this.updateCSS( model.get( 'id' ), atts );
 
 	    /**
 	     * Fires after the column width has changed.
@@ -1003,28 +1027,41 @@ ColumnView = ContainerView.extend( {
 	    this.triggerAll( 'element:refresh', this );
 	},
 
-    /**
-     * Updates the class name following a change to the column width.
-     *
-     * @since 1.0.0
-     *
-     * @param atts
-     */
-    updateClassName : function( atts ) {
-	    this.$el.removeClass( function( index, css ) {
-		    return ( css.match( /(^|\s)columns-\S+/g) || [] ).join( ' ' );
-	    } );
-	    
-	    this.el.classList.add( 'columns-' + atts.width );
-	    
-	    var device = app.channel.request( 'sidebar:device' );
-	    if ( atts.hasOwnProperty( 'width_tablet' ) && 'undefined' != typeof atts['width_tablet'] ) {
-		    this.el.classList.add( ( 'columns-tablet-' + atts.width_tablet ) );
-	    }
-	    if ( atts.hasOwnProperty( 'width_mobile' ) && 'undefined' !== typeof atts['width_mobile'] ) {
-		    this.el.classList.add( ( 'columns-mobile-' + atts.width_mobile ) );
-	    }
-    }
+	updateCSS : function( elementId, atts ) {
+		var ruleSet = {};
+		var width = atts['width'];
+		var tabletWidth = atts['width_tablet'] || atts['width'];
+		var mobileWidth = atts['width_mobile'] || atts['width'];
+
+		// Desktop width
+		ruleSet['desktop'] = {};
+		ruleSet['desktop'][ elementId ] = [ {
+			selectors: [],
+			declarations:  { 'width' : width },
+			setting: 'width'
+		} ];
+
+		// Tablet width
+		ruleSet['tablet'] = {};
+		ruleSet['tablet'][ elementId ] = [ {
+			selectors: [ '.mobile-columns &', '.tablet-columns &' ],
+			declarations:  { 'width' : tabletWidth },
+			setting: 'width_tablet'
+		} ];
+
+		// Mobile width
+		ruleSet['mobile'] = {};
+		ruleSet['mobile'][ elementId ] = [ {
+			selectors: [ '.mobile-columns &' ],
+			declarations:  { 'width' : mobileWidth },
+			setting: 'width_mobile'
+		} ];
+
+		cssModule.deleteRules( elementId, 'width' );
+		cssModule.deleteRules( elementId, 'width_tablet' );
+		cssModule.deleteRules( elementId, 'width_mobile' );
+		cssModule.addRules( ruleSet );
+	}
 
 } );
 
@@ -1612,7 +1649,8 @@ var CompositeView = Marionette.CompositeView.extend( {
 			 * @since 1.0.0
 			 */
 			error : function() {
-				view.updateTemplate( 'The template for ' + view.cid + ' could not be refreshed' );
+				view.updateTemplate( '<p class="tailor-notification tailor-notification--error">The template for ' + view.cid + ' could not be refreshed</p>' );
+				console.log( response );
 			},
 
 			/**
@@ -1812,7 +1850,7 @@ var CompositeView = Marionette.CompositeView.extend( {
         this.setElement( $el );
 	    
 	    this.el.setAttribute( 'draggable', true );
-
+	    this.el.setAttribute( 'tailor-label', this.model.get( 'label' ) );
 	    this.el.classList.add( 'tailor-' + this.model.cid );
 	    this.el.title = _l10n.edit_element;
 	    
@@ -2533,6 +2571,7 @@ ElementView = Marionette.ItemView.extend( {
 		this.setElement( el );
 
 		this.el.setAttribute( 'draggable', true );
+		this.el.setAttribute( 'tailor-label', this.model.get( 'label' ) );
 		this.el.classList.add( 'tailor-' + this.model.id );
 		this.el.title = _l10n.edit_element;
 		
@@ -2610,7 +2649,8 @@ ElementView = Marionette.ItemView.extend( {
 			 * @since 1.0.0
 			 */
 			error : function( response ) {
-				view.updateTemplate( 'The template for ' + view.cid + ' could not be refreshed' );
+				view.updateTemplate( '<p class="tailor-notification tailor-notification--error">The template for ' + view.cid + ' could not be refreshed</p>' );
+				console.log( response );
 			},
 
 			/**
@@ -3574,12 +3614,12 @@ var ElementCollection = Backbone.Collection.extend( {
 
         return this.create( [ {
             tag : 'tailor_column',
-            atts : { width : 6 },
+            atts : { width : '50%' },
             parent : row.get( 'id' ),
             order : 0
         }, {
             tag : 'tailor_column',
-            atts : { width : 6 },
+            atts : { width : '50%' },
             parent : row.get( 'id' ),
             order : 1
         } ] );
@@ -3746,8 +3786,14 @@ var ElementCollection = Backbone.Collection.extend( {
 
         _.each( children, function( child ) {
             var atts = _.clone( child.get( 'atts' ) );
-            atts.width = 12 / numberChildren;
+
+            // Update the attributes
+            atts['width'] = ( Math.round( parseFloat( 1 / numberChildren ) * 1000 ) / 10 ) + '%';
+            delete atts['width_tablet'];
+            delete atts['width_mobile'];
             child.set( 'atts', atts, { silent : true } );
+
+            // Trigger change events on the model
             child.trigger( 'change:width', child, atts );
         }, this );
     },
@@ -3839,10 +3885,8 @@ ColumnModel = ChildModel.extend( {
         if ( 'child' == that.get( 'type' ) && that.get( 'tag' ) != this.get( 'tag' ) ) {
             return false;
         }
-
         var siblings = this.collection.getSiblings( this );
-
-        return that.get( 'parent' ) == this.get( 'parent' ) || siblings.length < 4;
+        return that.get( 'parent' ) == this.get( 'parent' ) || siblings.length < 6;
     }
 
 } );
@@ -5462,8 +5506,8 @@ CSSModule = Marionette.Module.extend( {
 		_.each( mediaQueries, function( atts, id ) {
 			if ( ! _.isEmpty( atts.min ) ) {
 				if ( ! _.isEmpty( atts.max ) ) {
-					this.stylesheets[ id ] = this.createSheet( id, atts.min, atts.max );
 					this.stylesheets[ id + '-up' ] = this.createSheet( id + '-up', atts.min );
+					this.stylesheets[ id ] = this.createSheet( id, atts.min, atts.max );
 				}
 				else {
 					this.stylesheets[ id ] = this.createSheet( id, atts.min );
@@ -6144,6 +6188,7 @@ var GuideView = Marionette.ItemView.extend( {
      * @since 1.0.0
      */
     reset : function() {
+        this.el.style = '';
         this.el.style.visibility = 'hidden';
         this.el.style.opacity = 0;
     }
@@ -6288,10 +6333,22 @@ SelectMenuView = Marionette.CompositeView.extend( {
         var thisRect = this.el.parentNode.getBoundingClientRect();
         var thatRect = this._view.el.getBoundingClientRect();
 
-        this.el.style.top = thatRect.top - thisRect.top + 'px';
-        this.el.style.left = thatRect.left - thisRect.left + 'px';
-        this.el.style.width = thatRect.width + 'px';
-        this.el.style.height = thatRect.height + 'px';
+        var style = getComputedStyle( this._view.el, null );
+        var borderTop = parseInt( style.getPropertyValue( 'border-top-width' ), 10 );
+        var borderRight = parseInt( style.getPropertyValue( 'border-right-width' ), 10 );
+        var borderBottom = parseInt( style.getPropertyValue( 'border-bottom-width' ), 10 );
+        var borderLeft = parseInt( style.getPropertyValue( 'border-left-width' ), 10 );
+
+        var top = Math.round( parseFloat( thatRect.top - parseFloat( thisRect.top ) ) ) + borderTop;
+        var left = Math.max( -1, Math.round( parseFloat( thatRect.left ) - parseFloat( thisRect.left ) ) + borderLeft );
+        var right = Math.min( window.innerWidth + 1, Math.round( parseFloat( thatRect.left ) + parseFloat( thatRect.width ) ) - borderRight );
+        var width = right - left;
+        var height = Math.round( parseFloat( thatRect.height ) ) - borderTop - borderBottom;
+        
+        this.el.style.top = top + 'px';
+        this.el.style.left = left + 'px';
+        this.el.style.width = width + 'px';
+        this.el.style.height = height + 'px';
 
         var controls = this.el.querySelector( '.select__controls' );
         var menu = this.el.querySelector( '.select__menu' );
@@ -6504,11 +6561,13 @@ require( './preview/css' );
 	} );
 
 	ElementAPI.onRender( 'tailor_content', function( atts, model ) {
-		this.$el.tailorLightbox( {
-			disableOn : function() {
-				return $el.hasClass( 'is-selected' );
-			}
-		} );
+		if ( this.$el.find( '.is-lightbox-image' ).length > 0 ) {
+			this.$el.tailorLightbox( {
+				disableOn : function() {
+					return $el.hasClass( 'is-selected' );
+				}
+			} );
+		}
 	} );
 
 	ElementAPI.onRender( 'tailor_gallery', function( atts, model ) {
@@ -6586,7 +6645,7 @@ require( './preview/css' );
 	} );
 
 	ElementAPI.onRender( 'tailor_section', function( atts, model ) {
-		if ( atts['background_image'] && atts['parallax'] ) {
+		if ( atts['background_image'] && atts['parallax'] && 1 == atts['parallax'] ) {
 			this.$el.tailorParallax();
 		}
 	} );
@@ -7422,7 +7481,7 @@ window.tailorValidateUnit = function( value ) {
 	var sign = '';
 	if ( '-' == value.charAt( 0 ) ) {
 		sign = '-';
-		value = value.substring(1);
+		value = value.substring( 1 );
 	}
 	return ( sign + tailorValidateNumber( value ) + getUnit( value ) );
 };
@@ -7447,10 +7506,10 @@ function getUnit( string ) {
 		"em",
 		"rem",
 		"ex",
-		'vw',
-		'vh'
+		"vw",
+		"vh"
 	];
-	var matches = string.match( new RegExp( '/' + map.join( '|') + '/' ) );
+	var matches = string.match( new RegExp( map.join( '|' ) ) );
 	if ( matches ) {
 		return matches[0];
 	}
@@ -7672,7 +7731,7 @@ var $ = window.jQuery,
  * @constructor
  */
 AbstractComponent = function( el, options, callbacks ) {
-	this.id = 'tailor.' + id ++;
+	this.id = 'tailor' + id ++;
     this.el = el;
     this.$el = $( this.el );
 	this.callbacks = $.extend( {}, this.callbacks, callbacks );
@@ -7733,7 +7792,7 @@ AbstractComponent.prototype = {
 	 * @since 1.7.5
 	 */
 	addEventListeners : function() {
-	    var component = this;
+		var component = this;
 	    this.onResizeCallback = _.throttle( this.onResize.bind( this ) , 100 );
 
 	    /**
@@ -7742,19 +7801,19 @@ AbstractComponent.prototype = {
 
 	    // Element ready
 	    this.$el
-		    .on( 'before:element:ready', function( e, view ) {
+		    .on( 'before:element:ready.' + component.id, function( e, view ) {
 			    if ( e.target == component.el ) {
 				    component.onBeforeReady( e, view );
 			    }
 		    } )
-		    .on( 'element:ready', function( e, view ) {
+		    .on( 'element:ready.' + component.id, function( e, view ) {
 			    if ( e.target == component.el ) {
 				    component.onReady( e, view );
 			    }
 		    } );
 		
 	    // Element moved
-	    this.$el.on( 'element:change:order element:change:parent', function( e, view ) {
+	    this.$el.on( 'element:change:order.' + component.id + ' element:change:parent.' + component.id, function( e, view ) {
 		    if ( e.target == component.el ) {
 			    component.onMove( e, view );
 		    }
@@ -7762,19 +7821,19 @@ AbstractComponent.prototype = {
 		
 	    // Element copied
 	    this.$el
-		    .on( 'before:element:copy', function( e, view ) {
+		    .on( 'before:element:copy.' + component.id, function( e, view ) {
 			    if ( e.target == component.el ) {
 				    component.onBeforeCopy( e, view );
 			    }
 		    } )
-		    .on( 'element:copy', function( e, view ) {
+		    .on( 'element:copy.' + component.id, function( e, view ) {
 			    if ( e.target == component.el ) {
 				    component.onCopy( e, view );
 			    }
 		    } );
 
 	    // Element refreshed
-	    this.$el.on( 'before:element:refresh', function( e, view ) {
+	    this.$el.on( 'before:element:refresh.' + component.id, function( e, view ) {
 		    if ( e.target == component.el ) {
 			    component.destroy();
 			    component.onBeforeRefresh( e, view );
@@ -7783,12 +7842,12 @@ AbstractComponent.prototype = {
 
 	    // Element refreshed using JavaScript
 	    this.$el
-		    .on( 'before:element:jsRefresh', function( e, view ) {
+		    .on( 'before:element:jsRefresh.' + component.id, function( e, view ) {
 			    if ( e.target == component.el ) {
 				    component.onBeforeJSRefresh( e, view );
 			    }
 		    } )
-		    .on( 'element:jsRefresh', function( e, view ) {
+		    .on( 'element:jsRefresh.' + component.id, function( e, view ) {
 			    if ( e.target == component.el ) {
 				    component.onJSRefresh( e, view );
 			    }
@@ -7796,12 +7855,12 @@ AbstractComponent.prototype = {
 
 	    // Element destroyed
 	    this.$el
-		    .on( 'before:element:destroy', function( e, view ) {
+		    .on( 'before:element:destroy.' + component.id, function( e, view ) {
 			    if ( e.target == component.el ) {
 				    component.onBeforeDestroy( e, view );
 			    }
 		    } )
-		    .on( 'element:destroy', function( e, view ) {
+		    .on( 'element:destroy.' + component.id, function( e, view ) {
 			    if ( e.target == component.el ) {
 				    component.destroy();
 			    }
@@ -7812,14 +7871,14 @@ AbstractComponent.prototype = {
 	     */
 
 	    // Child added
-	    this.$el.on( 'element:child:add', function( e, view ) {
+	    this.$el.on( 'element:child:add.' + component.id, function( e, view ) {
 		    if ( e.target == component.el ) {
 			    component.onAddChild( e, view );
 		    }
 	    } );
 
 	    // Child removed
-	    this.$el.on( 'element:child:remove', function( e, view ) {
+	    this.$el.on( 'element:child:remove.' + component.id, function( e, view ) {
 		    if ( e.target == component.el ) {
 			    component.onRemoveChild( e, view );
 		    }
@@ -7827,73 +7886,80 @@ AbstractComponent.prototype = {
 		
 		// Child ready
 		this.$el
-			.on( 'before:element:child:ready', function( e, view ) {
+			.on( 'before:element:child:ready.' + component.id, function( e, view ) {
 				component.onBeforeReadyChild( e, view );
 			} )
-			.on( 'element:child:ready', function( e, view ) {
+			.on( 'element:child:ready.' + component.id, function( e, view ) {
 				component.onReadyChild( e, view );
 			} );
 
 		// Child moved
-		this.$el.on( 'element:child:change:order element:child:change:parent', function( e, view ) {
+		this.$el.on( 'element:child:change:order.' + component.id + ' element:child:change:parent.' + component.id, function( e, view ) {
 			component.onMoveChild( e, view );
 		} );
 		
 		// Child reordered (using navigation)
 		this.$el
-			.on( 'before:navigation:reorder', function( e, cid, index, oldIndex ) {
+			.on( 'before:navigation:reorder.' + component.id, function( e, cid, index, oldIndex ) {
 				component.onBeforeReorderChild( e, cid, index, oldIndex  );
 			} )
-			.on( 'navigation:reorder', function( e, cid, index, oldIndex  ) {
+			.on( 'navigation:reorder.' + component.id, function( e, cid, index, oldIndex  ) {
 				component.onReorderChild( e, cid, index, oldIndex );
 				component.onReorderChild( e, cid, index, oldIndex );
 			} );
 		
 		// Child refreshed
 		this.$el
-			.on( 'before:element:child:refresh', function( e, view ) {
+			.on( 'before:element:child:refresh.' + component.id, function( e, view ) {
 				component.onBeforeRefreshChild( e, view );
 			} )
-			.on( 'element:child:refresh', function( e, view ) {
+			.on( 'element:child:refresh.' + component.id, function( e, view ) {
 				component.onRefreshChild( e, view );
 			} );
 		
 	    // Child refreshed using JavaScript
 	    this.$el
-		    .on( 'before:element:child:jsRefresh', function( e, view ) {
+		    .on( 'before:element:child:jsRefresh.' + component.id, function( e, view ) {
 			    component.onBeforeJSRefreshChild( e, view );
 		    } )
-		    .on( 'element:child:jsRefresh', function( e, view ) {
+		    .on( 'element:child:jsRefresh.' + component.id, function( e, view ) {
 			    component.onJSRefreshChild( e, view );
 		    } );
 
 	    // Child destroyed
 	    this.$el
-		    .on( 'before:element:child:destroy', function( e, view ) {
+		    .on( 'before:element:child:destroy.' + component.id, function( e, view ) {
 			    component.onBeforeDestroyChild( e, view );
 		    } )
-		    .on( 'element:child:destroy', function( e, view ) {
+		    .on( 'element:child:destroy.' + component.id, function( e, view ) {
 			    component.onDestroyChild( e, view );
 		    } );
 
 		// All child changes
-		this.$el.on( 'element:child:add element:child:remove element:child:ready element:child:refresh element:child:jsRefresh element:child:destroy', function( e, view ) {
-			component.onChangeChild( e, view );
-		} );
+		this.$el.on(
+			'element:child:add.' + component.id + ' ' +
+			'element:child:remove.' + component.id + ' ' +
+			'element:child:ready.' + component.id + ' ' +
+			'element:child:refresh.' + component.id + ' ' +
+			'element:child:jsRefresh.' + component.id + ' ' +
+			'element:child:destroy.' + component.id,
+			function( e, view ) {
+				component.onChangeChild( e, view );
+			} );
 
 	    /**
 	     * Descendant listeners
 	     */
 
 	    // Descendant added
-	    this.$el.on( 'element:descendant:add', function( e, view ) {
+	    this.$el.on( 'element:descendant:add.' + component.id, function( e, view ) {
 		    if ( e.target != component.el ) {
 			    component.onAddDescendant( e, view );
 		    }
 	    } );
 
 	    // Descendant removed
-	    this.$el.on( 'element:descendant:remove', function( e, view ) {
+	    this.$el.on( 'element:descendant:remove.' + component.id, function( e, view ) {
 		    if ( e.target != component.el ) {
 			    component.onRemoveDescendant( e, view );
 		    }
@@ -7901,12 +7967,12 @@ AbstractComponent.prototype = {
 		
 		// Descendant ready
 		this.$el
-			.on( 'before:element:descendant:ready', function( e, view ) {
+			.on( 'before:element:descendant:ready.' + component.id, function( e, view ) {
 				if ( e.target != component.el ) {
 					component.onBeforeReadyDescendant( e, view );
 				}
 			} )
-			.on( 'element:descendant:ready', function( e, view ) {
+			.on( 'element:descendant:ready.' + component.id, function( e, view ) {
 				if ( e.target != component.el ) {
 					component.onReadyDescendant( e, view );
 				}
@@ -7914,12 +7980,12 @@ AbstractComponent.prototype = {
 
 		// Descendant refreshed
 	    this.$el
-		    .on( 'before:element:descendant:refresh', function( e, view ) {
+		    .on( 'before:element:descendant:refresh.' + component.id, function( e, view ) {
 			    if ( e.target != component.el ) {
 				    component.onBeforeRefreshDescendant( e, view );
 			    }
 		    } )
-		    .on( 'element:descendant:refresh', function( e, view ) {
+		    .on( 'element:descendant:refresh.' + component.id, function( e, view ) {
 			    if ( e.target != component.el ) {
 				    component.onRefreshDescendant( e, view );
 			    }
@@ -7927,12 +7993,12 @@ AbstractComponent.prototype = {
 
 	    // Descendant refreshed using JavaScript
 	    this.$el
-		    .on( 'before:element:descendant:jsRefresh', function( e, view ) {
+		    .on( 'before:element:descendant:jsRefresh.' + component.id, function( e, view ) {
 			    if ( e.target != component.el ) {
 				    component.onBeforeJSRefreshDescendant( e, view );
 			    }
 		    } )
-		    .on( 'element:descendant:jsRefresh', function( e, view ) {
+		    .on( 'element:descendant:jsRefresh.' + component.id, function( e, view ) {
 			    if ( e.target != component.el ) {
 				    component.onJSRefreshDescendant( e, view );
 			    }
@@ -7940,36 +8006,53 @@ AbstractComponent.prototype = {
 
 	    // Descendant destroyed
 	    this.$el
-		    .on( 'before:element:descendant:destroy', function( e, view ) {
+		    .on( 'before:element:descendant:destroy.' + component.id, function( e, view ) {
 			    if ( e.target != component.el ) {
 				    component.onBeforeDestroyDescendant( e, view );
 			    }
 		    } )
-		    .on( 'element:descendant:destroy', function( e, view ) {
+		    .on( 'element:descendant:destroy.' + component.id, function( e, view ) {
 			    if ( e.target != component.el ) {
 				    component.onDestroyDescendant( e, view );
 			    }
 		    } );
 
 		// All descendant changes
-		this.$el.on( 'element:descendant:add element:descendant:remove element:descendant:ready element:descendant:refresh element:descendant:jsRefresh element:descendant:destroy', function( e, view ) {
-			component.onChangeDescendant( e, view );
-		} );
+		this.$el.on(
+			'element:descendant:add.' + component.id + ' ' +
+			'element:descendant:remove.' + component.id + ' ' +
+			'element:descendant:ready.' + component.id + ' ' +
+			'element:descendant:refresh.' + component.id + ' ' +
+			'element:descendant:jsRefresh.' + component.id + ' ' +
+			'element:descendant:destroy.' + component.id,
+				function( e, view ) {
+					component.onChangeDescendant( e, view );
+				} );
 
 	    /**
 	     * Parent listeners.
 	     */
 	    $doc
-		    .on( 'element:descendant:add element:descendant:remove element:descendant:ready element:descendant:destroy', function( e, view ) {
-			    if ( e.target.contains( component.el ) && e.target != component.el && view.el != component.el ) {
-				    component.onChangeParent();
-			    }
-		    } )
-		    .on( 'element:refresh element:jsRefresh element:descendant:refresh element:descendant:jsRefresh', function( e, view ) {
-			    if ( e.target.contains( component.el ) && e.target != component.el && view.el != component.el ) {
-				    component.onChangeParent();
-			    }
-		    } );
+		    .on(
+			    'element:descendant:add.' + component.id + ' ' +
+			    'element:descendant:remove.' + component.id + ' ' +
+			    'element:descendant:ready.' + component.id + ' ' +
+			    'element:descendant:destroy.' + component.id,
+			    function( e, view ) {
+				    if ( e.target.contains( component.el ) && e.target != component.el && view.el != component.el ) {
+					    component.onChangeParent();
+				    }
+			    } )
+		    .on(
+			    'element:refresh.' + component.id + ' ' +
+			    'element:jsRefresh.' + component.id + ' ' +
+			    'element:descendant:refresh.' + component.id + ' ' +
+			    'element:descendant:jsRefresh.' + component.id,
+			    function( e, view ) {
+				    if ( e.target.contains( component.el ) && e.target != component.el && view.el != component.el ) {
+					    component.onChangeParent();
+				    }
+			    } );
 
 	    /**
 	     * Window listeners.
@@ -7983,7 +8066,7 @@ AbstractComponent.prototype = {
 	 * @since 1.7.5
 	 */
 	removeEventListeners : function() {
-		this.$el.off( '**' );
+		this.$el.off( '.' + this.id );
 		$win.off( 'resize.' + this.id, this.onResizeCallback );
 	},
 
@@ -8782,7 +8865,7 @@ Masonry = Components.create( {
 
     onChangeParent: function() {
         if ( this.shuffleActive ) {
-            this.shuffle();
+            this.refreshShuffle();
         }
     },
 
@@ -8892,7 +8975,7 @@ Parallax = Components.create( {
 		this.position.bottom = top + height;
 
 		// Adjust the background height
-		this.background.style.top = '0px';
+		this.background.style.bottom = '0px';
 		this.background.style.height = Math.round( ( height + ( height * this.options.ratio ) ) ) + 'px';
 	},
 
@@ -8911,7 +8994,7 @@ Parallax = Components.create( {
 				( this.position.height + this.windowHeight )
 			);
 		var translateY = Math.round( ( amountScrolled * this.position.height * this.options.ratio ) * 100 ) / 100;
-		this.background.style[ Modernizr.prefixed( 'transform' ) ] = 'translate3d( 0px, -' + translateY + 'px, 0px )';
+		this.background.style[ Modernizr.prefixed( 'transform' ) ] = 'translate3d( 0px, ' + translateY + 'px, 0px )';
 	},
 
 	/**
@@ -8934,10 +9017,9 @@ Parallax = Components.create( {
 	inViewport : function() {
 		var winTop = window.pageYOffset;
 		var winBottom = winTop + this.windowHeight;
-		var containerBottom = this.position.top + this.position.height;
 		return (
-			this.position.top < winBottom &&    // Top of element is above the bottom of the window
-			winTop < containerBottom            // Bottom of element is below top of the window
+			this.position.top < winBottom &&        // Top of element is above the bottom of the window
+			winTop < this.position.bottom           // Bottom of element is below top of the window
 		);
 	},
 
@@ -9613,34 +9695,33 @@ var CSS = {
 	 * @returns {*}
 	 */
     parseSelectors : function( selectors, elementId ) {
-        if ( _.isString( selectors ) ) {
-            return selectors;
-        }
+		if ( _.isString( selectors ) ) {
+			return selectors;
+		}
 
-        var elementClass = elementId ? '.tailor-ui .tailor-' + elementId : '';
-        var selector;
+        var elementClass = elementId ? '.tailor-' + elementId : '';
+		var prefix = '.tailor-ui ';
+		if ( ! selectors.length ) {
+			return prefix + elementClass;
+		}
 
-        if ( ! selectors.length ) {
-            selector = elementClass;
-        }
-        else {
-            if ( elementClass ) {
-                selectors = selectors.map( function( selector ) {
-                    if ( selector.indexOf( '&' ) > -1 ) {
-                        selector = selector.replace( '&', elementClass );
-                    }
-                    else if ( ':' == selector.charAt( 0 ) ) {
-                        selector = elementClass + selector;
-                    }
-                    else {
-                        selector = elementClass + ' ' + selector;
-                    }
-                    return selector;
-                } );
-            }
-            selector = selectors.join( ',' );
-        }
-        return selector;
+		selectors = selectors.map( function( selector ) {
+			if ( selector.indexOf( '&' ) > -1 ) {
+				selector = selector.replace( '&', elementClass );
+			}
+			else {
+				var firstCharacter = selector.charAt( 0 );
+				if ( ':' == firstCharacter || '::' == firstCharacter ) {
+					selector = elementClass + selector;
+				}
+				else {
+					selector = elementClass + ' ' + selector
+				}
+			}
+			return prefix + selector;
+		} );
+
+		return selectors.join( ',' );
     },
 
 	/**

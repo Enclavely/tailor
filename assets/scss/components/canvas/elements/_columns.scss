@@ -1,0 +1,100 @@
+//
+// Variables
+//
+$column-class-prefix: $global-class-prefix !default;
+$column-sizer-width: 1rem !default;
+
+
+//
+// Mixins
+//
+@mixin row( $size ) {
+
+	.#{$global-class-prefix}ui {
+
+		// Row
+		.#{$size}-columns {
+
+			// Column
+			.#{$column-class-prefix}column {
+
+				&__helper {
+					display: block;
+				}
+
+				&:last-of-type {
+
+					> .#{$column-class-prefix}column {
+
+						// Hide the column handle for the last column
+						&__helper {
+							display: none;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+
+//
+// Exported selectors
+//
+.#{$global-class-prefix}ui {
+
+	.#{$column-class-prefix}column {
+
+		&__helper,
+		&__sizer,
+		&__width {
+			position: absolute;
+			top: 0;
+			z-index: 1001;
+		}
+
+		&__helper {
+			left: 0;
+			width: 100%;
+			height: 100%;
+			display: block;
+			pointer-events: none;
+		}
+
+		&:last-of-type {
+
+			> .#{$column-class-prefix}column {
+
+				// Hide the column handle for the last column
+				&__helper {
+					display: none;
+				}
+			}
+		}
+
+		&__sizer {
+			bottom: 0;
+			right: - ( $column-sizer-width / 2 );
+			width: $column-sizer-width;
+			cursor: col-resize;
+			pointer-events: all;
+		}
+
+		&__width {
+			position: absolute;
+			top: 1px;
+			pointer-events: none;
+			width: 50px;
+
+			@include label( $element-border-color--hover );
+
+			&--left {
+				left: 0;
+			}
+
+			&--right {
+				right: 0;
+			}
+		}
+	}
+}

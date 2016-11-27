@@ -66,7 +66,7 @@ Parallax = Components.create( {
 		this.position.bottom = top + height;
 
 		// Adjust the background height
-		this.background.style.top = '0px';
+		this.background.style.bottom = '0px';
 		this.background.style.height = Math.round( ( height + ( height * this.options.ratio ) ) ) + 'px';
 	},
 
@@ -85,7 +85,7 @@ Parallax = Components.create( {
 				( this.position.height + this.windowHeight )
 			);
 		var translateY = Math.round( ( amountScrolled * this.position.height * this.options.ratio ) * 100 ) / 100;
-		this.background.style[ Modernizr.prefixed( 'transform' ) ] = 'translate3d( 0px, -' + translateY + 'px, 0px )';
+		this.background.style[ Modernizr.prefixed( 'transform' ) ] = 'translate3d( 0px, ' + translateY + 'px, 0px )';
 	},
 
 	/**
@@ -108,10 +108,9 @@ Parallax = Components.create( {
 	inViewport : function() {
 		var winTop = window.pageYOffset;
 		var winBottom = winTop + this.windowHeight;
-		var containerBottom = this.position.top + this.position.height;
 		return (
-			this.position.top < winBottom &&    // Top of element is above the bottom of the window
-			winTop < containerBottom            // Bottom of element is below top of the window
+			this.position.top < winBottom &&        // Top of element is above the bottom of the window
+			winTop < this.position.bottom           // Bottom of element is below top of the window
 		);
 	},
 

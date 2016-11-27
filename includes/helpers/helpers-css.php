@@ -68,11 +68,12 @@ if ( ! function_exists( 'tailor_get_unit' ) ) {
 	 *
 	 * @since 1.7.2
 	 *
-	 * @param $string
+	 * @param string $string
+	 * @param string $default
 	 *
 	 * @return string
 	 */
-	function tailor_get_unit( $string ) {
+	function tailor_get_unit( $string, $default = 'px' ) {
 		$map = array(
 			"px",
 			"%",
@@ -90,7 +91,7 @@ if ( ! function_exists( 'tailor_get_unit' ) ) {
 		if ( 1 == preg_match( '/' .  implode( '|', $map ) . '/', (string) $string, $matches ) ) {
 			return $matches[0];
 		}
-		return 'px';
+		return $default;
 	}
 }
 

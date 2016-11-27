@@ -494,10 +494,6 @@ html {
   box-shadow: none;
 }
 
-.tailor-ui .tailor-row--full-height {
-  min-height: 100vh;
-}
-
 .tailor-ui .tailor-column {
   position: relative;
   min-height: 1px;
@@ -510,27 +506,6 @@ html {
   border: 1px none #efefef;
   border-radius: 0;
   box-shadow: none;
-}
-
-.tailor-ui .tailor-column__helper {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: none;
-  pointer-events: none;
-}
-
-.tailor-ui .tailor-column__sizer {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  right: -0.5rem;
-  width: 1rem;
-  cursor: col-resize;
-  z-index: 1001;
-  pointer-events: all;
 }
 
 [dir=rtl] .tailor-ui .tailor-row {
@@ -746,16 +721,8 @@ html {
   flex-direction: column;
 }
 
-.tailor-ui .mobile-columns .tailor-column__helper {
-  display: block;
-}
-
 .tailor-ui .mobile-columns .tailor-column > :last-child {
   margin-bottom: 0;
-}
-
-.tailor-ui .mobile-columns .tailor-column:last-of-type > .tailor-column__helper {
-  display: none;
 }
 
 @media only screen and (min-width: 321px) {
@@ -957,14 +924,8 @@ html {
     display: flex;
     flex-direction: column;
   }
-  .tailor-ui .tablet-columns .tailor-column__helper {
-    display: block;
-  }
   .tailor-ui .tablet-columns .tailor-column > :last-child {
     margin-bottom: 0;
-  }
-  .tailor-ui .tablet-columns .tailor-column:last-of-type > .tailor-column__helper {
-    display: none;
   }
 }
 
@@ -1167,14 +1128,8 @@ html {
     display: flex;
     flex-direction: column;
   }
-  .tailor-ui .desktop-columns .tailor-column__helper {
-    display: block;
-  }
   .tailor-ui .desktop-columns .tailor-column > :last-child {
     margin-bottom: 0;
-  }
-  .tailor-ui .desktop-columns .tailor-column:last-of-type > .tailor-column__helper {
-    display: none;
   }
 }
 
@@ -1935,6 +1890,7 @@ html {
   border: 1px none #efefef;
   border-radius: 0;
   box-shadow: none;
+  overflow: hidden;
 }
 
 .tailor-ui .tailor-section__content {
@@ -1942,7 +1898,6 @@ html {
   z-index: 2;
   margin: 0 auto;
   width: 100%;
-  max-width: 75rem;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
@@ -1952,7 +1907,7 @@ html {
 .tailor-ui .tailor-section__background {
   position: absolute;
   z-index: 1;
-  top: 0;
+  bottom: 0;
   right: 0;
   left: 0;
   height: 100%;

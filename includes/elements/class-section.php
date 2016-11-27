@@ -82,13 +82,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Section_Element
 		        'background_color',
 		        'border_color',
 	        );
-	        $color_control_arguments = array(
-		        'background_color'      =>  array(
-			        'setting'               =>  array(
-				        'refresh'               =>  '',
-			        ),
-		        ),
-	        );
+	        $color_control_arguments = array();
 	        tailor_control_presets( $this, $color_control_types, $color_control_arguments, $priority );
 	        
 	        $priority = 0;
@@ -233,7 +227,10 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Section_Element
 
 		    // Parallax background image
 		    if ( ! empty( $atts['background_image'] ) ) {
-			    if ( 1 == $atts['parallax'] && $background_image_url = wp_get_attachment_image_url( $atts['background_image'], 'full' ) ) {
+			    if (
+				    ! empty( $atts['parallax'] ) && 1 == $atts['parallax'] &&
+				    $background_image_url = wp_get_attachment_image_url( $atts['background_image'], 'full' )
+			    ) {
 
 				    // Prevent default background image styles from being applied
 				    $excluded_control_types[] = 'background_image';
