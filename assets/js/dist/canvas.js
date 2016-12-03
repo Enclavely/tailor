@@ -1648,7 +1648,7 @@ var CompositeView = Marionette.CompositeView.extend( {
 			 *
 			 * @since 1.0.0
 			 */
-			error : function() {
+			error : function( response ) {
 				view.updateTemplate( '<p class="tailor-notification tailor-notification--error">The template for ' + view.cid + ' could not be refreshed</p>' );
 				console.log( response );
 			},
