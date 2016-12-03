@@ -1,6 +1,6 @@
 var SelectMenuItemView = Marionette.ItemView.extend( {
 
-    tagName : 'a',
+    tagName : 'div',
 
 	className : 'select__item',
 

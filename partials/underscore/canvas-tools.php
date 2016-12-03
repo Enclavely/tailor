@@ -19,10 +19,10 @@ $delete_label = __( 'Delete', 'tailor' ); ?>
 	<div class="select__menu"></div>
 	<div class="select__controls">
 		<% if ( 'container' == type ) { %>
-		<a class="select__item js-add" title="<?php echo $add_label; ?>"><?php echo $add_label; ?></a>
+		<div class="select__item js-add" title="<?php echo $add_label; ?>"><?php echo $add_label; ?></div>
 		<% } %>
-		<a class="select__item js-edit" title="<?php echo $edit_label; ?>"><?php echo $edit_label; ?></a>
-		<a class="select__item js-copy" title="<?php echo $copy_label; ?>"><?php echo $copy_label; ?></a>
-		<a class="select__item js-delete" title="<?php echo $delete_label; ?>"><?php echo $delete_label; ?></a>
+		<div class="select__item js-edit" title="<?php echo $edit_label; ?>"><?php echo $edit_label; ?></div>
+		<div class="select__item js-copy" title="<?php echo $copy_label; ?>"><?php echo $copy_label; ?></div>
+		<div class="select__item js-delete" title="<?php echo $delete_label; ?>"><?php echo $delete_label; ?></div>
 	</div>
 </script>

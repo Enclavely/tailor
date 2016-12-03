@@ -34,7 +34,6 @@ $section-box-shadow: none !default;
 		border: $section-border-width $section-border-style $section-border-color;
 		border-radius: $section-border-radius;
 		box-shadow: $section-box-shadow;
-		overflow: hidden;
 
 		&__content {
 			position: relative;
@@ -64,7 +63,8 @@ $section-box-shadow: none !default;
 		}
 
 		// Variations
-		&.is-parallax {
+		&.is-parallax,
+		&.has-background-image {
 			overflow: hidden;
 		}
 

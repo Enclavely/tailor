@@ -130,6 +130,7 @@ html {
 .tailor-ui .tools .select-container {
   position: absolute;
   top: 0;
+  left: 0;
   z-index: 999;
 }
 

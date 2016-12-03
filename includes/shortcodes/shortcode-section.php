@@ -40,7 +40,7 @@ if ( ! function_exists( 'tailor_shortcode_section' ) ) {
 
 	    // Parallax image background
 	    if ( $atts['background_image'] && 1 == $atts['parallax'] ) {
-		    $class[] = 'is-parallax';
+		    $class[] = 'has-background-image is-parallax';
 		    $section_background = '<div class="tailor-section__background"></div>';
 		    $data = array( 'ratio' => '0.5' );
 	    }

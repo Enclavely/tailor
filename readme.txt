@@ -2,7 +2,7 @@
 Contributors: andrew.worsfold
 Donate link: http://gettailor.com/donate/
 Tags: page, layout, builder, frontend, content, page builder, drag and drop builder, home page builder, landing page builder, layout builder, frontend builder, frontend editor, responsive, visual composer, beaver builder
-Stable tag: 1.7.6
+Stable tag: 1.7.7
 Requires at least: 4.3
 Tested up to: 4.7
 License: GPLv3 or later
@@ -139,6 +139,13 @@ Yes, however, users should be directed to the WordPress plugin repository to ins
 
 == Changelog ==
 
+= 1.7.7 =
+* Improved - Positioning of menu for selected elements, to accommodate elements that expand below the confines of the content area.
+* Improved - HTML markup for canvas tools, to avoid conflicts with themes that style link tags in unexpected ways.
+
+> <strong>New extension!</strong><br>
+> Check out the [Advanced Features extension](https://wordpress.org/plugins/tailor-advanced/) for new elements and features. Like Tailor, it's absolutely free!
+
 = 1.7.6 =
 * Added - Element label when hovering over an element in the preview window.
 * Improved - Columns now use percentage widths, instead of a 12 column grid system.
@@ -152,9 +159,6 @@ Yes, however, users should be directed to the WordPress plugin repository to ins
 * Fixed - Some units (for example "vw" and "vh" when setting minimum width and height) not being accepted in preview.
 * Fixed - Masonry-enabled elements do not refresh when their parent element changes.
 * Removed - Maximum 75rem width (CSS property) for Section content (use maximum width setting instead, if required).
-
-> <strong>New extension!</strong><br>
-> Check out the [Advanced Features extension](https://wordpress.org/plugins/tailor-advanced/) for new elements and features. Like Tailor, it's absolutely free!
 
 = 1.7.5 =
 * Added - Option to delete the Tailor layout for a given post [GitHub 44](https://github.com/andrew-worsfold/tailor/issues/44).

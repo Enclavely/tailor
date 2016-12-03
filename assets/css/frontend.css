@@ -1890,7 +1890,6 @@ html {
   border: 1px none #efefef;
   border-radius: 0;
   box-shadow: none;
-  overflow: hidden;
 }
 
 .tailor-ui .tailor-section__content {
@@ -1921,7 +1920,7 @@ html {
   transform: translatez(0);
 }
 
-.tailor-ui .tailor-section.is-parallax {
+.tailor-ui .tailor-section.is-parallax, .tailor-ui .tailor-section.has-background-image {
   overflow: hidden;
 }
 
