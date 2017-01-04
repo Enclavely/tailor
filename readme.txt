@@ -2,7 +2,7 @@
 Contributors: andrew.worsfold
 Donate link: http://gettailor.com/donate/
 Tags: page, layout, builder, frontend, content, page builder, drag and drop builder, home page builder, landing page builder, layout builder, frontend builder, frontend editor, responsive, visual composer, beaver builder
-Stable tag: 1.7.7
+Stable tag: 1.7.8
 Requires at least: 4.3
 Tested up to: 4.7
 License: GPLv3 or later
@@ -139,12 +139,16 @@ Yes, however, users should be directed to the WordPress plugin repository to ins
 
 == Changelog ==
 
-= 1.7.7 =
-* Improved - Positioning of menu for selected elements, to accommodate elements that expand below the confines of the content area.
-* Improved - HTML markup for canvas tools, to avoid conflicts with themes that style link tags in unexpected ways.
+= 1.7.8 =
+* Fixed - Various PHP notices being displayed in the logs.
+* Fixed - Grid element border style too specific to be overridden by border style setting.
 
 > <strong>New extension!</strong><br>
 > Check out the [Advanced Features extension](https://wordpress.org/plugins/tailor-advanced/) for new elements and features. Like Tailor, it's absolutely free!
+
+= 1.7.7 =
+* Improved - Positioning of menu for selected elements, to accommodate elements that expand below the confines of the content area.
+* Improved - HTML markup for canvas tools, to avoid conflicts with themes that style link tags in unexpected ways.
 
 = 1.7.6 =
 * Added - Element label when hovering over an element in the preview window.

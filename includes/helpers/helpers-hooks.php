@@ -217,7 +217,7 @@ if ( ! function_exists( 'tailor_kses_allowed_html' ) ) {
 	 * @return array $tags
 	 */
 	function tailor_kses_allowed_html( $tags, $context ) {
-		if ( ! array_key_exists( 'input', $tags ) ) {
+		if ( is_array( $tags ) && ! array_key_exists( 'input', $tags ) ) {
 			$tags['input'] = array(
 				'autocomplete'      =>  1,
 				'autofocus'         =>  1,

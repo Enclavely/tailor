@@ -200,7 +200,14 @@ var $ = Backbone.$,
 
 			'tailor_grid' : {
 				'border_color' : [ [ '.tailor-grid__item' ], 'border-color', 'tailorValidateColor' ],
-				'border_style' : [ [ '.tailor-grid__item' ], 'border-style', 'tailorValidateString' ],
+				'border_style' : function( to, from, model ) {
+					return [ {
+						selectors: [ '&.tailor-grid--bordered .tailor-grid__item' ],
+						declarations: {
+							'border-style': tailorValidateString( to ) + '!important'
+						}
+					} ];
+				},
 				'border_width' : function( to, from, model ) {
 					return [ {
 						selectors: [ '.tailor-grid__item' ],

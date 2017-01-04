@@ -51,7 +51,7 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Widget_Form_Con
 
 	        global $wp_widget_factory;
 	        if ( ! empty( $wp_widget_factory->widgets[ $this->widget_class_name ] ) ) {
-		        $wp_widget_factory->widgets[ $this->widget_class_name ]->form();
+		        $wp_widget_factory->widgets[ $this->widget_class_name ]->form( array() );
 	        }
         }
     }
