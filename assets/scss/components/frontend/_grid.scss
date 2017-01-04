@@ -91,13 +91,6 @@ $grid-column-number : 6 !default;
 					@include flex;
 
 					flex-wrap: wrap;
-
-					//> .#{$grid-class-prefix}grid {
-
-					//	&__item {
-					//		@include flex( column );
-					//	}
-					//}
 				}
 
 				&.#{$grid-class-prefix}grid--bordered {

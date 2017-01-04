@@ -177,11 +177,16 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Grid_Element' )
 		    );
 		    $css_rules = tailor_generate_color_css_rules( $css_rules, $atts, $selectors );
 
-		    $selectors = array(
-			    'border_style'                  =>  array( '.tailor-grid__item' ),
-		    );
-		    $css_rules = tailor_generate_attribute_css_rules( $css_rules, $atts, $selectors );
-
+		    if ( ! empty( $atts['border_style'] ) ) {
+			    $css_rules[] = array(
+				    'setting'               =>  'border_style',
+				    'selectors'             =>  array( '&.tailor-grid.tailor-grid--bordered .tailor-grid__item' ),
+				    'declarations'          =>  array(
+					    'border-style'          =>  esc_attr( $atts['border_style'] . '!important' ),
+				    ),
+			    );
+		    }
+		    
 		    $screen_sizes = array(
 			    '',
 			    'tablet',
