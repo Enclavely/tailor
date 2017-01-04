@@ -21,7 +21,7 @@ if ( ! function_exists( 'tailor_advanced_add_section' ) ) {
 	 */
 	function tailor_advanced_add_section( $sections ) {
 		$sections['tailor_colors'] = array(
-			'title'                     =>  __( 'Colors', 'tailor-advanced' ),
+			'title'                     =>  __( 'Colors', 'tailor' ),
 			'priority'                  =>  count( $sections ) * 10 + 10,
 			'panel'                     =>  'tailor',
 		);
@@ -62,7 +62,7 @@ if ( ! function_exists( 'tailor_advanced_add_settings' ) ) {
 					'default'                   =>  $default,
 				),
 				'control'                   => array(
-					'label'                     =>  sprintf( __( 'Color %s', 'tailor-advanced' ), $number ),
+					'label'                     =>  sprintf( __( 'Color %s', 'tailor' ), $number ),
 					'type'                      =>  'color',
 					'priority'                  =>  $number * 10,
 					'section'                   =>  'tailor_colors',
