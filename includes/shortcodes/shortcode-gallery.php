@@ -55,6 +55,7 @@ if ( ! function_exists( 'tailor_shortcode_gallery' ) ) {
 		    $data = array(
 			    'slides'            =>  $items_per_row,
 			    'autoplay'          =>  boolval( $atts['autoplay'] ) ? 'true' : 'false',
+			    'autoplay-speed'    =>  intval( $atts['autoplay_speed'] ) ? intval( $atts['autoplay_speed'] ) : 3000,
 			    'arrows'            =>  boolval( $atts['arrows'] ) ? 'true' : 'false',
 			    'dots'              =>  $dots ? 'true' : 'false',
 			    'thumbnails'        =>  boolval( $atts['thumbnails'] ) ? 'true' : 'false',
