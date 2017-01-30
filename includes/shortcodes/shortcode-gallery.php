@@ -64,6 +64,7 @@ if ( ! function_exists( 'tailor_shortcode_gallery' ) ) {
 		    $q = new WP_Query( array(
 			    'post_type'             =>  'attachment',
 			    'post_status'           =>  'any',
+			    'posts_per_page'        =>  -1,
 			    'post__in'              =>  explode( ',', $atts['ids'] ),
 			    'orderby'               =>  'post__in',
 		    ) );
