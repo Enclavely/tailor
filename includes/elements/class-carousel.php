@@ -59,6 +59,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Carousel_Elemen
 		        'min_item_height_tablet',
 		        'min_item_height_mobile',
 		        'autoplay',
+		        'autoplay_speed',
 		        'fade',
 		        'arrows',
 		        'dots',
@@ -83,6 +84,17 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Carousel_Elemen
 		        'autoplay'              =>  array(
 			        'control'               =>  array(
 				        'description'           =>  __( 'This will only take effect in the frontend', 'tailor' ),
+			        ),
+		        ),
+		        'autoplay_speed'              =>  array(
+			        'control'               =>  array(
+				        'description'           =>  __( 'This will only take effect in the frontend', 'tailor' ),
+				        'dependencies'          =>  array(
+					        'autoplay'              =>  array(
+						        'condition'             =>  'equals',
+						        'value'                 =>  '1',
+					        ),
+				        ),
 			        ),
 		        ),
 		        'fade'                  =>  array(

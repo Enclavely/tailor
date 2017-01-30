@@ -60,6 +60,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Gallery_Element
 		        'items_per_row',
 		        'item_spacing',
 		        'autoplay',
+		        'autoplay_speed',
 		        'arrows',
 		        'dots',
 		        'thumbnails',
@@ -127,6 +128,20 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Gallery_Element
 					        'layout'                =>  array(
 						        'condition'             =>  'contains',
 						        'value'                 =>  array( 'carousel', 'slideshow' ),
+					        ),
+				        ),
+			        ),
+		        ),
+		        'autoplay_speed'        =>  array(
+			        'control'               =>  array(
+				        'dependencies'          =>  array(
+					        'layout'                =>  array(
+						        'condition'             =>  'contains',
+						        'value'                 =>  array( 'carousel', 'slideshow' ),
+					        ),
+					        'autoplay'              =>  array(
+						        'condition'             =>  'equals',
+						        'value'                 =>  '1',
 					        ),
 				        ),
 			        ),

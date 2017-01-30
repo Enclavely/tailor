@@ -36,6 +36,7 @@ if ( ! function_exists( 'tailor_shortcode_carousel' ) ) {
 	    $data = array(
 		    'slides'            =>  $items_per_row,
 		    'autoplay'          =>  boolval( $atts['autoplay'] ) ? 'true' : 'false',
+		    'autoplay-speed'    =>  intval( $atts['autoplay_speed'] ) ? intval( $atts['autoplay_speed'] ) : 3000,
 		    'arrows'            =>  boolval( $atts['arrows'] ) ? 'true' : 'false',
 		    'dots'              =>  boolval( $atts['dots'] ) ? 'true' : 'false',
 		    'fade'              =>  boolval( $atts['fade'] && '1' == $items_per_row ) ? 'true' : 'false',

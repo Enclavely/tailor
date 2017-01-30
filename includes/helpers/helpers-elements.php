@@ -420,6 +420,18 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 					'section'                   =>  'general',
 				),
 			),
+			'autoplay_speed'            =>  array(
+				'setting'                   =>  array(
+					'sanitize_callback'         =>  'tailor_sanitize_number',
+					'default'                   =>  '3000',
+				),
+				'control'                   =>  array(
+					'label'                     =>  __( 'Autoplay Speed', 'tailor' ),
+					'description'               =>  'In milliseconds',
+					'type'                      =>  'number',
+					'section'                   =>  'general',
+				),
+			),
 			'fade'                      =>  array(
 				'setting'                   =>  array(
 					'sanitize_callback'         =>  'tailor_sanitize_text',

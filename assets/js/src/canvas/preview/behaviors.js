@@ -4,6 +4,7 @@
 		var carousel = this;
 		var options = {
 			autoplay : '1' == atts.autoplay,
+			autoplaySpeed : atts.autoplay_speed,
 			arrows : '1' == atts.arrows,
 			dots : false,
 			fade : '1' == atts.fade && '1' == atts.items_per_row,
@@ -31,6 +32,7 @@
 		if ( 'carousel' == atts.layout ) {
 			options = {
 				autoplay : '1' == atts.autoplay,
+				autoplaySpeed : atts.autoplay_speed,
 				arrows : '1' == atts.arrows,
 				dots : '1' == atts.dots,
 				fade : ( '1' == atts.fade && '1' == atts.items_per_row ),
@@ -43,6 +45,7 @@
 		else if ( 'slideshow' == atts.layout ) {
 			options = {
 				autoplay : '1' == atts.autoplay,
+				autoplaySpeed : atts.autoplay_speed,
 				arrows : '1' == atts.arrows,
 				dots : false,
 				fade : true,
@@ -85,6 +88,7 @@
 		if ( 'carousel' == atts.layout ) {
 			options = {
 				autoplay : '1' == atts.autoplay,
+				autoplaySpeed : atts.autoplay_speed,
 				arrows : '1' == atts.arrows,
 				dots : '1' == atts.dots,
 				fade : ( '1' == atts.fade && '1' == atts.items_per_row ),

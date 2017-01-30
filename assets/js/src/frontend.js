@@ -86,6 +86,7 @@ window.Tailor = {
 			var $data = $el.data() || {};
 			var options = {
 				autoplay : $data.autoplay || false,
+				autoplaySpeed : $data.autoplaySpeed || 3000,
 				arrows : $data.arrows || false,
 				draggable : true
 			};

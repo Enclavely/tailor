@@ -80,6 +80,7 @@ if ( ! function_exists( 'tailor_filter_allowed_html' ) ) {
 		if ( 'post' == $context ) {
 			$allowed['div']['data-slides'] = true;
 			$allowed['div']['data-autoplay'] = true;
+			$allowed['div']['data-autoplay-speed'] = true;
 			$allowed['div']['data-arrows'] = true;
 			$allowed['div']['data-dots'] = true;
 			$allowed['div']['data-fade'] = true;

@@ -3,7 +3,7 @@
 /**
  * Tailor Input Group Control class.
  *
- * @package Tailor Advanced
+ * @package Tailor
  * @subpackage Controls
  * @since 1.0.0
  */

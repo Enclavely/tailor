@@ -23,6 +23,7 @@ Carousel = Components.create( {
 			slidesToScroll : 1,
 			initialSlide : 0,
 			autoplay : false,
+			autoplaySpeed : 3000,
 			arrows : false,
 			dots : false,
 			fade : false,
@@ -76,6 +77,7 @@ Carousel = Components.create( {
 		var currentIndex = this.$dots.filter( function() { return this.getAttribute( 'data-id' ) == currentSlide; } ).index();
 		var options = $.extend( {}, this.options, {
 			autoplay : false,
+			autoplaySpeed : 3000,
 			fade : false,
 			initialSlide : currentIndex
 		} );
