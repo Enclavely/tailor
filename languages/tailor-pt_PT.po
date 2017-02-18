@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: Tailor 1.7.8\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/tailor\n"
 "POT-Creation-Date: 2017-02-13 16:57+0000\n"
-"PO-Revision-Date: 2017-02-13 20:09+0000\n"
+"PO-Revision-Date: 2017-02-18 11:57+0000\n"
 "Last-Translator: Pedro Mendonça <ped.gaspar@gmail.com>\n"
 "Language-Team: Pedro Mendonça <ped.gaspar@gmail.com>\n"
 "Language: pt_PT\n"
@@ -288,15 +288,15 @@ msgstr ""
 #: includes/class-elements.php:113 includes/elements/class-gallery.php:83
 #: includes/elements/class-posts.php:91
 msgid "Carousel"
-msgstr "Carrocel"
+msgstr "Carrossel"
 
 #: includes/class-elements.php:114
 msgid "Display content in a carousel."
-msgstr "Mostra conteúdo num carrocel."
+msgstr "Mostra conteúdo num carrossel."
 
 #: includes/class-elements.php:121
 msgid "Carousel item"
-msgstr "Item de carrocel"
+msgstr "Item de carrossel"
 
 #: includes/class-elements.php:126 includes/elements/class-gallery.php:82
 #: includes/elements/class-posts.php:90
