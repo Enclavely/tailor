@@ -59,7 +59,7 @@ if ( ! function_exists( 'tailor_get_users' ) ) {
 	 * @return array
 	 */
 	function tailor_get_users() {
-		$blogusers = get_users();
+		$blogusers = get_users( array( 'fields' => array( 'ID', 'display_name' ) ) );
 		$user_ids = array();
 		$user_ids[0] = __( 'Current user', 'tailor' );
 
