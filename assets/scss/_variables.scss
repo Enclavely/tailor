@@ -24,7 +24,7 @@ $global-border-radius: 2px !default;
 $global-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1), 0 1px 0 rgba(0, 0, 0, 0.05) !default;
 
 $text-color: #404040 !default;
-$background-color: #fdfdfd;
+$background-color: #fdfdfd !default;
 $border-color: #efefef !default; //darken( $background-color, 5% ) !default;
 
 $mobile: "only screen and (max-width: 320px)" !default;
@@ -32,4 +32,4 @@ $tablet: "only screen and (min-width: 321px) and (max-width: 720px)" !default;
 $tablet-up: "only screen and (min-width: 321px)" !default;
 $desktop: "only screen and (min-width: 721px)" !default;
 
-$wp-medium-up: "only screen and ( min-width: 641px )"
+$wp-medium-up: "only screen and ( min-width: 641px )";
