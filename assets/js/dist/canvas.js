@@ -9418,7 +9418,7 @@ Toggles = Components.create( {
 	},
 
 	initialize : function() {
-		this.$el.tabs();
+		this.$el.accordion();
 	}
 
 	// /**
