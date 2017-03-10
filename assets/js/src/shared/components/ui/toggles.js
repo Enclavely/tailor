@@ -23,9 +23,58 @@ Toggles = Components.create( {
 	},
 
 	initialize : function() {
+		var self = this;
+		var initial = self.options.initial - 1;
+		if (initial <= 0) {
+			initial = false;
+		}
+
+		var accordionOverrideCallback = function(){};
+		if (self.options.accordion){
+			accordionOverrideCallback = self.allowMultiplePanesOpen;
+		}
+
 		this.$el.accordion({
-			header : '.tailor-toggle h3'
+			header : '.tailor-toggle .tailor-toggle__title',
+			collapsible : true,
+			active : initial,
+			animate : self.options.speed,
+			beforeActivate: accordionOverrideCallback
 		});
+	},
+
+	/**
+	 * Special JQueryUI default activation behavior to allow multiple
+	 * toggles to be open at once. This is necessary to preserve the "accordion"
+	 * feature.
+	 *
+	 * @see http://stackoverflow.com/questions/3479447/jquery-ui-accordion-that-keeps-multiple-sections-open
+	 * @since TODO
+	 */
+	allowMultiplePanesOpen : function(event, ui) {
+		 // The accordion believes a panel is being opened
+		if (ui.newHeader[0]) {
+				var currHeader  = ui.newHeader;
+				var currContent = currHeader.next('.ui-accordion-content');
+		 // The accordion believes a panel is being closed
+		} else {
+				var currHeader  = ui.oldHeader;
+				var currContent = currHeader.next('.ui-accordion-content');
+		}
+		 // Since we've changed the default behavior, this detects the actual status
+		var isPanelSelected = currHeader.attr('aria-selected') == 'true';
+
+		 // Toggle the panel's header
+		currHeader.toggleClass('ui-corner-all',isPanelSelected).toggleClass('accordion-header-active ui-state-active ui-corner-top',!isPanelSelected).attr('aria-selected',((!isPanelSelected).toString()));
+
+		// Toggle the panel's icon
+		currHeader.children('.ui-icon').toggleClass('ui-icon-triangle-1-e',isPanelSelected).toggleClass('ui-icon-triangle-1-s',!isPanelSelected);
+
+		 // Toggle the panel's content
+		currContent.toggleClass('accordion-content-active',!isPanelSelected)
+		if (isPanelSelected) { currContent.slideUp(); }  else { currContent.slideDown(); }
+
+		return false; // Cancels the default action
 	}
 
 	// /**
