@@ -23,7 +23,9 @@ Toggles = Components.create( {
 	},
 
 	initialize : function() {
-		this.$el.accordion();
+		this.$el.accordion({
+			header : '.tailor-toggle h3'
+		});
 	}
 
 	// /**
