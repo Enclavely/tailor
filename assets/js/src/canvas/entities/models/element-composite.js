@@ -20,7 +20,7 @@ CompositeModel = BaseModel.extend( {
         clone.set( 'parent', parent );
         clone.set( 'order', index );
 
-        this.createTemplate( clone.cid, sourceView );
+        this.copy( clone.cid, sourceView );
 
         var clonedChildren = this.cloneChildren( sourceView.children, clone, [] );
 
@@ -52,7 +52,7 @@ CompositeModel = BaseModel.extend( {
                 clone.set( 'id', clone.cid );
                 clone.set( 'parent', parent.get( 'id' ) );
 
-                clone.createTemplate( clone.cid, childView );
+                clone.copy( clone.cid, childView );
                 clones.push( clone );
 
                 if ( childView.children ) {
@@ -135,6 +135,20 @@ CompositeModel = BaseModel.extend( {
     },
 
 	/**
+	 * Creates a new element template for use with a copied element.
+	 *
+	 * @since 1.7.9
+	 *
+	 * @param id
+	 * @param view
+	 */
+	copy: function( id, view ) {
+		this.beforeCopyElement( id, view );
+		this.createTemplate( id, view );
+		this.afterCopyElement( id, view );
+	},
+	
+	/**
 	 * Creates a new template based on the element.
 	 *
 	 * @since 1.0.0
@@ -144,18 +158,15 @@ CompositeModel = BaseModel.extend( {
 	 */
 	createTemplate : function( id, view ) {
 		var isEditing =  view.el.classList.contains( 'is-editing' );
-
-		this.beforeCopyElement( view );
-
+		view.$el.removeClass( 'is-dragging is-hovering is-selected is-editing' );
+		
 		var $childViewContainer = view.getChildViewContainer( view );
 		var $children = $childViewContainer.contents().detach();
 
 		this.appendTemplate( id, view );
 
 		$childViewContainer.append( $children );
-
-		this.afterCopyElement( id, view );
-
+		
 		if ( isEditing ) {
 			view.el.classList.add( 'is-editing' );
 		}

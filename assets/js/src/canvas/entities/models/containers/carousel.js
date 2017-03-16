@@ -13,20 +13,19 @@ CarouselModel = ContainerModel.extend( {
      */
     createTemplate : function( id, view ) {
         var isEditing =  view.el.classList.contains( 'is-editing' );
-
-        this.beforeCopyElement( view );
-
+        view.$el.removeClass( 'is-dragging is-hovering is-selected is-editing' );
+        
         var $childViewContainer = view.getChildViewContainer( view );
         var $children = $childViewContainer.contents().detach();
+        
         var $navigation = view.$el.find( '.slick-dots' ).detach();
 
         this.appendTemplate( id, view );
 
         $childViewContainer.append( $children );
+        
 	    $navigation.insertAfter( $childViewContainer );
-
-        this.afterCopyElement( id, view );
-
+        
         if ( isEditing ) {
             view.el.classList.add( 'is-editing' );
         }

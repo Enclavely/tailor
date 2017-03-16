@@ -11,7 +11,7 @@ CSSModule = Marionette.Module.extend( {
     onStart : function( options ) {
         this.stylesheets = [];
 	    this.collection = app.channel.request( 'canvas:elements' );
-
+	    
         this.createSheets( options.mediaQueries || {} );
         this.addRules( options.cssRules || {} );
         this.addEventListeners();
@@ -32,12 +32,25 @@ CSSModule = Marionette.Module.extend( {
      * @since 1.0.0
      */
     addEventListeners : function() {
-        this.listenTo( app.channel, 'css:add', this.addRules );         // Add CSS for an element (or elements)
+		
+		this.listenTo( app.channel, 'css:add', this.addRules );         // Add CSS for an element (or elements)
         this.listenTo( app.channel, 'css:delete', this.deleteRules );   // Delete CSS rules for an element/setting (or elements)
         this.listenTo( app.channel, 'css:update', this.updateRules );   // Update the CSS for a given element
 		this.listenTo( app.channel, 'css:copy', this.copyRules );       // Copy the CSS for one element/setting to another
 		this.listenTo( app.channel, 'css:clear', this.clearRules );     // Clear all dynamic CSS rules
 		this.listenTo( this.collection, 'destroy', this.onDestroy );
+
+		app.channel.reply( 'canvas:css', this.getRules.bind( this ) );
+	},
+
+	getRules: function() {
+		var rules = {};
+		for ( var queryId in this.stylesheets ) {
+			if ( this.stylesheets.hasOwnProperty( queryId ) ) {
+				rules[ queryId ] = this.stylesheets[ queryId ].getAllRules();
+			}
+		}
+		return rules;
 	},
 
 	/**

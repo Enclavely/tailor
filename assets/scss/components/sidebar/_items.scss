@@ -21,7 +21,14 @@
 		.list {
 
 			&__item {
-				border-bottom: 1px solid #eee;
+				border-bottom: 1px solid #ddd;
+				border-left: 4px solid #fff;
+
+				@include transition( .15s color ease-in-out, .15s background-color ease-in-out, .15s border-color ease-in-out );
+
+				&:first-of-type {
+					border-top: 1px solid #ddd;
+				}
 
 				&:last-of-type {
 					border-bottom-color: #ddd;
@@ -33,11 +40,12 @@
 
 				&:focus,
 				&:hover {
-					color: #23282d;
-					background: #f5f5f5;
+					color: #0073aa;
+					background: #f3f3f5;
+					border-left-color: #0073aa;
 
 					.list__label::after {
-						color: #23282d;
+						color: inherit;
 					}
 				}
 			}

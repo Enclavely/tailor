@@ -87,6 +87,7 @@ window.Tailor = {
 			var $data = $el.data() || {};
 			var options = {
 				autoplay : $data.autoplay || false,
+				autoplaySpeed : $data.autoplaySpeed || 3000,
 				arrows : $data.arrows || false,
 				draggable : true
 			};
@@ -179,6 +180,7 @@ Carousel.prototype = {
         slidesToShow : 1,
         slidesToScroll : 1,
         autoplay : false,
+        autoplaySpeed : 3000,
         arrows : false,
         dots : false,
         fade : false,
@@ -1680,6 +1682,7 @@ Slideshow = Components.create( {
             slidesToShow : 1,
             slidesToScroll : 1,
             autoplay : false,
+            autoplaySpeed : 3000,
             arrows : false,
             dots : false,
             fade : true

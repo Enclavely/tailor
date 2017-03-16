@@ -137,6 +137,22 @@ Stylesheet.prototype = {
 		return rules;
 	},
 
+	getAllRules : function() {
+		var rules = {};
+		for ( var i = 0; i < this.lookup.length; i++ ) {
+			var elementId = this.lookup[ i ]['elementId'];
+			var rule = this.sheet.cssRules[ i ];
+			
+			rules[ elementId ] = rules[ elementId ] || [];
+			rules[ elementId ].push( {
+				selectors : rule.selectorText,
+				declarations : rule.style.cssText,
+				setting: this.lookup[ i ]['settingId'] || ''
+			} );
+		}
+		return rules;
+	},
+
 	/**
 	 * Deletes rules for a given element from the stylesheet.
 	 *

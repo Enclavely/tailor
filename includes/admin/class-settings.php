@@ -73,30 +73,7 @@ class Tailor_Settings {
 		 */
 		$page_capability = apply_filters( 'tailor_settings_page_capability', 'manage_options' );
 
-		$options_page = add_options_page( $page_title, $page_title,	$page_capability, TAILOR_SETTING_ID, array( $this, 'render_page' ) );
-
-		add_action( 'load-' . $options_page, array( $this, 'add_help_tab' ) );
-	}
-
-	/**
-	 * Adds a help tab to the Settings page.
-	 *
-	 * @since 1.0.0
-	 */
-	public function add_help_tab() {
-
-		$screen = get_current_screen();
-
-		ob_start();
-
-		tailor_partial( 'admin/html/help', 'settings' );
-
-		$content = ob_get_clean();
-		$screen->add_help_tab( array(
-			'id'	        =>  'tailor-settings-help',
-			'title'	        =>  __( 'Tailor settings', 'tailor' ),
-			'content'	    =>  $content,
-		) );
+		add_options_page( $page_title, $page_title,	$page_capability, TAILOR_SETTING_ID, array( $this, 'render_page' ) );
 	}
 
 	/**
@@ -207,7 +184,7 @@ class Tailor_Settings {
 				'label'             =>  $role_field_label,
 				'type'              =>  'textarea',
 				'name'              =>  $setting_id . '[' . $role_field_id . ']',
-				'value'             =>  tailor_get_setting( $role_field_id, tailor_do_shakespeare() ),
+				'value'             =>  tailor_get_setting( $role_field_id, __( 'This is placeholder text which you can replace by editing this element.', 'tailor' ) ),
 				'options'           =>  tailor_get_roles(),
 			)
 		);

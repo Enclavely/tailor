@@ -4,6 +4,8 @@ var $ = Backbone.$,
     ElementCollection = require( '../../entities/collections/elements' ),
     ElementModule;
 
+var $templates = jQuery( '<div id="tailor-templates"></div>' ).appendTo( $body );
+
 ElementModule = Marionette.Module.extend( {
 
     /**
@@ -41,91 +43,61 @@ ElementModule = Marionette.Module.extend( {
              * @since 1.0.0
              *
              * @param models
+             * @param templates
+             * @param css
              */
-            resetElements : function( models ) {
+            resetElements : function( models, templates, css ) {
                 if ( models === module.collection.models ) {
-                    return;
+                    //return;
                 }
-
-                var canvas = app.canvasRegion.el;
-                var templates;
                 
-                canvas.classList.add( 'is-loading' );
-                
-                window.ajax.send( 'tailor_reset', {
-                    data : {
-                        models : JSON.stringify( models ),
-                        nonce : window._nonces.reset
-                    },
+                $templates.append( templates );
 
-                    /**
-                     * Appends the element templates to the page.
-                     *
-                     * @since 1.0.0
-                     *
-                     * @param response
-                     */
-                    success : function( response ) {
+                /**
+                 * Clears all existing dynamic CSS rules.
+                 *
+                 * @since 1.0.0
+                 */
+                app.channel.trigger( 'css:clear' );
 
-                        // Update the model collection with the sanitized models
-                        models = response.models;
+                /**
+                 * Fires before the element collection is restored.
+                 *
+                 * @since 1.0.0
+                 */
+                app.channel.trigger( 'before:elements:restore' );
+                app.channel.trigger( 'canvas:reset' );
 
-                        // Record the template HTML and append it to the page
-                        templates = response.templates;
+                module.collection.reset( [] );
+                module.collection.reset( models );
 
-                        $body.append( templates );
-                        
-                        /**
-                         * Clears all existing dynamic CSS rules.
-                         *
-                         * @since 1.0.0
-                         */
-                        app.channel.trigger( 'css:clear' );
+                /**
+                 * Adds new dynamic CSS rules.
+                 *
+                 * @since 1.0.0
+                 */
+                app.channel.trigger( 'css:add', css );
 
-                        /**
-                         * Adds new dynamic CSS rules.
-                         *
-                         * @since 1.0.0
-                         */
-                        app.channel.trigger( 'css:add', response.css );
-                    },
+                /**
+                 * Fires when the element collection is restored.
+                 *
+                 * @since 1.0.0
+                 */
+                app.channel.trigger( 'elements:restore' );
 
-                    /**
-                     * Resets the collection with the given set of elements.
-                     *
-                     * @since 1.0.0
-                     */
-                    complete : function() {
+                $win.trigger( 'resize' );
+            },
 
-                        if ( templates ) {
-
-                            /**
-                             * Fires before the element collection is restored.
-                             *
-                             * @since 1.0.0
-                             */
-                            app.channel.trigger( 'before:elements:restore' );
-                            app.channel.trigger( 'canvas:reset' );
-
-                            module.collection.reset( models );
-
-                            /**
-                             * Fires when the element collection is restored.
-                             *
-                             * @since 1.0.0
-                             */
-                            app.channel.trigger( 'elements:restore' );
-
-                            $win.trigger( 'resize' );
-                        }
-
-                        canvas.classList.remove( 'is-loading' );
-                    }
+            getTemplates: function() {
+                module.collection.each( function( model ) {
+                    model.trigger( 'template', model.get( 'id' ) );
                 } );
+                return $templates[0].innerHTML;
             }
         };
 
         app.channel.reply( 'canvas:elements', api.getElements );
+        app.channel.reply( 'canvas:templates', api.getTemplates );
         app.channel.on( 'elements:reset', api.resetElements );
     },
 

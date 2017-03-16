@@ -70,31 +70,26 @@ CanvasApplication = Marionette.Application.extend( {
         $( 'img' ).attr( { draggable : false } );
 
         $doc.on( 'keydown', function( e ) {
-
             if ( _.contains( [ 'INPUT', 'SELECT', 'TEXTAREA' ], e.target.tagName ) ) {
                 return;
             }
 
-            if ( e.ctrlKey && 90 == e.keyCode ) {
-
-                /**
-                 * Fires when a "CTRL-Z" is pressed.
-                 *
-                 * @since 1.0.0
-                 */
-                canvas.channel.trigger( 'history:undo' );
+            if ( e.ctrlKey ) {
+                if ( 89 == e.keyCode ) {
+                    canvas.channel.trigger( 'history:redo' );
+                }
+                else if ( 90 == e.keyCode ) {
+                    canvas.channel.trigger( 'history:undo' );
+                }
             }
-
-            else if ( e.ctrlKey && 89 == e.keyCode ) {
-
-                /**
-                 * Fires when a "CTRL-Y" is pressed.
-                 *
-                 * @since 1.0.0
-                 */
-                canvas.channel.trigger( 'history:redo' );
+            else if ( e.metaKey && 90 == e.keyCode ) {
+                if ( e.shiftKey ) {
+                    canvas.channel.trigger( 'history:redo' );
+                }
+                else {
+                    canvas.channel.trigger( 'history:undo' );
+                }
             }
-
             else if ( 8 == e.keyCode ) {
                 var selectedElement = canvas.channel.request( 'canvas:element:selected' );
                 if ( selectedElement ) {

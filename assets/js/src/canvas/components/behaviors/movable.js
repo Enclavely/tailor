@@ -6,7 +6,14 @@ var MovableBehaviors = Marionette.Behavior.extend( {
 		'insert:before' : 'insertBefore',
 		'insert:after' : 'insertAfter',
 		'insert' : 'insert',
-		'append' : 'append'
+		'append' : 'append',
+		'template' : 'template'
+	},
+
+	template: function( id ) {
+		var element = this.view;
+		var model = element.model;
+		model.createTemplate( id, element );
 	},
 
     /**

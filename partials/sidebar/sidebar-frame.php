@@ -64,11 +64,11 @@ defined( 'ABSPATH' ) or die(); ?>
 		    }
 		    echo '</div>';
 		    
-		    $collapse_label = __( 'Collapse Sidebar', 'tailor' ); ?>
+		    $collapse_label = __( 'Hide Controls', 'tailor' ); ?>
 		    
 		    <button type="button" class="collapse-sidebar" id="tailor-collapse" aria-expanded="true" aria-label="<?php esc_attr( $collapse_label ); ?>">
 			    <span class="collapse-sidebar-arrow"></span>
-			    <span class="collapse-sidebar-label"><?php esc_attr( $collapse_label ); ?></span>
+			    <span class="collapse-sidebar-label"><?php esc_attr_e( $collapse_label ); ?></span>
 		    </button>
 	    </div>
     </div>

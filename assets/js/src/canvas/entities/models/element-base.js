@@ -260,15 +260,8 @@ Model = Backbone.Model.extend( {
 	 *
 	 * @param view
 	 */
-	beforeCopyElement : function( view ) {
-		var el = view.el;
-
+	beforeCopyElement : function( id, view ) {
 		view.triggerAll( 'before:element:copy', view );
-
-		el.classList.remove( 'is-dragging' );
-		el.classList.remove( 'is-hovering' );
-		el.classList.remove( 'is-selected' );
-		el.classList.remove( 'is-editing' );
 	},
 
 	/**
@@ -287,7 +280,8 @@ Model = Backbone.Model.extend( {
 		template.id = 'tmpl-tailor-' + id;
 		template.innerHTML = view.el.outerHTML.replace( oldId, id );
 
-		document.body.appendChild( template );
+		var templates = document.getElementById( 'tailor-templates' );
+		templates.appendChild( template );
 	},
 
 	/**

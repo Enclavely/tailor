@@ -87,7 +87,7 @@ ElementModel = BaseModel.extend( {
 		clone.set( 'parent', targetView.model.get( 'parent' ) );//, { silent : true } );
 		clone.set( 'order', index );//, { silent : true } );
 
-		this.createTemplate( clone.cid, sourceView );
+		this.copy( clone.cid, sourceView );
 		this.collection.add( clone );//, { at : index } );
 	},
 
@@ -107,7 +107,7 @@ ElementModel = BaseModel.extend( {
 		clone.set( 'parent', targetView.model.get( 'parent' ) );
 		clone.set( 'order', index );
 
-		this.createTemplate( clone.cid, sourceView );
+		this.copy( clone.cid, sourceView );
 
 		this.collection.add( clone );
 	},
@@ -126,7 +126,7 @@ ElementModel = BaseModel.extend( {
 
 		clone.set( 'id', clone.cid );
 
-		this.createTemplate( clone.cid, sourceView );
+		this.copy( clone.cid, sourceView );
 
 		if ( 'tailor_column' === model.get( 'tag' ) ) {
 			var column = this.collection.createColumn( model.get( 'parent' ),  model.get( 'order' ) - 1 );
@@ -157,7 +157,7 @@ ElementModel = BaseModel.extend( {
 
 		clone.set( 'id', clone.cid );
 
-		this.createTemplate( clone.cid, sourceView );
+		this.copy( clone.cid, sourceView );
 
 		if ( 'tailor_column' === model.get( 'tag' ) ) {
 			var column = this.collection.createColumn( model.get( 'parent' ), model.get( 'order' ) );
@@ -210,10 +210,24 @@ ElementModel = BaseModel.extend( {
 		clone.set( 'parent', wrapper.get( 'id' ) );
 		clone.set( 'order', 0 );
 
-		this.createTemplate( clone.cid, sourceView );
+		this.copy( clone.cid, sourceView );
 		this.collection.add( clone );
 	},
 
+	/**
+	 * Creates a new element template for use with a copied element.
+	 * 
+	 * @since 1.7.9
+	 * 
+	 * @param id
+	 * @param view
+	 */
+	copy: function( id, view ) {
+		this.beforeCopyElement( id, view );
+		this.createTemplate( id, view );
+		this.afterCopyElement( id, view );
+	},
+	
 	/**
 	 * Creates a new element template based on a given element and appends it to the page.
 	 *
@@ -224,10 +238,9 @@ ElementModel = BaseModel.extend( {
 	 */
 	createTemplate : function( id, view ) {
 		var isEditing =  view.el.classList.contains( 'is-editing' );
-
-		this.beforeCopyElement( view );
+		view.$el.removeClass( 'is-dragging is-hovering is-selected is-editing' );
+		
 		this.appendTemplate( id, view );
-		this.afterCopyElement( id, view );
 
 		if ( isEditing ) {
 			view.el.classList.add( 'is-editing' );

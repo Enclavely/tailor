@@ -2,7 +2,7 @@
 Contributors: andrew.worsfold
 Donate link: http://gettailor.com/donate/
 Tags: page, layout, builder, frontend, content, page builder, drag and drop builder, home page builder, landing page builder, layout builder, frontend builder, frontend editor, responsive, visual composer, beaver builder
-Stable tag: 1.7.8
+Stable tag: 1.7.9
 Requires at least: 4.3
 Tested up to: 4.7
 License: GPLv3 or later
@@ -16,15 +16,13 @@ Build beautiful layouts for your content faster and easier than ever before usin
 
 [youtube https://www.youtube.com/watch?v=tfMyLMuaXjI]
 
-> <strong>New extension!</strong><br>
-> Check out the [Advanced Features extension](https://wordpress.org/plugins/tailor-advanced/) for new elements and features. Like Tailor, it's absolutely free!
+> Check out the <strong>[Advanced Features extension](https://wordpress.org/plugins/tailor-advanced/)</strong> for new elements and features. Like Tailor, it's absolutely free!
 
 To get started:
 
 - [Read the user documentation](https://support.gettailor.com/hc/en-us/categories/202586427).
 - [Read the overview of features and elements](https://github.com/andrew-worsfold/tailor/blob/master/readme.md).
 - [Keep up-to-date with the blog](https://medium.com/@tailorwp).
-- [Watch videos on YouTube](https://www.youtube.com/channel/UCiFGt6qqPwN1ruuEnjlVOqA).
 
 = Easy to use =
 
@@ -65,7 +63,7 @@ Tailor is open source and built based on WordPress' coding standards and best pr
 = Want to help? =
 
 - Contribute to the [WordPress Translation project](https://translate.wordpress.org/projects/wp-plugins/tailor).
-- Provide your feedback and suggestions through [Facebook](https://www.facebook.com/tailorwp/), [Twitter](https://twitter.com/tailorwp) or the [Forum](https://support.gettailor.com/hc/en-us/community/topics).
+- Provide your feedback and suggestions through [Facebook](https://www.facebook.com/tailorwp/) or [Twitter](https://twitter.com/tailorwp).
 - Get involved in the [GitHub project](https://github.com/andrew-worsfold/tailor).
 - If you like the plugin, please [submit a review](https://wordpress.org/support/view/plugin-reviews/tailor?rate=5#postform).
 
@@ -139,12 +137,19 @@ Yes, however, users should be directed to the WordPress plugin repository to ins
 
 == Changelog ==
 
+= 1.7.9 =
+* Added - Instant undo/redo functionality with keyboard controls.
+* Added - Portuguese translation [GitHub 93](https://github.com/andrew-worsfold/tailor/pull/93).
+* Added - Autoplay speed setting to carousel and slideshow-based layouts [GitHub 87](https://github.com/andrew-worsfold/tailor/pull/87).
+* Improved - Allow unlimited images in Gallery elements [GitHub 86](https://github.com/andrew-worsfold/tailor/pull/86).
+* Improved - Sidebar styles to match the Customizer.
+* Changed - Default placeholder text for Content elements.
+* Fixed - tailor_get_users() query retrieves unnecessary information [GitHub 94](https://github.com/andrew-worsfold/tailor/pull/94).
+* Fixed - Sidebar styles affecting search field within WordPress Media Modal [GitHub 98](https://github.com/andrew-worsfold/tailor/issues/98).
+
 = 1.7.8 =
 * Fixed - Various PHP notices being displayed in the logs.
 * Fixed - Grid element border style too specific to be overridden by border style setting.
-
-> <strong>New extension!</strong><br>
-> Check out the [Advanced Features extension](https://wordpress.org/plugins/tailor-advanced/) for new elements and features. Like Tailor, it's absolutely free!
 
 = 1.7.7 =
 * Improved - Positioning of menu for selected elements, to accommodate elements that expand below the confines of the content area.

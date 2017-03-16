@@ -72,7 +72,6 @@ if ( ! class_exists( 'Tailor_Elements' ) ) {
 		    add_action( 'tailor_canvas_footer', array( $this, 'print_element_html' ) );
 		    add_action( 'tailor_canvas_footer', array( $this, 'print_default_element_html' ) );
 		    add_action( 'wp_ajax_tailor_render', array( $this, 'render_element' ) );
-		    add_action( 'wp_ajax_tailor_reset', array( $this, 'render_elements' ) );
 	    }
 
 	    /**
@@ -547,41 +546,6 @@ if ( ! class_exists( 'Tailor_Elements' ) ) {
 		    return  '<script id="tmpl-tailor-' . $element_id . '" type="text/html">' .
 		                do_shortcode( $shortcode ) .
 		            '</script>';
-	    }
-
-	    /**
-	     * Renders a given set of elements and returns the generated templates.
-	     *
-	     * @since 1.0.0
-	     */
-	    public function render_elements() {
-
-		    check_ajax_referer( 'tailor-reset', 'nonce' );
-
-		    $unsanitized_models = json_decode( wp_unslash( $_POST['models'] ), true );
-		    $sanitized_models = tailor_models()->sanitize_models( $unsanitized_models );
-		    if ( empty( $sanitized_models ) ) {
-			    wp_send_json_error( array(
-				    'message'           =>  __( 'Valid models were not provided', 'tailor' )
-			    ) );
-		    }
-
-		    // Refresh the model IDs to avoid conflicts
-		    $refreshed_models = tailor_models()->refresh_model_ids( $sanitized_models );
-		    $response = array(
-			    'models'            =>  $refreshed_models,
-			    'templates'         =>  $this->generate_element_html( $refreshed_models ),
-			    'css'               =>  tailor_css()->generate_dynamic_css_rules( $refreshed_models ),
-		    );
-
-		    /**
-		     * Filter the response.
-		     *
-		     * @since 1.4.0
-		     */
-		    $response = apply_filters( 'tailor_render_elements_response', $response );
-
-		    wp_send_json_success( $response );
 	    }
 
         /**
