@@ -22,7 +22,7 @@ Toggles = Components.create( {
 		};
 	},
 
-	initialize : function() {
+	onInitialize : function() {
 		var self = this;
 		var initial = self.options.initial - 1;
 		if ( initial <= 0 ) {
@@ -44,12 +44,26 @@ Toggles = Components.create( {
 	},
 
 	/**
+	 * Element listeners
+	 */
+	onDestroy: function( e ) {
+		this.$el.accordion( 'destroy' );
+	},
+
+	/**
+	 * Child listeners
+	 */
+	onChangeChild: function() {
+		this.$el.accordion( 'destroy' );
+		this.onInitialize();
+	},
+
+	/**
 	 * Special JQueryUI default activation behavior to allow multiple
 	 * toggles to be open at once. This is necessary to preserve the "accordion"
 	 * feature.
 	 *
 	 * @see http://stackoverflow.com/questions/3479447/jquery-ui-accordion-that-keeps-multiple-sections-open
-	 * @since TODO
 	 */
 	allowMultiplePanesOpen : function( event, ui ) {
 		 // The accordion believes a panel is being opened
