@@ -195,7 +195,7 @@ if ( class_exists( 'Tailor_Element' ) && ! class_exists( 'Tailor_Box_Element' ) 
 
 		    // Image box
 		    if ( 'image' == $atts['graphic_type'] ) {
-			    if ( empty( $atts['graphic_size'] ) ) {
+			    if ( !empty( $atts['graphic_size'] ) ) {
 				    $unit = tailor_get_unit( $atts['graphic_size'] );
 				    $value = tailor_get_numeric_value( $atts['graphic_size'] );
 				    $css_rules[] = array(

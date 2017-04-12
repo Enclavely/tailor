@@ -26,7 +26,6 @@ $version = tailor()->version(); ?>
 		<ul>
 			<li><a href="https://support.gettailor.com/hc/en-us/categories/202586427" target="_blank"><?php _e( 'Getting started', 'tailor' ); ?></a></li>
 			<li><a href="https://support.gettailor.com/hc/en-us/categories/203117247" target="_blank"><?php _e( 'Extending', 'tailor' ); ?></a></li>
-			<li><a href="https://support.gettailor.com/hc/en-us/community/topics" target="_blank"><?php _e( 'Community', 'tailor' ); ?></a></li>
 		</ul>
 		<p>
 			<?php printf(

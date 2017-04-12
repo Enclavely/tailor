@@ -20,27 +20,30 @@
 			}
 		}
 
+		&__panel {
+
+			.search-form {
+				padding: 0 12px;
+			}
+
+			.search {
+				padding: 8px 14px;
+				margin-bottom: 7px;
+				display: block;
+				color: #a2a2a2;
+				border: 1px solid #ddd;
+				border-radius: 2px;
+
+				&:focus {
+					color: #444;
+				}
+			}
+		}
+
 		.notice {
 			display: block;
 			font-size: 13px;
 			font-weight: 400;
-		}
-	}
-
-	.search-form {
-		padding: 0 12px;
-	}
-
-	.search {
-		padding: 8px 14px;
-		margin-bottom: 7px;
-		display: block;
-		color: #a2a2a2;
-		border: 1px solid #ddd;
-		border-radius: 2px;
-
-		&:focus {
-			color: #444;
 		}
 	}
 

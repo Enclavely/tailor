@@ -784,17 +784,11 @@ ul {
   line-height: 24px;
 }
 
-.tailor-ui .tailor .notice {
-  display: block;
-  font-size: 13px;
-  font-weight: 400;
-}
-
-.tailor-ui .search-form {
+.tailor-ui .tailor__panel .search-form {
   padding: 0 12px;
 }
 
-.tailor-ui .search {
+.tailor-ui .tailor__panel .search {
   padding: 8px 14px;
   margin-bottom: 7px;
   display: block;
@@ -803,8 +797,14 @@ ul {
   border-radius: 2px;
 }
 
-.tailor-ui .search:focus {
+.tailor-ui .tailor__panel .search:focus {
   color: #444;
+}
+
+.tailor-ui .tailor .notice {
+  display: block;
+  font-size: 13px;
+  font-weight: 400;
 }
 
 .tailor-ui .empty {
@@ -929,7 +929,15 @@ ul {
 }
 
 .list--primary .list__item {
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #ddd;
+  border-left: 4px solid #fff;
+  -webkit-transition: 0.15s color ease-in-out, 0.15s background-color ease-in-out, 0.15s border-color ease-in-out;
+  -moz-transition: 0.15s color ease-in-out, 0.15s background-color ease-in-out, 0.15s border-color ease-in-out;
+  transition: 0.15s color ease-in-out, 0.15s background-color ease-in-out, 0.15s border-color ease-in-out;
+}
+
+.list--primary .list__item:first-of-type {
+  border-top: 1px solid #ddd;
 }
 
 .list--primary .list__item:last-of-type {
@@ -941,12 +949,13 @@ ul {
 }
 
 .list--primary .list__item:focus, .list--primary .list__item:hover {
-  color: #23282d;
-  background: #f5f5f5;
+  color: #0073aa;
+  background: #f3f3f5;
+  border-left-color: #0073aa;
 }
 
 .list--primary .list__item:focus .list__label::after, .list--primary .list__item:hover .list__label::after {
-  color: #23282d;
+  color: inherit;
 }
 
 .list--primary .list__label {

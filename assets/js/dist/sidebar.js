@@ -1044,42 +1044,28 @@ SidebarApplication = Marionette.Application.extend( {
 
         sidebar.listenTo( sidebar.channel, 'canvas:handshake', sidebar.registerRemoteChannel );
 
-        /**
-         * Restores the next history snapshot, if available.
-         *
-         * @since 1.0.0
-         */
         $doc.on( 'keydown', function( e ) {
-            if ( e.ctrlKey && 89 == e.keyCode ) {
-                if ( ! _.contains( [ 'INPUT', 'SELECT', 'TEXTAREA' ], e.target.tagName ) ) {
+            if ( _.contains( [ 'INPUT', 'SELECT', 'TEXTAREA' ], e.target.tagName ) ) {
+                return;
+            }
 
-                    /**
-                     * Fires when a "CTRL-Y" is pressed.
-                     *
-                     * @since 1.0.0
-                     */
+            if ( e.ctrlKey ) {
+                if ( 89 == e.keyCode ) {
                     sidebar.channel.trigger( 'history:redo' );
                 }
-            }
-        } );
-
-	    /**
-         * Restores the previous history snapshot, if available.
-         *
-         * @since 1.0.0
-         */
-        $doc.on( 'keydown', function( e ) {
-            if ( e.ctrlKey && 90 == e.keyCode ) {
-                if ( ! _.contains( [ 'INPUT', 'SELECT', 'TEXTAREA' ], e.target.tagName ) ) {
-
-                    /**
-                     * Fires when a "CTRL-Z" is pressed.
-                     *
-                     * @since 1.0.0
-                     */
+                else if ( 90 == e.keyCode ) {
                     sidebar.channel.trigger( 'history:undo' );
                 }
             }
+            else if ( e.metaKey && 90 == e.keyCode ) {
+                if ( e.shiftKey ) {
+                    sidebar.channel.trigger( 'history:redo' );
+                }
+                else {
+                    sidebar.channel.trigger( 'history:undo' );
+                }
+            }
+
         } );
     },
 
@@ -1100,10 +1086,28 @@ SidebarApplication = Marionette.Application.extend( {
              *
              * @since 1.0.0
              */
-            app.channel.reply( 'canvas:elements', function( id ) {
-                return remoteChannel.request( 'canvas:elements', id );
+            app.channel.reply( 'canvas:elements', function() {
+                return remoteChannel.request( 'canvas:elements' );
             } );
 
+            /**
+             * Returns the element templates from the remote window.
+             *
+             * @since 1.7.9
+             */
+            app.channel.reply( 'canvas:templates', function() {
+                return remoteChannel.request( 'canvas:templates' );
+            } );
+
+            /**
+             * Returns the element CSS from the remote window.
+             *
+             * @since 1.7.9
+             */
+            app.channel.reply( 'canvas:css', function() {
+                return remoteChannel.request( 'canvas:css' );
+            } );
+            
             /**
              * Returns the selected element (if any) from the remote window.
              *
@@ -5509,10 +5513,15 @@ var SnapshotCollection = Backbone.Collection.extend( {
             }
         }
 
+        var templates = app.channel.request( 'canvas:templates' );
+        var css = app.channel.request( 'canvas:css' );
+
         // Add the new entry to the collection
         var entry = this.add( {
             label : label || '',
             elements : this.elements ? this.elements.toJSON() : [],
+            templates: templates,
+            css: css,
             time : this.getTime(),
             timestamp : _.now()
         } );
@@ -5563,6 +5572,8 @@ var SnapshotCollection = Backbone.Collection.extend( {
 
         this.setActive( entry );
         var elements = entry.get( 'elements' );
+        var templates = entry.get( 'templates' );
+        var css = entry.get( 'css' );
 
         /**
          * Fires when the element collection is reset.
@@ -5571,7 +5582,7 @@ var SnapshotCollection = Backbone.Collection.extend( {
          *
          * @param elements
          */
-        app.channel.trigger( 'elements:reset', elements );
+        app.channel.trigger( 'elements:reset', elements, templates, css );
     },
 
     /**
@@ -5600,6 +5611,10 @@ var SnapshotCollection = Backbone.Collection.extend( {
             return;
         }
 
+        if ( 0 === this.indexOf( this.getActive() ) ) {
+            return;
+        }
+        
         var entry = this.at( this.indexOf( this.getActive() ) - 1 );
 
         if ( entry ) {

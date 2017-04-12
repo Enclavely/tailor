@@ -86,7 +86,7 @@ $column-sizer-width: 1rem !default;
 			pointer-events: none;
 			width: 50px;
 
-			@include label( $element-border-color--hover );
+			@include  label( $element-border-color--hover );
 
 			&--left {
 				left: 0;

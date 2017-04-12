@@ -26,7 +26,6 @@
 	-webkit-user-select: none;
 
 	@include prefixer( user-select, none, webkit moz ms spec );
-
 }
 
 .#{$global-class-prefix}ui {

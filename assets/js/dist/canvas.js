@@ -273,31 +273,26 @@ CanvasApplication = Marionette.Application.extend( {
         $( 'img' ).attr( { draggable : false } );
 
         $doc.on( 'keydown', function( e ) {
-
             if ( _.contains( [ 'INPUT', 'SELECT', 'TEXTAREA' ], e.target.tagName ) ) {
                 return;
             }
 
-            if ( e.ctrlKey && 90 == e.keyCode ) {
-
-                /**
-                 * Fires when a "CTRL-Z" is pressed.
-                 *
-                 * @since 1.0.0
-                 */
-                canvas.channel.trigger( 'history:undo' );
+            if ( e.ctrlKey ) {
+                if ( 89 == e.keyCode ) {
+                    canvas.channel.trigger( 'history:redo' );
+                }
+                else if ( 90 == e.keyCode ) {
+                    canvas.channel.trigger( 'history:undo' );
+                }
             }
-
-            else if ( e.ctrlKey && 89 == e.keyCode ) {
-
-                /**
-                 * Fires when a "CTRL-Y" is pressed.
-                 *
-                 * @since 1.0.0
-                 */
-                canvas.channel.trigger( 'history:redo' );
+            else if ( e.metaKey && 90 == e.keyCode ) {
+                if ( e.shiftKey ) {
+                    canvas.channel.trigger( 'history:redo' );
+                }
+                else {
+                    canvas.channel.trigger( 'history:undo' );
+                }
             }
-
             else if ( 8 == e.keyCode ) {
                 var selectedElement = canvas.channel.request( 'canvas:element:selected' );
                 if ( selectedElement ) {
@@ -753,7 +748,14 @@ var MovableBehaviors = Marionette.Behavior.extend( {
 		'insert:before' : 'insertBefore',
 		'insert:after' : 'insertAfter',
 		'insert' : 'insert',
-		'append' : 'append'
+		'append' : 'append',
+		'template' : 'template'
+	},
+
+	template: function( id ) {
+		var element = this.view;
+		var model = element.model;
+		model.createTemplate( id, element );
 	},
 
     /**
@@ -1650,7 +1652,7 @@ var CompositeView = Marionette.CompositeView.extend( {
 			 */
 			error : function( response ) {
 				view.updateTemplate( '<p class="tailor-notification tailor-notification--error">The template for ' + view.cid + ' could not be refreshed</p>' );
-				console.log( response );
+				console.error( response );
 			},
 
 			/**
@@ -2650,7 +2652,7 @@ ElementView = Marionette.ItemView.extend( {
 			 */
 			error : function( response ) {
 				view.updateTemplate( '<p class="tailor-notification tailor-notification--error">The template for ' + view.cid + ' could not be refreshed</p>' );
-				console.log( response );
+				console.error( response );
 			},
 
 			/**
@@ -3941,20 +3943,19 @@ CarouselModel = ContainerModel.extend( {
      */
     createTemplate : function( id, view ) {
         var isEditing =  view.el.classList.contains( 'is-editing' );
-
-        this.beforeCopyElement( view );
-
+        view.$el.removeClass( 'is-dragging is-hovering is-selected is-editing' );
+        
         var $childViewContainer = view.getChildViewContainer( view );
         var $children = $childViewContainer.contents().detach();
+        
         var $navigation = view.$el.find( '.slick-dots' ).detach();
 
         this.appendTemplate( id, view );
 
         $childViewContainer.append( $children );
+        
 	    $navigation.insertAfter( $childViewContainer );
-
-        this.afterCopyElement( id, view );
-
+        
         if ( isEditing ) {
             view.el.classList.add( 'is-editing' );
         }
@@ -4004,20 +4005,19 @@ TabsModel = ContainerModel.extend( {
 	 */
 	createTemplate : function( id, view ) {
 		var isEditing =  view.el.classList.contains( 'is-editing' );
-
-		this.beforeCopyElement( view );
-
+		view.$el.removeClass( 'is-dragging is-hovering is-selected is-editing' );
+		
 		var $childViewContainer = view.getChildViewContainer( view );
 		var $children = $childViewContainer.contents().detach();
+
 		var $navigation = view.$el.find( '.tailor-tabs__navigation' );
 		var $navigationItems = $navigation.children().detach();
 
 		this.appendTemplate( id, view );
 
 		$childViewContainer.append( $children );
-		$navigation.append( $navigationItems );
 
-		this.afterCopyElement( id, view );
+		$navigation.append( $navigationItems );
 
 		if ( isEditing ) {
 			view.el.classList.add( 'is-editing' );
@@ -4290,15 +4290,8 @@ Model = Backbone.Model.extend( {
 	 *
 	 * @param view
 	 */
-	beforeCopyElement : function( view ) {
-		var el = view.el;
-
+	beforeCopyElement : function( id, view ) {
 		view.triggerAll( 'before:element:copy', view );
-
-		el.classList.remove( 'is-dragging' );
-		el.classList.remove( 'is-hovering' );
-		el.classList.remove( 'is-selected' );
-		el.classList.remove( 'is-editing' );
 	},
 
 	/**
@@ -4317,7 +4310,8 @@ Model = Backbone.Model.extend( {
 		template.id = 'tmpl-tailor-' + id;
 		template.innerHTML = view.el.outerHTML.replace( oldId, id );
 
-		document.body.appendChild( template );
+		var templates = document.getElementById( 'tailor-templates' );
+		templates.appendChild( template );
 	},
 
 	/**
@@ -4429,7 +4423,7 @@ CompositeModel = BaseModel.extend( {
         clone.set( 'parent', parent );
         clone.set( 'order', index );
 
-        this.createTemplate( clone.cid, sourceView );
+        this.copy( clone.cid, sourceView );
 
         var clonedChildren = this.cloneChildren( sourceView.children, clone, [] );
 
@@ -4461,7 +4455,7 @@ CompositeModel = BaseModel.extend( {
                 clone.set( 'id', clone.cid );
                 clone.set( 'parent', parent.get( 'id' ) );
 
-                clone.createTemplate( clone.cid, childView );
+                clone.copy( clone.cid, childView );
                 clones.push( clone );
 
                 if ( childView.children ) {
@@ -4544,6 +4538,20 @@ CompositeModel = BaseModel.extend( {
     },
 
 	/**
+	 * Creates a new element template for use with a copied element.
+	 *
+	 * @since 1.7.9
+	 *
+	 * @param id
+	 * @param view
+	 */
+	copy: function( id, view ) {
+		this.beforeCopyElement( id, view );
+		this.createTemplate( id, view );
+		this.afterCopyElement( id, view );
+	},
+	
+	/**
 	 * Creates a new template based on the element.
 	 *
 	 * @since 1.0.0
@@ -4553,18 +4561,15 @@ CompositeModel = BaseModel.extend( {
 	 */
 	createTemplate : function( id, view ) {
 		var isEditing =  view.el.classList.contains( 'is-editing' );
-
-		this.beforeCopyElement( view );
-
+		view.$el.removeClass( 'is-dragging is-hovering is-selected is-editing' );
+		
 		var $childViewContainer = view.getChildViewContainer( view );
 		var $children = $childViewContainer.contents().detach();
 
 		this.appendTemplate( id, view );
 
 		$childViewContainer.append( $children );
-
-		this.afterCopyElement( id, view );
-
+		
 		if ( isEditing ) {
 			view.el.classList.add( 'is-editing' );
 		}
@@ -4829,7 +4834,7 @@ ElementModel = BaseModel.extend( {
 		clone.set( 'parent', targetView.model.get( 'parent' ) );//, { silent : true } );
 		clone.set( 'order', index );//, { silent : true } );
 
-		this.createTemplate( clone.cid, sourceView );
+		this.copy( clone.cid, sourceView );
 		this.collection.add( clone );//, { at : index } );
 	},
 
@@ -4849,7 +4854,7 @@ ElementModel = BaseModel.extend( {
 		clone.set( 'parent', targetView.model.get( 'parent' ) );
 		clone.set( 'order', index );
 
-		this.createTemplate( clone.cid, sourceView );
+		this.copy( clone.cid, sourceView );
 
 		this.collection.add( clone );
 	},
@@ -4868,7 +4873,7 @@ ElementModel = BaseModel.extend( {
 
 		clone.set( 'id', clone.cid );
 
-		this.createTemplate( clone.cid, sourceView );
+		this.copy( clone.cid, sourceView );
 
 		if ( 'tailor_column' === model.get( 'tag' ) ) {
 			var column = this.collection.createColumn( model.get( 'parent' ),  model.get( 'order' ) - 1 );
@@ -4899,7 +4904,7 @@ ElementModel = BaseModel.extend( {
 
 		clone.set( 'id', clone.cid );
 
-		this.createTemplate( clone.cid, sourceView );
+		this.copy( clone.cid, sourceView );
 
 		if ( 'tailor_column' === model.get( 'tag' ) ) {
 			var column = this.collection.createColumn( model.get( 'parent' ), model.get( 'order' ) );
@@ -4952,10 +4957,24 @@ ElementModel = BaseModel.extend( {
 		clone.set( 'parent', wrapper.get( 'id' ) );
 		clone.set( 'order', 0 );
 
-		this.createTemplate( clone.cid, sourceView );
+		this.copy( clone.cid, sourceView );
 		this.collection.add( clone );
 	},
 
+	/**
+	 * Creates a new element template for use with a copied element.
+	 * 
+	 * @since 1.7.9
+	 * 
+	 * @param id
+	 * @param view
+	 */
+	copy: function( id, view ) {
+		this.beforeCopyElement( id, view );
+		this.createTemplate( id, view );
+		this.afterCopyElement( id, view );
+	},
+	
 	/**
 	 * Creates a new element template based on a given element and appends it to the page.
 	 *
@@ -4966,10 +4985,9 @@ ElementModel = BaseModel.extend( {
 	 */
 	createTemplate : function( id, view ) {
 		var isEditing =  view.el.classList.contains( 'is-editing' );
-
-		this.beforeCopyElement( view );
+		view.$el.removeClass( 'is-dragging is-hovering is-selected is-editing' );
+		
 		this.appendTemplate( id, view );
-		this.afterCopyElement( id, view );
 
 		if ( isEditing ) {
 			view.el.classList.add( 'is-editing' );
@@ -5448,7 +5466,7 @@ CSSModule = Marionette.Module.extend( {
     onStart : function( options ) {
         this.stylesheets = [];
 	    this.collection = app.channel.request( 'canvas:elements' );
-
+	    
         this.createSheets( options.mediaQueries || {} );
         this.addRules( options.cssRules || {} );
         this.addEventListeners();
@@ -5469,12 +5487,25 @@ CSSModule = Marionette.Module.extend( {
      * @since 1.0.0
      */
     addEventListeners : function() {
-        this.listenTo( app.channel, 'css:add', this.addRules );         // Add CSS for an element (or elements)
+		
+		this.listenTo( app.channel, 'css:add', this.addRules );         // Add CSS for an element (or elements)
         this.listenTo( app.channel, 'css:delete', this.deleteRules );   // Delete CSS rules for an element/setting (or elements)
         this.listenTo( app.channel, 'css:update', this.updateRules );   // Update the CSS for a given element
 		this.listenTo( app.channel, 'css:copy', this.copyRules );       // Copy the CSS for one element/setting to another
 		this.listenTo( app.channel, 'css:clear', this.clearRules );     // Clear all dynamic CSS rules
 		this.listenTo( this.collection, 'destroy', this.onDestroy );
+
+		app.channel.reply( 'canvas:css', this.getRules.bind( this ) );
+	},
+
+	getRules: function() {
+		var rules = {};
+		for ( var queryId in this.stylesheets ) {
+			if ( this.stylesheets.hasOwnProperty( queryId ) ) {
+				rules[ queryId ] = this.stylesheets[ queryId ].getAllRules();
+			}
+		}
+		return rules;
 	},
 
 	/**
@@ -5805,6 +5836,22 @@ Stylesheet.prototype = {
 		return rules;
 	},
 
+	getAllRules : function() {
+		var rules = {};
+		for ( var i = 0; i < this.lookup.length; i++ ) {
+			var elementId = this.lookup[ i ]['elementId'];
+			var rule = this.sheet.cssRules[ i ];
+			
+			rules[ elementId ] = rules[ elementId ] || [];
+			rules[ elementId ].push( {
+				selectors : rule.selectorText,
+				declarations : rule.style.cssText,
+				setting: this.lookup[ i ]['settingId'] || ''
+			} );
+		}
+		return rules;
+	},
+
 	/**
 	 * Deletes rules for a given element from the stylesheet.
 	 *
@@ -5866,6 +5913,8 @@ var $ = Backbone.$,
     ElementCollection = require( '../../entities/collections/elements' ),
     ElementModule;
 
+var $templates = jQuery( '<div id="tailor-templates"></div>' ).appendTo( $body );
+
 ElementModule = Marionette.Module.extend( {
 
     /**
@@ -5903,91 +5952,61 @@ ElementModule = Marionette.Module.extend( {
              * @since 1.0.0
              *
              * @param models
+             * @param templates
+             * @param css
              */
-            resetElements : function( models ) {
+            resetElements : function( models, templates, css ) {
                 if ( models === module.collection.models ) {
-                    return;
+                    //return;
                 }
-
-                var canvas = app.canvasRegion.el;
-                var templates;
                 
-                canvas.classList.add( 'is-loading' );
-                
-                window.ajax.send( 'tailor_reset', {
-                    data : {
-                        models : JSON.stringify( models ),
-                        nonce : window._nonces.reset
-                    },
+                $templates.append( templates );
 
-                    /**
-                     * Appends the element templates to the page.
-                     *
-                     * @since 1.0.0
-                     *
-                     * @param response
-                     */
-                    success : function( response ) {
+                /**
+                 * Clears all existing dynamic CSS rules.
+                 *
+                 * @since 1.0.0
+                 */
+                app.channel.trigger( 'css:clear' );
 
-                        // Update the model collection with the sanitized models
-                        models = response.models;
+                /**
+                 * Fires before the element collection is restored.
+                 *
+                 * @since 1.0.0
+                 */
+                app.channel.trigger( 'before:elements:restore' );
+                app.channel.trigger( 'canvas:reset' );
 
-                        // Record the template HTML and append it to the page
-                        templates = response.templates;
+                module.collection.reset( [] );
+                module.collection.reset( models );
 
-                        $body.append( templates );
-                        
-                        /**
-                         * Clears all existing dynamic CSS rules.
-                         *
-                         * @since 1.0.0
-                         */
-                        app.channel.trigger( 'css:clear' );
+                /**
+                 * Adds new dynamic CSS rules.
+                 *
+                 * @since 1.0.0
+                 */
+                app.channel.trigger( 'css:add', css );
 
-                        /**
-                         * Adds new dynamic CSS rules.
-                         *
-                         * @since 1.0.0
-                         */
-                        app.channel.trigger( 'css:add', response.css );
-                    },
+                /**
+                 * Fires when the element collection is restored.
+                 *
+                 * @since 1.0.0
+                 */
+                app.channel.trigger( 'elements:restore' );
 
-                    /**
-                     * Resets the collection with the given set of elements.
-                     *
-                     * @since 1.0.0
-                     */
-                    complete : function() {
+                $win.trigger( 'resize' );
+            },
 
-                        if ( templates ) {
-
-                            /**
-                             * Fires before the element collection is restored.
-                             *
-                             * @since 1.0.0
-                             */
-                            app.channel.trigger( 'before:elements:restore' );
-                            app.channel.trigger( 'canvas:reset' );
-
-                            module.collection.reset( models );
-
-                            /**
-                             * Fires when the element collection is restored.
-                             *
-                             * @since 1.0.0
-                             */
-                            app.channel.trigger( 'elements:restore' );
-
-                            $win.trigger( 'resize' );
-                        }
-
-                        canvas.classList.remove( 'is-loading' );
-                    }
+            getTemplates: function() {
+                module.collection.each( function( model ) {
+                    model.trigger( 'template', model.get( 'id' ) );
                 } );
+                return $templates[0].innerHTML;
             }
         };
 
         app.channel.reply( 'canvas:elements', api.getElements );
+        app.channel.reply( 'canvas:templates', api.getTemplates );
         app.channel.on( 'elements:reset', api.resetElements );
     },
 

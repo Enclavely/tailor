@@ -39,7 +39,7 @@ if ( ! function_exists( 'tailor_shortcode_content' ) ) {
 
 	    if ( empty( $content ) ) {
 		    $html_atts['class'][] = 'tailor-content--placeholder';
-		    $content = tailor_get_setting( 'content_placeholder', tailor_do_shakespeare() );
+		    $content = tailor_get_setting( 'content_placeholder', __( 'This is placeholder text which you can replace by editing this element.', 'tailor' ) );
 	    }
 
 	    /**

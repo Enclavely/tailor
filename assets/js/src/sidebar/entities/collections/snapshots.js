@@ -63,10 +63,15 @@ var SnapshotCollection = Backbone.Collection.extend( {
             }
         }
 
+        var templates = app.channel.request( 'canvas:templates' );
+        var css = app.channel.request( 'canvas:css' );
+
         // Add the new entry to the collection
         var entry = this.add( {
             label : label || '',
             elements : this.elements ? this.elements.toJSON() : [],
+            templates: templates,
+            css: css,
             time : this.getTime(),
             timestamp : _.now()
         } );
@@ -117,6 +122,8 @@ var SnapshotCollection = Backbone.Collection.extend( {
 
         this.setActive( entry );
         var elements = entry.get( 'elements' );
+        var templates = entry.get( 'templates' );
+        var css = entry.get( 'css' );
 
         /**
          * Fires when the element collection is reset.
@@ -125,7 +132,7 @@ var SnapshotCollection = Backbone.Collection.extend( {
          *
          * @param elements
          */
-        app.channel.trigger( 'elements:reset', elements );
+        app.channel.trigger( 'elements:reset', elements, templates, css );
     },
 
     /**
@@ -154,6 +161,10 @@ var SnapshotCollection = Backbone.Collection.extend( {
             return;
         }
 
+        if ( 0 === this.indexOf( this.getActive() ) ) {
+            return;
+        }
+        
         var entry = this.at( this.indexOf( this.getActive() ) - 1 );
 
         if ( entry ) {
