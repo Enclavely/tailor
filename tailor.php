@@ -403,8 +403,7 @@ if ( ! class_exists( 'Tailor' ) ) {
 		    if ( apply_filters( 'tailor_enable_frontend_scripts', true ) ) {
 
 				// Enqueue script dependencies
-				wp_enqueue_script( 'jquery-ui-tabs' );
-                wp_enqueue_script( 'jquery-ui-accordion');
+			    wp_enqueue_script( 'jquery-ui-accordion');
 			    wp_enqueue_script( 'slick-slider' );
 			    wp_enqueue_script( 'shuffle' );
 			    wp_enqueue_script( 'magnific-popup' );
