@@ -1185,6 +1185,9 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
 			),
 		);
 
+		// Here you can add Additional Controls
+		$control_definitions = wp_parse_args( apply_filters( 'tailor_additional_control_definitions', array() ), $control_definitions );
+
 		foreach ( $control_ids as $control_id ) {
 			if ( array_key_exists( $control_id, $control_definitions ) ) {
 
