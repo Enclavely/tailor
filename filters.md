@@ -135,7 +135,7 @@
 |----------|----------|----------|
 | tailor_theme_partial_dir | Applies to theme directory to be searched for Tailor template partials | string $theme_partial_dir |
 | tailor_plugin_partial_paths | Applies to plugin directories to be searched for Tailor template partials | string $plugin_partial_paths |
-| tailor_partial | Applies to template partial that is about to be loaded | string $partial <br> string $slug <br> string $name |
+| tailor_partial | Applies to template partial that is about to be loaded | string $partial <br> string $slug <br> string $name <br> array $args |
 | tailor_excerpt | Applies to excerpt used in elements | string $trimmed_excerpt <br> string $excerpt <br> int $excerpt_length <br> string $excerpt_more |
 | tailor_post_meta_order | Applies to order of post meta displayed in the Posts element | array $meta_order |
 | tailor_show_comments_link | Allow developers to control whether the comment number should act as a link | bool |
