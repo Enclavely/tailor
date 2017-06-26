@@ -20,16 +20,6 @@ if ( ! class_exists( 'Tailor_Widgets' ) ) {
     class Tailor_Widgets {
 
         /**
-         * @var Cache categories
-         */
-        public static $categories;
-
-        /**
-         * @var Cache tags
-         */
-        public static $post_tags;
-
-        /**
          * Constructor.
          *
          * @since 1.6.0
@@ -61,8 +51,15 @@ if ( ! class_exists( 'Tailor_Widgets' ) ) {
 	        // read and cache the categories and post tags to save on performance.
             // previously we did this for every element which is heavy if there are many elements and
             // many categories/tags
-	        self::$categories = tailor_get_terms();
-	        self::$post_tags = tailor_get_terms('post_tag');
+            $categories = wp_cache_get('tailor_cached_categories');
+            if (!$categories) {
+                wp_cache_add('tailor_cached_categories', tailor_get_terms());
+            }
+
+            $post_tags = wp_cache_get('tailor_cached_post_tags');
+            if (!$post_tags) {
+                wp_cache_add('tailor_cached_post_tags', tailor_get_terms('post_tag'));
+            }
 
 	        global $wp_widget_factory;
 		    foreach ( $wp_widget_factory->widgets as $widget_class_name => $wp_widget ) {

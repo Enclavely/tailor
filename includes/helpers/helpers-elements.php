@@ -1,7 +1,5 @@
 <?php
 
-//include_once '../class-widgets.php';
-
 /**
  * Element helper functions.
  *
@@ -545,7 +543,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
                 'control' => array(
                     'label' => __('Categories', 'tailor'),
                     'type' => 'select-multi',
-                    'choices' => Tailor_Widgets::$categories,
+                    'choices' => wp_cache_get('tailor_cached_categories'),
                     'section' => 'query',
                 ),
             ),
@@ -556,7 +554,7 @@ if ( ! function_exists( 'tailor_control_presets' ) ) {
                 'control' => array(
                     'label' => __('Tags', 'tailor'),
                     'type' => 'select-multi',
-                    'choices' => Tailor_Widgets::$post_tags,
+                    'choices' => wp_cache_get('tailor_cached_post_tags'),
                     'section' => 'query',
                 ),
             ),
