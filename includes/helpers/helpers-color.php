@@ -187,10 +187,18 @@ if ( ! function_exists( 'tailor_custom_colorpicker_palette' ) ) {
 			'8' => '#8224e3', // Purple
 		);
 
+        $control_args = wp_cache_get('tailor_colour_control_args');
+
+        if ($control_args['palettes']) {
+            return $control_args;
+        }
+
 		$control_args['palettes'] = array();
 		foreach ( $colors as $number => $default ) {
 			$control_args['palettes'][] = sanitize_hex_color( get_theme_mod( "tailor_color_{$number}", $default ) );
 		}
+
+        wp_cache_add('tailor_colour_control_args', $control_args);
 
 		return $control_args;
 	}
