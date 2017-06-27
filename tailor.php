@@ -178,7 +178,7 @@ if ( ! class_exists( 'Tailor' ) ) {
          * @since 1.0.0
          */
         public function init() {
-	        
+
             load_plugin_textdomain( 'tailor', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 
 	        add_filter( 'body_class', array( $this, 'body_class' ) );
@@ -216,7 +216,7 @@ if ( ! class_exists( 'Tailor' ) ) {
 		        'class-customizer',
 		        'class-widgets',
 	        ) );
-	        
+
 	        /**
 	         * Fires after all files have been loaded.
 	         *
@@ -403,6 +403,7 @@ if ( ! class_exists( 'Tailor' ) ) {
 		    if ( apply_filters( 'tailor_enable_frontend_scripts', true ) ) {
 
 				// Enqueue script dependencies
+			    wp_enqueue_script( 'jquery-ui-accordion');
 			    wp_enqueue_script( 'slick-slider' );
 			    wp_enqueue_script( 'shuffle' );
 			    wp_enqueue_script( 'magnific-popup' );
@@ -672,7 +673,7 @@ if ( ! class_exists( 'Tailor' ) ) {
 		    if ( ! is_user_logged_in() ) {
 			    auth_redirect();
 		    }
-		    
+
 		    // Check that the user can manage option and/or edit the post type
 		    $user = wp_get_current_user();
 		    $post_id = get_the_ID();
@@ -694,9 +695,9 @@ if ( ! class_exists( 'Tailor' ) ) {
 
 		    /**
 		     * Filter the result of the user role check.
-		     * 
+		     *
 		     * @since 1.3.1
-		     * 
+		     *
 		     * @param bool $allowable
 		     */
 		    return apply_filters( 'tailor_check_user', $allowable );
