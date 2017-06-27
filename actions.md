@@ -12,7 +12,7 @@
 | tailor_save_after | Fires after all save actions have been completed | int $post_id <br> Tailor $tailor |
 | tailor_save_post_content | Fires before the updated post content is saved | int $post_id <br> string $post_content <br> string $updated_post_content |
 | tailor_save_post_content_after | Fires after the updated post content has been saved | int $post_id <br> string $post_content <br> string $updated_post_content |
-| tailor\_partial\_**{$slug}** | Fires before a template partial is loaded | string $partial <br> string $slug <br> string $name |
+| tailor\_partial\_**{$slug}** | Fires before a template partial is loaded | string $partial <br> string $slug <br> string $name <br> array $args |
 
 ## Element actions
 
