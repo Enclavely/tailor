@@ -4,6 +4,7 @@
   display: flex;
 
   @if ( $direction ) {
+    -ms-flex-direction: $direction;
     flex-direction: $direction;
   }
 }

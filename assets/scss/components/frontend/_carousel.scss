@@ -75,6 +75,7 @@ $carousel-dot-color: $global-primary-color !default;
 				display: -webkit-flex;
 				display: -ms-flexbox;
 				display: flex;
+				-ms-flex-direction: column;
 				flex-direction: column;
 			}
 		}

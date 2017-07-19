@@ -479,6 +479,7 @@ html {
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
+  -ms-flex-direction: column;
   flex-direction: column;
 }
 
@@ -509,6 +510,7 @@ html {
 }
 
 [dir=rtl] .tailor-ui .tailor-row {
+  -ms-flex-direction: row-reverse;
   flex-direction: row-reverse;
 }
 
@@ -718,6 +720,7 @@ html {
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
+  -ms-flex-direction: column;
   flex-direction: column;
 }
 
@@ -922,6 +925,7 @@ html {
     display: -webkit-flex;
     display: -ms-flexbox;
     display: flex;
+    -ms-flex-direction: column;
     flex-direction: column;
   }
   .tailor-ui .tablet-columns .tailor-column > :last-child {
@@ -1126,6 +1130,7 @@ html {
     display: -webkit-flex;
     display: -ms-flexbox;
     display: flex;
+    -ms-flex-direction: column;
     flex-direction: column;
   }
   .tailor-ui .desktop-columns .tailor-column > :last-child {
@@ -1322,6 +1327,7 @@ html {
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
+  -ms-flex-direction: column;
   flex-direction: column;
 }
 
@@ -1900,6 +1906,7 @@ html {
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
+  -ms-flex-direction: column;
   flex-direction: column;
 }
 

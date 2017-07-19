@@ -133,6 +133,6 @@ window.Tailor.Components.Toggles = require( './shared/components/ui/toggles' );
 require( './frontend/components/ui/carousel' );
 
 // Initialize elements when the document is ready
-$( document ).ready( function() {
+$( function() {
 	window.Tailor.initElements();
 } );

@@ -166,6 +166,10 @@ CanvasApplication = Marionette.Application.extend( {
          * @param this
          */
         remoteChannel.trigger( 'canvas:handshake', this );
+
+        this.listenTo( remoteChannel, 'sidebar:initialize', function() {
+            this.channel.trigger( 'sidebar:initialize' );
+        } );
     },
 
     /**

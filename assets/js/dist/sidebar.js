@@ -781,10 +781,13 @@ module.exports = notify;
         return Tailor[ object ].Default;
     };
 
+    app.on( 'before:start', function() {
+        app.module( 'module:library', require( './sidebar/modules/library/library' ) );
+    } );
+
     app.on( 'start', function( options ) {
 
         // Load modules
-        app.module( 'module:library', require( './sidebar/modules/library/library' ) );
         app.module( 'module:templates', require( './sidebar/modules/templates/templates' ) );
         app.module( 'module:settings', require( './sidebar/modules/settings/settings' ) );
         app.module( 'module:history', require( './sidebar/modules/history/history' ) );
@@ -833,7 +836,7 @@ module.exports = notify;
             } );
     } );
 
-    $doc.ready( function() {
+    $( function() {
         
         // Start the app
         app.start( {

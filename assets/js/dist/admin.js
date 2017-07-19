@@ -9,7 +9,7 @@ var $ = window.jQuery,
 	l10n = window._l10n,
 	ajax = window.ajax;
 
-$( document ).ready( function() {
+$( function() {
 	var $field = $( '.tailor-icon-kits' );
 	var frame = wp.media( {
 		button: {

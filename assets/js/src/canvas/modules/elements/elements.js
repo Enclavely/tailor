@@ -15,7 +15,7 @@ ElementModule = Marionette.Module.extend( {
      */
 	onBeforeStart : function( options ) {
         var module = this;
-        
+
         this.collection = new ElementCollection( options.elements );
 
         var api = {
@@ -50,7 +50,7 @@ ElementModule = Marionette.Module.extend( {
                 if ( models === module.collection.models ) {
                     //return;
                 }
-                
+
                 $templates.append( templates );
 
                 /**

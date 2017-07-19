@@ -129,6 +129,7 @@ $column-number: 12 !default;
 	.#{$global-class-prefix}ui {
 
 		.#{$row-class-prefix}row {
+			-ms-flex-direction: row-reverse;
 			flex-direction: row-reverse;
 		}
 	}

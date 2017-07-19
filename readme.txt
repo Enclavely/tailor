@@ -1,10 +1,10 @@
 === Tailor Page Builder ===
-Contributors: andrew.worsfold
+Contributors: andrew.worsfold, enclavely, munirkamal, essamamdani
 Donate link: http://gettailor.com/donate/
 Tags: page, layout, builder, frontend, content, page builder, drag and drop builder, home page builder, landing page builder, layout builder, frontend builder, frontend editor, responsive, visual composer, beaver builder
-Stable tag: 1.7.9
+Stable tag: 1.7.10
 Requires at least: 4.3
-Tested up to: 4.7
+Tested up to: 4.8
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl.html
 
@@ -136,6 +136,14 @@ Yes.  Tailored pages can be migrated like any other type of page using the [dupl
 Yes, however, users should be directed to the WordPress plugin repository to install the latest version of the plugin.  Consider using a tool like [TGM Plugin Activation](http://tgmpluginactivation.com/) to guide users through the installation process.
 
 == Changelog ==
+
+= 1.7.10 =
+* Fixed - Missing flexbox -ms- prefixes for Internet Explorer 10 [GitHub 90](https://github.com/andrew-worsfold/tailor/issues/90).
+* Fixed - Console error "this.getElementDefinitions(...) is undefined" [GitHub 115](https://github.com/andrew-worsfold/tailor/issues/115).
+* Fixed - Show post meta data when only one item is selected [GitHub 125](https://github.com/andrew-worsfold/tailor/pull/125).
+* Fixed - Not empty check for box images [GitHub 99](https://github.com/andrew-worsfold/tailor/pull/99).
+* Fixed - Removed deprecated jQuery 'ready' event.
+* Improved - Expose $args in tailor_partial filter and tailor_partial_* action [GitHub 117](https://github.com/andrew-worsfold/tailor/pull/117).
 
 = 1.7.9 =
 * Added - Instant undo/redo functionality with keyboard controls.
@@ -439,12 +447,12 @@ To browse all available actions and filters, please refer to the published [acti
 * Removed - 'Tailor this ..' Admin Bar link from archive pages (credit: BinaryMoon).
 
 = 1.2.0 =
-* Improved - Container behaviour so that they do not collapse when only one child element remains (excludes row/column layouts). [Learn more about this change](http://www.andrewworsfold.com/2016/06/26/working-with-containers/).
+* Improved - Container behaviour so that they do not collapse when only one child element remains (excludes row/column layouts).
 * Fixed - Custom CSS is not appearing within template previews.
 * Fixed - Tabs break after a tab is renamed.
 
 = 1.1.3 =
-* Improved - Device preview and media query settings to be in line with the WordPress Customizer (i.e., Desktop, Tablet and Mobile sizes).  [Learn more about this change](http://www.andrewworsfold.com/2016/06/25/device-previews/).
+* Improved - Device preview and media query settings to be in line with the WordPress Customizer (i.e., Desktop, Tablet and Mobile sizes).
 
 = 1.1.2 =
 * Added - Notification and UI styles to help instruct new users to drag elements and templates onto the page.

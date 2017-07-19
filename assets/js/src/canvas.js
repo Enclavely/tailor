@@ -168,15 +168,18 @@
 
     app.on( 'start', function() {
 
-        // Load modules
-        app.module( 'module:elements', require( './canvas/modules/elements/elements' ) );
-        app.module( 'module:templates', require( './canvas/modules/templates/templates' ) );
-        app.module( 'module:canvas', require( './canvas/modules/canvas/canvas' ) );
-        app.module( 'module:tools', require( './canvas/modules/tools/tools' ) );
-        app.module( 'module:css', require( './canvas/modules/css/css' ) );
+        this.channel.on( 'sidebar:initialize', function() {
+
+            // Load modules
+            app.module( 'module:elements', require( './canvas/modules/elements/elements' ) );
+            app.module( 'module:templates', require( './canvas/modules/templates/templates' ) );
+            app.module( 'module:canvas', require( './canvas/modules/canvas/canvas' ) );
+            app.module( 'module:tools', require( './canvas/modules/tools/tools' ) );
+            app.module( 'module:css', require( './canvas/modules/css/css' ) );
+        } );
     } );
 
-    $( document ).ready( function() {
+    $( function() {
 
         // Start the app
         app.start( {
@@ -185,7 +188,7 @@
             mediaQueries : window._media_queries || {},
             cssRules : window._css_rules || {}
         } );
-        
+
         /**
          * Fires when the canvas is initialized.
          *

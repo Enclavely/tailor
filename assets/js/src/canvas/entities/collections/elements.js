@@ -67,7 +67,8 @@ var ElementCollection = Backbone.Collection.extend( {
             model = model.toJSON();
         }
 
-        var item = this.getElementDefinitions().findWhere( { tag : model.tag } );
+        var definitions = this.getElementDefinitions();
+        var item = definitions.findWhere( { tag : model.tag } );
         var defaults = {
             label : item.get( 'label' ),
             type : item.get( 'type' )
