@@ -48,7 +48,20 @@ if ( ! class_exists( 'Tailor_Widgets' ) ) {
 	     * @param Tailor_Elements $element_manager
 	     */
 	    public function register_widgets( $element_manager ) {
-		    global $wp_widget_factory;
+	        // read and cache the categories and post tags to save on performance.
+            // previously we did this for every element which is heavy if there are many elements and
+            // many categories/tags
+            $categories = wp_cache_get('tailor_cached_categories');
+            if (!$categories) {
+                wp_cache_add('tailor_cached_categories', tailor_get_terms());
+            }
+
+            $post_tags = wp_cache_get('tailor_cached_post_tags');
+            if (!$post_tags) {
+                wp_cache_add('tailor_cached_post_tags', tailor_get_terms('post_tag'));
+            }
+
+	        global $wp_widget_factory;
 		    foreach ( $wp_widget_factory->widgets as $widget_class_name => $wp_widget ) {
 			    
 			    if ( ! array_key_exists( 'description', $wp_widget->widget_options ) ) {
