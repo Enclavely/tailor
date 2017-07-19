@@ -24,7 +24,7 @@ $meta_order = array( 'author', 'date', 'category', 'tag', 'comment-number' );
  */
 apply_filters( 'tailor_post_meta_order', $meta_order );
 
-if ( count( array_intersect( $meta, $meta_order ) ) > 1 ) {
+if ( count( array_intersect( $meta, $meta_order ) ) >= 1 ) {
 
 	echo '<div class="entry__meta">';
 
