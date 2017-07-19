@@ -13,38 +13,20 @@ CanvasApplication = Marionette.Application.extend( {
 	 * @since 1.0.0
 	 */
     onBeforeStart : function() {
-        if ( window.location.origin !== window.parent.location.origin ) {
-            console.error( 'The Canvas has a different origin than the Sidebar' );
-            return;
-        }
-
-        if ( ! window.parent.app ) {
-            $( window.parent.document ).on( "DOMContentLoaded readystatechange load", this.registerRemoteChannel.bind( this ) );
-        }
-        else {
-            this.registerRemoteChannel();
-        }
-    },
-
-    /**
-     * Initializes the application.
-     *
-     * @since 1.0.0
-     */
-	onStart : function() {
 
         // White listed events from the remote channel
         this.allowableEvents = [
+            'sidebar:initialize',
 
             // Triggered when elements or templates are dragged from the sidebar
-	        'canvas:dragstart', 'canvas:drag', 'canvas:dragend',
+            'canvas:dragstart', 'canvas:drag', 'canvas:dragend',
 
             // Triggered when a template is loaded
             'template:load',
-            
+
             // Triggered when an element is edited
             'modal:apply',
-            
+
             // Triggered when a sidebar setting changes
             'sidebar:setting:change',
 
@@ -54,9 +36,16 @@ CanvasApplication = Marionette.Application.extend( {
             // Triggered when the element collection is reset (used by the History module)
             'elements:reset'
         ];
-        
+
         this.addEventListeners();
-	},
+
+        if ( window.location.origin !== window.parent.location.origin ) {
+            console.error( 'The Canvas has a different origin than the Sidebar' );
+            return;
+        }
+        
+        this.registerRemoteChannel();
+    },
 
     /**
      * Adds the required event listeners.
@@ -157,7 +146,7 @@ CanvasApplication = Marionette.Application.extend( {
 
         // Forward allowable events from the remote channel
 	    this.listenTo( remoteChannel, 'all', this.forwardRemoteEvent );
-
+        
         /**
          * Fires when the remote channel is registered.
          *
@@ -166,10 +155,6 @@ CanvasApplication = Marionette.Application.extend( {
          * @param this
          */
         remoteChannel.trigger( 'canvas:handshake', this );
-
-        this.listenTo( remoteChannel, 'sidebar:initialize', function() {
-            this.channel.trigger( 'sidebar:initialize' );
-        } );
     },
 
     /**

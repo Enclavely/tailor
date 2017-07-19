@@ -781,26 +781,23 @@ module.exports = notify;
         return Tailor[ object ].Default;
     };
 
-    app.on( 'before:start', function() {
-        app.module( 'module:library', require( './sidebar/modules/library/library' ) );
-    } );
+    // Load modules
+    app.module( 'module:library', require( './sidebar/modules/library/library' ) );
+    app.module( 'module:templates', require( './sidebar/modules/templates/templates' ) );
+    app.module( 'module:settings', require( './sidebar/modules/settings/settings' ) );
+    app.module( 'module:history', require( './sidebar/modules/history/history' ) );
+    app.module( 'module:sections', require( './sidebar/modules/sections/sections' ) );
+    app.module( 'module:panels', require( './sidebar/modules/panels/panels' ) );
+    app.module( 'module:modal', require( './sidebar/modules/modal/modal' ) );
+    app.module( 'module:dialog', require( './sidebar/modules/dialog/dialog' ) );
+    app.module( 'module:notification', require( './sidebar/modules/notifications/notifications' ) );
+    app.module( 'module:devicePreview', require( './sidebar/modules/device-preview/device-preview' ) );
 
-    app.on( 'start', function( options ) {
+    // Initialize preview
+    require( './sidebar/preview' );
+    
+    app.on( 'before:start', function( options ) {
 
-        // Load modules
-        app.module( 'module:templates', require( './sidebar/modules/templates/templates' ) );
-        app.module( 'module:settings', require( './sidebar/modules/settings/settings' ) );
-        app.module( 'module:history', require( './sidebar/modules/history/history' ) );
-        app.module( 'module:sections', require( './sidebar/modules/sections/sections' ) );
-        app.module( 'module:panels', require( './sidebar/modules/panels/panels' ) );
-        app.module( 'module:modal', require( './sidebar/modules/modal/modal' ) );
-        app.module( 'module:dialog', require( './sidebar/modules/dialog/dialog' ) );
-        app.module( 'module:notification', require( './sidebar/modules/notifications/notifications' ) );
-        app.module( 'module:devicePreview', require( './sidebar/modules/device-preview/device-preview' ) );
-        
-        // Initialize preview
-        require( './sidebar/preview' );
-        
         $doc.on( 'heartbeat-send', function( e, data ) {
             data['tailor_post_id'] = window.post.id;
         } );
@@ -810,11 +807,11 @@ module.exports = notify;
 
         $win
 
-            /**
-             * Warns the user if they attempt to navigate away from the page without saving changes.
-             *
-             * @since 1.0.0
-             */
+        /**
+         * Warns the user if they attempt to navigate away from the page without saving changes.
+         *
+         * @since 1.0.0
+         */
             .on( 'beforeunload.tailor', function( e ) {
                 if ( app.hasUnsavedChanges() ) {
                     return window._l10n.confirmPage;
@@ -850,15 +847,6 @@ module.exports = notify;
             settings : window._settings || [],
             controls : window._controls || []
         } );
-
-        /**
-         * Fires when the sidebar is initialized.
-         *
-         * @since 1.0.0
-         *
-         * @param app
-         */
-        app.channel.trigger( 'sidebar:initialize', app );
     } );
     
 } ( window, Backbone.$ ) );
@@ -872,6 +860,8 @@ var $ = Backbone.$,
 
 SidebarApplication = Marionette.Application.extend( {
 
+    _initialized: false,
+    
 	el : document.querySelector( '#tailor' ),
 
     /**
@@ -879,7 +869,7 @@ SidebarApplication = Marionette.Application.extend( {
      *
      * @since 1.0.0
      */
-	initialize : function() {
+	onBeforeStart : function() {
         this._collapsed = false;
         this._unsavedChanges = false;
         this.saveButton = document.querySelector( '#tailor-save' );
@@ -911,6 +901,10 @@ SidebarApplication = Marionette.Application.extend( {
         ];
 
         this.addEventListeners();
+    },
+    
+    onStart: function() {
+        this._initialized = true;
     },
 
     /**
@@ -1125,6 +1119,15 @@ SidebarApplication = Marionette.Application.extend( {
 
             app.el.classList.add( 'is-initialized' );
             app.el.querySelector( '.tailor-preview__viewport' ).classList.add( 'is-loaded' );
+            
+            /**
+             * Fires when the sidebar is initialized.
+             *
+             * @since 1.0.0
+             *
+             * @param app
+             */
+            app.channel.trigger( 'sidebar:initialize', app );
         }
     },
 

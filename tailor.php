@@ -5,8 +5,8 @@
  * Plugin URI: http://www.gettailor.com
  * Description: Build beautiful page layouts quickly and easily using your favourite theme.
  * Version: 1.7.10
- * Author: Enclavely
- * Author URI:  https://enclavely.io/
+ * Author: The Tailor Team
+ * Author URI:  http://www.gettailor.com
  * Text Domain: tailor
  *
  * @package Tailor

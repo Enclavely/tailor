@@ -167,28 +167,14 @@
         };
     } );
 
-    app.on( 'start', function() {
-
-        this.channel.on( 'sidebar:initialize', function() {
-
-            // Load modules
-            app.module( 'module:elements', require( './canvas/modules/elements/elements' ) );
-            app.module( 'module:templates', require( './canvas/modules/templates/templates' ) );
-            app.module( 'module:canvas', require( './canvas/modules/canvas/canvas' ) );
-            app.module( 'module:tools', require( './canvas/modules/tools/tools' ) );
-            app.module( 'module:css', require( './canvas/modules/css/css' ) );
-        } );
-    } );
-
-    $( function() {
-
-        // Start the app
-        app.start( {
-            elements : window._elements || [],
-            nonces : window._nonces || [],
-            mediaQueries : window._media_queries || {},
-            cssRules : window._css_rules || {}
-        } );
+    app.channel.on('sidebar:initialize', function() {
+        
+        // Load modules
+        app.module( 'module:elements', require( './canvas/modules/elements/elements' ) );
+        app.module( 'module:templates', require( './canvas/modules/templates/templates' ) );
+        app.module( 'module:canvas', require( './canvas/modules/canvas/canvas' ) );
+        app.module( 'module:tools', require( './canvas/modules/tools/tools' ) );
+        app.module( 'module:css', require( './canvas/modules/css/css' ) );
 
         /**
          * Fires when the canvas is initialized.
@@ -198,6 +184,29 @@
          * @param app
          */
         app.channel.trigger( 'canvas:initialize', app );
+    } );
+
+    function start() {
+        app.start( {
+            elements : window._elements || [],
+            nonces : window._nonces || [],
+            mediaQueries : window._media_queries || {},
+            cssRules : window._css_rules || {}
+        } );
+    }
+
+    $( function() {
+        var sidebarApp = window.parent.app;
+
+        // Wait until the sidebar is initialized before starting the canvas
+        if ( sidebarApp._initialized ) {
+            start();
+        }
+        else {
+            sidebarApp.on('start', function() {
+                start();
+            } );
+        }
     } );
 
 } ( window, Backbone.$ ) );
@@ -219,38 +228,20 @@ CanvasApplication = Marionette.Application.extend( {
 	 * @since 1.0.0
 	 */
     onBeforeStart : function() {
-        if ( window.location.origin !== window.parent.location.origin ) {
-            console.error( 'The Canvas has a different origin than the Sidebar' );
-            return;
-        }
-
-        if ( ! window.parent.app ) {
-            $( window.parent.document ).on( "DOMContentLoaded readystatechange load", this.registerRemoteChannel.bind( this ) );
-        }
-        else {
-            this.registerRemoteChannel();
-        }
-    },
-
-    /**
-     * Initializes the application.
-     *
-     * @since 1.0.0
-     */
-	onStart : function() {
 
         // White listed events from the remote channel
         this.allowableEvents = [
+            'sidebar:initialize',
 
             // Triggered when elements or templates are dragged from the sidebar
-	        'canvas:dragstart', 'canvas:drag', 'canvas:dragend',
+            'canvas:dragstart', 'canvas:drag', 'canvas:dragend',
 
             // Triggered when a template is loaded
             'template:load',
-            
+
             // Triggered when an element is edited
             'modal:apply',
-            
+
             // Triggered when a sidebar setting changes
             'sidebar:setting:change',
 
@@ -260,9 +251,16 @@ CanvasApplication = Marionette.Application.extend( {
             // Triggered when the element collection is reset (used by the History module)
             'elements:reset'
         ];
-        
+
         this.addEventListeners();
-	},
+
+        if ( window.location.origin !== window.parent.location.origin ) {
+            console.error( 'The Canvas has a different origin than the Sidebar' );
+            return;
+        }
+        
+        this.registerRemoteChannel();
+    },
 
     /**
      * Adds the required event listeners.
@@ -363,7 +361,7 @@ CanvasApplication = Marionette.Application.extend( {
 
         // Forward allowable events from the remote channel
 	    this.listenTo( remoteChannel, 'all', this.forwardRemoteEvent );
-
+        
         /**
          * Fires when the remote channel is registered.
          *
@@ -372,10 +370,6 @@ CanvasApplication = Marionette.Application.extend( {
          * @param this
          */
         remoteChannel.trigger( 'canvas:handshake', this );
-
-        this.listenTo( remoteChannel, 'sidebar:initialize', function() {
-            this.channel.trigger( 'sidebar:initialize' );
-        } );
     },
 
     /**

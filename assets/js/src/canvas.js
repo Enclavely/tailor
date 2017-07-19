@@ -166,28 +166,14 @@
         };
     } );
 
-    app.on( 'start', function() {
-
-        this.channel.on( 'sidebar:initialize', function() {
-
-            // Load modules
-            app.module( 'module:elements', require( './canvas/modules/elements/elements' ) );
-            app.module( 'module:templates', require( './canvas/modules/templates/templates' ) );
-            app.module( 'module:canvas', require( './canvas/modules/canvas/canvas' ) );
-            app.module( 'module:tools', require( './canvas/modules/tools/tools' ) );
-            app.module( 'module:css', require( './canvas/modules/css/css' ) );
-        } );
-    } );
-
-    $( function() {
-
-        // Start the app
-        app.start( {
-            elements : window._elements || [],
-            nonces : window._nonces || [],
-            mediaQueries : window._media_queries || {},
-            cssRules : window._css_rules || {}
-        } );
+    app.channel.on('sidebar:initialize', function() {
+        
+        // Load modules
+        app.module( 'module:elements', require( './canvas/modules/elements/elements' ) );
+        app.module( 'module:templates', require( './canvas/modules/templates/templates' ) );
+        app.module( 'module:canvas', require( './canvas/modules/canvas/canvas' ) );
+        app.module( 'module:tools', require( './canvas/modules/tools/tools' ) );
+        app.module( 'module:css', require( './canvas/modules/css/css' ) );
 
         /**
          * Fires when the canvas is initialized.
@@ -197,6 +183,29 @@
          * @param app
          */
         app.channel.trigger( 'canvas:initialize', app );
+    } );
+
+    function start() {
+        app.start( {
+            elements : window._elements || [],
+            nonces : window._nonces || [],
+            mediaQueries : window._media_queries || {},
+            cssRules : window._css_rules || {}
+        } );
+    }
+
+    $( function() {
+        var sidebarApp = window.parent.app;
+
+        // Wait until the sidebar is initialized before starting the canvas
+        if ( sidebarApp._initialized ) {
+            start();
+        }
+        else {
+            sidebarApp.on('start', function() {
+                start();
+            } );
+        }
     } );
 
 } ( window, Backbone.$ ) );

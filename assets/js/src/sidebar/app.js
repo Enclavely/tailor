@@ -7,6 +7,8 @@ var $ = Backbone.$,
 
 SidebarApplication = Marionette.Application.extend( {
 
+    _initialized: false,
+    
 	el : document.querySelector( '#tailor' ),
 
     /**
@@ -14,7 +16,7 @@ SidebarApplication = Marionette.Application.extend( {
      *
      * @since 1.0.0
      */
-	initialize : function() {
+	onBeforeStart : function() {
         this._collapsed = false;
         this._unsavedChanges = false;
         this.saveButton = document.querySelector( '#tailor-save' );
@@ -46,6 +48,10 @@ SidebarApplication = Marionette.Application.extend( {
         ];
 
         this.addEventListeners();
+    },
+    
+    onStart: function() {
+        this._initialized = true;
     },
 
     /**
@@ -260,6 +266,15 @@ SidebarApplication = Marionette.Application.extend( {
 
             app.el.classList.add( 'is-initialized' );
             app.el.querySelector( '.tailor-preview__viewport' ).classList.add( 'is-loaded' );
+            
+            /**
+             * Fires when the sidebar is initialized.
+             *
+             * @since 1.0.0
+             *
+             * @param app
+             */
+            app.channel.trigger( 'sidebar:initialize', app );
         }
     },
 
