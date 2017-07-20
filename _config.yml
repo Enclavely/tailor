@@ -4,7 +4,7 @@ permalink:           pretty
 # Setup
 title:               Tailor
 tagline:             Simple yet powerful free page builder for WordPress!
-keywords:            WordPress, free, page builder, frontend, open source
+keywords:            WordPress, free, page builder, frontend, open source, tailor
 url:                 http://gettailor.com
 paginate:            1
 baseurl:             ""
@@ -20,10 +20,8 @@ sass:
 
 # About/contact
 author:
-  name:             Andrew Worsfold
-  url:              http://www.andrewworsfold.com
-  twitter:          https://twitter.com/andrewjworsfold
-  facebook:         https://facebook.com/andrew.worsfold
+  name:             Enclavely, Inc
+  url:              http://www.enclavely.io
 
 tailor:
   wordpress:        https://wordpress.org/plugins/tailor/
@@ -31,7 +29,7 @@ tailor:
   twitter:          https://twitter.com/tailorwp
   facebook:         https://facebook.com/tailorwp
 
-analytics_id:       UA-76196799-1
+analytics_id:       UA-102926385-1
 
 # Dependencies
 markdown:           kramdown
@@ -47,8 +45,8 @@ gems:
   - jekyll-gist
 
 # Custom vars
-repo:               https://github.com/andrewworsfold/tailor
-twitter:            https://twitter.com/andrewjworsfold
+repo:               https://github.com/enclavely/tailor
+twitter:            https://twitter.com/tailorwp
 
 cdn:
   # See https://www.srihash.org for info on how to generate the hashes
