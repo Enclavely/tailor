@@ -7,11 +7,11 @@
 
 ## Author
 
-**Andrew Worsfold**
+**Enclavely, Inc**
 
-- <https://twitter.com/andrewjworsfold>
-- <https://github.com/andrew-worsfold>
+- <https://twitter.com/tailorwp>
+- <https://github.com/enclavely>
 
 ## Copyright and license
 
-Copyright 2016 Andrew Worsfold.
+Copyright 2017 Enclavely,Inc.
