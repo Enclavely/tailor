@@ -158,12 +158,17 @@ if ( class_exists( 'Tailor_Setting_Manager' ) && ! class_exists( 'Tailor_Element
 	     * @return array
 	     */
 	    public function shortcode_default_atts( $defaults = array() ) {
-		    foreach ( (array) $this->settings() as $setting ) { /* @var $setting Tailor_Setting */
-			    if ( ! array_key_exists( $setting->id, $defaults ) ) {
-				    $defaults[ $setting->id ] = $setting->default;
+		    $shortcode_default_atts = get_transient( "{$this->tag}_shortcode_default_atts" );
+		    if ( ! $shortcode_default_atts ) {
+			    foreach ( (array) $this->settings() as $setting ) { /* @var $setting Tailor_Setting */
+				    if ( ! array_key_exists( $setting->id, $defaults ) ) {
+					    $defaults[ $setting->id ] = $setting->default;
+				    }
 			    }
+			    $shortcode_default_atts = $defaults;
+			    set_transient( "{$this->tag}_shortcode_default_atts", $shortcode_default_atts, DAY_IN_SECONDS );
 		    }
-		    return $defaults;
+		    return $shortcode_default_atts;
 	    }
 	    
 	    /**

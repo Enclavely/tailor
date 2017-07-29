@@ -17,7 +17,7 @@ if ( false == get_post_meta( $post->ID, '_tailor_layout', true ) ) {
 
 $post_type_object = get_post_type_object( get_post_type( $post ) );
 $alert_text = sprintf(
-	__( 'Changes made to this %s within the editor will not be displayed in Tailor.', 'tailor' ),
+	__( 'This %1$s\'s layout was created by Tailor.  You can modify content in the Editor and the changes will appear in both Tailor and the frontend.', 'tailor' ),
 	lcfirst( $post_type_object->labels->singular_name )
 );
 

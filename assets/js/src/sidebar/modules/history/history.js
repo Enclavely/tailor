@@ -9,7 +9,7 @@ HistoryModule = Marionette.Module.extend( {
     /**
      * Initializes the module.
      */
-	onBeforeStart : function() {
+	onStart : function( options ) {
         var module = this;
 
         module.collection = new SnapshotsCollection();
@@ -33,17 +33,10 @@ HistoryModule = Marionette.Module.extend( {
         };
         
         app.channel.reply( 'sidebar:history', api.getSnapshot );
-    },
 
-    /**
-     * Initializes the module.
-     *
-     * @param options
-     */
-    onStart : function( options ) {
         this.l10n = options.l10n;
         this.addEventListeners();
-
+        
         /**
          * Fires when the module is initialized.
          *

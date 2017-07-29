@@ -1881,6 +1881,7 @@ AbstractControl = Marionette.ItemView.extend( {
      */
     onMediaButtonChange : function( e ) {
         this.media = e.currentTarget.getAttribute( 'data-media' );
+        app.channel.trigger('sidebar:device', this.media);
         this.updateControlGroups();
     },
 
@@ -5486,7 +5487,6 @@ var SnapshotCollection = Backbone.Collection.extend( {
      */
 	initialize: function() {
         this.addEventListeners();
-
 	},
 
     /**
@@ -5497,7 +5497,6 @@ var SnapshotCollection = Backbone.Collection.extend( {
     addEventListeners : function() {
         this.listenTo( this, 'add', this.checkLength );
         this.listenToOnce( app.channel, 'canvas:initialize', function() {
-            this.elements = app.channel.request( 'canvas:elements' );
             this.save( window._l10n.initialized );
         } );
     },
@@ -5519,13 +5518,14 @@ var SnapshotCollection = Backbone.Collection.extend( {
             }
         }
 
+        var models = app.channel.request( 'canvas:elements' );
         var templates = app.channel.request( 'canvas:templates' );
         var css = app.channel.request( 'canvas:css' );
 
         // Add the new entry to the collection
         var entry = this.add( {
             label : label || '',
-            elements : this.elements ? this.elements.toJSON() : [],
+            elements : models ? models.toJSON() : [],
             templates: templates,
             css: css,
             time : this.getTime(),
@@ -6500,7 +6500,9 @@ DevicePreviewModule = Marionette.Module.extend( {
         this.viewport = this.preview.querySelector( '.tailor-preview__viewport' );
         this.mediaQueries = window._media_queries;
 
-        this.setActive( this.$buttons.get(0) );
+        //this.setActive( this.$buttons.get(0) );
+        this.setDevice( this.$buttons.get(0).getAttribute( 'data-device' ) );
+
         this.addEventListeners();
 
         /**
@@ -6519,34 +6521,29 @@ DevicePreviewModule = Marionette.Module.extend( {
      * @since 1.7.4
      */
     addEventListeners : function() {
-        this.$buttons.on( 'click', this.onDevicePreview.bind( this ) );
+        this.$buttons.on( 'click', this.onClick.bind( this ) );
+        app.channel.on( 'sidebar:device', this.setDevice.bind(this) );
     },
 
-    onDevicePreview : function( e ) {
-        var button = e.target;
-        var previous = this.$buttons.filter( "[data-device='" + this.device + "']" ).get(0);
+    onClick: function( e ) {
+        this.setDevice( e.target.getAttribute( 'data-device' ) );
+    },
 
-        this.setInactive( previous );
-        this.setActive( button );
+    setDevice: function( device ) {
+        this.device = device;
 
-        this.device = button.getAttribute( 'data-device' );
-        this.preview.className = 'tailor-preview ' + this.device + '-screens';
+        // Update buttons
+        var $button = this.$buttons.filter( "[data-device='" + this.device + "']" );
+        this.$buttons.removeClass( 'is-active' ).attr( 'aria-pressed', false );
+        $button.addClass( 'is-active' ).attr( 'aria-pressed', true );
+
+        // Update preview window
         if ( this.mediaQueries.hasOwnProperty( this.device ) && this.mediaQueries[ this.device ].max ) {
             this.viewport.style.maxWidth = this.mediaQueries[ this.device ].max;
         }
         else {
             this.viewport.style.maxWidth ='';
         }
-    },
-
-    setActive: function( button ) {
-        button.classList.add( 'is-active' );
-        button.setAttribute( 'aria-pressed', 'true' );
-    },
-
-    setInactive: function( button ) {
-        button.classList.remove( 'is-active' );
-        button.setAttribute( 'aria-pressed', 'false' );
     }
 } );
 
@@ -6793,7 +6790,7 @@ HistoryModule = Marionette.Module.extend( {
     /**
      * Initializes the module.
      */
-	onBeforeStart : function() {
+	onStart : function( options ) {
         var module = this;
 
         module.collection = new SnapshotsCollection();
@@ -6817,17 +6814,10 @@ HistoryModule = Marionette.Module.extend( {
         };
         
         app.channel.reply( 'sidebar:history', api.getSnapshot );
-    },
 
-    /**
-     * Initializes the module.
-     *
-     * @param options
-     */
-    onStart : function( options ) {
         this.l10n = options.l10n;
         this.addEventListeners();
-
+        
         /**
          * Fires when the module is initialized.
          *

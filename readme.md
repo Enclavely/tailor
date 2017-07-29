@@ -4,10 +4,10 @@ This is the official GitHub repository for the Tailor page builder WordPress plu
 
 ## Features
 
-* True drag and drop layout creation (add, move, [copy](https://github.com/andrew-worsfold/tailor/blob/master/api.md) and [create rows](http://andrewworsfold.com/2016/06/26/working-with-containers/) and [nested columns](https://medium.com/@tailorwp/columns-on-steroids-df5a5a957d89)).
+* True drag and drop layout creation (add, move, [copy](https://github.com/Enclavely/tailor/blob/master/api.md) and create rows and [nested columns](https://medium.com/@tailorwp/columns-on-steroids-df5a5a957d89)).
 * Drag and drop templates.
 * History snapshots and undo/redo.
-* [Device previews](http://andrewworsfold.com/2016/06/25/device-previews/) for mobile, tablet and desktop screen sizes.
+* Device previews for mobile, tablet and desktop screen sizes.
 * Support for device-specific settings.
 * Support for built-in and third-party widgets.
 * Support for WordPress features (multimedia, shortcodes and more). 
@@ -16,8 +16,8 @@ This is the official GitHub repository for the Tailor page builder WordPress plu
 * Page-specific layout settings.
 * Page-specific custom CSS.
 * Page-specific custom JavaScript.
-* A [series of endpoints](https://github.com/andrew-worsfold/tailor/blob/master/api.md) in the [WP REST API v2](https://wordpress.org/plugins/rest-api/)
-* A comprehensive set of [actions](https://github.com/andrew-worsfold/tailor/blob/master/actions.md) and [filters](https://github.com/andrew-worsfold/tailor/blob/master/filters.md).
+* A [series of endpoints](https://github.com/Enclavely/tailor/blob/master/api.md) in the [WP REST API v2](https://wordpress.org/plugins/rest-api/)
+* A comprehensive set of [actions](https://github.com/Enclavely/tailor/blob/master/actions.md) and [filters](https://github.com/Enclavely/tailor/blob/master/filters.md).
 * A custom templating engine for easy customization.
 * Support for multi-language and RTL layouts.
 
@@ -59,13 +59,13 @@ This allows you to manage all of your **actual** content in one place, not a ser
 
 ### Portfolio elements
 
-The following elements are available through the free [Portfolio extension](https://github.com/andrew-worsfold/tailor-portfolio):
+The following elements are available through the free [Portfolio extension](https://github.com/Enclavely/tailor-portfolio):
 
 * Projects
 
 ### WooCommerce elements
 
-The following elements are available through the free [WooCommerce extension](https://github.com/andrew-worsfold/tailor-woocommerce):
+The following elements are available through the free [WooCommerce extension](https://github.com/Enclavely/tailor-woocommerce):
 
 * Products
 * Pricing tables
@@ -73,21 +73,21 @@ The following elements are available through the free [WooCommerce extension](ht
 
 ### Advanced elements
 
-The free [Advanced Features extension](https://github.com/andrew-worsfold/tailor-advanced) extension introduces additional elements and exciting new functionality.  Be sure to try it!
+The free [Advanced Features extension](https://github.com/Enclavely/tailor-advanced) extension introduces additional elements and exciting new functionality.  Be sure to try it!
 
 ### Custom elements
 
 Adding your own custom elements is easy and can be achieved using a theme or plugin.  For an example of each, check out:
 
-* [Sample theme](https://github.com/andrew-worsfold/tailor-sample-theme)
-* [Sample extension](https://github.com/andrew-worsfold/tailor-sample-extension)
+* [Sample theme](https://github.com/Enclavely/tailor-sample-theme)
+* [Sample extension](https://github.com/Enclavely/tailor-sample-extension)
 
 ## Get involved
 
 You can get in touch with questions or recommendations in a number of ways:
 
-1. [Facebook](https://www.facebook.com/tailorwp/) or Twitter at [@tailorwp](https://twitter.com/tailorwp) or [@andrewjworsfold](https://twitter.com/andrewjworsfold).
+1. [Facebook](https://www.facebook.com/tailorwp/) or Twitter at [@tailorwp](https://twitter.com/tailorwp).
 2. The [Help Center](http://support.gettailor.com)
-3. The [GitHub project](https://github.com/andrew-worsfold/tailor)
+3. The [GitHub project](https://github.com/Enclavely/tailor)
 
 If you like the plugin, you can help by [rating it](https://wordpress.org/support/view/plugin-reviews/tailor?rate=5#postform).

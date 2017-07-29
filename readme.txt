@@ -2,7 +2,7 @@
 Contributors: andrew.worsfold, enclavely, munirkamal, essamamdani
 Donate link: http://gettailor.com/donate/
 Tags: page, layout, builder, frontend, content, page builder, drag and drop builder, home page builder, landing page builder, layout builder, frontend builder, frontend editor, responsive, visual composer, beaver builder
-Stable tag: 1.7.10
+Stable tag: 1.8.0
 Requires at least: 4.3
 Tested up to: 4.8
 License: GPLv3 or later
@@ -136,6 +136,13 @@ Yes.  Tailored pages can be migrated like any other type of page using the [dupl
 Yes, however, users should be directed to the WordPress plugin repository to install the latest version of the plugin.  Consider using a tool like [TGM Plugin Activation](http://tgmpluginactivation.com/) to guide users through the installation process.
 
 == Changelog ==
+
+= 1.8.0 =
+* Added - The ability to edit content within Content elements in the editor and have these changes appear within Tailor.
+* Improved - The overall performance of Tailor.
+* Improved - Synchronized preview window width with device preview selection from Edit modal.
+* Fixed - History snapshots not being restored properly [GitHub 131](https://github.com/Enclavely/tailor/issues/131).
+* Fixed - List and Box images have no alt text [GitHub 133](https://github.com/Enclavely/tailor/issues/133).
 
 = 1.7.10 =
 * Fixed - Missing flexbox -ms- prefixes for Internet Explorer 10 [GitHub 90](https://github.com/andrew-worsfold/tailor/issues/90).

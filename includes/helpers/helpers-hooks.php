@@ -199,7 +199,7 @@ if ( ! function_exists( 'tailor_content_editor_link' ) ) {
 				'id'    => 'edit-with-tailor',
 				'title' => sprintf( __( 'Tailor this %s', 'tailor' ), $post_type_object->labels->singular_name ),
 			);
-			echo vsprintf( '<a href="%s" id="%s" class="button">%s</a>', $link );
+			echo vsprintf( '<a href="%s" id="%s" class="button button-primary">%s</a>', $link );
 		}
 	}
 

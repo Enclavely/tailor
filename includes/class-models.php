@@ -58,6 +58,9 @@ if ( ! class_exists( 'Tailor_Models' ) ) {
 	     * @access protected
 	     */
 	    protected function add_actions() {
+
+		    add_action( 'tailor_register_elements', array( $this, 'generate_element_regex' ) );
+		    //add_action( 'wp', array( $this, 'generate_models' ) );
 		    
 		    // Print model data
 		    add_action( 'tailor_canvas_footer', array( $this, 'print_models' ) );
@@ -165,6 +168,8 @@ if ( ! class_exists( 'Tailor_Models' ) ) {
 		    return false;
 	    }
 
+	    private $models = array();
+
 	    /**
 	     * Returns models in the collection.
 	     *
@@ -175,6 +180,11 @@ if ( ! class_exists( 'Tailor_Models' ) ) {
 	     * @return bool|array
 	     */
 	    public function get_models( $post_id ) {
+
+		    if ( ! empty( $this->models ) ) {
+			    return $this->models;
+		    }
+
 		    $unsanitized_models = get_post_meta( $post_id, '_tailor_layout', true );
 
 		    /**
@@ -187,7 +197,21 @@ if ( ! class_exists( 'Tailor_Models' ) ) {
 		     */
 		    $unsanitized_models = apply_filters( 'tailor_get_models', $unsanitized_models, $post_id );
 
-		    return $unsanitized_models;
+		    // Check for model data within the saved HTML content
+		    $generated_models = $this->generate_models();
+		    if ( ! empty( $generated_models ) ) {
+			    foreach ( $unsanitized_models as $unsanitized_model ) {
+				    foreach ( $generated_models as &$generated_model ) {
+						if ( $generated_model["id"] == $unsanitized_model["id"] ) {
+							$generated_model["atts"] = array_merge( $unsanitized_model["atts"], $generated_model["atts"] );
+						}
+				    }
+			    }
+			    $unsanitized_models = $generated_models;
+		    }
+
+		    $this->models = $unsanitized_models;
+		    return $this->models;
 	    }
 
 	    /**
@@ -674,7 +698,10 @@ if ( ! class_exists( 'Tailor_Models' ) ) {
 			    }
 
 			    $shortcode = $element->generate_shortcode( $sanitized_model['id'], $sanitized_model['atts'], $content );
-			    $shortcodes .= $shortcode;
+
+			    $element_type =  str_replace( 'tailor_', '', $element->tag );
+			    $comment_data = "tailor:{$element_type}:{$sanitized_model['id']}";
+			    $shortcodes .= "<!-- {$comment_data} -->{$shortcode}<!-- /{$comment_data} -->";
 		    }
 
 		    return $shortcodes;
@@ -836,6 +863,107 @@ if ( ! class_exists( 'Tailor_Models' ) ) {
 		     * @since 1.4.0
 		     */
 		    do_action( 'tailor_print_models' );
+	    }
+	    
+	    
+
+	    private $regex = false;
+
+	    /**
+	     * Generates the regular expression used to identify elements in post content.
+	     *
+	     * Runs once all elements have been registered.
+	     *
+	     * <!-- tailor:{$type}:{$id} -->
+	     *
+	     * @see Tailor_Elements::register_elements()
+	     */
+	    public function generate_element_regex() {
+		    $element_types = array();
+		    foreach ( tailor_elements()->get_elements() as $element ) {
+			    $element_types[] = str_replace( 'tailor_', '', $element->tag );
+		    }
+		    $this->regex = sprintf(
+			    "/<!--" .
+			    '\s?(?![\\/])(tailor:(%s):(.*?))' .
+			    '(.*?)' .
+			    '-->' .
+			    '(.*?)' .
+			    '<!--' .
+			    '\s?\\/\1\s?' .
+			    "-->/",
+			    join( '|', $element_types )
+		    );
+	    }
+	    
+	    /**
+	     * Generates models from the saved post content.
+	     *
+	     * @since 1.8.0
+	     */
+	    public function generate_models() {
+
+		    $models = array();
+		    if ( false === $this->regex ) {
+			    return $models;
+		    }
+
+		    global $post;
+
+		    $content = str_replace( "\n", '', $post->post_content );
+		    $models = $this->generate_models_from_html( $content, '', array() );
+		    return $models;
+	    }
+
+	    /**
+	     * Recursively generates element models from HTML.
+	     *
+	     * @since 1.8.0
+	     * 
+	     * @param $html
+	     * @param $parent
+	     * @param $models
+	     *
+	     * @return array
+	     */
+	    public function generate_models_from_html( $html, $parent, $models ) {
+		    $placeholder = tailor_get_setting( 'content_placeholder', __( 'This is placeholder text which you can replace by editing this element.', 'tailor' ) );
+		    if ( preg_match_all( $this->regex, $html, $matches ) ) {
+			    for ( $i = 0; $i < count( $matches[3] ); $i++ ) {
+				    $id = $matches[3][ $i ];
+				    $type = $matches[2][ $i ];
+				    $content = $matches[5][ $i ];
+				    $model = array(
+					    'id'            =>  $id,
+					    'tag'           =>  'tailor_' . $type,
+					    'atts'          =>  array(),
+					    'parent'        =>  $parent,
+					    'order'         =>  $i,
+				    );
+
+				    // Get the inner HTML of content elements
+				    if ( $type == 'content' ) {
+					    $dom = new DOMDocument();
+					    $dom->loadHtml(preg_replace( $this->regex, '', $content ));
+					    $inner_html = '';
+					    foreach ( $dom->getElementsByTagName("div") as $node ) {
+						    if ( strpos( $node->getAttribute("class"), "tailor-{$id}" ) !== false ) {
+							    foreach ( $node->childNodes as $el ) {
+								    $inner_html .= $dom->saveHTML($el);
+							    }
+						    }
+					    }
+
+					    if ( wp_strip_all_tags( $inner_html ) != $placeholder ) {
+						    $model['atts']['content'] = $inner_html;
+					    }
+				    }
+
+				    $models[] = $model;
+				    $models = $this->generate_models_from_html( $content, $id, $models );
+			    }
+		    }
+		    return $models;
 	    }
     }
 }

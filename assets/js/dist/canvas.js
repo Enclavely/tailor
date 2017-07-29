@@ -167,7 +167,7 @@
         };
     } );
 
-    app.channel.on('sidebar:initialize', function() {
+    app.channel.on( 'sidebar:initialize', function() {
         
         // Load modules
         app.module( 'module:elements', require( './canvas/modules/elements/elements' ) );
@@ -176,14 +176,17 @@
         app.module( 'module:tools', require( './canvas/modules/tools/tools' ) );
         app.module( 'module:css', require( './canvas/modules/css/css' ) );
 
-        /**
-         * Fires when the canvas is initialized.
-         *
-         * @since 1.5.0
-         *
-         * @param app
-         */
-        app.channel.trigger( 'canvas:initialize', app );
+        app.channel.on( 'module:canvas:ready', function() {
+
+            /**
+             * Fires when the canvas is initialized.
+             *
+             * @since 1.5.0
+             *
+             * @param app
+             */
+            app.channel.trigger( 'canvas:initialize', app );
+        } );
     } );
 
     function start() {
@@ -5928,7 +5931,7 @@ ElementModule = Marionette.Module.extend( {
         var module = this;
 
         this.collection = new ElementCollection( options.elements );
-
+        
         var api = {
 
             /**
@@ -5959,7 +5962,7 @@ ElementModule = Marionette.Module.extend( {
              */
             resetElements : function( models, templates, css ) {
                 if ( models === module.collection.models ) {
-                    //return;
+                    return;
                 }
 
                 $templates.append( templates );

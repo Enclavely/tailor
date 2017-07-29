@@ -4,7 +4,7 @@
  * Plugin Name: Tailor
  * Plugin URI: http://www.gettailor.com
  * Description: Build beautiful page layouts quickly and easily using your favourite theme.
- * Version: 1.7.10
+ * Version: 1.8.0
  * Author: The Tailor Team
  * Author URI:  http://www.gettailor.com
  * Text Domain: tailor
@@ -159,6 +159,64 @@ if ( ! class_exists( 'Tailor' ) ) {
 	        add_action( 'wp_ajax_tailor_unlock_post', array( $this, 'unlock_post' ) );
         }
 
+        /**
+         * Initializes the plugin.
+         *
+         * @since 1.0.0
+         */
+        public function init() {
+	        
+            load_plugin_textdomain( 'tailor', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+
+	        add_filter( 'body_class', array( $this, 'body_class' ) );
+	        add_filter( 'the_content', array( $this, 'remove_html_comments' ) );
+	        add_filter( 'the_editor_content', array( $this, 'remove_html_comments' ) );
+
+	        $this->load_directory( 'shortcodes' );
+	        $this->load_directory( 'helpers' );
+
+	        if ( is_admin() ) {
+		        $this->load_directory( 'admin/helpers' );
+		        $this->load_files( array(
+			        'admin/class-compatibility',
+			        'admin/class-revisions',
+			        'admin/class-edit-page',
+			        'admin/class-settings-page',
+			        'class-icons',
+			        'class-tinymce',
+			        'api/class-api',
+		        ) );
+	        }
+
+	        $this->load_directory( 'controls' );
+	        $this->load_files( array(
+		        'class-compatibility',
+		        'abstract-manager',
+		        'class-panels',
+		        'class-models',
+		        'class-elements',
+		        'class-templates',
+		        'class-sidebar',
+		        'class-canvas',
+		        'class-customizer',
+		        'class-widgets',
+		        'class-custom-css',
+		        'class-custom-js',
+		        'class-icons',
+		        'class-tinymce',
+	        ) );
+
+
+	        /**
+	         * Fires after all files have been loaded.
+	         *
+	         * @since 1.0.0
+	         *
+	         * @param Tailor
+	         */
+	        do_action( 'tailor_init', $this );
+        }
+
 	    /**
 	     * Adds the Tailor class name to the body.
 	     *
@@ -172,60 +230,29 @@ if ( ! class_exists( 'Tailor' ) ) {
 		    return $classes;
 	    }
 
-        /**
-         * Initializes the plugin.
-         *
-         * @since 1.0.0
-         */
-        public function init() {
-	        
-            load_plugin_textdomain( 'tailor', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+	    /**
+	     * Removes comments from HTML content.
+	     *
+	     * @since 1.8.0
+	     *
+	     * @param $content
+	     *
+	     * @return mixed
+	     */
+	    public function remove_html_comments( $content ) {
 
-	        add_filter( 'body_class', array( $this, 'body_class' ) );
+		    // No <p> around HTML comment
+		    if ( strpos( $content, '<!-' ) !== false ) {
+			    $content = preg_replace( '|<p>\s*<\!-|', '<!-', $content );
 
-	        $this->load_directory( 'shortcodes' );
-	        $this->load_directory( 'helpers' );
-	        $this->load_files( array(
-		        'class-compatibility',
-		        'class-custom-css',
-		        'class-custom-js',
-		        'class-icons',
-		        'class-revisions',
-		        'api/class-api',
-	        ) );
+			    // Remove the tailing paragraph if this paragraph starts as a comment.
+			    if ( 0 === strpos( $content, '<!-' ) ) {
+				    $content = preg_replace( '|\-->\s*</p>|', '-->', $content );
+			    }
+		    }
 
-	        if ( is_admin() ) {
-		        $this->load_files( array(
-			        'admin/class-admin',
-			        'admin/class-settings',
-			        'admin/helpers/helpers-general',
-		        ) );
-	        }
-
-	        $this->load_directory( 'controls' );
-
-	        $this->load_files( array(
-		        'abstract-manager',
-		        'class-panels',
-		        'class-models',
-		        'class-elements',
-		        'class-templates',
-		        'class-sidebar',
-		        'class-canvas',
-		        'class-tinymce',
-		        'class-customizer',
-		        'class-widgets',
-	        ) );
-	        
-	        /**
-	         * Fires after all files have been loaded.
-	         *
-	         * @since 1.0.0
-	         *
-	         * @param Tailor
-	         */
-	        do_action( 'tailor_init', $this );
-        }
+		    return $content;
+	    }
 
         /**
          * Records the editor styles registered by the theme for use in the front end.
@@ -854,20 +881,6 @@ if ( ! class_exists( 'Tailor' ) ) {
 		    return '<a href="' . $this->get_edit_url( $post_id ) . '">' . $edit_label . '</a>';
 	    }
 
-        /**
-         * Returns true if this is a Tailor page load.
-         *
-         * @since 1.0.0
-         *
-         * @return bool
-         */
-        public function is_tailoring() {
-	        if ( $this->doing_AJAX() ) {
-		        return ( isset( $_POST['tailor'] ) && 1 == $_POST['tailor'] );
-	        }
-            return ( isset( $_GET['tailor'] ) && 1 == $_GET['tailor'] );
-        }
-
 	    /**
 	     * Returns true if the given post has a Tailor layout.
 	     *
@@ -879,6 +892,20 @@ if ( ! class_exists( 'Tailor' ) ) {
 	    public function is_tailored( $post_id = null ) {
 			$post = get_post( $post_id );
 		    return $post && false != get_post_meta( $post->ID, '_tailor_layout', true );
+	    }
+
+	    /**
+	     * Returns true if this is a Tailor page load.
+	     *
+	     * @since 1.0.0
+	     *
+	     * @return bool
+	     */
+	    public function is_tailoring() {
+		    if ( $this->doing_AJAX() ) {
+			    return ( isset( $_POST['tailor'] ) && 1 == $_POST['tailor'] );
+		    }
+		    return ( isset( $_GET['tailor'] ) && 1 == $_GET['tailor'] );
 	    }
 
 	    /**

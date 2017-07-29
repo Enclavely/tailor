@@ -36,7 +36,9 @@ DevicePreviewModule = Marionette.Module.extend( {
         this.viewport = this.preview.querySelector( '.tailor-preview__viewport' );
         this.mediaQueries = window._media_queries;
 
-        this.setActive( this.$buttons.get(0) );
+        //this.setActive( this.$buttons.get(0) );
+        this.setDevice( this.$buttons.get(0).getAttribute( 'data-device' ) );
+
         this.addEventListeners();
 
         /**
@@ -55,34 +57,29 @@ DevicePreviewModule = Marionette.Module.extend( {
      * @since 1.7.4
      */
     addEventListeners : function() {
-        this.$buttons.on( 'click', this.onDevicePreview.bind( this ) );
+        this.$buttons.on( 'click', this.onClick.bind( this ) );
+        app.channel.on( 'sidebar:device', this.setDevice.bind(this) );
     },
 
-    onDevicePreview : function( e ) {
-        var button = e.target;
-        var previous = this.$buttons.filter( "[data-device='" + this.device + "']" ).get(0);
+    onClick: function( e ) {
+        this.setDevice( e.target.getAttribute( 'data-device' ) );
+    },
 
-        this.setInactive( previous );
-        this.setActive( button );
+    setDevice: function( device ) {
+        this.device = device;
 
-        this.device = button.getAttribute( 'data-device' );
-        this.preview.className = 'tailor-preview ' + this.device + '-screens';
+        // Update buttons
+        var $button = this.$buttons.filter( "[data-device='" + this.device + "']" );
+        this.$buttons.removeClass( 'is-active' ).attr( 'aria-pressed', false );
+        $button.addClass( 'is-active' ).attr( 'aria-pressed', true );
+
+        // Update preview window
         if ( this.mediaQueries.hasOwnProperty( this.device ) && this.mediaQueries[ this.device ].max ) {
             this.viewport.style.maxWidth = this.mediaQueries[ this.device ].max;
         }
         else {
             this.viewport.style.maxWidth ='';
         }
-    },
-
-    setActive: function( button ) {
-        button.classList.add( 'is-active' );
-        button.setAttribute( 'aria-pressed', 'true' );
-    },
-
-    setInactive: function( button ) {
-        button.classList.remove( 'is-active' );
-        button.setAttribute( 'aria-pressed', 'false' );
     }
 } );
 

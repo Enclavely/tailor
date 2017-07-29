@@ -128,7 +128,7 @@ if ( ! function_exists( 'tailor_shortcode_list_item' ) ) {
 			if ( is_numeric( $atts['image'] ) ) {
 				$background_image_info = wp_get_attachment_image_src( $atts['image'], 'full' );
 				$background_image_src = $background_image_info[0];
-				$graphic = '<img src="' . $background_image_src . '">';
+				$graphic = '<img src="' . $background_image_src . '" alt="">';
 			}
 		}
 		else if ( 'icon' == $graphic_type && ! empty( $atts['icon' ] ) ) {

@@ -61,7 +61,8 @@ if ( ! function_exists( 'tailor_shortcode_box' ) ) {
 			if ( is_numeric( $atts['image'] ) ) {
 				$background_image_info = wp_get_attachment_image_src( $atts['image'], 'full' );
 				$background_image_src = $background_image_info[0];
-				$graphic = '<img src="' . $background_image_src . '">';
+				$alt = trim( strip_tags( get_post_meta( $atts['image'], '_wp_attachment_image_alt', true ) ) );
+				$graphic = '<img src="' . $background_image_src . '" alt="' . $alt . '">';
 			}
 		}
 		else {

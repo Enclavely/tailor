@@ -1,6 +1,6 @@
 {
   "name": "tailor",
-  "version": "1.7.10",
+  "version": "1.8.0",
   "scripts": {
     "bundle-js": "./.bin/bundle-js && ./.bin/bundle-min-js",
     "build-css": "./.bin/build-css && ./.bin/build-min-css",

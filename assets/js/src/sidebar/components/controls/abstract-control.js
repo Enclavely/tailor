@@ -166,6 +166,7 @@ AbstractControl = Marionette.ItemView.extend( {
      */
     onMediaButtonChange : function( e ) {
         this.media = e.currentTarget.getAttribute( 'data-media' );
+        app.channel.trigger('sidebar:device', this.media);
         this.updateControlGroups();
     },
 
