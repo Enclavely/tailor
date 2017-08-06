@@ -943,7 +943,8 @@ if ( ! class_exists( 'Tailor_Models' ) ) {
 
 				    // Get the inner HTML of content elements
 				    if ( $type == 'content' ) {
-					    $dom = new DOMDocument();
+					    $dom = new DOMDocument('1.0', 'UTF-8');
+					    $dom->encoding='UTF-8';
 					    $dom->loadHtml(preg_replace( $this->regex, '', $content ));
 					    $inner_html = '';
 					    foreach ( $dom->getElementsByTagName("div") as $node ) {
