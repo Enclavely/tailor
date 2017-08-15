@@ -699,8 +699,7 @@ if ( ! class_exists( 'Tailor_Models' ) ) {
 
 			    $shortcode = $element->generate_shortcode( $sanitized_model['id'], $sanitized_model['atts'], $content );
 
-			    $element_type =  str_replace( 'tailor_', '', $element->tag );
-			    $comment_data = "tailor:{$element_type}:{$sanitized_model['id']}";
+			    $comment_data = "tailor:{$element->tag}:{$sanitized_model['id']}";
 			    $shortcodes .= "<!-- {$comment_data} -->{$shortcode}<!-- /{$comment_data} -->";
 		    }
 
@@ -880,9 +879,6 @@ if ( ! class_exists( 'Tailor_Models' ) ) {
 	     */
 	    public function generate_element_regex() {
 		    $element_types = array();
-		    foreach ( tailor_elements()->get_elements() as $element ) {
-			    $element_types[] = str_replace( 'tailor_', '', $element->tag );
-		    }
 		    $this->regex = sprintf(
 			    "/<!--" .
 			    '\s?(?![\\/])(tailor:(%s):(.*?))' .
@@ -935,7 +931,7 @@ if ( ! class_exists( 'Tailor_Models' ) ) {
 				    $content = $matches[5][ $i ];
 				    $model = array(
 					    'id'            =>  $id,
-					    'tag'           =>  'tailor_' . $type,
+					    'tag'           =>  $type,
 					    'atts'          =>  array(),
 					    'parent'        =>  $parent,
 					    'order'         =>  $i,
