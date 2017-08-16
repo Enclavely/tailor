@@ -881,7 +881,7 @@ if ( ! class_exists( 'Tailor_Models' ) ) {
 	    public function generate_element_regex() {
 		    $element_types = array();
 		    foreach ( tailor_elements()->get_elements() as $element ) {
-			    $element_types[] = str_replace( 'tailor_', '', $element->tag );
+			    $element_types[] = $element->tag;
 		    }
 		    $this->regex = sprintf(
 			    "/<!--" .
@@ -935,7 +935,7 @@ if ( ! class_exists( 'Tailor_Models' ) ) {
 				    $content = $matches[5][ $i ];
 				    $model = array(
 					    'id'            =>  $id,
-					    'tag'           =>  'tailor_' . $type,
+					    'tag'           =>  $type,
 					    'atts'          =>  array(),
 					    'parent'        =>  $parent,
 					    'order'         =>  $i,
