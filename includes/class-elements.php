@@ -336,7 +336,40 @@ if ( ! class_exists( 'Tailor_Elements' ) ) {
 
 		    if ( isset( $element ) ) {
 			    $this->elements[ $element->tag ] = $element;
+			    $this->register_shortcode_if_not_exists( $tag );
 		    }
+	    }
+	    
+	    /**
+	     * Create shortcode if it doesn't exists, based on element tag.
+	     *
+	     * @access public
+	     *
+	     * @param string $tag
+	     *
+	     * @return array
+	     */
+	    public function register_shortcode_if_not_exists( $tag ) {
+		    global $shortcode_tags;
+
+		    if ( ! array_key_exists( $tag, $shortcode_tags ) ) {
+		    	add_shortcode( $tag, array( $this, 'print_element_shortcode') );
+		    }
+	    }
+	    
+	    /**
+	     * Render the shortcode.
+	     *
+	     * @access public
+	     *
+	     * @param array $atts
+	     * @param string $content
+	     * @param string $tag
+	     *
+	     * @return array
+	     */
+	    public function print_element_shortcode( $atts, $content = '', $tag ) {
+	    	return apply_filters( "tailor_render_element_shortcode_{$tag}", '', $atts, $content );
 	    }
 	    
 	    /**
