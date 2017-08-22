@@ -83,7 +83,6 @@ if ( ! function_exists( 'tailor_get_widget_areas' ) ) {
 	 * @return array
 	 */
 	function tailor_get_widget_areas( $widget_areas = array() ) {
-
 		global $wp_registered_sidebars;
 
 		if ( empty( $wp_registered_sidebars ) ) {
@@ -259,6 +258,8 @@ if ( ! function_exists( 'tailor_get_registered_media_queries' ) ) {
 	 * @return array
 	 */
 	function tailor_get_registered_media_queries( $include_all = false ) {
+		$mobile_breakpoint = intval( get_theme_mod( 'tailor_mobile_breakpoint', 320 ) );
+		$tablet_breakpoint = intval( get_theme_mod( 'tailor_tablet_breakpoint', 720 ) );
 		$media_queries = array(
 			'all'                   =>  array(
 				'label'                 =>  __( 'All', 'tailor' ),
@@ -267,18 +268,18 @@ if ( ! function_exists( 'tailor_get_registered_media_queries' ) ) {
 			),
 			'desktop'               =>  array(
 				'label'                 =>  __( 'Desktop', 'tailor' ),
-				'min'                   =>  '721px',
+				'min'                   =>  ( $tablet_breakpoint + 1 ) . 'px',
 				'max'                   =>  '',
 			),
 			'tablet'                =>  array(
 				'label'                 =>  __( 'Tablet', 'tailor' ),
-				'min'                   =>  '321px',
-				'max'                   =>  '720px',
+				'min'                   =>  ( $mobile_breakpoint + 1 ) . 'px',
+				'max'                   =>  $tablet_breakpoint . 'px',
 			),
 			'mobile'                =>  array(
 				'label'                 =>  __( 'Mobile', 'tailor' ),
 				'min'                   =>  '',
-				'max'                   =>  '320px',
+				'max'                   =>  $mobile_breakpoint . 'px',
 			),
 		);
 

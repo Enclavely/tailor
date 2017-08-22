@@ -97,7 +97,7 @@ if ( ! class_exists( 'Tailor_Custom_CSS' ) ) {
         protected function add_actions() {
 
 	        // Print CSS
-            add_action( 'wp_head', array( $this, 'print_customizer_css' ) );
+            //add_action( 'wp_head', array( $this, 'print_customizer_css' ) );
             add_action( 'wp_head', array( $this, 'print_custom_css' ) );
             add_action( 'wp_head', array( $this, 'print_dynamic_css' ) );
 
@@ -267,6 +267,8 @@ if ( ! class_exists( 'Tailor_Custom_CSS' ) ) {
 			    '_tailor_section_width'     =>  array(),
 			    '_tailor_column_spacing'    =>  array(),
 			    '_tailor_element_spacing'   =>  array(),
+			    '_tailor_mobile_breakpoint' =>  array(),
+			    '_tailor_tablet_breakpoint' =>  array(),
 		    );
 
 		    $setting_css_rules['_tailor_section_width'][] = array(
@@ -295,6 +297,14 @@ if ( ! class_exists( 'Tailor_Custom_CSS' ) ) {
 
 		    $setting_css_rules['_tailor_element_spacing'][] = array(
 			    'selectors'             =>  array( '.tailor-ui .tailor-element' ),
+			    'declarations'          =>  array(
+				    'margin-bottom'         =>  '{{value}}',
+			    ),
+		    );
+
+		    $setting_css_rules['_tailor_mobile_breakpoint'][] = array(
+			    'selectors'             =>  array( '.tailor-ui .tailor-element' ),
+			    'media'                 =>  'mobile',
 			    'declarations'          =>  array(
 				    'margin-bottom'         =>  '{{value}}',
 			    ),
@@ -539,7 +549,7 @@ if ( ! class_exists( 'Tailor_Custom_CSS' ) ) {
 				    }
 			    }
 		    }
-
+		    
 		    $customizer_css = $this->clean_css( $customizer_css );
 
 		    // Do nothing if there is no Customizer CSS
@@ -636,7 +646,7 @@ if ( ! class_exists( 'Tailor_Custom_CSS' ) ) {
 			    $post_id = get_the_ID();
 			    $css_rule_sets = $this->get_dynamic_css_rules( $post_id );
 		    }
-
+		    
 		    $dynamic_css = $this->clean_css( $this->generate_css( $css_rule_sets ) );
 
 		    // Do nothing if there is no dynamic CSS

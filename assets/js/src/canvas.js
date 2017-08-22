@@ -169,11 +169,11 @@
     app.channel.on( 'sidebar:initialize', function() {
         
         // Load modules
+        app.module( 'module:css', require( './canvas/modules/css/css' ) );
         app.module( 'module:elements', require( './canvas/modules/elements/elements' ) );
         app.module( 'module:templates', require( './canvas/modules/templates/templates' ) );
         app.module( 'module:canvas', require( './canvas/modules/canvas/canvas' ) );
         app.module( 'module:tools', require( './canvas/modules/tools/tools' ) );
-        app.module( 'module:css', require( './canvas/modules/css/css' ) );
 
         app.channel.on( 'module:canvas:ready', function() {
 

@@ -176,6 +176,12 @@ if ( ! function_exists( 'tailor_custom_colorpicker_palette' ) ) {
 	 */
 	function tailor_modify_colorpicker( $control_args ) {
 
+		static $pallettes;
+		if ( isset( $pallettes ) ) {
+			$control_args['palettes'] = $pallettes;
+			return $control_args;
+		}
+
 		$colors = array(
 			'1' => '#000000', // Black
 			'2' => '#ffffff', // White
@@ -187,11 +193,12 @@ if ( ! function_exists( 'tailor_custom_colorpicker_palette' ) ) {
 			'8' => '#8224e3', // Purple
 		);
 
-		$control_args['palettes'] = array();
+		$pallettes = array();
 		foreach ( $colors as $number => $default ) {
-			$control_args['palettes'][] = sanitize_hex_color( get_theme_mod( "tailor_color_{$number}", $default ) );
+			$pallettes[] = sanitize_hex_color( get_theme_mod( "tailor_color_{$number}", $default ) );
 		}
 
+		$control_args['palettes'] = $pallettes;
 		return $control_args;
 	}
 

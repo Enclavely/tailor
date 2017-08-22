@@ -22,6 +22,7 @@ if ( ! function_exists( 'tailor_get_customizer_settings' ) ) {
         $settings = array(
             'tailor_section_width'      =>  array(
                 'setting'                   =>  array(
+	                'default'                   =>  '100%',
                     'sanitize_callback'         =>  'tailor_sanitize_text',
                 ),
                 'control'                   => array(
@@ -34,6 +35,7 @@ if ( ! function_exists( 'tailor_get_customizer_settings' ) ) {
             ),
             'tailor_column_spacing'     =>  array(
                 'setting'                   =>  array(
+	                'default'                   =>  '1rem',
                     'sanitize_callback'         =>  'tailor_sanitize_text',
                 ),
                 'control'                   => array(
@@ -46,6 +48,7 @@ if ( ! function_exists( 'tailor_get_customizer_settings' ) ) {
             ),
             'tailor_element_spacing'    =>  array(
                 'setting'                   =>  array(
+	                'default'                   =>  '1rem',
                     'sanitize_callback'         =>  'tailor_sanitize_text',
                 ),
                 'control'                   => array(
@@ -55,6 +58,32 @@ if ( ! function_exists( 'tailor_get_customizer_settings' ) ) {
                     'priority'                  =>  30,
                     'section'                   =>  'tailor_layout',
                 ),
+            ),
+            'tailor_mobile_breakpoint'    =>  array(
+	            'setting'                   =>  array(
+		            'default'                   =>  320,
+		            'sanitize_callback'         =>  'tailor_sanitize_number',
+	            ),
+	            'control'                   => array(
+		            'label'                     =>  __( 'Mobile breakpoint', 'tailor' ),
+		            'description'               =>  __( 'The maximum screen size for "mobile" devices (px).', 'tailor' ),
+		            'type'                      =>  'number',
+		            'priority'                  =>  40,
+		            'section'                   =>  'tailor_layout',
+	            ),
+            ),
+            'tailor_tablet_breakpoint'    =>  array(
+	            'setting'                   =>  array(
+		            'default'                   =>  720,
+		            'sanitize_callback'         =>  'tailor_sanitize_number',
+	            ),
+	            'control'                   => array(
+		            'label'                     =>  __( 'Tablet breakpoint', 'tailor' ),
+		            'description'               =>  __( 'The maximum screen size for "tablet" devices (px).', 'tailor' ),
+		            'type'                      =>  'number',
+		            'priority'                  =>  50,
+		            'section'                   =>  'tailor_layout',
+	            ),
             ),
         );
 

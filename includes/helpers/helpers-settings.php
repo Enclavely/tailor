@@ -34,6 +34,8 @@ if ( ! function_exists( 'tailor_get_setting' ) ) {
 			    'icon_kits'                 =>  array(
 				    'dashicons'                 =>  'on',
 			    ),
+			    'mobile_breakpoint'         =>  320,
+			    'tablet_breakpoint'         =>  720,
 		    );
 
 		    /**

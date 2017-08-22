@@ -5522,6 +5522,8 @@ var SnapshotCollection = Backbone.Collection.extend( {
         var templates = app.channel.request( 'canvas:templates' );
         var css = app.channel.request( 'canvas:css' );
 
+        console.log( models, templates, css );
+
         // Add the new entry to the collection
         var entry = this.add( {
             label : label || '',

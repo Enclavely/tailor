@@ -40,6 +40,7 @@ $section-box-shadow: none !default;
 			z-index: 2;
 			margin: 0 auto;
 			width: 100%;
+			max-width: $global-section-width;
 
 			@include flex( column );
 		}

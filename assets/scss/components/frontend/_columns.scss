@@ -38,53 +38,50 @@ $column-number: 12 !default;
 //
 @mixin row( $size ) {
 
-	.#{$global-class-prefix}ui {
+	// Row
+	.#{$size}-columns {
+		margin-left: -$row-spacing-horizontal;
+		margin-right: -$row-spacing-horizontal;
 
-		// Row
-		.#{$size}-columns {
-			margin-left: -$row-spacing-horizontal;
-			margin-right: -$row-spacing-horizontal;
+		@include flex;
 
-			@include flex;
+		// Widths
+		@for $i from 1 through $column-number {
 
-			// Widths
-			@for $i from 1 through $column-number {
+			.columns-#{$i} {
+				width: percentage( ( $i / $column-number ) );
+			}
+		}
 
-				.columns-#{$i} {
+		@for $i from 1 through $column-number {
+
+			@media #{$tablet} {
+
+				.columns-tablet-#{$i} {
 					width: percentage( ( $i / $column-number ) );
 				}
 			}
+		}
 
-			@for $i from 1 through $column-number {
+		@for $i from 1 through $column-number {
 
-				@media #{$tablet} {
+			@media #{$mobile} {
 
-					.columns-tablet-#{$i} {
-						width: percentage( ( $i / $column-number ) );
-					}
+				.columns-mobile-#{$i} {
+					width: percentage( ( $i / $column-number ) );
 				}
 			}
+		}
 
-			@for $i from 1 through $column-number {
+		// Column
+		.#{$column-class-prefix}column {
+			padding-left: $row-spacing-horizontal;
+			padding-right: $row-spacing-horizontal;
 
-				@media #{$mobile} {
+			@include flex( column );
 
-					.columns-mobile-#{$i} {
-						width: percentage( ( $i / $column-number ) );
-					}
-				}
-			}
-
-			// Column
-			.#{$column-class-prefix}column {
-				padding-left: $row-spacing-horizontal;
-				padding-right: $row-spacing-horizontal;
-
-				@include flex( column );
-
-				> :last-child {
-					margin-bottom: 0;
-				}
+			> :last-child {
+				margin-bottom: 0;
 			}
 		}
 	}
@@ -139,12 +136,15 @@ $column-number: 12 !default;
 //
 // Media queries
 //
-@include row( mobile );
+.#{$global-class-prefix}ui {
 
-@media #{$tablet-up} {
-	@include row( tablet );
-}
+	@include row( mobile );
 
-@media #{$desktop} {
-	@include row( desktop );
+	@media #{$tablet-up} {
+		@include row( tablet );
+	}
+
+	@media #{$desktop} {
+		@include row( desktop );
+	}
 }

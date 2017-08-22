@@ -89,7 +89,12 @@ if ( ! class_exists( 'Tailor_TinyMCE' ) )  {
 		 */
 		public function configure_tinymce( $settings ) {
 
-			$settings['body_class'] .= ' tailor-ui tailor-editor';
+			if ( empty( $settings['body_class'] ) ) {
+				$settings['body_class'] = 'tailor-ui tailor-editor';
+			}
+			else {
+				$settings['body_class'] .= ' tailor-ui tailor-editor';
+			}
 
 			if ( empty( $settings['extended_valid_elements'] ) ) {
 				$settings['extended_valid_elements'] = '';

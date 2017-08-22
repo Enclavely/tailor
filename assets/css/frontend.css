@@ -1903,6 +1903,7 @@ html {
   z-index: 2;
   margin: 0 auto;
   width: 100%;
+  max-width: 100%;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;

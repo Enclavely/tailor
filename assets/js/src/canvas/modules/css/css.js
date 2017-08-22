@@ -8,7 +8,7 @@ CSSModule = Marionette.Module.extend( {
      *
      * @since 1.0.0
      */
-    onStart : function( options ) {
+    onBeforeStart : function( options ) {
         this.stylesheets = [];
 	    this.collection = app.channel.request( 'canvas:elements' );
 	    
