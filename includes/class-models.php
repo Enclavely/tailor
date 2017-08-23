@@ -59,7 +59,7 @@ if ( ! class_exists( 'Tailor_Models' ) ) {
 	     */
 	    protected function add_actions() {
 
-		    add_action( 'tailor_register_elements', array( $this, 'generate_element_regex' ) );
+		    add_action( 'tailor_register_elements', array( $this, 'generate_element_regex' ), 999 );
 		    //add_action( 'wp', array( $this, 'generate_models' ) );
 		    
 		    // Print model data
