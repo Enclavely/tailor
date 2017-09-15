@@ -468,7 +468,7 @@ if ( ! class_exists( 'Tailor' ) ) {
 		        
 		        wp_enqueue_style(
 			        'tailor-styles',
-			        $stylesheet_path,
+			        str_replace('http:','',$stylesheet_path),
 			        array(),
 			        $this->version()
 		        );
