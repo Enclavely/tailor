@@ -19,37 +19,37 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Colorpicker_Con
      */
     class Tailor_Colorpicker_Control extends Tailor_Control {
 
-	    /**
-	     * True if the RGBA color values should be allowed.
-	     *
-	     * @since 1.0.0
-	     * @access public
-	     * @var bool
-	     */
-	    public $rgba = false;
+        /**
+         * True if the RGBA color values should be allowed.
+         *
+         * @since 1.0.0
+         * @access public
+         * @var bool
+         */
+        public $rgba = false;
 
-	    /**
-	     * The color palettes.
-	     *
-	     * @since 1.0.0
-	     * @access public
-	     * @var mixed
-	     */
-	    public $palettes = true;
+        /**
+         * The color palettes.
+         *
+         * @since 1.0.0
+         * @access public
+         * @var mixed
+         */
+        public $palettes = true;
 
-	    /**
-	     * Returns the parameters that will be passed to the client JavaScript via JSON.
-	     *
-	     * @since 1.0.0
-	     *
-	     * @return array The array to be exported to the client as JSON.
-	     */
-	    public function to_json() {
-		    $array = parent::to_json();
-		    $array['rgba'] = boolval( $this->rgba );
-		    $array['palettes'] = $this->palettes;
-		    return $array;
-	    }
+        /**
+         * Returns the parameters that will be passed to the client JavaScript via JSON.
+         *
+         * @since 1.0.0
+         *
+         * @return array The array to be exported to the client as JSON.
+         */
+        public function to_json() {
+            $array = parent::to_json();
+            $array['rgba'] = boolval( $this->rgba );
+            $array['palettes'] = $this->palettes;
+            return $array;
+        }
 
         /**
          * Enqueues control related scripts/styles.
@@ -66,7 +66,7 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Colorpicker_Con
                 1
             );
 
-	        $extension = SCRIPT_DEBUG ? '.js' : '.min.js';
+            $extension = SCRIPT_DEBUG ? '.js' : '.min.js';
 
             wp_enqueue_script(
                 'wp-color-picker',
@@ -76,12 +76,23 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Colorpicker_Con
                 1
             );
 
-            wp_localize_script( 'wp-color-picker', 'wpColorPickerL10n', array(
-                'clear'             =>  __( 'Clear' ),
-                'defaultString'     =>  __( 'Default' ),
-                'pick'              =>  __( 'Select Color' ),
-                'current'           =>  __( 'Current Color' ),
-            ) );
+            if (version_compare($GLOBALS['wp_version'], '4.9', '<')) {
+                wp_localize_script( 'wp-color-picker', 'wpColorPickerL10n', array(
+                    'clear'             =>  __( 'Clear' ),
+                    'defaultString'     =>  __( 'Default' ),
+                    'pick'              =>  __( 'Select Color' ),
+                    'current'           =>  __( 'Current Color' ),
+                ) );
+            } else {
+                wp_localize_script( 'wp-color-picker', 'wpColorPickerL10n', array(
+                    'clear'            => __( 'Clear' ),
+                    'clearAriaLabel'   => __( 'Clear color' ),
+                    'defaultString'    => __( 'Default' ),
+                    'defaultAriaLabel' => __( 'Select default color' ),
+                    'pick'             => __( 'Select Color' ),
+                    'defaultLabel'     => __( 'Color value' ),
+                ) );
+            }
 
             wp_enqueue_style( 'wp-color-picker' );
         }
@@ -99,7 +110,7 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Colorpicker_Con
          */
         protected function render_template() { ?>
 
-	        <input type="text" name="<%= media %>" name="<%= media %>" value="<%= values[ media ] %>" data-rgba="<%= rgba %>" />
+            <input type="text" name="<%= media %>" name="<%= media %>" value="<%= values[ media ] %>" data-alpha="<%= rgba %>" />
 
             <?php
         }
