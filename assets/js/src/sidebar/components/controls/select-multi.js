@@ -39,7 +39,22 @@ SelectMultiControl = AbstractControl.extend( {
     onRender : function() {
         _.each( this.getValues(), function( value, media ) {
             var $field = this.ui.input.filter( '[name^="' + media + '"]' );
-            $field.select2()
+
+            if (window[$field[0].id]) {
+                var valueArray = value.split(',');
+
+                $field.select2({
+                    data: window[$field[0].id].map(function(object) {
+                        return {
+                            id: object.id,
+                            text: object.text,
+                            selected: !!valueArray.includes(object.id)
+                        }
+                    })
+                })
+            } else {
+                $field.select2();
+            }
         }, this );
 
         this.updateControlGroups();
