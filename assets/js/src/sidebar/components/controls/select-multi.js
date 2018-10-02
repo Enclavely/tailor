@@ -39,7 +39,41 @@ SelectMultiControl = AbstractControl.extend( {
     onRender : function() {
         _.each( this.getValues(), function( value, media ) {
             var $field = this.ui.input.filter( '[name^="' + media + '"]' );
-            $field.select2()
+
+            _.each($field, function(fieldNode) {
+                if (fieldNode.id && window['ss_' + fieldNode.id]) {
+                    var valueArray = value.split(',');
+
+                    $field.select2({
+                        data: window['ss_' + fieldNode.id].map(function(object) {
+                            return {
+                                id: object.id,
+                                text: object.text,
+                                selected: !!valueArray.includes(object.id)
+                            }
+                        }),
+                        matcher: function(params, data) {
+                            if ($.trim(params.term) === '') {
+                                return data;
+                            }
+
+                            if (typeof data.text === 'undefined') {
+                                return null;
+                            }
+
+                            var query = params.term.toLowerCase();
+
+                            if (data.text.toLowerCase().indexOf(query) > -1 || data.id.toLowerCase().indexOf(query) > -1) {
+                                return $.extend({}, data, true);
+                            }
+
+                            return null;
+                        }
+                    })
+                } else {
+                    $field.select2();
+                }
+            });
         }, this );
 
         this.updateControlGroups();

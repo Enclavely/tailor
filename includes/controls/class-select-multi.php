@@ -70,7 +70,7 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Select_Multi_Co
          */
         protected function render_template() { ?>
 
-	        <select multiple name="<%= media %>">
+	        <select id="<%= id %>" multiple name="<%= media %>">
 
 		        <% _.each( choices, function( label, key ) { %>
 		        <% if ( _.isObject( label ) ) { %>
