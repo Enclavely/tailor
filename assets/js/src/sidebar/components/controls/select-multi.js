@@ -51,7 +51,24 @@ SelectMultiControl = AbstractControl.extend( {
                                 text: object.text,
                                 selected: !!valueArray.includes(object.id)
                             }
-                        })
+                        }),
+                        matcher: function(params, data) {
+                            if ($.trim(params.term) === '') {
+                                return data;
+                            }
+
+                            if (typeof data.text === 'undefined') {
+                                return null;
+                            }
+
+                            var query = params.term.toLowerCase();
+
+                            if (data.text.toLowerCase().indexOf(query) > -1 || data.id.toLowerCase().indexOf(query) > -1) {
+                                return $.extend({}, data, true);
+                            }
+
+                            return null;
+                        }
                     })
                 } else {
                     $field.select2();
