@@ -68,7 +68,7 @@ SelectMultiControl = AbstractControl.extend( {
                             var query = formatMatchString(params.term);
 
                             if (formatMatchString(data.text).indexOf(query) > -1 || formatMatchString(data.id).indexOf(query) > -1) {
-                                return $.extend({}, data, true);
+                                return data;
                             }
 
                             return null;
