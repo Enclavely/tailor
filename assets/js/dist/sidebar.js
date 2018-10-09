@@ -4486,6 +4486,10 @@ SelectMultiControl = AbstractControl.extend( {
      * @since 1.7.2
      */
     onRender : function() {
+        function formatMatchString(string) {
+            return string.toLowerCase().replace(/[^\w\s]/gi, '');
+        }
+
         _.each( this.getValues(), function( value, media ) {
             var $field = this.ui.input.filter( '[name^="' + media + '"]' );
 
@@ -4510,10 +4514,10 @@ SelectMultiControl = AbstractControl.extend( {
                                 return null;
                             }
 
-                            var query = params.term.toLowerCase();
+                            var query = formatMatchString(params.term);
 
-                            if (data.text.toLowerCase().indexOf(query) > -1 || data.id.toLowerCase().indexOf(query) > -1) {
-                                return $.extend({}, data, true);
+                            if (formatMatchString(data.text).indexOf(query) > -1 || formatMatchString(data.id).indexOf(query) > -1) {
+                                return data;
                             }
 
                             return null;
