@@ -46,15 +46,13 @@ if ( class_exists( 'Tailor_Control' ) && ! class_exists( 'Tailor_Select_Multi_Co
          * @since 1.0.0
          */
         public function enqueue() {
-
 			wp_enqueue_script(
-                'select2',
-                tailor()->plugin_url() . 'assets/js/dist/vendor/select2.min.js',
-                array( 'jquery' ),
-                tailor()->version(),
-                true
-            );
-
+				'selectize',
+				tailor()->plugin_url() . 'assets/js/dist/vendor/selectize.min.js',
+				array( 'jquery' ),
+				tailor()->version(),
+				true
+			);
         }
 
         /**

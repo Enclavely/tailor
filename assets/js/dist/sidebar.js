@@ -4481,50 +4481,31 @@ SelectMultiControl = AbstractControl.extend( {
     },
 
     /**
-     * Initializes the Select2 instance(s) and updates the media-query based control groups when the control is rendered.
+     * Initializes the selectize instance(s) and updates the media-query based control groups when the control is rendered.
      *
      * @since 1.7.2
      */
     onRender : function() {
-        function formatMatchString(string) {
-            return string.toLowerCase().replace(/[^\w\s]/gi, '');
-        }
-
         _.each( this.getValues(), function( value, media ) {
             var $field = this.ui.input.filter( '[name^="' + media + '"]' );
 
             _.each($field, function(fieldNode) {
                 if (fieldNode.id && window['ss_' + fieldNode.id]) {
-                    var valueArray = value.split(',');
+                    const valueArray = value.split(',');
 
-                    $field.select2({
-                        data: window['ss_' + fieldNode.id].map(function(object) {
+                    $field.selectize({
+                        options: window['ss_' + fieldNode.id].map(function(object) {
                             return {
-                                id: object.id,
+                                value: object.id,
                                 text: object.text,
                                 selected: !!valueArray.includes(object.id)
                             }
                         }),
-                        matcher: function(params, data) {
-                            if ($.trim(params.term) === '') {
-                                return data;
-                            }
-
-                            if (typeof data.text === 'undefined') {
-                                return null;
-                            }
-
-                            var query = formatMatchString(params.term);
-
-                            if (formatMatchString(data.text).indexOf(query) > -1 || formatMatchString(data.id).indexOf(query) > -1) {
-                                return data;
-                            }
-
-                            return null;
-                        }
-                    })
+                        items: valueArray,
+                        searchField: ['value', 'text']
+                    });
                 } else {
-                    $field.select2();
+                    $field.selectize();
                 }
             });
         }, this );
@@ -4550,14 +4531,14 @@ SelectMultiControl = AbstractControl.extend( {
     },
 
     /**
-     * Destroys the Select2 instance(s).
+     * Destroys the selectize instance(s).
      *
      * @since 1.7.2
      */
     onDestroy : function() {
         _.each( this.getValues(), function( value, media ) {
             var $field = this.ui.input.filter( '[name^="' + media + '"]' );
-            $field.select2( 'destroy' );
+            $field.selectize( 'destroy' );
         }, this );
     }
 
